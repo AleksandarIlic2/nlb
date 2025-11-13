@@ -29,6 +29,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 import static si.nlb.testautomation.NLBTestAutomation.Core.Base.driver;
@@ -9365,4 +9366,115 @@ public class Steps {
         Assert.assertEquals(DataManager.userObject.get("favorite_acc"), accountNumber);
     }
 
+    @Then("Accounts are displayed in the following order:")
+    public void accountsAreDisplayedInTheFollowingOrder(io.cucumber.datatable.DataTable dataTable) {
+        List<String> expectedOrder = dataTable.asList();
+
+        List<WebElement> accountTitles = driver.findElements(
+                By.cssSelector("nlb-product-card .product-type, nlb-product-card h3, nlb-product-card .title")
+        );
+
+        List<String> normalizedOrder = accountTitles.stream()
+                .map(WebElement::getText)
+                .map(String::trim)
+                .map(text -> {
+                    String lower = text.toLowerCase();
+                    if (lower.contains("payment account"))
+                        return "Current accounts";
+                    else if (lower.contains("visa"))
+                        return "Cards";
+                    else if (lower.contains("deposit"))
+                        return "Savings accounts";
+                    else if (lower.contains("loan"))
+                        return "Loans";
+                    else
+                        return "Other";
+                })
+                .collect(Collectors.toList());
+
+        int lastIndex = -1;
+        for (String expected : expectedOrder) {
+            int index = normalizedOrder.indexOf(expected);
+            if (index == -1) {
+                // Sekcija ne postoji, preskačemo
+                continue;
+            }
+            Assert.assertTrue("Section '" + expected + "' is out of order", index >= lastIndex);
+            lastIndex = index;
+        }
+        System.out.println(normalizedOrder);
+    }
+
+
+
+    @And("Assert element by contains label {string} is displayed")
+    public void assertElementByContainsLabelIsDisplayed(String label) throws Throwable{
+        String xPath = "//div[@aria-label='" + label + "']";
+        By waitEl = SelectByXpath.CreateByElementByXpath(xPath);
+        WaitHelpers.WaitForElement(waitEl);
+
+        WebElement element = SelectByXpath.CreateElementByXpathTagAndAriaLabel("div",label);
+        assertTrue(element.isDisplayed());
+    }
+
+    @And("Click on right arrow {string} times")
+    public void click_on_right_arrow_times(String times) throws Throwable {
+        int numberOfTimes = Integer.parseInt(times);
+
+        //save active slide data for verifying change
+        String activeSlideXpath = "//swiper-slide[contains(@class,'swiper-slide-active')]";
+        WebElement initialSlide = SelectByXpath.CreateElementByXpath(activeSlideXpath);
+        String initialContent = initialSlide.getText().trim();
+
+        String xpath = "//div[contains(@class,'swiper-button-next')]//button";
+        WebElement rightArrow = SelectByXpath.CreateElementByXpath(xpath);
+
+        for (int i = 0; i < numberOfTimes; i++) {
+            System.out.println("➡️ Click #" + (i + 1));
+            hp.ClickOnElement(rightArrow, "Right Arrow");
+            Thread.sleep(1000);
+            //verify change
+            String newActiveSlideXpath = "//swiper-slide[contains(@class,'swiper-slide-active')]";
+            WebElement newSlide = SelectByXpath.CreateElementByXpath(newActiveSlideXpath);
+            String newContent = newSlide.getText().trim();
+
+            assertNotSame(initialContent, newContent);
+            activeSlideXpath = "//swiper-slide[contains(@class,'swiper-slide-active')]";
+        }
+    }
+
+    @And("Click on left arrow {string} times")
+    public void clickOnLeftArrow(String times) throws Throwable {
+        int numberOfTimes = Integer.parseInt(times);
+
+        //save active slide data for verifying change
+        String activeSlideXpath = "//swiper-slide[contains(@class,'swiper-slide-active')]";
+        WebElement initialSlide = SelectByXpath.CreateElementByXpath(activeSlideXpath);
+        String initialContent = initialSlide.getText().trim();
+
+        String xpath = "//div[contains(@class,'swiper-button-prev')]//button";
+        WebElement leftArrow = SelectByXpath.CreateElementByXpath(xpath);
+
+        for (int i = 0; i < numberOfTimes; i++) {
+            System.out.println("⬅️ Click #" + (i + 1));
+            hp.ClickOnElement(leftArrow, "Left Arrow");
+            Thread.sleep(1000);
+
+            //verify change
+            String newActiveSlideXpath = "//swiper-slide[contains(@class,'swiper-slide-active')]";
+            WebElement newSlide = SelectByXpath.CreateElementByXpath(newActiveSlideXpath);
+            String newContent = newSlide.getText().trim();
+
+            assertNotSame(initialContent, newContent);
+            activeSlideXpath = "//swiper-slide[contains(@class,'swiper-slide-active')]";
+        }
+    }
+
+    @And("Clicks on show all on Latest transactions")
+    public void clicksOnShowAllOnLatestTransactions() throws Throwable {
+        String xpath = "//button[contains(.,'Show all') or contains(.,'View all')]";
+        WebElement showAllButton = SelectByXpath.CreateElementByXpath(xpath);
+
+        hp.ClickOnElement(showAllButton, "Show all in Latest transactions");
+    }
 }
