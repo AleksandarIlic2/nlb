@@ -1,0 +1,18 @@
+<TABLE id="table-1" class="table table-hover">
+<THead>
+<TR><TH>Scenario name</TH><TH>Result</TH></TR>
+</THead>
+<TBody>
+<TR><TD>Payments_Currency_Exchange-Pricelist_[WEB]</TD><TD>FAIL</TD></TR>
+<TR><TD>Current_Accounts-Details_[WEB]_1</TD><TD>FAIL</TD></TR>
+<TR><TD>Gradual_Savings-Transactions-Details_[WEB]</TD><TD>FAIL</TD></TR>
+<TR><TD>Loan_Accounts-Details-Account_Details_[WEB]</TD><TD>FAIL</TD></TR>
+<TR><TD>NLB_Funds-Transactions-List_[WEB]</TD><TD>FAIL</TD></TR>
+<TR><TD>NLB_Funds-Transactions-Details_[WEB]</TD><TD>FAIL</TD></TR>
+<TR><TD>PFM_Categorization_Manual_Categorization_Of_Transactions_[WEB]</TD><TD>FAIL</TD></TR>
+<TR><TD>Payments_Payment_Wizard_[WEB]</TD><TD>FAIL</TD></TR>
+<TR><TD>Foreign-Payment_to_SI_account-Foreign_currency-Currency_exists_on_the_account</TD><TD>FAIL</TD></TR>
+<TR><TD>Payments_Payments_Archive_Create_Confirmation_For_Internal_Transfer_[WEB]</TD><TD>FAIL</TD></TR>
+<TR><TD>SEPA-From_Personal_to_Corporate_account-[WEB]</TD><TD>FAIL</TD></TR>
+</TBody>
+</TABLE>
