@@ -9472,9 +9472,30 @@ public class Steps {
 
     @And("Clicks on show all on Latest transactions")
     public void clicksOnShowAllOnLatestTransactions() throws Throwable {
-        String xpath = "//button[contains(.,'Show all') or contains(.,'View all')]";
+        String xpath = "//button[contains(.,'Show all')]";
         WebElement showAllButton = SelectByXpath.CreateElementByXpath(xpath);
 
-        hp.ClickOnElement(showAllButton, "Show all in Latest transactions");
+        hp.ClickOnElement(showAllButton, "Show all");
+    }
+
+    @And("Assert element by text {string} index {string} is displayed")
+    public void assertElementByTextIndexIsDisplayed(String text, String index) throws Throwable {
+        By elWait = SelectByText.CreateByElementByTextIndex(text,index);
+        WaitHelpers.WaitForElement(elWait);
+
+        WebElement element = SelectByText.CreateElementByXpathIndex(text,index);
+        assertTrue(element.isDisplayed());
+    }
+
+    @And("Assert account number with index {string} is displayed")
+    public void assertAccountNumberWithIndexIsDisplayed(String index) throws Throwable {
+        String xpath="(//div[contains(@class, 'tw-bg-primaryColor')]//div[normalize-space()])[" + index + "]";
+        By elWait = SelectByXpath.CreateByElementByXpath(xpath);
+        WaitHelpers.WaitForElement(elWait);
+
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        assertTrue(element.isDisplayed());
+
+
     }
 }

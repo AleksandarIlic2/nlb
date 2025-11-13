@@ -1,4 +1,5 @@
 package si.nlb.testautomation.NLBTestAutomation.Test;
+
 import org.junit.runner.JUnitCore;
 import si.nlb.testautomation.NLBTestAutomation.Core.Base;
 import si.nlb.testautomation.NLBTestAutomation.Core.BaseMobile;
@@ -23,46 +24,46 @@ public class RunTest {
 
     public static void main(String[] args) throws URISyntaxException, IOException {
 
-            DataManager.datamap = ExcelFactory.getDataFromExcel("testdata/data.xlsx","Sheet1");
-            //if(DataManager.getDataFromHashDatamap("4", "isMock").equals("0")) {
-                BaseMobile.AppiumServerJava appiumServer = new BaseMobile.AppiumServerJava();
+        DataManager.datamap = ExcelFactory.getDataFromExcel("testdata/data.xlsx", "Sheet1");
+        //if(DataManager.getDataFromHashDatamap("4", "isMock").equals("0")) {
+        BaseMobile.AppiumServerJava appiumServer = new BaseMobile.AppiumServerJava();
 
-                int port = 4723;
-                if (!appiumServer.checkIfServerIsRunnning(port)) {
+        int port = 4723;
+        if (!appiumServer.checkIfServerIsRunnning(port)) {
 
-                    System.out.println("Starting Appium Server on port - " + port);
-                    appiumServer.startServer();
-                    Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            System.out.println("Stopping Appium server");
-                            appiumServer.stopServer();
-                        }
-                    }));
-                } else {
-                    System.out.println("Appium Server already running on Port - " + port);
+            System.out.println("Starting Appium Server on port - " + port);
+            appiumServer.startServer();
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("Stopping Appium server");
+                    appiumServer.stopServer();
                 }
-            //}
+            }));
+        } else {
+            System.out.println("Appium Server already running on Port - " + port);
+        }
+
         List<String> envList = DataManager.envList;
         int run = 1;
-        for(String env : envList) {
+        for (String env : envList) {
             DataManager.setDataForEnv(env);
-            for(String browser : DataManager.webBrowsersList) {
+            for (String browser : DataManager.webBrowsersList) {
                 DataManager.webBrowser = browser;
                 Utilities.replaceTestExcelFile();
                 Utilities.replaceTestrailExcelFile();
                 Utilities.cleanScreenShotFolder();
                 //JUnitCore.runClasses(Runner.class);
-                try{
+                try {
                     JUnitCore.runClasses(Runner.class);
                     //JUnitCore.main("si.nlb.testautomation.NLBTestAutomation.Test.Runner");
-                } catch(Exception e){
+                } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
                 //JUnitCore.main("si.nlb.testautomation.NLBTestAutomation.Test.Runner");
                 URL rootResource = RunTest.class.getClassLoader().getResource(".");
                 String targetFolder;
-                if(rootResource == null) {
+                if (rootResource == null) {
                     targetFolder = new File("./target").getAbsolutePath().replace("%20", " ");
                 } else {
                     File currentDir = new File(RunTest.class.getClassLoader().getResource(".").getFile());
@@ -70,7 +71,7 @@ public class RunTest {
                 }
                 File cucumber = new File(targetFolder.replace("%20", " "), "cucumber");
                 File destinationFile = new File(cucumber, "report" + env + "_" + browser + "_" + run + ".html");
-                if(destinationFile.exists()) {
+                if (destinationFile.exists()) {
                     destinationFile.delete();
                 }
 

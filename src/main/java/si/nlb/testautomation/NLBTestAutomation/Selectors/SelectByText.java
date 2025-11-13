@@ -87,6 +87,9 @@ public class SelectByText {
     public static By CreateByElementByText(String text) {
         return SelectByXpath.CreateByElementByXpath("//*[text()='" + text + "']");
     }
+    public static By CreateByElementByTextIndex(String text, String index) {
+        return SelectByXpath.CreateByElementByXpath("(//*[text()='" + text + "'])[" + index + "]");
+    }
 
     public static By CreateByElementByContainsText(String text) {
         return SelectByXpath.CreateByElementByXpath("//*[contains(text(),'" + text + "')]");

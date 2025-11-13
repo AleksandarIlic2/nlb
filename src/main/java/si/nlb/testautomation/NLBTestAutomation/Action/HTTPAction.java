@@ -65,7 +65,7 @@ public class HTTPAction {
         if(runId.contains(".")){
             runId = runId.substring(0, runId.indexOf("."));
         }
-        */
+
         //String url = "?/api/v2/add_results_for_cases/".concat(runId);
         //url = DataManager.testrailBaseURL.concat(url);
         String oneCase;
@@ -98,8 +98,8 @@ public class HTTPAction {
                     ex.printStackTrace();
                 }
             }
-            */
-        }
+
+        }*/
     }
 
     public static void addResultsForCases(int[] lista) throws SQLException {

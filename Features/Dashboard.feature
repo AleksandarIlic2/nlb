@@ -32,12 +32,12 @@ Feature: Dashboard
 
       #swipe accounts and cards
       And Click on right arrow "1" times
-      And Assert element by text "Available balance" is displayed
-      And Assert element by text "Current balance" is displayed
+      And Assert element by text " Available balance " index "2" is displayed
+      And Assert element by text " Current balance " index "2" is displayed
+      And Assert account number with index "2" is displayed
 
       And Click on left arrow "4" times
-
-      And Clicks on show all on Latest transactions
+      And Click on element by text "Show all"
       When Wait for element by text " Download transaction list "
 
       Examples:
