@@ -9309,19 +9309,7 @@ public class Steps {
     }
 
 
-
-    @And("click Radio Button By Account {string}")
-    public void clickRadioButtonByAccount(String accountNumber) {
-    /*    // XPath koji pronalazi radio button povezan sa zadatim brojem računa
-        String xPath = "//span[@class='tw-text-gray-400 subheadline' and normalize-space(text())='" + accountNumber + "']" +
-                "/ancestor::div[contains(@class,'tw-flex') and contains(@class,'ng-star-inserted')]" +
-                "//input[@type='radio']";
-        WebElement radioButton = driver.findElement(By.xpath(xPath));
-        // Ako element nije odmah vidljiv ili interaktivan
-        radioButton.click();*/
-        // XPath koji uzima DRUGI element u grupi radiobuttonova
-
-    }
+    
 
     @And("Assert for first element in product screen {string}")
     public void assertForFirstElementInProductScreen(String text) {
