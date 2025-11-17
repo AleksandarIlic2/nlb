@@ -1,37 +1,57 @@
 Feature: Product_Summary
 
-@Product_Summary_Favourite_account_[WEB]
-Scenario Outline: Product_Summary_Favourite_account_[WEB]
+  @Product_Summary_Favourite_account_[WEB]
+  Scenario Outline: Product_Summary_Favourite_account_[WEB]
 
-  Given Open Login page
-  And Change language to English
-  And Login to the page using user from Excel "<rowindex>" columnName "username"
-  When Wait for element by text "Pay or transfer"
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    When Wait for element by text "Pay or transfer"
 
-  #User is logged into aplication and clicks on the My Products page frome the menu
-  When Click on tab "My products" from main sidebar
-  #User is looking at the page
-  And Wait for element by text "Edit list"
-  Then Assert element by class "button-bold" and contains text "Edit list"
-  #User clicks on button for Edit product view
-  And Click on element by text "Edit list"
-  And Wait for element by class "icon-eye"
-  #User clicks on option Set favorite account
-  And Click on element by text "Set favorite account"
-  And Wait for element by text " Apply "
-  Then Assert element by class "tw-items-center" and contains text "Apply"
-  #User choose account
+    #User is logged into aplication and clicks on the My Products page frome the menu
+    When Click on tab "My products" from main sidebar
+    #User is looking at the page
+    And Wait for element by text "Edit list"
+    Then Assert element by class "button-bold" and contains text "Edit list"
+    #User clicks on button for Edit product view
+    And Click on element by text "Edit list"
+    And Wait for element by class "icon-eye"
+    #User clicks on option Set favorite account
+    And Click on element by text "Set favorite account"
+    And Wait for element by text " Apply "
+    Then Assert element by class "tw-items-center" and contains text "Apply"
+    #User choose account
 
-  #And click Radio Button By Account "205-9031004417882-84"
-  And Click Radio Button with index "favorite_acc"
-  #User clicks on Apply button
-  And Click on element by text " Apply "
-  And Wait for element by text "Success"
-  And Assert element by text "Success"
-  #Assert first element
-  And Assert for first element in product screen
-  #And Assert for first element in product screen "205-9031004417882-84"
+    #And click Radio Button By Account "205-9031004417882-84"
+    And Click Radio Button with index "favorite_acc"
+    #User clicks on Apply button
+    And Click on element by text " Apply "
+    And Wait for element by text "Success"
+    And Assert element by text "Success"
+    #Assert first element
+    And Assert for first element in product screen
+    #And Assert for first element in product screen "205-9031004417882-84"
 
-Examples:
-| rowindex |
-|        1 |
+  Examples:
+  | rowindex |
+  |        1 |
+
+  @Product_Summary_Sorting_on_the_Product_Summary_[WEB]
+  Scenario Outline: Product_Summary_Sorting_on_the_Product_Summary_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+    #User clicks on the My Products page from the menu
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    Then Accounts are displayed in the following order:
+      | Current accounts  |
+      | Cards             |
+      | Savings accounts  |
+      | Loans             |
+    Examples:
+      | rowindex |
+      |        1 |
