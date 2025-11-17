@@ -9309,7 +9309,7 @@ public class Steps {
     }
 
 
-    
+
 
     @And("Assert for first element in product screen {string}")
     public void assertForFirstElementInProductScreen(String text) {
