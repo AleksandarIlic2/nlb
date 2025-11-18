@@ -55,3 +55,56 @@ Feature: Product_Summary
     Examples:
       | rowindex |
       |        1 |
+
+  @Product_Summary-Edit_Product_view-edit_name_of_account_[WEB]_1
+  Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account_[WEB]_1
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    And Assert element by class "button-bold" containing text "Edit list"
+    And Click on element by text "Edit list"
+    And Wait for element by class "icon-eye"
+
+    Then Change name of product from excel "<rowindex>" columnName "personal_account_iban" into "Foreign currency payment accounts2"
+    #Then Change name of the first product "Foreign currency payment accounts2"
+    And Click on tab "My products" from main sidebar
+    And Wait for element by contains text "Foreign currency payment accounts2"
+    And Assert element by contains text "Foreign currency payment accounts2"
+    And Click on element by text "Edit list"
+    And Wait for element by class "icon-eye"
+    #Then Change name of the first product "Foreign currency payment accounts"
+    And Change name of product from excel "<rowindex>" columnName "personal_account_iban" into "Foreign currency payment accounts"
+
+    Examples:
+      | rowindex |
+      |        1 |
+
+@Product_Summary-Edit_Product_view-edit_name_of_account-Invalid_[WEB]_1
+Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid_[WEB]_1
+
+  Given Open Login page
+  And Change language to English
+  And Login to the page using user from Excel "<rowindex>" columnName "username"
+  And Wait for element by text "Pay or transfer"
+
+  When Click on tab "My products" from main sidebar
+  And Wait for element by text "Edit list"
+  And Assert element by class "button-bold" containing text "Edit list"
+  And Click on element by text "Edit list"
+  And Wait for element by class "icon-eye"
+
+  Then Change name of product from excel "<rowindex>" columnName "personal_account_iban" into more than fifty characters
+  Then Assert element by text "You have reached the maximum number of characters. 50/50."
+  And Click on element by text " Cancel "
+
+  Then Change name of product from excel "<rowindex>" columnName "personal_account_iban" into " "
+  And Assert acc name for iban from excel "<rowindex>" columnName "personal_account_iban"
+
+  Examples:
+    | rowindex |
+    |        1 |

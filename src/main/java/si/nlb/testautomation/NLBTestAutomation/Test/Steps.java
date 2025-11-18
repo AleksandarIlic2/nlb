@@ -1757,7 +1757,9 @@ public class Steps {
 
     @Then("Change name of product from excel {string} columnName {string} into {string}")
     public void changeNameOfProductFromExcelColumnNameInto(String rowindex, String columnName, String changedName) throws Throwable {
+
         String stringForProductIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+
         String xPathForEditIcon = "//*[contains(text(),'" + stringForProductIban + "')]//ancestor::nlb-products-edit-list-item//*[contains(@class,'icon-edit')]";
         WebElement elementForEditIcon = SelectByXpath.CreateElementByXpath(xPathForEditIcon);
         JSHelpers.ScrollIntoViewBottom(elementForEditIcon);
@@ -1766,13 +1768,25 @@ public class Steps {
         By elForEditProductNameAssert = SelectByText.CreateByElementByText("Rename product");
         WaitHelpers.WaitForElement(elForEditProductNameAssert);
 
-        String xPathForInput = "//input";
-        WebElement elementForInput = SelectByXpath.CreateElementByXpath(xPathForInput);
+        WebElement elementForInput = SelectByXpath.CreateElementByXpath("//input");
         hp.EnterTextToElement(elementForInput, changedName);
+
+        // dinamički xpath za naziv
+        String xPathForAccountsName =
+                "//*[contains(text(),'" + stringForProductIban + "')]"
+                        + "/ancestor::div[contains(@class,'tw-text-gray-40')]"
+                        + "/preceding-sibling::div"
+                        + "//div[contains(@class,'heading-5') or contains(@class,'subheadline')]";
+
+        WebElement accName = SelectByXpath.CreateElementByXpath(xPathForAccountsName);
+
+        // Čuvamo tekst, ne WebElement
+        DataManager.userObject.put(stringForProductIban, accName.getText());
 
         WebElement elementForApply = SelectByText.CreateElementByXpathContainingText("Apply");
         hp.ClickOnElement(elementForApply);
     }
+
 
     @And("Wait for element by contains text {string}")
     public void waitForElementByContainsText(String text) throws InterruptedException {
@@ -9486,4 +9500,70 @@ public class Steps {
 
 
     }
+
+    @Then("Change name of the first product {string}")
+    public void changeNameOfTheFirstProduct(String newName) throws Throwable {
+
+        // 1️⃣ Pronađi prvu ikonicu edit
+        String xPathForFirstEditIcon = "(//*[contains(@class,'icon-edit')])[1]";
+        WebElement firstEditIcon = SelectByXpath.CreateElementByXpath(xPathForFirstEditIcon);
+
+        // 2️⃣ Skroluj do nje i klikni
+        JSHelpers.ScrollIntoViewBottom(firstEditIcon);
+        hp.ClickOnElement(firstEditIcon);
+
+        // 3️⃣ Sačekaj modal "Rename product"
+        By renameProductTitle = SelectByText.CreateByElementByText("Rename product");
+        WaitHelpers.WaitForElement(renameProductTitle);
+
+        // 4️⃣ Nađi input polje u modal-u
+        WebElement inputField = SelectByXpath.CreateElementByXpath("//input");
+
+        // 5️⃣ Upisi novi naziv
+        hp.EnterTextToElement(inputField, newName);
+
+        // 6️⃣ Klikni Apply
+        WebElement applyButton = SelectByText.CreateElementByXpathContainingText("Apply");
+        hp.ClickOnElement(applyButton);
+    }
+
+    @Then("Change name of product from excel {string} columnName {string} into more than fifty characters")
+    public void changeNameOfProductFromExcelColumnNameIntoMoreThanFiftyCharacters(String rowindex, String columnName) throws Throwable {
+        String changedName = "TryToInputMoreThanFiffyCharactersTryToInputMoreThanFiffyCharacters";
+        String stringForProductIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForEditIcon = "//*[contains(text(),'" + stringForProductIban + "')]//ancestor::nlb-products-edit-list-item//*[contains(@class,'icon-edit')]";
+        WebElement elementForEditIcon = SelectByXpath.CreateElementByXpath(xPathForEditIcon);
+        JSHelpers.ScrollIntoViewBottom(elementForEditIcon);
+        hp.ClickOnElement(elementForEditIcon);
+
+        By elForEditProductNameAssert = SelectByText.CreateByElementByText("Rename product");
+        WaitHelpers.WaitForElement(elForEditProductNameAssert);
+
+        String xPathForInput = "//input";
+        WebElement elementForInput = SelectByXpath.CreateElementByXpath(xPathForInput);
+        hp.EnterTextToElement(elementForInput, changedName);
+
+    }
+
+    @And("Assert acc name for iban from excel {string} columnName {string}")
+    public void assertAccNameForIbanFromExcelColumnName(String rowindex, String columnName) throws Throwable{
+        String iban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String savedName = (String) DataManager.userObject.get(iban);
+        // XPath da ponovo dohvati trenutni naziv sa ekrana
+        String xPathForAccountsName =
+                "//*[contains(text(),'" + iban + "')]"
+                        + "/ancestor::div[contains(@class,'tw-text-gray-40')]"
+                        + "/preceding-sibling::div"
+                        + "//div[contains(@class,'heading-5') or contains(@class,'subheadline')]";
+
+        WebElement currentNameEl = SelectByXpath.CreateElementByXpath(xPathForAccountsName);
+        String currentName = currentNameEl.getText().trim();
+
+        System.out.println("Saved name = " + savedName);
+        System.out.println("Current name = " + currentName);
+
+        Assert.assertEquals("Displayed account name does not match saved name!", savedName, currentName);
+    }
+
+
 }
