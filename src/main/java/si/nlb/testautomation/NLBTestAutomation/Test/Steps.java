@@ -1,5 +1,6 @@
 package si.nlb.testautomation.NLBTestAutomation.Test;
 import com.sun.org.apache.bcel.internal.generic.Select;
+import io.cucumber.datatable.DataTable;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -23,6 +24,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.WatchEvent;
 import java.sql.SQLOutput;
 import java.text.*;
 import java.time.LocalDate;
@@ -3404,7 +3406,8 @@ public class Steps {
     @And("Assert Product IBAN in Product details is from Excel {string} columnName {string}")
     public void assertProductIBANInProductDetailsIsFromExcelColumnName(String rowindex, String columnName) throws Throwable {
         String accName = DataManager.getDataFromHashDatamap(rowindex, columnName);
-        String xPath = "//nlb-iban";
+        //String xPath = "//nlb-iban";
+        String xPath = "//nlb-bban";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         assertEquals(accName, element.getAttribute("innerText"));
         assertTrue(element.isDisplayed());
@@ -3425,8 +3428,9 @@ public class Steps {
         if (elements.isEmpty()) {
             System.out.println("Element not found.");
         } else {
-            String xpath = "//nlb-amount[contains(@class, 'tw-text-primaryColor')]//span[2]";
-            WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+            //String xpath = "//nlb-amount[contains(@class, 'tw-text-primaryColor')]//span[2]";
+            String xPath = "//nlb-amount//span[2]";
+            WebElement element = SelectByXpath.CreateElementByXpath(xPath);
             assertEquals("EUR", element.getAttribute("innerText"));
         }
     }
@@ -3693,7 +3697,7 @@ public class Steps {
         String xPath = "//nlb-selected-product-transactions/nlb-transactions-list-view//*[contains(@class, 'tw-capitalize')]";
         List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
         List<String> dates = new ArrayList<>();
-        Assert.assertFalse(elements.isEmpty());
+        assertFalse(elements.isEmpty());
         for (WebElement element : elements) {
             dates.add(element.getAttribute("innerText"));
         }
@@ -3753,6 +3757,22 @@ public class Steps {
         WebElement amountElement = SelectByXpath.CreateElementByXpath(amountxPath);
         assertTrue(amountElement.isDisplayed());
         assertTrue(amountElement.getAttribute("innerText").matches("(?:−)?(?:(?:0|[1-9]\\d{0,2})(?:.\\d{3})*),\\d{2}"));
+
+        String amountText = amountElement.getAttribute("innerText").trim();
+
+// ako ne počinje minusom → incoming je → mora biti zelen (tw-text-incomingColor)
+
+        if (!amountText.startsWith("−") && !amountText.startsWith("-")) {
+
+            // idi do parent nlb-amount (on ima klasu tw-text-incomingColor)
+
+            WebElement nlbAmountParent = amountElement.findElement(By.xpath("./ancestor::nlb-amount[1]"));
+
+            String classAttr = nlbAmountParent.getAttribute("class");
+
+            assertTrue(classAttr.contains("tw-text-incomingColor"));
+
+        }
         //currency
         String currencyxPath = "(//nlb-transaction-card//nlb-amount//span[2])[1]";
         WebElement currencyElement = SelectByXpath.CreateElementByXpath(currencyxPath);
@@ -4337,8 +4357,8 @@ public class Steps {
 
     @And("Assert Overdraft is displayed correctly in Financial details for Current account")
     public void assertOverdraftIsDisplayedCorrectlyInFinancialDetailsForCurrentAccount() throws Throwable {
-        String currentEnv = DataManager.getDataFromHashDatamap("1","currentEnv");
-        if (currentEnv.equals("uat")){
+        //String currentEnv = DataManager.getDataFromHashDatamap("1","currentEnv");
+
             //overdraft title
             String titlexPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]/div[1]/dt[1]/div";
             WebElement titleElement = SelectByXpath.CreateElementByXpath(titlexPath);
@@ -4353,31 +4373,14 @@ public class Steps {
             String currencyxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]//dd[1]//nlb-amount//span[2]";
             WebElement currencyElement = SelectByXpath.CreateElementByXpath(currencyxPath);
             assertTrue(currencyElement.isDisplayed());
-            assertEquals("EUR", currencyElement.getAttribute("innerText"));
-        }
-        if (currentEnv.equals("tst")){
-            //overdraft title
-            String titlexPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]/div[1]/dt[1]/div";
-            WebElement titleElement = SelectByXpath.CreateElementByXpath(titlexPath);
-            assertTrue(titleElement.isDisplayed());
-            assertEquals("Overdraft", titleElement.getAttribute("innerText"));
-            //amount
-            String amountxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]//dd[1]//nlb-amount//span[1]";
-            WebElement amountElement = SelectByXpath.CreateElementByXpath(amountxPath);
-            assertTrue(amountElement.isDisplayed());
-            assertTrue(amountElement.getAttribute("innerText").matches("(?:−)?(?:(?:0|[1-9]\\d{0,2})(?:.\\d{3})*),\\d{2}"));
-            //currency
-            String currencyxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]//dd[1]//nlb-amount//span[2]";
-            WebElement currencyElement = SelectByXpath.CreateElementByXpath(currencyxPath);
-            assertTrue(currencyElement.isDisplayed());
-            assertEquals("EUR", currencyElement.getAttribute("innerText"));
-        }
+            assertEquals("RSD", currencyElement.getAttribute("innerText"));
+
     }
 
     @And("Assert Overdraft expiration date is displayed correctly in Financial details for Current accounts")
     public void assertOverdraftExpirationDateIsDisplayedCorrectlyInFinancialDetailsForCurrentAccounts() throws Throwable {
         String currentEnv = DataManager.getDataFromHashDatamap("1","currentEnv");
-        if (currentEnv.equals("uat")){
+
             //overdraft expiration date title
             String titlexPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl/div[2]/dt/div";
             WebElement titleElement = SelectByXpath.CreateElementByXpath(titlexPath);
@@ -4387,20 +4390,8 @@ public class Steps {
             String oedxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl/div[2]/dd/div";
             WebElement oedElement = SelectByXpath.CreateElementByXpath(oedxPath);
             assertTrue(oedElement.isDisplayed());
-            assertTrue(oedElement.getAttribute("innerText").equals("until changed") || oedElement.getAttribute("innerText").matches("[0-9]{2}[.]{1}[0-9]{2}[.]{1}[0-9]{4}"));
-        }
-        if (currentEnv.equals("tst")){
-            //overdraft expiration date title
-            String titlexPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl/div[2]/dt/div";
-            WebElement titleElement = SelectByXpath.CreateElementByXpath(titlexPath);
-            assertTrue(titleElement.isDisplayed());
-            assertEquals("Overdraft expiration date", titleElement.getAttribute("innerText"));
-            //oed value
-            String oedxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl/div[2]/dd/div";
-            WebElement oedElement = SelectByXpath.CreateElementByXpath(oedxPath);
-            assertTrue(oedElement.isDisplayed());
-            assertTrue(oedElement.getAttribute("innerText").equals("until changed") || oedElement.getAttribute("innerText").matches("[0-9]{2}[.]{1}[0-9]{2}[.]{1}[0-9]{4}"));
-        }
+            assertTrue(oedElement.getAttribute("innerText").equals("until changed") || oedElement.getAttribute("innerText").matches("[0-9]{1}[.]\\s{1}[0-9]{1}[.]{1}\\s[0-9]{4}"));
+
     }
 
     @And("Assert Interest rate is displayed correctly in Financial details for Current account")
@@ -4496,40 +4487,30 @@ public class Steps {
 
     @And("Assert Account owner in Account details is from Excel {string} columnName {string}")
     public void assertAccountOwnerInAccountDetailsIsFromExcelColumnName(String rowindex, String columnName) throws Throwable {
-        String currentEnv = DataManager.getDataFromHashDatamap("1", "currentEnv");
-        if (currentEnv.equals("uat")){
+       // String currentEnv = DataManager.getDataFromHashDatamap("1", "currentEnv");
+
             String ownerName = DataManager.getDataFromHashDatamap(rowindex, columnName);
-            String xPath = "//nlb-product-details-card[3]//div[text() = 'Account owner']/ancestor::dt[1]/following-sibling::dd/div";
+            //String xPath = "//nlb-product-details-card[3]//div[text() = 'Account owner']/ancestor::dt[1]/following-sibling::dd/div";
+            String xPath = "//nlb-product-details-card//div[text() = 'Account owner']/ancestor::dt[1]/following-sibling::dd/div";
             WebElement element = SelectByXpath.CreateElementByXpath(xPath);
             assertTrue(element.isDisplayed());
-            assertTrue(element.getAttribute("innerText").contains(ownerName));
-        }
-        if (currentEnv.equals("tst")){
-            String ownerName = DataManager.getDataFromHashDatamap(rowindex, columnName);
-            String xPath = "//nlb-product-details-card[3]//div[text() = 'Account owner']/ancestor::dt[1]/following-sibling::dd/div";
-            WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-            assertTrue(element.isDisplayed());
-            assertTrue(element.getAttribute("innerText").contains(ownerName));
-        }
+            System.out.println("Inner text: " + element.getAttribute("innerText") );
+            System.out.println("Owner name: " + ownerName);
+            assertEquals(element.getAttribute("innerText"),ownerName);
+
     }
 
     @And("Assert Account number in Account details is from Excel {string} columnName {string}")
     public void assertAccountNumberInAccountDetailsIsFromExcelColumnName(String rowindex, String columnName) throws Throwable {
         String currentEnv = DataManager.getDataFromHashDatamap("1", "currentEnv");
-        if (currentEnv.equals("uat")){
+
             String ownerName = DataManager.getDataFromHashDatamap(rowindex, columnName);
-            String xPath = "//nlb-product-details-card[3]//div[text() = 'Account number']/ancestor::dt[1]/following-sibling::dd/div";
+            //String xPath = "//nlb-product-details-card[3]//div[text() = 'Account number']/ancestor::dt[1]/following-sibling::dd/div";
+            String xPath = "//nlb-product-details-card//div[text() = 'Account number']/ancestor::dt[1]/following-sibling::dd/div";
             WebElement element = SelectByXpath.CreateElementByXpath(xPath);
             assertTrue(element.isDisplayed());
             assertEquals(ownerName, element.getAttribute("innerText"));
-        }
-        if (currentEnv.equals("tst")){
-            String ownerName = DataManager.getDataFromHashDatamap(rowindex, columnName);
-            String xPath = "//nlb-product-details-card[3]//div[text() = 'Account number']/ancestor::dt[1]/following-sibling::dd/div";
-            WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-            assertTrue(element.isDisplayed());
-            assertEquals(ownerName, element.getAttribute("innerText"));
-        }
+
     }
 
     @And("Assert Opening date is displayed correctly in Account details for Savings account")
@@ -6241,76 +6222,65 @@ public class Steps {
     @And("Assert Overdraft interest rate is displayed correctly in Financial details for Current account")
     public void assertOverdraftInterestRateIsDisplayedCorrectlyInFinancialDetailsForCurrentAccount() throws Throwable {
         //interest rate title
-        String IRxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]/div[4]/dt/div";
+        String IRxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]/div[3]/dt/div";
         WebElement IRElement = SelectByXpath.CreateElementByXpath(IRxPath);
         assertTrue(IRElement.isDisplayed());
         assertEquals("Overdraft Interest rate", IRElement.getAttribute("innerText"));
         //interest rate amount in %
-        String amountxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]/div[4]/dd/div";
+        String amountxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]/div[3]/dd/div";
         WebElement amountElement = SelectByXpath.CreateElementByXpath(amountxPath);
         assertTrue(amountElement.isDisplayed());
-        assertTrue(amountElement.getAttribute("innerText").matches("(?:−)?(?:(?:0|[1-9]\\d{0,2})(?:.\\d{3})*),\\d{4}[%]{1}"));
+        //assertTrue(amountElement.getAttribute("innerText").matches("(?:−)?(?:(?:0|[1-9]\\d{0,2})(?:.\\d{3})*),\\d{4}[%]{1}"));
+        assertTrue(
+                amountElement.getAttribute("innerText")
+                        .trim()
+                        .matches("(?:−)?(?:(?:0|[1-9]\\d{0,2})(?:\\.\\d{3})*),\\d{2}%")
+        );
+
     }
 
     @And("Assert Unauthorized overdraft Interest rate is displayed correctly in Financial details for Current account")
     public void assertUnauthorizedOverdraftInterestRateIsDisplayedCorrectlyInFinancialDetailsForCurrentAccount() throws Throwable {
         //interest rate title
-        String IRxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]/div[5]/dt/div";
+        String IRxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]/div[4]/dt/div";
         WebElement IRElement = SelectByXpath.CreateElementByXpath(IRxPath);
         assertTrue(IRElement.isDisplayed());
         assertEquals("Unauthorized overdraft Interest rate", IRElement.getAttribute("innerText"));
         //interest rate amount in %
-        String amountxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]/div[3]/dd/div";
+        String amountxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]/div[4]/dd/div";
         WebElement amountElement = SelectByXpath.CreateElementByXpath(amountxPath);
         assertTrue(amountElement.isDisplayed());
-        assertTrue(amountElement.getAttribute("innerText").matches("(?:−)?(?:(?:0|[1-9]\\d{0,2})(?:.\\d{3})*),\\d{4}[%]{1}"));
+        assertTrue(amountElement.getAttribute("innerText").matches("(?:−)?(?:(?:0|[1-9]\\d{0,2})(?:.\\d{3})*),\\d{2}[%]{1}"));
     }
 
     @And("Assert Account type is displayed correctly in Account details for Current account")
     public void assertAccountTypeIsDisplayedCorrectlyInAccountDetailsForCurrentAccount() throws Throwable {
-        String currentEnv = DataManager.getDataFromHashDatamap("1", "currentEnv");
-        if (currentEnv.equals("uat")){
+        //String currentEnv = DataManager.getDataFromHashDatamap("1", "currentEnv");
+
             //account type title
             //String titlexPath = "//h3[contains(text(), 'Account details')]/ancestor::div[1]/following-sibling::div[1]/div[1]/div[1]";
-            String titlexPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card[3]/div/div/dl/div[1]/dt/div";
+            //String titlexPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card[3]/div/div/dl/div[1]/dt/div";
+            String titlexPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card/div/div//dl/div/dt/div";
             WebElement titleElement = SelectByXpath.CreateElementByXpath(titlexPath);
-            assertTrue(titleElement.isDisplayed());
-            assertEquals("Account type", titleElement.getAttribute("innerText"));
+            assertTrue("Account number not displayed",titleElement.isDisplayed());
+            assertEquals("Account number not matching","Account type", titleElement.getAttribute("innerText"));
             //account type value
             //String ATxPath = "//h3[contains(text(), 'Account details')]/ancestor::div[1]/following-sibling::div[1]/div[1]/div[2]/div";
-            String ATxPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card[3]/div/div/dl/div[1]/dd/div";
+            //String ATxPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card[3]/div/div/dl/div[1]/dd/div";
+            String ATxPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card/div/div/dl/div[1]/dd/div";
             WebElement ATElement = SelectByXpath.CreateElementByXpath(ATxPath);
-            assertTrue(ATElement.isDisplayed());
-            assertEquals("Current account", ATElement.getAttribute("innerText"));
-        }
-        if (currentEnv.equals("tst")){
-            //account type title
-            String titlexPath = "//nlb-product-details-card[3]/div/div/dl/div[1]/dt/div";
-            WebElement titleElement = SelectByXpath.CreateElementByXpath(titlexPath);
-            assertTrue(titleElement.isDisplayed());
-            assertEquals("Account type", titleElement.getAttribute("innerText"));
-            //account type value
-            String ATxPath = "//nlb-product-details-card[3]/div/div/dl/div[1]/dd/div";
-            WebElement ATElement = SelectByXpath.CreateElementByXpath(ATxPath);
-            assertTrue(ATElement.isDisplayed());
-            assertEquals("Current account", ATElement.getAttribute("innerText"));
-        }
+            assertTrue("Xurrent account not displayed",ATElement.isDisplayed());
+            assertEquals("Current account not matching text","Current account", ATElement.getAttribute("innerText"));
     }
 
     @And("Assert BIC in Account details is {string}")
     public void assertBICInAccountDetailsIs(String expectedText) throws Throwable {
-        String currentEnv = DataManager.getDataFromHashDatamap("1", "currentEnv");
-        if (currentEnv.equals("uat")){
+        //String currentEnv = DataManager.getDataFromHashDatamap("1", "currentEnv");
             //String xPath = "//*[contains(text(),'BIC')]/ancestor::div[2]//following-sibling::div[1]";
-            String xPath = "//nlb-product-details-card[3]/div/div/dl/div[4]/dd/div";
+            String xPath = "//nlb-product-details-card/div/div/dl/div[4]/dd/div";
             WebElement element = SelectByXpath.CreateElementByXpath(xPath);
             assertEquals(expectedText, element.getAttribute("textContent"));
-        }
-        if (currentEnv.equals("tst")){
-            String xPath = "//nlb-product-details-card[3]/div/div/dl/div[4]/dd/div";
-            WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-            assertEquals(expectedText, element.getAttribute("textContent"));
-        }
+
     }
 
     @And("Assert content in clipboard is from Excel {string} columnName {string}")
@@ -6942,7 +6912,7 @@ public class Steps {
         textContent = textContent.replace(",", ".");
         Double expectedDouble = (Double) DataManager.userObject.get(key);
         String expected = expectedDouble.toString();
-        Assert.assertTrue(textContent.contains(expected));
+        assertTrue(textContent.contains(expected));
     }
 
     @And("Remember amount for {string} in Spending tab of current month under key {string}")
@@ -6983,7 +6953,7 @@ public class Steps {
         String singleSum = singleSumDouble.toString();
         System.out.println(categorySum);
         System.out.println(singleSum);
-        Assert.assertTrue(categorySum.contains(singleSum));
+        assertTrue(categorySum.contains(singleSum));
     }
 
     @And("Assert Address in Contact data is contains text from Excel {string} columnName {string}")
@@ -6994,7 +6964,7 @@ public class Steps {
         String expected = DataManager.getDataFromHashDatamap(rowindex, columnName);
         System.out.println(textContent);
         System.out.println(expected);
-        Assert.assertTrue(textContent.contains(expected));
+        assertTrue(textContent.contains(expected));
     }
 
     @And("Assert Swift in Contact data contains text {string}")
@@ -7004,7 +6974,7 @@ public class Steps {
         String textContent = element.getAttribute("textContent");
         System.out.println(textContent);
         System.out.println(expectedText);
-        Assert.assertTrue(textContent.contains(expectedText));
+        assertTrue(textContent.contains(expectedText));
     }
 
     @And("Assert that amount for opened transaction in product screen is {string} and currency {string} for huf currency")
@@ -7030,7 +7000,7 @@ public class Steps {
     public void assertThatCreditorReferenceForOpenedTransactionInProductScreenIs(String expected) throws Throwable {
         String xPath = "(//*[not(contains(@class,'xs:tw-hidden'))]/*[text()='Creditor Reference']/following-sibling::*)[2]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.getAttribute("textContent").contains(expected));
+        assertTrue(element.getAttribute("textContent").contains(expected));
     }
 
 
@@ -7049,7 +7019,7 @@ public class Steps {
         String textContent = element.getAttribute("textContent");
         System.out.println(textContent);
         System.out.println(expected);
-        Assert.assertTrue(textContent.contains(expected));
+        assertTrue(textContent.contains(expected));
     }
 
     @And("Assert Bank name in Contact data contains text {string}")
@@ -7059,7 +7029,7 @@ public class Steps {
         String textContent = element.getAttribute("textContent");
         System.out.println(textContent);
         System.out.println(expected);
-        Assert.assertTrue(textContent.contains(expected));
+        assertTrue(textContent.contains(expected));
     }
 
     @And("Assert Bank address in Contact data contains text {string}")
@@ -7069,7 +7039,7 @@ public class Steps {
         String textContent = element.getAttribute("textContent");
         System.out.println(textContent);
         System.out.println(expected);
-        Assert.assertTrue(textContent.contains(expected));
+        assertTrue(textContent.contains(expected));
     }
 
     @And("Enter amount {string} into amount input field in second Pay or Transfer screen")
@@ -7092,7 +7062,7 @@ public class Steps {
         WebElement element = SelectByXpath.CreateElementByXpath(xPathForPurposeField);
         String actual = element.getAttribute("value");
         String expected = Utilities.getDataFromTxtFileUnderKey(key);
-        Assert.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 
     @And("Remember purpose of all transactions displayed under key {string}")
@@ -7129,28 +7099,28 @@ public class Steps {
         for (WebElement element : webElementList) {
             listOfPurpose.add(element.getAttribute("innerText"));
         }
-        Assert.assertEquals(expected, listOfPurpose);
+        assertEquals(expected, listOfPurpose);
     }
 
     @And("Assert opened transaction has any category")
     public void assertOpenedTransactionHasAnyCategory() throws Throwable {
         String xPath = "//*[contains(@class,'category-icon-sm')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert that {int} transactions have loaded")
     public void assertThatTransactionsHaveLoaded(int number) throws Throwable {
         String xPath = "//h5[contains(@class,'medium tw-text-gray-100')]";
         List<WebElement> webElementList = SelectByXpath.CreateElementsByXpath(xPath);
-        Assert.assertEquals(number, webElementList.size());
+        assertEquals(number, webElementList.size());
     }
 
     @And("Assert that more than {int} transactions have loaded")
     public void assertThatMoreThanTransactionsHaveLoaded(int number) throws Throwable {
         String xPath = "//h5[contains(@class,'medium tw-text-gray-100')]";
         List<WebElement> webElementList = SelectByXpath.CreateElementsByXpath(xPath);
-        Assert.assertTrue(webElementList.size() > number);
+        assertTrue(webElementList.size() > number);
     }
 
     @And("Count the number of loaded payments and put them under key {string}")
@@ -7165,7 +7135,7 @@ public class Steps {
         String xPath = "//h5[contains(@class,'medium tw-text-gray-100')]";
         List<WebElement> webElementList = SelectByXpath.CreateElementsByXpath(xPath);
         int expected = (int) DataManager.userObject.get(key);
-        Assert.assertEquals(expected, webElementList.size());
+        assertEquals(expected, webElementList.size());
     }
 
     @And("Check if total amount for upcoming payments is correct")
@@ -7204,7 +7174,7 @@ public class Steps {
         System.out.println(actual);
         System.out.println(amount);
 
-        Assert.assertEquals(amount, actual);
+        assertEquals(amount, actual);
     }
 
     @And("Assert that recipient account in second step of payment is from Excel {string} columnName {string}")
@@ -7221,7 +7191,7 @@ public class Steps {
         String xPath = "//*[@nlbamountinput]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String actualValue = element.getAttribute("value");
-        Assert.assertEquals(expectedValue, actualValue);
+        assertEquals(expectedValue, actualValue);
     }
 
     @And("Assert currency in second step of payment is {string} and read only")
@@ -7229,14 +7199,14 @@ public class Steps {
         String xPath = "//*[@nlbamountinput]//following-sibling::input[@readonly]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String actualValue = element.getAttribute("value");
-        Assert.assertEquals(currency, actualValue);
+        assertEquals(currency, actualValue);
     }
 
     @And("Assert GOLOVEC invoice is shown after search and click")
     public void assertGOLOVECInvoiceIsShownAfterSearchAndClick() throws Throwable {
         String xPath = "//*[contains(text(),'ŠPORTNO DRUŠTVO GOLOVEC')]/following-sibling::*[contains(text(),'54827493')]/following-sibling::*[contains(text(),'RUSJANOV TRG 2, 1000 LJUBLJANA, SI')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
         hp.ClickOnElement(element);
     }
 
@@ -7244,21 +7214,21 @@ public class Steps {
     public void assertIssuerIsGOLOVECInSecondStepOfInvoiceCreation() throws Throwable {
         String xPath = "//nlb-issuer-selector//*[contains(text(),'ŠPORTNO DRUŠTVO GOLOVEC')]/following-sibling::*[contains(text(),'54827493')]/following-sibling::*[contains(text(),'RUSJANOV TRG 2, 1000 LJUBLJANA, SI')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert element by tag {string} contains text {string} and ancestor tag {string} is disabled")
     public void assertElementByTagContainsTextAndAncestorTagIsDisabled(String tag, String text, String ancestorTag) throws Throwable {
         String xPath = "//" + tag + "[contains(text(),'" + text + "')]/ancestor::" + ancestorTag;
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertEquals("true", element.getAttribute("disabled"));
+        assertEquals("true", element.getAttribute("disabled"));
     }
 
     @And("Assert pravni dokumneti link for e invoice")
     public void assertPravniDokumnetiLinkForEInvoice() throws Throwable {
         String xPath = "//a[@href='https://www.nlb.si/osebno/pravna-obvestila/pravni-dokumenti' and contains(text(),'Splošnimi pogoji poslovanja z NLB Osebnimi računi')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @Then("Assert shown accounts for invoice debit accounts are correct")
@@ -7273,15 +7243,15 @@ public class Steps {
         String accountOne = DataManager.getDataFromHashDatamap("1", "personal_account_iban");
         String accountTwo = DataManager.getDataFromHashDatamap("1", "second_personal_account_iban");
 
-        Assert.assertTrue(listOfIbans.contains(accountTwo));
-        Assert.assertTrue(listOfIbans.contains(accountOne));
+        assertTrue(listOfIbans.contains(accountTwo));
+        assertTrue(listOfIbans.contains(accountOne));
         assertEquals(2, listOfIbans.size());
     }
 
     @And("Assert there are {int} elements containing class {string}")
     public void assertThereAreElementsContainingClass(int num, String className) throws Throwable {
         List<WebElement> webElementList = SelectByXpath.CreateElementsByXpath("//*[contains(@class,'" + className + "')]");
-        Assert.assertEquals(num, webElementList.size());
+        assertEquals(num, webElementList.size());
     }
 
     @Then("Click on edit button for {string} in my profile")
@@ -7348,19 +7318,19 @@ public class Steps {
     public void assertButtonSaveForChangeProfileDataForIsDisabled(String text) throws Throwable {
         if (text.equals("Email")) {
             WebElement element = SelectByXpath.CreateElementByXpath("(//*[contains(text(),'Save')]/ancestor::button)[1]");
-            Assert.assertEquals("true", element.getAttribute("disabled"));
+            assertEquals("true", element.getAttribute("disabled"));
         } else if (text.equals("Mobile number")) {
             WebElement element = SelectByXpath.CreateElementByXpath("(//*[contains(text(),'Save')]/ancestor::button)[2]");
-            Assert.assertEquals("true", element.getAttribute("disabled"));
+            assertEquals("true", element.getAttribute("disabled"));
         } else if (text.equals("Phone number")) {
             WebElement element = SelectByXpath.CreateElementByXpath("(//*[contains(text(),'Save')]/ancestor::button)[3]");
-            Assert.assertEquals("true", element.getAttribute("disabled"));
+            assertEquals("true", element.getAttribute("disabled"));
         } else if (text.equals("Contact address")) {
             WebElement element = SelectByXpath.CreateElementByXpath("(//*[contains(text(),'Save')]/ancestor::button)[4]");
-            Assert.assertEquals("true", element.getAttribute("disabled"));
+            assertEquals("true", element.getAttribute("disabled"));
         } else if (text.equals("Permanent address")) {
             WebElement element = SelectByXpath.CreateElementByXpath("(//*[contains(text(),'Save')]/ancestor::button)[5]");
-            Assert.assertEquals("true", element.getAttribute("disabled"));
+            assertEquals("true", element.getAttribute("disabled"));
         }
     }
 
@@ -7377,7 +7347,7 @@ public class Steps {
         String xPath = "//label[contains(text(), 'Start date')]/following-sibling::div//input";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String expected = Utilities.getDateXDaysFromTodayInFormat(1, "dd.MM.yyyy");
-        Assert.assertEquals(expected, element.getAttribute("value"));
+        assertEquals(expected, element.getAttribute("value"));
     }
 
     @And("Assert Payment Amount in review is from txt file under key {string} in currency {string}")
@@ -7428,7 +7398,7 @@ public class Steps {
         String expectedDate = Utilities.getDataFromTxtFileUnderKey(key2);
         String xPath = "//*[contains(text(), '" + amount + "')]/ancestor::nlb-payment-item//*[contains(text(), '" + expectedDate + "')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert that amount for Standing order under key {string} from txt file has currency {string}")
@@ -7436,7 +7406,7 @@ public class Steps {
         String amount = Utilities.getDataFromTxtFileUnderKey(key).replace(".", ",");
         String xPath = "(//*[contains(text(), '" + amount + "')]/ancestor::nlb-payment-item//*/nlb-amount)[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.getAttribute("innerText").contains(currency));
+        assertTrue(element.getAttribute("innerText").contains(currency));
     }
 
     @And("Assert that Purpose field in Standing order header under key {string} from txt file is correct")
@@ -7444,7 +7414,7 @@ public class Steps {
         String amount = Utilities.getDataFromTxtFileUnderKey(key).replace(".", ",");
         String xPath = "//*[contains(text(), '" + amount + "')]/ancestor::nlb-payment-item//nlb-heading-text//*[contains(text(), 'Standing order')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert that Creditor name in Standing order header under key {string} from txt file is from Excel {string} columnName {string}")
@@ -7453,7 +7423,7 @@ public class Steps {
         String amount = Utilities.getDataFromTxtFileUnderKey(key).replace(".", ",");
         String xPath = "//*[contains(text(), '" + amount + "')]/ancestor::nlb-payment-item//*[text()= '" + expected + "']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert Icon for Standing order under key {string} from txt file")
@@ -7461,14 +7431,14 @@ public class Steps {
         String amount = Utilities.getDataFromTxtFileUnderKey(key).replace(".", ",");
         String xPath = "//*[contains(text(), '" + amount + "')]/ancestor::nlb-payment-item[@iconname='icon-standing-order']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert element by tag {string} withn descendant tag {string} containing text {string}")
     public void assertElementByTagWithnDescendantTagContainingText(String tag1, String tag2, String text) throws Throwable {
         String xPath = "//" + tag1 + "//" + tag2 + "[contains(text(), '" + text + "')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert that {string} in opened standing order has today date")
@@ -7487,9 +7457,9 @@ public class Steps {
         }
         String xPathForDataCheck = "(//*[text()='Payment day']//following-sibling::div)[2]";
         WebElement elementForDataCheck = SelectByXpath.CreateElementByXpath(xPathForDataCheck);
-        Assert.assertTrue(elementForDataCheck.isDisplayed());
-        Assert.assertTrue(elementForDataCheck.getAttribute("textContent").contains(date));
-        Assert.assertTrue(elementForDataCheck.getAttribute("textContent").contains("of month"));
+        assertTrue(elementForDataCheck.isDisplayed());
+        assertTrue(elementForDataCheck.getAttribute("textContent").contains(date));
+        assertTrue(elementForDataCheck.getAttribute("textContent").contains("of month"));
     }
 
     @And("Scroll element by contains text {string} up")
@@ -7503,7 +7473,7 @@ public class Steps {
         String amount = Utilities.getDataFromTxtFileUnderKey(key).replace(".", ",");
         String xPath = "(//*[contains(text(), '" + amount + "')]/ancestor::nlb-payment-item//i[contains(@class, 'icon-upcoming-payments')])[2]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Remember Standing order default start date under key {string}")
@@ -7519,7 +7489,7 @@ public class Steps {
         String expectedEndDate = Utilities.getDateXYearsInFutureFromDateDDMMYYYY(startDate, 1);
         String xPath = "//span[contains(text(), 'On date')]/ancestor::nlb-radio-button/ancestor::div[1]/following-sibling::div//input";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertEquals(expectedEndDate, element.getAttribute("value"));
+        assertEquals(expectedEndDate, element.getAttribute("value"));
     }
 
     @And("Remember end date under key {string}")
@@ -7546,7 +7516,7 @@ public class Steps {
         String amount = Utilities.getDataFromTxtFileUnderKey(key).replace(".", ",");
         String xPath = "//*[contains(text(), '" + amount + "')]/ancestor::nlb-payment-item//*[contains(text(), '" + expected + "')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Wait for icon of Standing order under key {string}")
@@ -7564,7 +7534,7 @@ public class Steps {
         String stringForExpectedValue = DataManager.getDataFromHashDatamap(rowindex, columnName);
         String xPathForDataCheck = "(//*[text()='" + text + "']//following-sibling::div)[2]";
         WebElement elementForDataCheck = SelectByXpath.CreateElementByXpath(xPathForDataCheck);
-        Assert.assertTrue(elementForDataCheck.getAttribute("textContent").replaceAll("\\s", "").contains(stringForExpectedValue.replaceAll("\\s", "")));
+        assertTrue(elementForDataCheck.getAttribute("textContent").replaceAll("\\s", "").contains(stringForExpectedValue.replaceAll("\\s", "")));
     }
 
     @And("Assert field {string} for Standing order cancellation has value from Excel {string} columnName {string}")
@@ -7572,7 +7542,7 @@ public class Steps {
         String expected = DataManager.getDataFromHashDatamap(rowindex, columnName);
         String xPath = "//*[contains(text(), '" + fieldName + "')]/following-sibling::div";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.getAttribute("textContent").contains(expected));
+        assertTrue(element.getAttribute("textContent").contains(expected));
     }
 
     @And("Assert Amount for Standing order cancellation has value under key {string} from txt file")
@@ -7580,22 +7550,22 @@ public class Steps {
         String expected = Utilities.getDataFromTxtFileUnderKey(key).replace(".", ",");
         String xPath = "//*[contains(text(), 'Payment amount')]/following-sibling::div";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.getAttribute("textContent").contains(expected));
-        Assert.assertTrue(element.getAttribute("textContent").contains("EUR"));
+        assertTrue(element.getAttribute("textContent").contains(expected));
+        assertTrue(element.getAttribute("textContent").contains("EUR"));
     }
 
     @And("Assert element by tag {string} contains text {string} and ancestor tag {string}")
     public void assertElementByTagContainsTextAndAncestorTag(String tag, String text, String ancestor) throws Throwable {
         String xPath = "//" + tag + "[contains(text(),'" + text + "')]/ancestor::" + ancestor;
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert element by tag {string} contains text {string} and ancestor tag {string} is enabled")
     public void assertElementByTagContainsTextAndAncestorTagIsEnabled(String tag, String text, String ancestor) throws Throwable {
         String xPath = "//" + tag + "[contains(text(),'" + text + "')]/ancestor::" + ancestor;
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isEnabled());
+        assertTrue(element.isEnabled());
     }
 
     @And("Assert there is no element by contains text under key {string} from txt file")
@@ -7650,7 +7620,7 @@ public class Steps {
         String purpose = Utilities.getDataFromTxtFileUnderKey(key);
         String xPath = "(//*[@class='subheadline medium tw-text-gray-100'])[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertEquals(purpose, element.getAttribute("textContent"));
+        assertEquals(purpose, element.getAttribute("textContent"));
     }
 
     @Then("Assert tabs in Product details are displayed correctly for Credit Cards")
@@ -7684,7 +7654,7 @@ public class Steps {
         WebElement elementForMonth = SelectByXpath.CreateElementByXpath(xPath);
         String month = elementForMonth.getAttribute("textContent");
 
-        Assert.assertTrue(
+        assertTrue(
                 month.contains("January")
                         || month.contains("February")
                         || month.contains("March")
@@ -7706,18 +7676,18 @@ public class Steps {
 
         String pdfContent = Utilities.getContentFromPDFFile(path, name);
 
-        Assert.assertTrue(pdfContent.contains("Znesek / Amount:"));
-        Assert.assertTrue(pdfContent.contains("Namen / Purpose"));
-        Assert.assertTrue(pdfContent.contains(purpose));
-        Assert.assertTrue(pdfContent.contains("Referenca / Reference:"));
-        Assert.assertTrue(pdfContent.contains("Datum valute / Value date:"));
-        Assert.assertTrue(pdfContent.contains("Ime plačnika / Debtor name:"));
-        Assert.assertTrue(pdfContent.contains("Naslov plačnika / Debtor address"));
-        Assert.assertTrue(pdfContent.contains("IBAN plačnika / Debtor IBAN:"));
-        Assert.assertTrue(pdfContent.contains("Ime prejemnika / Beneficiary name:"));
-        Assert.assertTrue(pdfContent.contains("Naslov prejemnika / Creditor address:"));
-        Assert.assertTrue(pdfContent.contains("IBAN prejemnika / Beneficiary IBAN:"));
-        Assert.assertTrue(pdfContent.contains("BIC banke prejemnika / BIC code:"));
+        assertTrue(pdfContent.contains("Znesek / Amount:"));
+        assertTrue(pdfContent.contains("Namen / Purpose"));
+        assertTrue(pdfContent.contains(purpose));
+        assertTrue(pdfContent.contains("Referenca / Reference:"));
+        assertTrue(pdfContent.contains("Datum valute / Value date:"));
+        assertTrue(pdfContent.contains("Ime plačnika / Debtor name:"));
+        assertTrue(pdfContent.contains("Naslov plačnika / Debtor address"));
+        assertTrue(pdfContent.contains("IBAN plačnika / Debtor IBAN:"));
+        assertTrue(pdfContent.contains("Ime prejemnika / Beneficiary name:"));
+        assertTrue(pdfContent.contains("Naslov prejemnika / Creditor address:"));
+        assertTrue(pdfContent.contains("IBAN prejemnika / Beneficiary IBAN:"));
+        assertTrue(pdfContent.contains("BIC banke prejemnika / BIC code:"));
 
         System.out.println(pdfContent);
     }
@@ -7764,14 +7734,14 @@ public class Steps {
     public void assertCalendarFilterIsShown() throws Throwable {
         String xPath = "//*[contains(@class,'icon-calendar-today')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert Basic filter is shown")
     public void assertBasicFilterIsShown() throws Throwable {
         String xPath = "//*[contains(@class,'icon-filter')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Click on basic filter")
@@ -7800,7 +7770,7 @@ public class Steps {
         String xPath = "//*[@class='tw-font-medium']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String expectedDate = Utilities.getDateXDaysFromTodayInFormat(0, "dd.MM.yyyy");
-        Assert.assertEquals(expectedDate, element.getAttribute("textContent"));
+        assertEquals(expectedDate, element.getAttribute("textContent"));
     }
 
     @And("Assert country flags in currency exchange are correct")
@@ -7836,11 +7806,11 @@ public class Steps {
     public void assertAllBidAndAskRatesArePresent() throws Throwable {
         String xPathForBid = "//*[contains(@class,'semibold tw-hidden xs:tw-flex xs:tw-justify-end')]";
         List<WebElement> webElementList = SelectByXpath.CreateElementsByXpath(xPathForBid);
-        Assert.assertEquals(10, webElementList.size());
+        assertEquals(10, webElementList.size());
 
         String xPathForAsk = "//*[contains(@class,'semibold tw-hidden tw-text-gray-100 xs:tw-flex xs:tw-justify-end')]";
         List<WebElement> webElementList2 = SelectByXpath.CreateElementsByXpath(xPathForAsk);
-        Assert.assertEquals(10, webElementList2.size());
+        assertEquals(10, webElementList2.size());
     }
 
     @When("Click on options for user on header")
@@ -7964,14 +7934,14 @@ public class Steps {
     public void assertSidebarIsDisplayed(String text) throws Throwable {
         String xPath = "//*[contains(@class,'tw-min-w-sidebarNavigation') and not(contains(@class, 'md:tw-hidden'))]//nlb-icon//following-sibling::*[contains(text(),'" + text + "')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert notification bell at the right top corner of the screen")
     public void assertNotificationBellAtTheRightTopCornerOfTheScreen() throws Throwable {
         String xPath = "//button//nlb-icon//i[contains(@class,'icon-bell')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert user profile icon has value from excel {string} columnName {string}")
@@ -7980,7 +7950,7 @@ public class Steps {
         String xPath = "//nlb-dropdown//div[@aria-label='User profile']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String actualText = element.getAttribute("textContent");
-        Assert.assertEquals(expectedText, actualText.replace(" ",""));
+        assertEquals(expectedText, actualText.replace(" ",""));
     }
 
     @And("Remember current balance in {string} for selected account under key {string}")
@@ -8013,7 +7983,7 @@ public class Steps {
         String xPath = "(//*[contains(@class,'caption medium tw-flex tw-items-center tw-text-gray-400')])[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String actualDate = element.getAttribute("textContent");
-        Assert.assertEquals(" 04.02.2025 ", actualDate);
+        assertEquals(" 04.02.2025 ", actualDate);
     }
 
     @And("Assert that purpose for first nlb funds is correct")
@@ -8021,7 +7991,7 @@ public class Steps {
         String xPath = "(//*[contains(@class,'medium tw-text-gray-100')]//div)[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String actualDate = element.getAttribute("textContent");
-        Assert.assertEquals(" Vplačilo v podsklad ", actualDate);
+        assertEquals(" Vplačilo v podsklad ", actualDate);
     }
 
     @And("Assert that creditor for first nlb funds is correct")
@@ -8029,14 +7999,14 @@ public class Steps {
         String xPath = "(//*[contains(@class,'caption medium tw-text-gray-400 xs:subheadline')])[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String actualDate = element.getAttribute("textContent");
-        Assert.assertEquals(" NLB Skladi - Azija delniški ", actualDate);
+        assertEquals(" NLB Skladi - Azija delniški ", actualDate);
     }
 
     @And("Assert export button is displayed correctly in Transaction list")
     public void assertExportButtonIsDisplayedCorrectlyInTransactionList() throws Throwable {
         String xPath = "//nlb-circle-button//i[@aria-label='icon-download']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert product from Excel {string} with name {string} and iban {string} is displayed as active on dashboard")
@@ -8045,10 +8015,10 @@ public class Steps {
         String accountIban = DataManager.getDataFromHashDatamap(rowindex, columnName2);
         String xPathForAccountName = "//swiper-slide[contains(@class,'swiper-slide-active')]/nlb-dashboard-product-card//*[contains(text(),'" + accountName + "')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPathForAccountName);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
         String xPathForAccountIban = "//swiper-slide[contains(@class,'swiper-slide-active')]/nlb-dashboard-product-card//*[contains(text(),'" + accountIban + "')]";
         WebElement element2 = SelectByXpath.CreateElementByXpath(xPathForAccountIban);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert currently active product on dashboard has current and available balance from keys {string} and {string}")
@@ -8057,11 +8027,11 @@ public class Steps {
         String availableBalance = (String) DataManager.userObject.get(key2);
         String xPathForCurrentBalance = "//swiper-slide[contains(@class,'swiper-slide-active')]/nlb-dashboard-product-card//*[contains(text(),'Current balance')]/following-sibling::*//*[contains(text(),'" + currentBalance + "')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
 
         String xPathForAvailableBalance = "//swiper-slide[contains(@class,'swiper-slide-active')]/nlb-dashboard-product-card//*[contains(text(),'Current balance')]/following-sibling::*//*[contains(text(),'" + availableBalance + "')]";
         WebElement element2 = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
-        Assert.assertTrue(element2.isDisplayed());
+        assertTrue(element2.isDisplayed());
     }
 
     @And("Click on element by aria label {string}")
@@ -8076,7 +8046,7 @@ public class Steps {
         String accountIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
         String xPath = "//nlb-iban[contains(text(),'" + accountIban + "')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Remember first {string} transaction purposes under key {string}")
@@ -8100,7 +8070,7 @@ public class Steps {
             purposes.add(purposeElements.get(i).getAttribute("innerText"));
         }
         List<String> expectedPurpose = (List<String>) DataManager.userObject.get(key);
-        Assert.assertEquals(expectedPurpose, purposes);
+        assertEquals(expectedPurpose, purposes);
     }
 
     @And("Remember first {string} payment purposes under key {string}")
@@ -8192,7 +8162,7 @@ public class Steps {
             purposes.add(purposeElements.get(i).getAttribute("innerText"));
         }
         List<String> expectedPurpose = (List<String>) DataManager.userObject.get(key);
-        Assert.assertEquals(expectedPurpose, purposes);
+        assertEquals(expectedPurpose, purposes);
     }
 
     @And("Assert element from excel {string} columnName {string} in nlb modal")
@@ -8200,14 +8170,14 @@ public class Steps {
         String expectedText = DataManager.getDataFromHashDatamap(rowindex, columnName);
         String xPath = "//nlb-modal//*[contains(text(),'" + expectedText + "')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert tab {string} is active")
     public void assertTabIsActive(String text) throws Throwable {
         String xPath = "//a[contains(text(),'" + text + "') and contains(@class,'bold')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert account from Excel {string} columnName {string} is displayed in Insights section of dashboard")
@@ -8215,7 +8185,7 @@ public class Steps {
         String accountIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
         String xPathForIban = "//nlb-dashboard-insights//*[contains(text(),'" + accountIban + "')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPathForIban);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
 
@@ -8239,7 +8209,7 @@ public class Steps {
             purposes.add(webElementList.get(i).getAttribute("innerText"));
         }
         List<String> expectedPurposes = (List<String>) DataManager.userObject.get(key);
-        Assert.assertNotEquals(expectedPurposes, purposes);
+        assertNotEquals(expectedPurposes, purposes);
     }
 
     @And("Select category {string} with monthly limit {string}")
@@ -8271,7 +8241,7 @@ public class Steps {
     public void assertThereAreBudgetsShownOnDashboard(String budgetCount) throws Throwable {
         String xPath = "//nlb-budget-card";
         List<WebElement> elementList = SelectByXpath.CreateElementsByXpath(xPath);
-        Assert.assertEquals(Integer.parseInt(budgetCount), elementList.size());
+        assertEquals(Integer.parseInt(budgetCount), elementList.size());
     }
 
     @And("Assert that budgets are shown correctly on dashboard")
@@ -8280,60 +8250,60 @@ public class Steps {
 
         String educationBudgetTitle = "(//nlb-budget-card)[1]//*[contains(text(),'"+budgets.get(0)+"')]";
         WebElement elementForEducationBudgetTitle = SelectByXpath.CreateElementByXpath(educationBudgetTitle);
-        Assert.assertTrue(elementForEducationBudgetTitle.isDisplayed());
+        assertTrue(elementForEducationBudgetTitle.isDisplayed());
 
         String shoppingBudgetTitle = "(//nlb-budget-card)[2]//*[contains(text(),'"+budgets.get(1)+"')]";
         WebElement elementForShoppingBudgetTitle = SelectByXpath.CreateElementByXpath(shoppingBudgetTitle);
-        Assert.assertTrue(elementForShoppingBudgetTitle.isDisplayed());
+        assertTrue(elementForShoppingBudgetTitle.isDisplayed());
 
         String cashBudgetTitle = "(//nlb-budget-card)[3]//*[contains(text(),'"+budgets.get(2)+"')]";
         WebElement elementForCashBudgetTitle = SelectByXpath.CreateElementByXpath(cashBudgetTitle);
-        Assert.assertTrue(elementForCashBudgetTitle.isDisplayed());
+        assertTrue(elementForCashBudgetTitle.isDisplayed());
 
 
         String educationBudgetLimit = "";
         if (budgets.get(0).equals("Education")) {
             educationBudgetLimit = "(//nlb-budget-card)[1]//*[contains(text(),'Limit')]/following-sibling::*[contains(text(),'400,00 EUR')]";
             WebElement elementForEducationBudgetLimit = SelectByXpath.CreateElementByXpath(educationBudgetLimit);
-            Assert.assertTrue(elementForEducationBudgetLimit.isDisplayed());
+            assertTrue(elementForEducationBudgetLimit.isDisplayed());
         } else if (budgets.get(0).equals("Cash")) {
             educationBudgetLimit = "(//nlb-budget-card)[1]//*[contains(text(),'Limit')]/following-sibling::*[contains(text(),'500,00 EUR')]";
             WebElement elementForEducationBudgetLimit = SelectByXpath.CreateElementByXpath(educationBudgetLimit);
-            Assert.assertTrue(elementForEducationBudgetLimit.isDisplayed());
+            assertTrue(elementForEducationBudgetLimit.isDisplayed());
         } else if (budgets.get(0).equals("Shopping")) {
             educationBudgetLimit = "(//nlb-budget-card)[1]//*[contains(text(),'Limit')]/following-sibling::*[contains(text(),'100,00 EUR')]";
             WebElement elementForEducationBudgetLimit = SelectByXpath.CreateElementByXpath(educationBudgetLimit);
-            Assert.assertTrue(elementForEducationBudgetLimit.isDisplayed());
+            assertTrue(elementForEducationBudgetLimit.isDisplayed());
         }
 
         educationBudgetLimit = "";
         if (budgets.get(1).equals("Education")) {
             educationBudgetLimit = "(//nlb-budget-card)[2]//*[contains(text(),'Limit')]/following-sibling::*[contains(text(),'400,00 EUR')]";
             WebElement elementForEducationBudgetLimit = SelectByXpath.CreateElementByXpath(educationBudgetLimit);
-            Assert.assertTrue(elementForEducationBudgetLimit.isDisplayed());
+            assertTrue(elementForEducationBudgetLimit.isDisplayed());
         } else if (budgets.get(1).equals("Cash")) {
             educationBudgetLimit = "(//nlb-budget-card)[2]//*[contains(text(),'Limit')]/following-sibling::*[contains(text(),'500,00 EUR')]";
             WebElement elementForEducationBudgetLimit = SelectByXpath.CreateElementByXpath(educationBudgetLimit);
-            Assert.assertTrue(elementForEducationBudgetLimit.isDisplayed());
+            assertTrue(elementForEducationBudgetLimit.isDisplayed());
         } else if (budgets.get(1).equals("Shopping")) {
             educationBudgetLimit = "(//nlb-budget-card)[2]//*[contains(text(),'Limit')]/following-sibling::*[contains(text(),'100,00 EUR')]";
             WebElement elementForEducationBudgetLimit = SelectByXpath.CreateElementByXpath(educationBudgetLimit);
-            Assert.assertTrue(elementForEducationBudgetLimit.isDisplayed());
+            assertTrue(elementForEducationBudgetLimit.isDisplayed());
         }
 
         educationBudgetLimit = "";
         if (budgets.get(2).equals("Education")) {
             educationBudgetLimit = "(//nlb-budget-card)[3]//*[contains(text(),'Limit')]/following-sibling::*[contains(text(),'400,00 EUR')]";
             WebElement elementForEducationBudgetLimit = SelectByXpath.CreateElementByXpath(educationBudgetLimit);
-            Assert.assertTrue(elementForEducationBudgetLimit.isDisplayed());
+            assertTrue(elementForEducationBudgetLimit.isDisplayed());
         } else if (budgets.get(2).equals("Cash")) {
             educationBudgetLimit = "(//nlb-budget-card)[3]//*[contains(text(),'Limit')]/following-sibling::*[contains(text(),'500,00 EUR')]";
             WebElement elementForEducationBudgetLimit = SelectByXpath.CreateElementByXpath(educationBudgetLimit);
-            Assert.assertTrue(elementForEducationBudgetLimit.isDisplayed());
+            assertTrue(elementForEducationBudgetLimit.isDisplayed());
         } else if (budgets.get(2).equals("Shopping")) {
             educationBudgetLimit = "(//nlb-budget-card)[3]//*[contains(text(),'Limit')]/following-sibling::*[contains(text(),'100,00 EUR')]";
             WebElement elementForEducationBudgetLimit = SelectByXpath.CreateElementByXpath(educationBudgetLimit);
-            Assert.assertTrue(elementForEducationBudgetLimit.isDisplayed());
+            assertTrue(elementForEducationBudgetLimit.isDisplayed());
         }
 
     }
@@ -8414,7 +8384,7 @@ public class Steps {
         String recipientName = Utilities.getDataFromTxtFileUnderKey(key);
         String xPathForRecipientName = "//nlb-upn-recipient-input-card//*[contains(text(),'"+recipientName+"')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPathForRecipientName);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert Recipient iban is from txt file under key {string}")
@@ -8422,7 +8392,7 @@ public class Steps {
         String recipientName = Utilities.getDataFromTxtFileUnderKey(key);
         String xPathForRecipientName = "//nlb-upn-recipient-input-card//*[contains(text(),'"+recipientName+"')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPathForRecipientName);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert {string} is from txt file under key {string}")
@@ -8435,7 +8405,7 @@ public class Steps {
         actualValue = actualValue.replace(" ","");
         System.out.println(expectedValue);
         System.out.println(actualValue);
-        Assert.assertTrue(expectedValue.contains(actualValue) || actualValue.contains(expectedValue));
+        assertTrue(expectedValue.contains(actualValue) || actualValue.contains(expectedValue));
     }
 
     @And("Assert amount from txt file under key {string} and currency {string} in second payment screen")
@@ -8478,7 +8448,7 @@ public class Steps {
     public void assertInSecondStepOfUPNPaymentIsDisabled(String text) throws Throwable {
         String xPath = "//label[normalize-space(text())='"+text+"']//following-sibling::div//input";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertEquals("true",element.getAttribute("disabled"));
+        assertEquals("true",element.getAttribute("disabled"));
     }
 
     @And("Assert amount and currency in second payment screen are disabled")
@@ -8487,15 +8457,15 @@ public class Steps {
         String xPathForCurrency = "(//nlb-input-amount-currency//input)[2]";
         WebElement elementForAmount = SelectByXpath.CreateElementByXpath(xPathForAmount);
         WebElement elementForCurrency = SelectByXpath.CreateElementByXpath(xPathForCurrency);
-        Assert.assertEquals("true",elementForAmount.getAttribute("disabled"));
-        Assert.assertEquals("true",elementForCurrency.getAttribute("disabled"));
+        assertEquals("true",elementForAmount.getAttribute("disabled"));
+        assertEquals("true",elementForCurrency.getAttribute("disabled"));
     }
 
     @And("Assert {string} dropdown in second step of UPN payment is disabled")
     public void assertDropdownInSecondStepOfUPNPaymentIsDisabled(String text) throws Throwable {
         String xPath = "//label[normalize-space(text())='"+text+"']//following-sibling::div//input[@readonly]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Check if authorization is needed and complete payment with account iban from key {string} amount from txt file under key {string} and currency {string} with message {string}")
@@ -8519,21 +8489,21 @@ public class Steps {
     public void assertProgressBarIsAt(String percent) throws Throwable {
         String xPath = "//nlb-progress-bar//span[@style='width: "+percent+";']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert general information on personal data processing is correct in open savings account process")
     public void assertGeneralInformationOnPersonalDataProcessingIsCorrectInOpenSavingsAccountProcess() throws Throwable {
         String xPath = "//div[contains(@class, 'tw-text-gray-400') and contains(@class, 'body') and contains(text(), 'I have been provided with')]/a[contains(@class, 'semibold') and @href='https://www.nlb.si/varstvo-osebnih-podatkov' and text()='General information on personal data processing.']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert button Confirm is disabled in open savings account process")
     public void assertButtonConfirmIsDisabledInOpenSavingsAccountProcess() throws Throwable {
         String xPath = "//nlb-button//button[@disabled]//*[normalize-space(text())='Confirm']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Click on check box for I agree and confirm in open savings account process")
@@ -8556,7 +8526,7 @@ public class Steps {
         String xPath = "//nlb-input-amount-currency//input[@readonly]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String actualValue = element.getAttribute("value");
-        Assert.assertEquals(currency,actualValue);
+        assertEquals(currency,actualValue);
     }
 
     @Given("Disable payments on mobile bank from mobile bank")
@@ -8658,14 +8628,14 @@ public class Steps {
         System.out.printf("%.2f%n",expectedAmount);
         System.out.printf("%.2f%n",actualAmount);
 
-        Assert.assertEquals(expectedAmount,actualAmount);
+        assertEquals(expectedAmount,actualAmount);
     }
 
     @And("Assert element by normalized text {string}")
     public void assertElementByNormalizedText(String text) throws Throwable {
         String xPath = "//*[normalize-space(text())='"+text+"']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert element by normalized text {string} is not displayed")
@@ -8843,7 +8813,7 @@ public class Steps {
         String xPath = "//textarea";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String actualValue = element.getAttribute("maxLength");
-        Assert.assertEquals(max,actualValue);
+        assertEquals(max,actualValue);
     }
 
     @And("Enter text {string} into textarea")
@@ -8868,7 +8838,7 @@ public class Steps {
         String date = hp.returnDateInSlovenianFormat(dateInPast);
         String xPath = "//*[@aria-label='"+date+"' and not(contains(@class, 'hidden'))]/"+descendantTag+"[contains(@class,'"+className+"')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert date {int} days in the past does not contain class {string} in descendant {string}")
@@ -8877,7 +8847,7 @@ public class Steps {
         String date = hp.returnDateInSlovenianFormat(dateInPast);
         String xPath = "//*[@aria-label='"+date+"' and not(contains(@class, 'hidden'))]/"+descendantTag+"[not(contains(@class,'"+className+"'))]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Click on button Cancel to change profile data for {string}")
@@ -8902,7 +8872,7 @@ public class Steps {
 
     @And("Wait for product details to load")
     public void waitForProductDetailsToLoad() throws InterruptedException {
-        String xPath = "//h3[contains(text(), 'Financial details') and not(contains(@class,'xs:tw-hidden'))]";
+        String xPath = "//h3[contains(text(), 'Account details') and not(contains(@class,'xs:tw-hidden'))]";
         By element = SelectByXpath.CreateByElementByXpath(xPath);
         WaitHelpers.WaitForElement(element);
     }
@@ -9088,7 +9058,7 @@ public class Steps {
     public void assertThatCreditorSwiftBicCodeForOpenedTransactionInProductScreenIs(String expected) throws Throwable {
         String xPath = "(//*[not(contains(@class,'xs:tw-hidden'))]/*[text()='SWIFT BIC code']/following-sibling::*)[2]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.getAttribute("textContent").contains(expected));
+        assertTrue(element.getAttribute("textContent").contains(expected));
     }
 
     @And("Click on up arrow on first transaction to collapse details")
@@ -9175,7 +9145,7 @@ public class Steps {
         String name = DataManager.getDataFromHashDatamap(rowindex,columnName);
         String text = " Did you mean "+name+"? ";
         WebElement element = SelectByText.CreateElementByXpathText(text);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert Reference in payment review has {string} and {string}")
@@ -9191,7 +9161,7 @@ public class Steps {
     public void assertFilterIsShown(String text) throws Throwable {
         String xPath = "//*[@id='filters-content']//div[text()='"+text+"']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert current or previous month on page")
@@ -9232,22 +9202,22 @@ public class Steps {
     public void assertAlertDialogPopupAfterClickOnInfoButtonForPaymentLimitAmount() throws Throwable {
         String xPath = "//div[@role='alertdialog']//*[normalize-space(text())='Payment limit amount']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
 
         String xPath2 = "//*[contains(text(),'Payment amount limit is set per account for all digital channels where SEPA credit transfers are executed (NLB Klik, Flik payments and third party providers apps).')]";
         WebElement element2 = SelectByXpath.CreateElementByXpath(xPath2);
-        Assert.assertTrue(element2.isDisplayed());
+        assertTrue(element2.isDisplayed());
 
         String xPath3 = "//*[@id=\"modal-message\"]/div[1]/div/div/div";
         WebElement element3 = SelectByXpath.CreateElementByXpath(xPath3);
-        Assert.assertTrue(element3.getAttribute("textContent").contains("The payment limit restricts payments for all account users, but it does not affect own account transfers."));
+        assertTrue(element3.getAttribute("textContent").contains("The payment limit restricts payments for all account users, but it does not affect own account transfers."));
     }
 
     @And("Assert Payment limit {string} has value {string} in product details screen")
     public void assertPaymentLimitHasValueInProductDetailsScreen(String text, String expectedText) throws Throwable {
         String xPath = "//dt[div[normalize-space()='"+text+"']]/following-sibling::dd[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.getAttribute("textContent").equals(expectedText));
+        assertTrue(element.getAttribute("textContent").equals(expectedText));
     }
 
     @And("Click on button to change Daily Limit")
@@ -9289,7 +9259,7 @@ public class Steps {
     public void assertTextInElementByContainsId(String expected, String id) throws Throwable {
         String xPath = "//*[contains(@id,'"+id+"')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.getAttribute("value").contains(expected));
+        assertTrue(element.getAttribute("value").contains(expected));
     }
 
     @And("Assert that foreign exchange rate for eur is not zero in opened transaction")
@@ -9312,14 +9282,14 @@ public class Steps {
     public void assertSidebarIsDisplayedByContainsClass(String className) throws Throwable {
         String xPath = "//*[contains(@class, '" + className + "')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert user profile icon at the right top corner of the screen")
     public void assertUserProfileIconAtTheRightTopCornerOfTheScreen() throws Throwable {
         String xPath = "//*[@aria-label='User profile']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
 
@@ -9331,7 +9301,7 @@ public class Steps {
         String xPath = "(//*[contains(@class, '" + className + "')])[1]";
 
         WebElement account = driver.findElement(By.xpath(xPath));
-        Assert.assertEquals(text,account.getText());
+        assertEquals(text,account.getText());
 
     }
 
@@ -9365,11 +9335,11 @@ public class Steps {
         System.out.println("Broj računa koji je prvi u listi: " + accountNumber);
 
         // Poređenje sa očekivanim iz DataManager-a
-        Assert.assertEquals(DataManager.userObject.get("favorite_acc"), accountNumber);
+        assertEquals(DataManager.userObject.get("favorite_acc"), accountNumber);
     }
 
     @Then("Accounts are displayed in the following order:")
-    public void accountsAreDisplayedInTheFollowingOrder(io.cucumber.datatable.DataTable dataTable) {
+    public void accountsAreDisplayedInTheFollowingOrder(DataTable dataTable) {
         List<String> expectedOrder = dataTable.asList();
 
         List<WebElement> accountTitles = driver.findElements(
@@ -9401,7 +9371,7 @@ public class Steps {
                 // Sekcija ne postoji, preskačemo
                 continue;
             }
-            Assert.assertTrue("Section '" + expected + "' is out of order", index >= lastIndex);
+            assertTrue("Section '" + expected + "' is out of order", index >= lastIndex);
             lastIndex = index;
         }
         System.out.println(normalizedOrder);
@@ -9562,8 +9532,178 @@ public class Steps {
         System.out.println("Saved name = " + savedName);
         System.out.println("Current name = " + currentName);
 
-        Assert.assertEquals("Displayed account name does not match saved name!", savedName, currentName);
+        assertEquals("Displayed account name does not match saved name!", savedName, currentName);
     }
 
 
+    @When("Click on first current account")
+    public void clickOnFirstCurrentAccount() throws Throwable {
+        String xPath = "(//div[@role='button']//div[contains(@class,'heading-3')])[1]";
+        WebElement element=SelectByXpath.CreateElementByXpath(xPath);
+        hp.ClickOnElement(element);
+
+    }
+
+    @And("Assert order of tabs in tablist")
+    public void assertOrderOfTabsInTablist() throws Throwable{
+
+        List<WebElement> tabs=driver.findElements(By.xpath("//div[@role='tablist']/div[@role='tab']"));
+        //assert there are exactly 4 tabs
+        assertEquals(4, tabs.size());
+
+        String[] expected = {
+                "Transactions",
+                "Card settings",
+                "Statements",
+                "Details"
+        };
+
+        // assert order of tabs
+        for (int i = 0; i < expected.length; i++) {
+            String text = tabs.get(i).getText().trim();
+            assertTrue(text.contains(expected[i]));
+        }
+
+        // first tab is selected by default
+        WebElement transactionsTab = tabs.get(0);
+        String selected = transactionsTab.getAttribute("aria-selected");
+        assertEquals("true",selected);
+
+
+    }
+
+    @When("Click on tab {string} from tablist")
+    public void clickOnTabFromTablist(String tabName) throws Throwable{
+
+        String xPath="//div[@role='tab']//a[normalize-space(text())='" + tabName + "']";
+        WebElement element=SelectByXpath.CreateElementByXpath(xPath);
+        hp.ClickOnElement(element);
+
+    }
+
+    @And("Assert order of sections in tabpanel")
+    public void assertOrderOfSectionsInTabpanel() {
+
+        // Expected order
+        List<String> expected = Arrays.asList(
+                "Financial details",
+                "Account details"
+                //"Bundle services available",
+                //                "Cheques",
+                //                "Debit cards"
+        );
+
+        // Get all <h3> inside the tabpanel
+        List<WebElement> sections = driver.findElements(
+                By.xpath("//div[@role='tabpanel']//h3[normalize-space()!='']")
+        );
+
+        // Collect only visible elements
+        List<String> actual = new ArrayList<>();
+
+        for (WebElement el : sections) {
+            if (el.isDisplayed()) {
+                actual.add(el.getText().trim());
+            }
+        }
+
+        // Assert count
+        assertEquals(2, actual.size());
+
+        // Assert order
+        assertEquals(expected, actual);
+    }
+
+    @And("Assert element by tag {string} and type {string}")
+    public void assertElementByTagAndType(String tag, String typeName) throws Throwable {
+        String xPath = "//" + tag + "[@type='" + typeName + "']";
+        By elWait = SelectByXpath.CreateByElementByXpath(xPath);
+        WaitHelpers.WaitForElement(elWait);
+
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        assertTrue(element.isDisplayed());
+
+    }
+
+    @And("Assert date picker")
+    public void assertDatePicker() throws Throwable {
+        String xPathFilterContent = "//div[@id='filters-content']";
+        By elWait = SelectByXpath.CreateByElementByXpath(xPathFilterContent);
+        WaitHelpers.WaitForElement(elWait);
+        WebElement filterElement = SelectByXpath.CreateElementByXpath(xPathFilterContent);
+        assertTrue(filterElement.isDisplayed());
+        //Date range -> from/from input/calendar, to/to input/calendar
+        String xPathDateFrom = "(//div[.//div[contains(@class,'heading-5') and normalize-space()='Date range']]//label[normalize-space()='From']/following::input[@type='text'])[1]";
+        String xPathDateFromCalendar = "(//div[.//div[contains(@class,'heading-5') and normalize-space()='Date range']]//label[normalize-space()='From']/following::i[contains(@class,'icon-calendar-today')])[1]";
+        String xPathDateTo = "(//div[.//div[contains(@class,'heading-5') and normalize-space()='Date range']]//label[normalize-space()='To']/following::input[@type='text'])[1]";
+        String xPathDateToCalendar = "(//div[.//div[contains(@class,'heading-5') and normalize-space()='Date range']]//label[normalize-space()='To']/following::i[contains(@class,'icon-calendar-today')])[1]";
+
+        WebElement dateFromEelement = SelectByXpath.CreateElementByXpath(xPathFilterContent);
+        WebElement dateFromCalendarElement = SelectByXpath.CreateElementByXpath(xPathDateFromCalendar);
+        WebElement dateToElement = SelectByXpath.CreateElementByXpath(xPathDateTo);
+        WebElement dateToCalendarElement = SelectByXpath.CreateElementByXpath(xPathDateToCalendar);
+
+        assertTrue(dateFromEelement.isDisplayed());
+        assertTrue(dateFromCalendarElement.isDisplayed());
+        assertTrue(dateToElement.isDisplayed());
+        assertTrue(dateToCalendarElement.isDisplayed());
+
+        //Amount - from/to
+        String xPathAmountFrom = "//div[.//div[contains(@class,'heading-5') and normalize-space()='Amount']]//label[normalize-space()='From']/following-sibling::div//input[@type='text' and @nlbamountinput]";
+        String xPathAmountTo = "//div[.//div[contains(@class,'heading-5') and normalize-space()='Amount']]//label[normalize-space()='To']/following-sibling::div//input[@type='text' and @nlbamountinput]";
+
+        WebElement amountFromElement = SelectByXpath.CreateElementByXpath(xPathAmountFrom);
+        WebElement amountToElement = SelectByXpath.CreateElementByXpath(xPathAmountTo);
+
+        assertTrue(amountFromElement.isDisplayed());
+        assertTrue(amountToElement.isDisplayed());
+
+        //Value type
+        String xPathValue = "//div[contains(@class,'heading-5') and contains(text(),'Value type')]";
+        WebElement valueEelement = SelectByXpath.CreateElementByXpath(xPathValue);
+        assertTrue(valueEelement.isDisplayed());
+
+        //Type
+        String xPathType = "//div[contains(@class,'heading-5') and contains(text(),'Type')]";
+        WebElement typeEelement = SelectByXpath.CreateElementByXpath(xPathType);
+        assertTrue(typeEelement.isDisplayed());
+
+        //Clear filter
+        String xPathClear = "//button//div[contains(text(),'Clear filters')]";
+        WebElement clearElement = SelectByXpath.CreateElementByXpath(xPathClear);
+        assertTrue(clearElement.isDisplayed());
+
+        //Confirm
+        String xPathConfirm = "//button//div[contains(text(),'Confirm')]";
+        WebElement confirmElement = SelectByXpath.CreateElementByXpath(xPathConfirm);
+        assertTrue(confirmElement.isDisplayed());
+
+    }
+
+    @And("Assert available balance and current balance in header")
+    public void assertAvailableBalanceAndCurrentBalanceInHeader() throws Throwable {
+        String xPathAvailableLabel = "//div[contains(@class,'heading-5') and contains(text(),'Available balance')]";
+        String xPathAvailableAmount = "//div[contains(@class,'heading-2')]//nlb-amount//span[1]";
+        String xPathAvailableCurrency = "//div[contains(@class,'heading-2')]//nlb-amount//span[2]";
+
+        WebElement availableLabelElement = SelectByXpath.CreateElementByXpath(xPathAvailableLabel);
+        WebElement availableAmountElement = SelectByXpath.CreateElementByXpath(xPathAvailableAmount);
+        WebElement availableCurrencyElement = SelectByXpath.CreateElementByXpath(xPathAvailableCurrency);
+
+        assertTrue(availableLabelElement.isDisplayed());
+        assertTrue(availableAmountElement.isDisplayed());
+        assertTrue(availableCurrencyElement.isDisplayed());
+
+        String xPathCurrentLabel = "//div[contains(@class,'heading-5') and contains(text(),'Current balance')]";
+        String xPathCurrentAmount = "//div[contains(@class,'heading-5')]/following::nlb-amount[2]//span[1]";
+        String xPathCurrentCurrency = "//div[contains(@class,'heading-5')]/following::nlb-amount[2]//span[2]";
+
+        WebElement currentLabelElement = SelectByXpath.CreateElementByXpath(xPathCurrentLabel);
+        WebElement currentAmountElement = SelectByXpath.CreateElementByXpath(xPathCurrentAmount);
+        WebElement currentCurrencyElement = SelectByXpath.CreateElementByXpath(xPathCurrentCurrency);
+
+        assertTrue(currentLabelElement.isDisplayed());
+        assertTrue(currentAmountElement.isDisplayed());
+        assertTrue(currentCurrencyElement.isDisplayed());
+    }
 }
