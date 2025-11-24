@@ -108,3 +108,36 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
   Examples:
     | rowindex |
     |        1 |
+
+
+  @Product_Summary-Hide/Show_account_on_Product_List_[WEB]_1
+  Scenario Outline: Product_Summary-Hide/Show_account_on_Product_List_[WEB]_1
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    And Assert element by class "button-bold" containing text "Edit list"
+    And Click on element by text "Edit list"
+    And Wait for element by class "icon-eye"
+
+    Then Hide product with iban from excel "<rowindex>" columnName "personal_account_iban"
+    And Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    And Assert that products in my products have loaded
+    And Assert element from excel "<rowindex>" columnName "personal_account_iban" is not displayed
+    And Click on element by text "Edit list"
+    And Wait for element by class "icon-eye"
+    And Unhide product with iban from excel "<rowindex>" columnName "personal_account_iban"
+    And Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    And Assert that products in my products have loaded
+    And Scroll to account from excel "<rowindex>" columnName "personal_account_iban" in my products page
+    And Assert element by contains text from excel "<rowindex>" columnName "personal_account_iban" is displayed
+
+    Examples:
+      | rowindex |
+      |        1 |
