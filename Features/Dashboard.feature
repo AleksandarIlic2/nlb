@@ -43,3 +43,22 @@ Feature: Dashboard
       Examples:
         | rowindex |
         |        1 |
+
+  @General-Dashboard-Page_overview_[WEB]
+  Scenario Outline: General-Dashboard-Page_overview_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+
+    When Wait for element by text "Pay or transfer"
+
+    Then Assert sidebar is displayed by contains class "3xl:tw-min-w-sidebarNavigation"
+    And Assert notification bell at the right top corner of the screen
+    And Assert user profile icon at the right top corner of the screen
+    And Assert default account is displayed
+    And Assert section "Latest transactions" by text
+
+    Examples:
+      | rowindex |
+      |        1 |
