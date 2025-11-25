@@ -9706,4 +9706,15 @@ public class Steps {
         assertTrue(currentAmountElement.isDisplayed());
         assertTrue(currentCurrencyElement.isDisplayed());
     }
+    @And("Assert default account is displayed")
+    public void assertDefaultAccountIsDisplayed() throws Throwable {
+        String xPath = "//nlb-rounded-square/div/div[contains(@class, 'tw-flex tw-flex-col tw-gap')]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        Assert.assertTrue(element.isDisplayed());
+    }
+    @And("Assert section {string} by text")
+    public void assertSectionByText(String text) throws Throwable {
+        WebElement element = SelectByText.CreateElementByXpathText(text);
+        Assert.assertTrue(element.isDisplayed());
+    }
 }
