@@ -9717,4 +9717,28 @@ public class Steps {
         WebElement element = SelectByText.CreateElementByXpathText(text);
         Assert.assertTrue(element.isDisplayed());
     }
+
+    @And("Assert that element {string} has value {string}")
+    public void assertThatElementHasValue(String labelText, String fixedValue) throws Throwable {
+        String xPath = String.format(
+                "//dt[div[text()='%s']]/following-sibling::dd/div",
+                labelText
+        );
+        WebElement el = SelectByXpath.CreateElementByXpath(xPath);
+        String actualValue = el.getText().trim();
+        Assert.assertEquals(actualValue,fixedValue);
+    }
+
+    @And("Assert that element {string} is equal to value from Excel {string} columnName {string}")
+    public void assertThatElementIsEqualToValueFromExcelColumnName(String labelText, String rowindex, String columnName) throws Throwable {
+        String text = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPath = String.format(
+                "//dt[div[text()='%s']]/following-sibling::dd/div",
+                labelText
+        );
+        WebElement el = SelectByXpath.CreateElementByXpath(xPath);
+        String actualValue = el.getText().trim();
+
+        Assert.assertEquals(actualValue.toLowerCase(), text.toLowerCase());
+    }
 }
