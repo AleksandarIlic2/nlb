@@ -1,7 +1,11 @@
 package si.nlb.testautomation.NLBTestAutomation.Test;
-import com.sun.org.apache.bcel.internal.generic.Select;
 import io.cucumber.datatable.DataTable;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import si.nlb.testautomation.NLBTestAutomation.Action.*;
@@ -15,17 +19,16 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import javax.xml.crypto.Data;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.nio.file.WatchEvent;
-import java.sql.SQLOutput;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.*;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -9705,5 +9708,106 @@ public class Steps {
         assertTrue(currentLabelElement.isDisplayed());
         assertTrue(currentAmountElement.isDisplayed());
         assertTrue(currentCurrencyElement.isDisplayed());
+    }
+    @And("Assert that transaction values in PDF match remembered values")
+    public void assertTransactionValuesInPdfMatchRememberedValues() throws Exception {
+        Map<String, String> expected = (Map<String, String>) DataManager.userObject.get("TransactionValues");
+
+        Path downloads = Paths.get(System.getProperty("user.home"), "Downloads");
+        Optional<Path> latestPdf = Files.list(downloads)
+                .filter(p -> p.toString().endsWith(".pdf"))
+                .filter(p -> !p.toString().endsWith(".crdownload"))
+                .max(Comparator.comparingLong(p -> p.toFile().lastModified()));
+
+        if (!latestPdf.isPresent()) {
+            throw new FileNotFoundException("Nijedan PDF nije pronađen u Downloads folderu. Path "+ downloads);
+        }
+
+        PDDocument document = PDDocument.load(latestPdf.get().toFile());
+        PDFTextStripper stripper = new PDFTextStripper();
+        String pdfTextRaw = stripper.getText(document);
+        System.out.println("Pdf RAW: " + pdfTextRaw);
+        document.close();
+
+        String pdfText = pdfTextRaw.replaceAll("\\s+", " ").trim();
+        System.out.println("PDF sadrži:\n" + pdfText + "\n");
+
+        //assertContains(pdfText, normalizeAmount(expected.get("Amount")), "Iznos");
+        assertContains(pdfText, expected.get("Svrha"), "Svrha");
+        assertContains(pdfText, expected.get("ValueDate"), "Datum valute");
+
+        assertTrue(pdfText.contains("Status Realizovan"));
+        //assertContains(pdfText, expected.get("DebtorName"), "DebtorName");
+        //assertContains(pdfText, normalizeIban(expected.get("CreditorIBAN")), "CreditorIBAN");
+
+        //assertContains(pdfText, expected.get("BeneficiaryName"), "BeneficiaryName");
+        //assertContains(pdfText, expected.get("CreditorAddress"), "CreditorAddress");
+        //assertContains(pdfText, normalizeIban(expected.get("BeneficiaryIBAN")), "BeneficiaryIBAN");
+
+        //assertContains(pdfText, expected.get("BICCode"), "BICCode");
+
+        assertTrue(pdfText.contains("Potvrda o izvršenoj transakciji važi bez potpisa i pečata"));
+        System.out.println("Sve vrednosti su pronađene u PDF fajlu.");
+
+        try {
+            Files.deleteIfExists(latestPdf.get());
+            System.out.println("Fajl obrisan: " + latestPdf.get().getFileName());
+        } catch (IOException e) {
+            System.err.println("Nije moguće obrisati fajl: " + e.getMessage());
+        }
+    }
+
+
+
+    private void assertContains(String fullText, String expected, String label) {
+
+        if (!fullText.contains(label + " " + expected)) {
+            throw new AssertionError(label + "' nije pronađen u PDF-u. Traženo: " + expected);
+            }
+            System.out.println(label + " pronađen: " + expected);
+    }
+
+
+
+    private String normalizeIban(String iban) {
+        if (iban == null) return "";
+        return iban.replace(" ", "").toUpperCase();
+    }
+
+    private String normalizeAmount(String amount) {
+
+            if (amount == null) return "";
+            return amount.replace(".", "")
+                    .replace(",", "")
+                    .replace(" ", "")
+                    .toLowerCase();
+
+
+    }
+
+    @And("Remember values from transcation details")
+    public void rememberValuesFromTranscationDetails() {
+        Map<String, String> values = new HashMap<>();
+
+        // Primjeri – TI OVDJE staviš svoje selektore:
+        values.put("Racun platioca",driver.findElement(By.xpath("(//dt[normalize-space()='Account number']//following-sibling::dd)[2]")).getText());
+       // values.put("BIC",driver.findElement(By.id("//dt[normalize-space()='SWIFT BIC code']/following-sibling::dd[1]/div")).getText());
+        values.put("TranscationID", driver.findElement(By.xpath("//dt[normalize-space()='Transaction ID']/following-sibling::dd[1]/div")).getText());
+        values.put("Svrha", driver.findElement(By.xpath("//nlb-transaction-card//div//div//div//nlb-heading-text//h4//div//div//nlb-heading-text//div")).getText());
+        values.put("Amount", driver.findElement(By.xpath("//nlb-amount//div[contains(@class,'bold')]/div[2]")).getText());
+        values.put("ValueDate", driver.findElement(By.xpath("//nlb-transaction-card//div//div//div//nlb-heading-text//h4//div//div")).getText());
+
+        //values.put("DebtorName", driver.findElement(By.id("debtorName")).getText());
+        //values.put("CreditorIBAN", driver.findElement(By.id("creditorIban")).getText());
+
+        //values.put("BeneficiaryName", driver.findElement(By.id("beneficiaryName")).getText());
+       // values.put("CreditorAddress", driver.findElement(By.id("creditorAddress")).getText());
+       // values.put("BeneficiaryIBAN", driver.findElement(By.id("beneficiaryIban")).getText());
+
+
+        // SAČUVAJ U DataManager
+        DataManager.userObject.put("TransactionValues", values);
+
+        System.out.println("Zapamćene vrijednosti: " + values);
     }
 }

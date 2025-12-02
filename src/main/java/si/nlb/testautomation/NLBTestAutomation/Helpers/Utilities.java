@@ -1364,7 +1364,7 @@ public class Utilities {
                 for (File dirContent : dirContents) {
                     if (dirContent.getName().startsWith(fileName) && dirContent.getName().endsWith(type)) {
                         // File has been found, it can now be deleted
-                        //dirContent.delete();
+                        dirContent.delete();
                         return true;
                     }
                 }
@@ -1378,6 +1378,8 @@ public class Utilities {
         }
         return false;
     }
+
+
 
     public static boolean waitForDownloadAndCheckItByName(String downloadPath, String fileName, int timeout, int interval) {
         File dir = new File(downloadPath);

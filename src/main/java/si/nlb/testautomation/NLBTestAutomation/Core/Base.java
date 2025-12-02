@@ -161,7 +161,9 @@ public class Base {
         options.addArguments("--disable-search-engine-choice-screen");
         // Create a map to store preferences
         Map<String, Object> prefs = new HashMap<String, Object>();
-        prefs.put("download.default_directory", "C:\\Users\\Jovan Jacov\\Downloads\\testing"); // Replace with your directory
+        //prefs.put("download.directory_upgrade", true);
+        //prefs.put("plugins.always_open_pdf_externally", true);
+        prefs.put("download.default_directory", "C:\\Users\\Jelena Bulajic\\Downloads"); // Replace with your directory
         prefs.put("download.prompt_for_download", false);
         prefs.put("profile.default_content_settings.popups", 0);
 
