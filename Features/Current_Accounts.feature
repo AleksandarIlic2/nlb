@@ -61,6 +61,8 @@ Feature: Current_Accounts
     Examples:
       | rowindex |
       |        2 |
+    """
+  TODO: Dostavljeni useri nemaju CHF
   @Current_Accounts-Transactions_List_select_Currency_[WEB]_2
   Scenario Outline: Current_Accounts-Transactions_List_select_Currency_[WEB]_2
 
@@ -121,7 +123,7 @@ Feature: Current_Accounts
     Examples:
       | rowindex |
       |        2 |
-
+"""
   @Current_Accounts-Details-Financial_Details_[WEB]
   Scenario Outline: Current_Accounts-Details-Financial_Details_[WEB]
 
@@ -172,6 +174,7 @@ Feature: Current_Accounts
     Examples:
       | rowindex |
       | 1        |
+
 
 
     @Current_Accounts-Details-Account_Details_[WEB]
