@@ -4249,7 +4249,8 @@ public class Steps {
 
     @And("Assert document with name starting with {string} and has file type {string} is downloaded")
     public void assertDocumentWithNameStartingWithAndHasFileTypeIsDownloaded(String name, String fileType) {
-        String path = DataManager.getDataFromHashDatamap("1", "pdf_download_path");
+        //String path = DataManager.getDataFromHashDatamap("1", "pdf_download_path");
+        String path = System.getProperty("user.home") + "\\Downloads";
         assertTrue(Utilities.waitForDownloadAndCheckItByNameAndType(path, name, 30, 10, fileType));
     }
 

@@ -163,7 +163,10 @@ public class Base {
         Map<String, Object> prefs = new HashMap<String, Object>();
         //prefs.put("download.directory_upgrade", true);
         //prefs.put("plugins.always_open_pdf_externally", true);
-        prefs.put("download.default_directory", "C:\\Users\\Jelena Bulajic\\Downloads"); // Replace with your directory
+        String userHome = System.getProperty("user.home"); // ovo vraća npr. C:\Users\Aleksandar Ilic
+        prefs.put("download.default_directory", userHome + "\\Downloads");
+
+        //prefs.put("download.default_directory", "C:\\Users\\Aleksandar Ilic\\Downloads"); // Replace with your directory
         prefs.put("download.prompt_for_download", false);
         prefs.put("profile.default_content_settings.popups", 0);
 
