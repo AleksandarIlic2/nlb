@@ -126,8 +126,29 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
   Then Assert element by text "You have reached the maximum number of characters. 50/50."
   And Click on element by text " Cancel "
 
+  Then Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into more than fifty characters
+  Then Assert element by text "You have reached the maximum number of characters. 50/50."
+  And Click on element by text " Cancel "
+
+  Then Change name of product from excel "<rowindex>" columnName "savings_account_1_bban" into more than fifty characters
+  Then Assert element by text "You have reached the maximum number of characters. 50/50."
+  And Click on element by text " Cancel "
+
+  Then Change name of product from excel "<rowindex>" columnName "term_deposits_1_bban" into more than fifty characters
+  Then Assert element by text "You have reached the maximum number of characters. 50/50."
+  And Click on element by text " Cancel "
+
   Then Change name of product from excel "<rowindex>" columnName "personal_account_iban" into " "
   And Assert acc name for iban from excel "<rowindex>" columnName "personal_account_iban"
+
+  Then Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into " "
+  And Assert acc name for iban from excel "<rowindex>" columnName "credit_card_1_bban"
+
+  Then Change name of product from excel "<rowindex>" columnName "savings_account_1_bban" into " "
+  And Assert acc name for iban from excel "<rowindex>" columnName "savings_account_1_bban"
+
+  Then Change name of product from excel "<rowindex>" columnName "term_deposits_1_bban" into " "
+  And Assert acc name for iban from excel "<rowindex>" columnName "term_deposits_1_bban"
 
   Examples:
     | rowindex |
