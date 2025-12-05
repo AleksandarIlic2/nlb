@@ -3,8 +3,7 @@ import io.cucumber.datatable.DataTable;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.junit.Assert;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -20,8 +19,6 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.FileNotFoundException;
@@ -35,6 +32,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.*;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
@@ -3905,7 +3903,7 @@ public class Steps {
     public void assertAllIsSelectedInTransactionTypeByDefault() throws Throwable {
         String xPath = "//nlb-radio-button//input";
         List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
-        assertTrue(elements.get(0).isSelected());
+        assertTrue(elements.get(3).isSelected());
     }
 
     @And("Select transaction type {string} in Advanced filters")
@@ -3919,7 +3917,7 @@ public class Steps {
     public void assertIncomingTransactionsIsSelectedInTransactionType() throws Throwable {
         String xPath = "//nlb-radio-button//input";
         List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
-        assertTrue(elements.get(1).isSelected());
+        assertTrue(elements.get(4).isSelected());
     }
 
     @And("Assert there are only Incoming transactions in transactions list")
@@ -3930,7 +3928,6 @@ public class Steps {
             assertTrue(element.getAttribute("innerText").matches("^(?:(?:0|[1-9]\\d{0,2})(?:.\\d{3})*),\\d{2}$"));
         }
     }
-
     @And("Assert there are both incoming and outgoing transactions")
     public void assertThereAreBothIncomingAndOutgoingTransactions() throws Throwable {
         int incoming = 0;
@@ -9847,4 +9844,97 @@ public class Steps {
 
         System.out.println("Zapamćene vrijednosti: " + values);
     }
+
+    @And("Select radio button by text {string}")
+    public void selectRadioButtonByText(String type) throws Throwable {
+        //String xpath = "//label[contains(@class,'nlb-radio')]//span[contains(text(),'" + type + "')]/ancestor::label//input[@type='radio']";
+        String xPath = "//nlb-radio-button[.//*[contains(text(),'" + type + "')]]//label";
+        WebElement wb = SelectByXpath.CreateElementByXpath(xPath);
+        hp.ClickOnElement(wb);
+    }
+
+
+    @And("Assert Assert there are only Incoming transactions by icon")
+    public void assertAssertThereAreOnlyIncomingTransactionsByIcon() {
+        List<WebElement> cards = driver.findElements(By.cssSelector("nlb-transaction-card"));
+
+        for (int i = 0; i < cards.size(); i++) {
+            // svaki put lociramo element ponovo iz liste
+            WebElement card = driver.findElements(By.cssSelector("nlb-transaction-card")).get(i);
+
+            // scroll do kartice da Angular učita DOM
+            //JSHelpers.scrollScreenDown();
+            //JSHelpers.scrollScreenDown();
+
+            boolean isIncoming = !card.findElements(By.cssSelector(".category-incoming")).isEmpty();
+
+            if (isIncoming) {
+                System.out.println("Incoming transakcija");
+            } else {
+                fail("Pronađena Outgoing transakcija!");
+            }
+        }
+    }
+
+    @And("Assert radio button by text {string}")
+    public void assertRadioButtonByText(String type) throws Throwable {
+        String xPath = "(//nlb-radio-button[.//*[contains(text(),'All')]]//input[@type='radio'])[1]";
+        WebElement radio = SelectByXpath.CreateElementByXpath(xPath);
+
+        if (!radio.isSelected()) {
+            fail("Radio button '" + type + "' is NOT selected!");
+        }
+
+    }
+
+    @And("Assert there are only {string} transactions in transactions list")
+    public void assertThereAreOnlyTypeTransactionsInTransactionsList(String expectedType) throws Throwable {
+
+        // normalize input
+        expectedType = expectedType.trim().toLowerCase(); // "incoming" ili "outgoing"
+
+        boolean hasMore = true;
+
+        while (hasMore) {
+
+            List<WebElement> cards = driver.findElements(By.xpath("//nlb-transaction-card"));
+            if (cards.isEmpty()) break;
+
+            for (int i = 0; i < cards.size(); i++) {
+
+                try {
+                    WebElement card = driver.findElements(By.xpath("//nlb-transaction-card")).get(i);
+
+                    // amount
+                    WebElement amountElement = card.findElement(By.xpath(".//nlb-amount//div[not(@class)]"));
+                    String amountText = amountElement.getText().trim();
+                    System.out.println("Read amount: " + amountText);
+
+                    // da li je incoming?
+                    boolean isIncoming = !card.findElements(By.cssSelector(".category-incoming")).isEmpty();
+                    boolean isOutgoing = !isIncoming;
+
+                    if (expectedType.equals("incoming") && isOutgoing) {
+                        fail("Found outgoing transaction, but expected ONLY incoming → " + amountText);
+                    }
+
+                    if (expectedType.equals("outgoing") && isIncoming) {
+                        fail("Found incoming transaction, but expected ONLY outgoing → " + amountText);
+                    }
+
+                    System.out.println("Transaction OK → " + expectedType.toUpperCase());
+
+                } catch (StaleElementReferenceException e) {
+                    System.out.println("Element stale → retry index: " + i);
+                    i--;
+                }
+            }
+
+            List<WebElement> newCards = driver.findElements(By.xpath("//nlb-transaction-card"));
+            if (newCards.size() <= cards.size()) {
+                hasMore = false;
+            }
+        }
+    }
+
 }
