@@ -1,7 +1,13 @@
 package si.nlb.testautomation.NLBTestAutomation.Test;
+import com.opencsv.CSVReader;
 import io.cucumber.datatable.DataTable;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Assert;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -24,8 +30,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -1138,7 +1143,8 @@ public class Steps {
 
     @And("Assert document with name {string} is downloaded")
     public void assertDocumentWithNameIsDownloaded(String name) {
-        String path = DataManager.getDataFromHashDatamap("1", "pdf_download_path");
+        //String path = DataManager.getDataFromHashDatamap("1", "pdf_download_path");
+        String path = "C:\\Users\\Jelena Bulajic\\Downloads\\";
         assertTrue(Utilities.waitForDownloadAndCheckItByName(path, name, 100, 10));
     }
 
@@ -3917,9 +3923,10 @@ public class Steps {
 
     @And("Assert Incoming transactions is selected in Transaction type")
     public void assertIncomingTransactionsIsSelectedInTransactionType() throws Throwable {
-        String xPath = "//nlb-radio-button//input";
-        List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
-        assertTrue(elements.get(1).isSelected());
+        String xPath = "//div[.//div[text()='Type']]//nlb-radio-button[.//span[text()='Incoming transactions']]//input";
+        //List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        assertTrue(element.isSelected());
     }
 
     @And("Assert there are only Incoming transactions in transactions list")
@@ -4005,13 +4012,15 @@ public class Steps {
 
     @And("Assert transaction amounts after filter are between {double} and {double}")
     public void assertTransactionAmountsAfterFilterAreBetweenAnd(double lowerBound, double upperBound) throws Throwable {
-        String xPath = "//nlb-transaction-card//h5//nlb-amount/div/div[2]";
+        //String xPath = "//nlb-transaction-card//h5//nlb-amount/div/div[2]";
+        String xPath = "//nlb-transaction-card//div[contains(@class,'xs:tw-hidden')]//nlb-amount//div[not(@class)]";
         List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
 
         boolean allInRange = true;
 
         for (WebElement element : elements) {
             try {
+                System.out.println("Atribut: " + element.getAttribute("innerText"));
                 String text = element.getAttribute("innerText").replace(",", ".").replace("−", "");
                 double value = Double.parseDouble(text);
 
@@ -9750,6 +9759,7 @@ public class Steps {
     public void assertTransactionValuesInPdfMatchRememberedValues() throws Exception {
         Map<String, String> expected = (Map<String, String>) DataManager.userObject.get("TransactionValues");
 
+
         Path downloads = Paths.get(System.getProperty("user.home"), "Downloads");
         Optional<Path> latestPdf = Files.list(downloads)
                 .filter(p -> p.toString().endsWith(".pdf"))
@@ -9826,7 +9836,6 @@ public class Steps {
     public void rememberValuesFromTranscationDetails() {
         Map<String, String> values = new HashMap<>();
 
-        // Primjeri – TI OVDJE staviš svoje selektore:
         values.put("Racun platioca",driver.findElement(By.xpath("(//dt[normalize-space()='Account number']//following-sibling::dd)[2]")).getText());
        // values.put("BIC",driver.findElement(By.id("//dt[normalize-space()='SWIFT BIC code']/following-sibling::dd[1]/div")).getText());
         values.put("TranscationID", driver.findElement(By.xpath("//dt[normalize-space()='Transaction ID']/following-sibling::dd[1]/div")).getText());
@@ -9842,9 +9851,195 @@ public class Steps {
        // values.put("BeneficiaryIBAN", driver.findElement(By.id("beneficiaryIban")).getText());
 
 
-        // SAČUVAJ U DataManager
         DataManager.userObject.put("TransactionValues", values);
 
         System.out.println("Zapamćene vrijednosti: " + values);
     }
+
+    @Then("Remember transactions")
+    public void rememberTransactions() throws Throwable{
+
+        List<Map<String, String>> transactions = new ArrayList<>();
+
+        List<WebElement> cards = driver.findElements(By.xpath("//nlb-transaction-card"));
+
+        for (WebElement card : cards) {
+
+            Map<String, String> values = new HashMap<>();
+
+            String valueDate = card.findElement(By.xpath(
+                    ".//div[contains(@class,'caption') and contains(@class,'tw-text-gray-400')][1]"
+            )).getText().trim();
+            values.put("valueDate", valueDate);
+
+            String purpose = card.findElement(By.xpath(
+                    ".//h4//nlb-heading-text[contains(@class,'xs')]//div"
+            )).getText().trim();
+            values.put("purpose", purpose);
+
+            String amount = card.findElement(By.xpath(
+                    ".//nlb-amount//div[not(@class)]"
+            )).getText().trim();
+            values.put("amount", amount);
+
+            transactions.add(values);
+        }
+
+        for (Map<String, String> t : transactions) {
+            System.out.println("Transaction: " + t);
+        }
+        DataManager.userObject.put("Transactions",transactions);
+    }
+
+
+    @Then("Assert csv values are correct")
+    public void assertCsvValuesAreCorrect() throws Exception {
+        List<Map<String,String>> transactions = (List<Map<String,String>>) DataManager.userObject.get("Transactions");
+
+        String downloadPath = System.getProperty("user.home") + "/Downloads/Transactions.csv";
+
+        CSVReader reader = new CSVReader(new FileReader(downloadPath));
+        List<String[]> rows = reader.readAll();
+        reader.close();
+        String[] headers = rows.get(0);
+        System.out.println("Header: " + Arrays.toString(headers));
+
+        int colPurpose   = -1;
+        int colAmount    = -1;
+        int colValueDate = -1;
+
+        for (int i = 0; i < headers.length; i++) {
+            String h = headers[i].trim();
+            if (h.equalsIgnoreCase("Purpose"))      colPurpose = i;
+            if (h.equalsIgnoreCase("Amount"))       colAmount = i;
+            if (h.equalsIgnoreCase("Value date"))   colValueDate = i;
+        }
+        rows.remove(0);
+
+        Assert.assertEquals("CSV row count mismatch", transactions.size(), rows.size());
+
+        for (int i = 0; i < rows.size(); i++) {
+
+            Map<String, String> expected = transactions.get(i);
+            String[] row = rows.get(i);
+
+            String csvValueDate = row[colValueDate].trim();
+            String csvPurpose   = row[colPurpose].trim();
+            String csvAmount    = row[colAmount].trim();
+
+            Assert.assertEquals(expected.get("valueDate"), normalizeDate(csvValueDate));
+            Assert.assertEquals(expected.get("purpose"),   csvPurpose);
+            Assert.assertEquals(expected.get("amount"),    csvAmount);
+        }
+
+        System.out.println("CSV values successfully verified.");
+
+    }
+
+    @Then("Assert xlsx values are correct")
+    public void assertXlsxValuesAreCorrect() throws Exception {
+
+        List<Map<String,String>> transactions =
+                (List<Map<String,String>>) DataManager.userObject.get("Transactions");
+
+        String downloadPath = System.getProperty("user.home") + "/Downloads/Transactions.xlsx";
+
+        FileInputStream fis = new FileInputStream(downloadPath);
+        XSSFWorkbook workbook = new XSSFWorkbook(fis);
+        XSSFSheet sheet = workbook.getSheetAt(0);
+
+        Row headerRow = sheet.getRow(0);
+
+        int colPurpose = -1;
+        int colAmount = -1;
+        int colValueDate = -1;
+
+        for (int i = 0; i < headerRow.getLastCellNum(); i++) {
+            Cell cell = headerRow.getCell(i);
+            if (cell == null) continue;
+
+            String header = cell.getStringCellValue().trim();
+
+            if (header.equalsIgnoreCase("Purpose"))      colPurpose = i;
+            if (header.equalsIgnoreCase("Amount"))       colAmount = i;
+            if (header.equalsIgnoreCase("Value date"))   colValueDate = i;
+        }
+
+        Assert.assertTrue("Purpose column missing", colPurpose >= 0);
+        Assert.assertTrue("Amount column missing",  colAmount >= 0);
+        Assert.assertTrue("Value date column missing", colValueDate >= 0);
+
+
+        int totalRows = sheet.getPhysicalNumberOfRows() - 1;
+        Assert.assertEquals("XLSX row count mismatch", transactions.size(), totalRows);
+
+        for (int i = 1; i <= totalRows; i++) {
+            Row row = sheet.getRow(i);
+            Map<String, String> expected = transactions.get(i - 1);
+
+            String xPurpose   = getCellValue(row.getCell(colPurpose));
+            String xAmount    = getCellValue(row.getCell(colAmount));
+            String xValueDate = getCellValue(row.getCell(colValueDate));
+
+            Assert.assertEquals("Purpose mismatch at row " + i,
+                    expected.get("purpose"), xPurpose);
+
+            Assert.assertEquals("Amount mismatch at row " + i,
+                    expected.get("amount"), xAmount);
+
+            Assert.assertEquals("Value Date mismatch at row " + i,
+                    expected.get("valueDate"), xValueDate);
+        }
+
+        workbook.close();
+        fis.close();
+
+        System.out.println("XLSX values successfully verified.");
+    }
+
+    private String getCellValue(Cell cell) {
+        if (cell == null) return "";
+
+        switch (cell.getCellType()) {
+
+            case STRING:
+                String value = cell.getStringCellValue().trim();
+
+                if (value.matches("\\d{1,2}\\.\\s*\\d{1,2}\\.\\s*\\d{4}")) {
+                    return normalizeDate(value);
+                }
+
+                return value;
+
+            case NUMERIC:
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+                    return sdf.format(cell.getDateCellValue());
+                } else {
+                    return String.valueOf(cell.getNumericCellValue())
+                            .replace(".", ",")
+                            .trim();
+                }
+
+            default:
+                return "";
+        }
+    }
+
+    private String normalizeDate(String raw) {
+        // "30. 6. 2025" → "30.6.2025"
+        raw = raw.replaceAll("\\s+", "");
+
+        // Split (30, 6, 2025)
+        String[] parts = raw.split("\\.");
+
+        String day = String.format("%02d", Integer.parseInt(parts[0]));
+        String month = String.format("%02d", Integer.parseInt(parts[1]));
+        String year = parts[2];
+
+        return day + "." + month + "." + year;
+    }
+
+
+
 }

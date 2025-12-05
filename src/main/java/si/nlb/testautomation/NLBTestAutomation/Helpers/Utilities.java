@@ -1391,7 +1391,7 @@ public class Utilities {
                 for (File dirContent : dirContents) {
                     if (dirContent.getName().startsWith(fileName)) {
                         // File has been found, it can now be deleted
-                        dirContent.delete();
+                        //dirContent.delete();
                         return true;
                     }
                 }
