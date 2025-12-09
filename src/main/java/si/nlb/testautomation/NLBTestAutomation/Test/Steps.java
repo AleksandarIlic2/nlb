@@ -37,9 +37,12 @@ import java.nio.file.Paths;
 import java.text.*;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 import java.util.NoSuchElementException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
@@ -4667,6 +4670,12 @@ public class Steps {
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         assertTrue(element.isDisplayed());
     }
+    @And("Assert Select date title in Date filter")
+    public void assertSelectDateTitleInDateFilter() throws Throwable {
+        String xPath = "//h2[text()='Select date']/ancestor::nlb-heading-text";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        assertTrue(element.isDisplayed());
+    }
 
     @And("Assert window behind Date filter popup is blurred")
     public void assertWindowBehindDateFilterPopupIsBlurred() throws Throwable {
@@ -4696,6 +4705,7 @@ public class Steps {
         for (int i = 1; i <= 2; i++) {
             for (int j = 1; j <= 5; j++) {
                 List<WebElement> weekDaysElements = SelectByXpath.CreateElementsByXpath("(//ngb-datepicker-month)[" + i + "]/div[@class = 'ngb-dp-week ng-star-inserted'][" + j + "]/div[@class='ngb-dp-day ng-star-inserted']");
+                System.out.println("weekdayselementsize: " + weekDaysElements.size());
                 assertTrue(weekDaysElements.size() >= 1 && weekDaysElements.size() <= 7);
                 for (WebElement element : weekDaysElements) {
                     daysOfWeekDates.add(element.getAttribute("aria-label"));
@@ -9720,12 +9730,12 @@ public class Steps {
     public void assertDefaultAccountIsDisplayed() throws Throwable {
         String xPath = "//nlb-rounded-square/div/div[contains(@class, 'tw-flex tw-flex-col tw-gap')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
     @And("Assert section {string} by text")
     public void assertSectionByText(String text) throws Throwable {
         WebElement element = SelectByText.CreateElementByXpathText(text);
-        Assert.assertTrue(element.isDisplayed());
+        assertTrue(element.isDisplayed());
     }
 
     @And("Assert that element {string} has value {string}")
@@ -9736,7 +9746,7 @@ public class Steps {
         );
         WebElement el = SelectByXpath.CreateElementByXpath(xPath);
         String actualValue = el.getText().trim();
-        Assert.assertEquals(actualValue,fixedValue);
+        assertEquals(actualValue,fixedValue);
     }
 
     @And("Assert that element {string} is equal to value from Excel {string} columnName {string}")
@@ -9749,7 +9759,7 @@ public class Steps {
         WebElement el = SelectByXpath.CreateElementByXpath(xPath);
         String actualValue = el.getText().trim();
 
-        Assert.assertEquals(actualValue.toLowerCase(), text.toLowerCase());
+        assertEquals(actualValue.toLowerCase(), text.toLowerCase());
     }
     @And("Assert that transaction values in PDF match remembered values")
     public void assertTransactionValuesInPdfMatchRememberedValues() throws Exception {
@@ -9912,7 +9922,7 @@ public class Steps {
         }
         rows.remove(0);
 
-        Assert.assertEquals("CSV row count mismatch", transactions.size(), rows.size());
+        assertEquals("CSV row count mismatch", transactions.size(), rows.size());
 
         for (int i = 0; i < rows.size(); i++) {
 
@@ -9923,9 +9933,9 @@ public class Steps {
             String csvPurpose   = row[colPurpose].trim();
             String csvAmount    = row[colAmount].trim();
 
-            Assert.assertEquals(expected.get("valueDate"), normalizeDate(csvValueDate));
-            Assert.assertEquals(expected.get("purpose"),   csvPurpose);
-            Assert.assertEquals(expected.get("amount"),    csvAmount);
+            assertEquals(expected.get("valueDate"), normalizeDate(csvValueDate));
+            assertEquals(expected.get("purpose"),   csvPurpose);
+            assertEquals(expected.get("amount"),    csvAmount);
         }
 
         System.out.println("CSV values successfully verified.");
@@ -9961,13 +9971,13 @@ public class Steps {
             if (header.equalsIgnoreCase("Value date"))   colValueDate = i;
         }
 
-        Assert.assertTrue("Purpose column missing", colPurpose >= 0);
-        Assert.assertTrue("Amount column missing",  colAmount >= 0);
-        Assert.assertTrue("Value date column missing", colValueDate >= 0);
+        assertTrue("Purpose column missing", colPurpose >= 0);
+        assertTrue("Amount column missing",  colAmount >= 0);
+        assertTrue("Value date column missing", colValueDate >= 0);
 
 
         int totalRows = sheet.getPhysicalNumberOfRows() - 1;
-        Assert.assertEquals("XLSX row count mismatch", transactions.size(), totalRows);
+        assertEquals("XLSX row count mismatch", transactions.size(), totalRows);
 
         for (int i = 1; i <= totalRows; i++) {
             Row row = sheet.getRow(i);
@@ -9977,13 +9987,13 @@ public class Steps {
             String xAmount    = getCellValue(row.getCell(colAmount));
             String xValueDate = getCellValue(row.getCell(colValueDate));
 
-            Assert.assertEquals("Purpose mismatch at row " + i,
+            assertEquals("Purpose mismatch at row " + i,
                     expected.get("purpose"), xPurpose);
 
-            Assert.assertEquals("Amount mismatch at row " + i,
+            assertEquals("Amount mismatch at row " + i,
                     expected.get("amount"), xAmount);
 
-            Assert.assertEquals("Value Date mismatch at row " + i,
+            assertEquals("Value Date mismatch at row " + i,
                     expected.get("valueDate"), xValueDate);
         }
 
@@ -10162,4 +10172,77 @@ public class Steps {
         Assert.assertEquals("", wb.getAttribute("value"));
 
     }
+    @And("Assert from to dates are in last {int} days")
+    public void assertFromToDatesAreInLastDays(int days) {
+        String fromText = driver.findElement(By.xpath("//label[text()='From']/following::input[1]")).getAttribute("value");
+        String toText   = driver.findElement(By.xpath("//label[text()='To']/following::input[1]")).getAttribute("value");
+
+        // 2. Regex za pokupiti datum u formatu D. M. YYYY ili D. MM. YYYY
+        Pattern p = Pattern.compile("(\\d{1,2})\\.\\s*(\\d{1,2})\\.\\s*(\\d{4})");
+        Matcher m1 = p.matcher(fromText);
+        Matcher m2 = p.matcher(toText);
+
+        if (!m1.find() || !m2.find()) {
+            throw new AssertionError("From/To nisu validni datumi: '" + fromText + "' / '" + toText + "'");
+        }
+
+        LocalDate fromDate = LocalDate.of(
+                Integer.parseInt(m1.group(3)),
+                Integer.parseInt(m1.group(2)),
+                Integer.parseInt(m1.group(1))
+        );
+
+        LocalDate toDate = LocalDate.of(
+                Integer.parseInt(m2.group(3)),
+                Integer.parseInt(m2.group(2)),
+                Integer.parseInt(m2.group(1))
+        );
+
+        LocalDate today = LocalDate.now();
+        LocalDate sevenDaysAgo = today.minusDays(days);
+
+        if (fromDate.isBefore(sevenDaysAgo) || fromDate.isAfter(today)) {
+            throw new AssertionError("FROM date out of range: " + fromDate + " allowed: " + sevenDaysAgo + " - " + today);
+        }
+
+        if (toDate.isBefore(sevenDaysAgo) || toDate.isAfter(today)) {
+            throw new AssertionError("TO date out of range: " + toDate + " allowed: " + sevenDaysAgo + " - " + today);
+        }
+
+        if (fromDate.isAfter(toDate)) {
+            throw new AssertionError("FROM > TO date: " + fromDate + " > " + toDate);
+        }
+
+        System.out.println("Date range is valid. FROM=" + fromDate + " TO=" + toDate);
+    }
+
+    @And("Assert date range in Date filter are in {string}")
+    public void assertDateRangeInDateFilterAreIn(String typeRange) throws Throwable {
+        String fromDateString = driver.findElement(By.xpath("//label[text()='From']/following::input[1]")).getAttribute("value");
+        String toDateString   = driver.findElement(By.xpath("//label[text()='To']/following::input[1]")).getAttribute("value");
+
+        LocalDate fromDate = parseDate(fromDateString);
+        LocalDate toDate = parseDate(toDateString);
+
+        LocalDate now = LocalDate.now();
+        YearMonth targetMonth = null;
+        if(typeRange.equalsIgnoreCase("Current month")){
+            targetMonth = YearMonth.from(now);
+        }else if(typeRange.equalsIgnoreCase("Previous month")){
+            targetMonth =YearMonth.from(now.minusMonths(1));
+        }
+        assertTrue(targetMonth!=null);
+        LocalDate expectedFrom = targetMonth.atDay(1);
+        LocalDate expectedTo = targetMonth.atEndOfMonth();
+
+        assertTrue(fromDate.equals(expectedFrom) && toDate.equals(expectedTo));
+    }
+    public static LocalDate parseDate(String dateString) {
+        // "1. 12. 2025"
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d. M. yyyy");
+        return LocalDate.parse(dateString, formatter);
+    }
+
+
+
 }

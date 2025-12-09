@@ -116,3 +116,66 @@ Feature: Current_Domestic_Accounts
     Examples:
       | rowindex |
       |        1 |
+
+  @Current_Domestic_Accounts-Transactions-Filter_By_Date-Predefined_Date_Range_[WEB]
+  Scenario Outline: Current_Domestic_Accounts-Transactions-Filter_By_Date-Predefined_Date_Range_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban3"
+    And Wait for element by tag "nlb-product-detail-header"
+    Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
+    And Scroll to element by tag "nlb-selected-product-transactions-filters"
+    And Assert order of tabs in tablist
+
+    And Assert element by text " Download transaction list "
+    And Assert element by contains class "icon-download"
+    And Assert element by tag "input" and type "search"
+    And Assert element by text "Search "
+    And Assert element by text " Filters"
+    And Click on element by text " Filters"
+    And Assert date picker
+
+    And Click on button with tag "i" containing class "icon-calendar-today"
+    And Assert window behind Date filter popup is blurred
+    And Assert Select date title in Date filter
+    #And Assert three showed months are correctly displayed
+    And Click on element by text " Cancel "
+    And Assert element by text "Last 7 days "
+    And Assert element by text "Current month"
+    And Assert element by text " Previous month"
+
+
+    #User clicks on the option Last 7 days - Last seven days counting from todays are selected. Displayed months are current month and 2 following months.
+
+    And Click on element by text "Last 7 days "
+    And Assert from to dates are in last 7 days
+    And Click on element by text " Confirm "
+    #TO DO  Assert displayed transaction are from last 7 days
+
+    #TO DO User clicks on the x button in the pill with the value Last 7 days
+
+    And Click on element by text "Current month"
+    And Assert date range in Date filter are in "current month"
+    And Click on element by text " Confirm "
+
+    #TO DO Transaction list is filtered correctly displaying only transactions from this month. Under the filter icons, a pill with the value Month start date-Todays date in
+    #TO DO User clicks on the x button in the pill with the value This month
+
+
+    And Click on element by text " Previous month"
+    And Assert date range in Date filter are in "previous month"
+    And Click on element by text " Confirm "
+
+
+    #TO DO Transaction list is filtered correctly displaying only transactions from Previous month. Under the filter icons, a pill with the value Month start date-Todays date in
+    #TO DO User clicks on the x button in the pill with the value Previous month
+
+
+    Examples:
+      | rowindex |
+      |        1 |
