@@ -10072,7 +10072,7 @@ public class Steps {
 
     @And("Assert radio button by text {string}")
     public void assertRadioButtonByText(String type) throws Throwable {
-        String xPath = "(//nlb-radio-button[.//*[contains(text(),'All')]]//input[@type='radio'])[1]";
+        String xPath = "(//nlb-radio-button[.//*[contains(text(),'All')]]//input[@type='radio'])[2]";
         WebElement radio = SelectByXpath.CreateElementByXpath(xPath);
 
         if (!radio.isSelected()) {
@@ -10130,5 +10130,36 @@ public class Steps {
             }
         }
     }
+    @And("Enter date {string} to field {string}")
+    public void enterDateToField(String date, String fieldName) throws Throwable {
 
+
+        int index = fieldName.equalsIgnoreCase("from") ? 1 : 2;
+        String xPath = "(//input[@placeholder='D. M. YYYY'])[" + index + "]";
+        WebElement dateInput = SelectByXpath.CreateElementByXpath(xPath);
+        hp.EnterTextToElement(dateInput, date);
+        //dateInput.click();
+        //dateInput.clear();
+        //dateInput.sendKeys(date);
+        //dateInput.sendKeys(Keys.TAB);
+    }
+
+
+    @And("Assert {string} Field has error {string}")
+    public void assertFieldHasError(String fieldName, String errorText) throws Throwable {
+        String xPath = "//label[normalize-space()='" + fieldName + "']"
+                + "/following-sibling::div[@id and contains(@id,'text-error')]"
+                + "//div[@role='alert']";
+        WebElement el = SelectByXpath.CreateElementByXpath(xPath);
+        System.out.println("TEXT" + el.getText());
+        Assert.assertEquals(el.getText(),errorText);
+    }
+
+    @And("Assert {string} amount field value")
+    public void assertAmountFieldValue(String fieldName) throws Throwable {
+        String xPath = "(//label[normalize-space(text())='" + fieldName + "']/following-sibling::div//input[@type='text'])[2]";
+        WebElement wb = SelectByXpath.CreateElementByXpath(xPath);
+        Assert.assertEquals("", wb.getAttribute("value"));
+
+    }
 }
