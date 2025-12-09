@@ -63,66 +63,66 @@ Feature: Current_Accounts
       |        2 |
 
   #TODO: Dostavljeni useri nemaju CHF
-  @Current_Accounts-Transactions_List_select_Currency_[WEB]_2
-  Scenario Outline: Current_Accounts-Transactions_List_select_Currency_[WEB]_2
+  #@Current_Accounts-Transactions_List_select_Currency_[WEB]_2
+  #Scenario Outline: Current_Accounts-Transactions_List_select_Currency_[WEB]_2
 
     #Login
-    Given Open Login page
-    And Change language to English
-    And Login to the page using user from Excel "<rowindex>" columnName "username"
-    And Wait for element by text "Pay or transfer"
-    And Assert that products in my products have loaded
+  #  Given Open Login page
+  #  And Change language to English
+  #  And Login to the page using user from Excel "<rowindex>" columnName "username"
+  #  And Wait for element by text "Pay or transfer"
+  #  And Assert that products in my products have loaded
 
     #User is logged into aplication and clicks on the My Products page frome the menu
-    When Click on tab "My products" from main sidebar
-    And Wait for element by text "Edit list"
-    Then Assert element by class "button-bold" and contains text "Edit list"
+  #  When Click on tab "My products" from main sidebar
+  #  And Wait for element by text "Edit list"
+  #  Then Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-    When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban"
-    And Wait for element by tag "nlb-product-detail-header"
+  #  When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban"
+  #  And Wait for element by tag "nlb-product-detail-header"
 
-    And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
-    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban"
+  #  And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
+  #  And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
-    And Assert order of tabs in tablist
+  #  And Assert order of tabs in tablist
 
     #Below the tabs, icons for Date picker, Filter, Select category and Search filter are displayed on the left side.
       # On the right side there is a Download option
-    And Assert element by text " Download transaction list "
-    And Assert element by contains class "icon-download"
-    And Assert element by tag "input" and type "search"
-    And Assert element by text "Search "
-    And Assert element by text " Filters"
-    And Click on element by text " Filters"
-    And Assert date picker
+  #  And Assert element by text " Download transaction list "
+  #  And Assert element by contains class "icon-download"
+  #  And Assert element by tag "input" and type "search"
+  #  And Assert element by text "Search "
+  #  And Assert element by text " Filters"
+  #  And Click on element by text " Filters"
+  #  And Assert date picker
 
-    And Assert EUR currency is selected if product has more than one currency
+  #  And Assert EUR currency is selected if product has more than one currency
 
-    And Scroll to first transaction in Products details
-    And Assert transaction is displayed correctly in Products details with currency "EUR"
-    And Assert amount for month category is displayed in Products details with currency "EUR"
+  #  And Scroll to first transaction in Products details
+  #  And Assert transaction is displayed correctly in Products details with currency "EUR"
+  #  And Assert amount for month category is displayed in Products details with currency "EUR"
 
-    And Assert there are month categories in transactions list in Products details
-    And Assert transaction dates are ordered correctly
+  #  And Assert there are month categories in transactions list in Products details
+  #  And Assert transaction dates are ordered correctly
 
 
     #@[currentCard] CHF
-    And Scroll to Currency card for "CHF" in Product details
-    And Select Currency card "CHF" in Product details
-    Then Wait for first transaction in Product details
-    And Scroll to first transaction in Products details
-    And Assert transaction is displayed correctly in Products details with currency "CHF"
-    And Assert amount for month category is displayed in Products details with currency "CHF"
-    And Assert there are month categories in transactions list in Products details
-    And Assert transaction dates are ordered correctly
+  #  And Scroll to Currency card for "CHF" in Product details
+  #  And Select Currency card "CHF" in Product details
+  #  Then Wait for first transaction in Product details
+  #  And Scroll to first transaction in Products details
+  #  And Assert transaction is displayed correctly in Products details with currency "CHF"
+  #  And Assert amount for month category is displayed in Products details with currency "CHF"
+  #  And Assert there are month categories in transactions list in Products details
+  #  And Assert transaction dates are ordered correctly
     #30 transactions???
 
-    Examples:
-      | rowindex |
-      |        2 |
+  #  Examples:
+  #    | rowindex |
+  #    |        2 |
 
   @Current_Accounts-Details-Financial_Details_[WEB]
   Scenario Outline: Current_Accounts-Details-Financial_Details_[WEB]

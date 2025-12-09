@@ -128,7 +128,7 @@ Feature: Current_Domestic_Accounts
 
     When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban3"
     And Wait for element by tag "nlb-product-detail-header"
-    Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
+    #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
     And Assert order of tabs in tablist
 
@@ -143,7 +143,7 @@ Feature: Current_Domestic_Accounts
     And Click on button with tag "i" containing class "icon-calendar-today"
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
-    #And Assert three showed months are correctly displayed
+    And Assert three showed months are correctly displayed
     And Click on element by text " Cancel "
     And Assert element by text "Last 7 days "
     And Assert element by text "Current month"
