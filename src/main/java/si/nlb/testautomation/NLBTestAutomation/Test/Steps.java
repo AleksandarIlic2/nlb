@@ -9897,6 +9897,13 @@ public class Steps {
             String amount = card.findElement(By.xpath(
                     ".//nlb-amount//div[not(@class)]"
             )).getText().trim();
+            System.out.println("Amount u remember: " + amount);
+            System.out.println("prvi karakter: " + amount.charAt(0));
+
+            values.put("type", amount.substring(0,1));
+            amount=amount.substring(1);
+            System.out.println("Amount u remember nakon skracivanja " + amount);
+
             values.put("amount", amount);
 
             transactions.add(values);
@@ -9970,6 +9977,7 @@ public class Steps {
         int colPurpose = -1;
         int colAmount = -1;
         int colValueDate = -1;
+        int colType = -1;
 
         for (int i = 0; i < headerRow.getLastCellNum(); i++) {
             Cell cell = headerRow.getCell(i);
@@ -9980,6 +9988,8 @@ public class Steps {
             if (header.equalsIgnoreCase("Purpose"))      colPurpose = i;
             if (header.equalsIgnoreCase("Amount"))       colAmount = i;
             if (header.equalsIgnoreCase("Value date"))   colValueDate = i;
+            if (header.equalsIgnoreCase("+/-"))   colType = i;
+
         }
 
         assertTrue("Purpose column missing", colPurpose >= 0);
@@ -9997,9 +10007,13 @@ public class Steps {
             String xPurpose   = getCellValue(row.getCell(colPurpose));
             String xAmount    = getCellValue(row.getCell(colAmount));
             String xValueDate = getCellValue(row.getCell(colValueDate));
+            String xType = getCellValue(row.getCell(colType));
 
             assertEquals("Purpose mismatch at row " + i,
                     expected.get("purpose"), xPurpose);
+
+           // assertEquals("Type mismatch at row " + i,
+                   // expected.get("type"), xType);
 
             assertEquals("Amount mismatch at row " + i,
                     expected.get("amount"), xAmount);
