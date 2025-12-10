@@ -305,4 +305,4 @@ Feature: Current_Domestic_Accounts
     #And Click on element by text " OK "
     Examples:
       | rowindex |
-      |        2 |
+      |        1 |
