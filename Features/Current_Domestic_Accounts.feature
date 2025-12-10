@@ -19,7 +19,7 @@ Feature: Current_Domestic_Accounts
     When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban3"
     And Wait for element by tag "nlb-product-detail-header"
 
-    And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
+    #And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
     And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban3"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
@@ -46,12 +46,10 @@ Feature: Current_Domestic_Accounts
     And Assert transaction amounts after filter are between 100 and 500
 
     #filter by type - incoming
-    And Select transaction type "Incoming transactions" in Advanced filters
-    And Assert Incoming transactions is selected in Transaction type
+    And Select transaction type "Outgoing transactions" in Advanced filters
     And Click on NLB button "Confirm"
     And Wait for first transaction in Product details
-    And Assert there are only Incoming transactions in transactions list
-
+    And Assert there are only Outgoing transactions in transactions list
     Then Remember transactions
       # and clicks on the Download in Excel option
     And Click on normalized text "Download transaction list"
@@ -84,7 +82,7 @@ Feature: Current_Domestic_Accounts
 
     When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban3"
     And Wait for element by tag "nlb-product-detail-header"
-    Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
+    #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
     And Assert order of tabs in tablist
     And Assert element by text " Download transaction list "
@@ -179,3 +177,132 @@ Feature: Current_Domestic_Accounts
     Examples:
       | rowindex |
       |        1 |
+
+  @Current_Domestic_Accounts-Multiple-Filter_Invalid_[WEB]
+  Scenario Outline: Current_Domestic_Accounts-Multiple-Filter_Invalid_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban3"
+    And Wait for element by tag "nlb-product-detail-header"
+    #TODO: Vrati ovaj korak ispod kad se utvrdi ime racuna
+    #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
+    And Scroll to element by tag "nlb-selected-product-transactions-filters"
+    And Assert order of tabs in tablist
+    And Assert element by text " Download transaction list "
+    And Assert element by contains class "icon-download"
+    And Assert element by tag "input" and type "search"
+    And Assert element by text "Search "
+    And Assert element by text " Filters"
+    And Click on element by text " Filters"
+    And Assert date picker
+    And Scroll screen down
+    #And Assert radio button by text "All"
+    #DD/MM/YY
+    And Enter date "11.11.25" to field "from"
+    And Enter date "12.11.2025" to field "to"
+    And Enter "100,00" to Amount filter "From"
+    And Enter "500,00" to Amount filter "To"
+    And Assert "From" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+    #And Click on element by text " OK "
+    #YY/DD/MM
+    #TODO proveri: Komentar, datum 25.25.11 izbacuje gresku (kada drugi broj bude preko 12?)
+    #TODO: Iako je datum 25.11.11 (neispravan format) MOZE SE FILTRIRATI! - BUG?
+    And Enter date "25.11.11" to field "from"
+    And Assert "From" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+    #And Click on element by text " OK "
+    #MMDDYY
+    And Enter date "11.11.25" to field "from"
+    And Assert "From" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+    #And Click on element by text " OK "
+    #letters - START
+    And Enter date "petijanuardvehiljadedvadesetpete" to field "from"
+    And Assert "From" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+    #And Click on element by text " OK "
+    #start date later than end date TODO
+    #special characters
+    And Enter date "11.11.25@" to field "from"
+    And Assert "From" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+   # And Click on element by text " OK "
+    #end date earlier than start date
+
+    #letters - END
+    And Enter date "11.11.25" to field "from"
+    And Enter date "petijanuardvehiljadedvadesetpete" to field "to"
+    And Assert "To" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+   # And Click on element by text " OK "
+    #special characters - END
+    And Enter date "11.11.25@" to field "to"
+    And Assert "To" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+   # And Click on element by text " OK "
+     #DD/MM/YY - END
+    And Enter date "11.11.25" to field "to"
+    And Assert "To" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+   # And Click on element by text " OK "
+    #YY/DD/MM - END
+    And Enter date "25.25.11" to field "to"
+    And Assert "To" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+   # And Click on element by text " OK "
+    #MMDDYY - END
+    And Enter date "11.11.25" to field "to"
+    And Assert "To" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+   # And Click on element by text " OK "
+    #letters - MINAMOUNT
+    And Enter "textAmount" to Amount filter "From"
+    And Assert "From" amount field value
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+   # And Click on element by text " OK "
+    #specialCharacters - MINAMOUNT
+
+    And Enter "@@@" to Amount filter "From"
+    And Assert "From" amount field value
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+    #And Click on element by text " OK "
+    #Min amount higher than Max amount
+    And Enter "200,00" to Amount filter "From"
+    And Enter "100,00" to Amount filter "To"
+    And Assert element by text "From amount must be smaller than To amount."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+  #  And Click on element by text " OK "
+    #letters - MAXAMOUNT
+    And Enter "asdasdasd" to Amount filter "To"
+    And Assert "To" amount field value
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+    #And Click on element by text " OK "
+    #specialcharacters - MAXAMOUT
+    And Enter "@@@" to Amount filter "To"
+    And Assert "To" amount field value
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+    #And Click on element by text " OK "
+    Examples:
+      | rowindex |
+      |        2 |

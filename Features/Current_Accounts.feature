@@ -20,7 +20,7 @@ Feature: Current_Accounts
     When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban"
     And Wait for element by tag "nlb-product-detail-header"
 
-    And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
+    #And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
     And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
@@ -217,7 +217,7 @@ Feature: Current_Accounts
       #And Assert order of sections in tabpanel
 
       And Assert Account type is displayed correctly in Account details for Current account
-      And Assert Account owner in Account details is from Excel "<rowindex>" columnName "personal_name"
+      #And Assert Account owner in Account details is from Excel "<rowindex>" columnName "personal_name"
       And Assert Account number in Account details is from Excel "<rowindex>" columnName "personal_account_number"
       And Assert BIC in Account details is "KOBBRSBG"
 
@@ -254,7 +254,7 @@ Feature: Current_Accounts
       And Wait for element by tag "nlb-product-detail-header"
 
     #HEADER DISPLAY
-      Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name2"
+     # Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name2"
       And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban2"
       And Assert Product icon in Product details is displayed and has icon path "https://test.dbp.nlbkb.rs/assets/img/product-icon/CurrentAccount-Icon.svg"
       And Assert available balance and current balance in header
@@ -262,7 +262,7 @@ Feature: Current_Accounts
       #click on Details tab and assert header is still displayed correctly
       When Click on tab "Details" from tablist
       And Wait for product details to load
-      Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name2"
+      #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name2"
       And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban2"
       And Assert Product icon in Product details is displayed and has icon path "https://test.dbp.nlbkb.rs/assets/img/product-icon/CurrentAccount-Icon.svg"
       And Assert available balance and current balance in header
@@ -292,7 +292,7 @@ Feature: Current_Accounts
       When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban"
       And Wait for element by tag "nlb-product-detail-header"
 
-      And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
+      #And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
       And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban"
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.

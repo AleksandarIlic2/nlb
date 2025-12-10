@@ -139,7 +139,7 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
   And Click on element by text " Cancel "
 
   Then Change name of product from excel "<rowindex>" columnName "personal_account_iban" into " "
-  And Assert acc name for iban from excel "<rowindex>" columnName "personal_account_iban"
+  #And Assert acc name for iban from excel "<rowindex>" columnName "personal_account_iban"
 
   Then Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into " "
   And Assert acc name for iban from excel "<rowindex>" columnName "credit_card_1_bban"

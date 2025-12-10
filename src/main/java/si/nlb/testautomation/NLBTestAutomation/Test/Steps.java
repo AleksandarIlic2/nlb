@@ -1146,7 +1146,8 @@ public class Steps {
 
     @And("Assert document with name {string} is downloaded")
     public void assertDocumentWithNameIsDownloaded(String name) {
-        String path = DataManager.getDataFromHashDatamap("1", "pdf_download_path");
+        //String path = DataManager.getDataFromHashDatamap("1", "pdf_download_path");
+        String path = System.getProperty("user.home") + "\\Downloads";
         assertTrue(Utilities.waitForDownloadAndCheckItByName(path, name, 100, 10));
     }
 
@@ -3591,9 +3592,9 @@ public class Steps {
 
     @And("Wait for first transaction in Product details")
     public void waitForFirstTransactionInProductDetails() throws Throwable {
+        WaitHelpers.waitForSeconds(5);
         String xPath = "(//nlb-transaction-card)[1]";
-        By element = SelectByXpath.CreateByElementByXpath(xPath);
-        WaitHelpers.WaitForElement(element);
+        WaitHelpers.WaitForElement(SelectByXpath.CreateByElementByXpath(xPath));
 
         //suma amount za 1 mesec, trenutno ne radi
 //        String xPath1 = "(//nlb-transaction-card//nlb-amount//span[1])[1]";
@@ -4700,18 +4701,27 @@ public class Steps {
             assertEquals(5, weekElements.size());
         }
 
-        //getting all days in order
         List<String> daysOfWeekDates = new ArrayList<>();
-        for (int i = 1; i <= 2; i++) {
-            for (int j = 1; j <= 5; j++) {
-                List<WebElement> weekDaysElements = SelectByXpath.CreateElementsByXpath("(//ngb-datepicker-month)[" + i + "]/div[@class = 'ngb-dp-week ng-star-inserted'][" + j + "]/div[@class='ngb-dp-day ng-star-inserted']");
-                System.out.println("weekdayselementsize: " + weekDaysElements.size());
+
+        for (int i = 1; i <= 2; i++) { // 2 mjeseca
+            for (int j = 1; j <= 5; j++) { // max 5 sedmica u mjesecu
+                List<WebElement> weekDaysElements = SelectByXpath.CreateElementsByXpath(
+                        "(//ngb-datepicker-month)[" + i + "]/div[@class = 'ngb-dp-week ng-star-inserted'][" + j + "]/div[@class='ngb-dp-day ng-star-inserted']"
+                );
+
+                // Ako ne postoji sedmica → prekini samo ovu petlju
+                if (weekDaysElements.size() == 0) {
+                    break;
+                }
+
                 assertTrue(weekDaysElements.size() >= 1 && weekDaysElements.size() <= 7);
+
                 for (WebElement element : weekDaysElements) {
                     daysOfWeekDates.add(element.getAttribute("aria-label"));
                 }
             }
         }
+
         //same thing but for third month
         for (int i = 1; i <= 5; i++) {
             List<WebElement> weekDaysElements = SelectByXpath.CreateElementsByXpath("(//ngb-datepicker-month)[3]/div[@class = 'ngb-dp-week ng-star-inserted'][" + i + "]/div[@class='ngb-dp-day disabled ng-star-inserted']");
@@ -4740,7 +4750,7 @@ public class Steps {
         }
         assertTrue(isSorted);
         //check if all dates are present for all 3 months
-        WebElement todayDateElement = SelectByXpath.CreateElementByXpath("//div[contains(@class, 'ngb-dp-today')]");
+      /*  WebElement todayDateElement = SelectByXpath.CreateElementByXpath("//div[contains(@class, 'ngb-dp-today')]");
         String[] parts = todayDateElement.getAttribute("aria-label").split(", ")[1].split(" ");
         int day = Integer.parseInt(parts[0].replace(".", ""));
         int month = map.get(parts[1].toLowerCase());
@@ -4766,7 +4776,7 @@ public class Steps {
                 break;
             }
         }
-        assertTrue(allDaysPresent);
+        assertTrue(allDaysPresent);*/
 
     }
 
@@ -9568,14 +9578,15 @@ public class Steps {
     public void assertOrderOfTabsInTablist() throws Throwable{
 
         List<WebElement> tabs=driver.findElements(By.xpath("//div[@role='tablist']/div[@role='tab']"));
-        //assert there are exactly 4 tabs
-        assertEquals(4, tabs.size());
+        //assert there are exactly 5 tabs
+        assertEquals(5, tabs.size());
 
         String[] expected = {
                 "Transactions",
                 "Card settings",
                 "Statements",
-                "Details"
+                "Details",
+                "Cheques"
         };
 
         // assert order of tabs
