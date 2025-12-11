@@ -16,11 +16,11 @@ Feature: Current_Domestic_Accounts
     Then Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-    When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban3"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for element by tag "nlb-product-detail-header"
 
     #And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
-    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban3"
+    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
@@ -80,7 +80,7 @@ Feature: Current_Domestic_Accounts
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban3"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for element by tag "nlb-product-detail-header"
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
@@ -124,7 +124,7 @@ Feature: Current_Domestic_Accounts
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban3"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for element by tag "nlb-product-detail-header"
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
@@ -187,7 +187,7 @@ Feature: Current_Domestic_Accounts
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban3"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for element by tag "nlb-product-detail-header"
     #TODO: Vrati ovaj korak ispod kad se utvrdi ime racuna
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"

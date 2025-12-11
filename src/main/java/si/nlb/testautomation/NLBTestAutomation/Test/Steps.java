@@ -1843,6 +1843,7 @@ public class Steps {
             String xPathForHideIcon = "//*[contains(text(),'" + stringForProductIban + "')]//ancestor::nlb-products-edit-list-item//*[contains(@class,'icon-eye-off')]";
             WebElement elementForHideButton = SelectByXpath.CreateElementByXpath(xPathForHideIcon);
             hp.ClickOnElement(elementForHideButton);
+            System.out.println("UNHIDE:" + elementForHideButton.getText() + "|" + stringForProductIban);
             String xPath = "//*[contains(@class,'icon-eye')]";
             By el = By.xpath(xPath);
             WaitHelpers.WaitForElement(el);
@@ -10269,5 +10270,41 @@ public class Steps {
     }
 
 
+    @Then("Assert that account from {string} with columnName {string} is grayed out")
+    public void assertThatAccountFromWithColumnNameIsGrayedOut(String rowindex, String columnName) throws Throwable {
+        String stringForProductIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
 
+        String ibanXpath = "//span[contains(text(),'" + stringForProductIban + "')]/parent::div";
+
+        WebElement ibanElement = SelectByXpath.CreateElementByXpath(ibanXpath);
+
+        String ibanClasses = ibanElement.getAttribute("class");
+        System.out.println("SVE KLASE:" + ibanClasses);
+        Assert.assertTrue("IBAN is NOT greyed out! Classes: " + ibanClasses,
+                ibanClasses.contains("tw-text-gray-700"));
+
+
+    }
+
+    @And("Change name of product from excel {string} columnName {string} to previous one")
+    public void changeNameOfProductFromExcelColumnNameToPreviousOne(String rowindex, String columnName) throws Throwable {
+
+        String stringForProductIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+
+        String xPathForEditIcon = "//*[contains(text(),'" + stringForProductIban + "')]//ancestor::nlb-products-edit-list-item//*[contains(@class,'icon-edit')]";
+        WebElement elementForEditIcon = SelectByXpath.CreateElementByXpath(xPathForEditIcon);
+        JSHelpers.ScrollIntoViewBottom(elementForEditIcon);
+        hp.ClickOnElement(elementForEditIcon);
+
+        By elForEditProductNameAssert = SelectByText.CreateByElementByText("Rename product");
+        WaitHelpers.WaitForElement(elForEditProductNameAssert);
+
+        String xPathForXButton = "//i[contains(@class,'icon-close')]";
+        WebElement xButton = SelectByXpath.CreateElementByXpath(xPathForXButton);
+        hp.ClickOnElement(xButton);
+
+        WebElement elementForApply = SelectByText.CreateElementByXpathContainingText("Apply");
+        hp.ClickOnElement(elementForApply);
+
+    }
 }
