@@ -56,6 +56,35 @@ Feature: Product_Summary
       | rowindex |
       |        1 |
 
+  @Product_Summary-Current_Accounts_List_[WEB]
+  Scenario Outline: Product_Summary-Current_Accounts_List_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+    #User clicks on the My Products page from the menu
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+
+    Then Accounts are displayed in the following order:
+      | Current accounts  |
+      | Cards             |
+      | Savings accounts  |
+      | Term deposit      |
+      | Loans             |
+
+    #TO DO - Sorted by Owned accounts first (sorted by Opening Date ascending), followed by Authorized accounts (grouped by owner name and sorted ascending alphabetically, inside one owner by opening date ascending)
+    And Assert product details are displayed
+
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Assert order of tabs in tablist
+
+    Examples:
+      | rowindex |
+      |        1 |
+
   @Product_Summary-Edit_Product_view-edit_name_of_account_[WEB]_1
   Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account_[WEB]_1
 

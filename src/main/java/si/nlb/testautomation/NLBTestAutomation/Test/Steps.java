@@ -9384,22 +9384,26 @@ public class Steps {
     public void accountsAreDisplayedInTheFollowingOrder(DataTable dataTable) {
         List<String> expectedOrder = dataTable.asList();
 
-        List<WebElement> accountTitles = driver.findElements(
+       /* List<WebElement> accountTitles = driver.findElements(
                 By.cssSelector("nlb-product-card .product-type, nlb-product-card h3, nlb-product-card .title")
-        );
+        );*/
+        List<WebElement> accountTitles = driver.findElements(By.xpath("//nlb-product-card//div[contains(@class, 'heading-3')]"));
 
         List<String> normalizedOrder = accountTitles.stream()
                 .map(WebElement::getText)
                 .map(String::trim)
                 .map(text -> {
                     String lower = text.toLowerCase();
-                    if (lower.contains("payment account"))
+                    //System.out.println("naslov: " + lower);
+                    if (lower.contains("payment account") || lower.contains("tekući") || lower.contains("devizni") )
                         return "Current accounts";
-                    else if (lower.contains("visa"))
+                    else if (lower.contains("visa") || lower.contains("card"))
                         return "Cards";
-                    else if (lower.contains("deposit"))
+                    else if (lower.contains("a vista") || lower.contains("saving"))
                         return "Savings accounts";
-                    else if (lower.contains("loan"))
+                    else if (lower.contains("term deposit") || lower.contains("oročeni depozit"))
+                        return "Term deposit";
+                    else if (lower.contains("loan") || lower.contains("kredit"))
                         return "Loans";
                     else
                         return "Other";
@@ -9410,7 +9414,7 @@ public class Steps {
         for (String expected : expectedOrder) {
             int index = normalizedOrder.indexOf(expected);
             if (index == -1) {
-                // Sekcija ne postoji, preskačemo
+                // Sekcija ne postoji
                 continue;
             }
             assertTrue("Section '" + expected + "' is out of order", index >= lastIndex);
@@ -9419,6 +9423,89 @@ public class Steps {
         System.out.println(normalizedOrder);
     }
 
+    @And("Assert product details are displayed")
+    public void assertProductDetailsAreDisplayed() {
+
+        // Pronađi sve kartice proizvoda
+        List<WebElement> cards = driver.findElements(By.cssSelector("nlb-product-card"));
+        boolean available =false;
+        boolean currBalance =true;
+        for (WebElement card : cards) {
+
+            // Ikonica tipa računa
+            WebElement icon = card.findElement(By.cssSelector("nlb-product-icon img"));
+            Assert.assertTrue("Account type icon is missing",icon.isDisplayed());
+
+            //Account name / Nickname
+            WebElement accountName = card.findElement(By.cssSelector("div.heading-3"));
+            String accountNameText = accountName.getText().trim();
+            Assert.assertFalse("Account name is missing",accountNameText.isEmpty());
+            System.out.println("Trenutna kartica: " + accountNameText);
+
+            String iconSrc = icon.getAttribute("src");
+
+            if (accountNameText.toLowerCase().contains("tekuci") ||
+                    accountNameText.toLowerCase().contains("tekući") ||
+                    accountNameText.toLowerCase().contains("current")) {
+                available=true;
+                Assert.assertTrue("Icon does not match Current Account type! Found: " + iconSrc
+                        ,iconSrc.contains("CurrentAccount-Icon"));
+            }else if (accountNameText.toLowerCase().contains("visa") || accountNameText.toLowerCase().contains("card")) {
+                available=true;
+                currBalance=false;
+                Assert.assertTrue("Icon does not match Current Account type! Found: " + iconSrc
+                        , iconSrc.contains("CreditCard-Icon"));
+            }
+            else if (accountNameText.toLowerCase().contains("a vista") || accountNameText.toLowerCase().contains("saving"))
+                Assert.assertTrue("Icon does not match Current Account type! Found: " + iconSrc
+                        ,iconSrc.contains("SavingsAccount-Icon"));
+            else if (accountNameText.toLowerCase().contains("term deposit") || accountNameText.toLowerCase().contains("oročeni depozit")) {
+                currBalance = false;
+
+                Assert.assertTrue("Icon does not match Current Account type! Found: " + iconSrc
+                        , iconSrc.contains("TermDepositAccount-Icon"));
+            }
+            else if (accountNameText.toLowerCase().contains("loan") || accountNameText.toLowerCase().contains("kredit"))
+                Assert.assertTrue("Icon does not match Current Account type! Found: " + iconSrc
+                        ,iconSrc.contains("Loan-Icon"));
+
+            //Account number
+            WebElement accountNumber = card.findElement(By.cssSelector("div.callout"));
+            String accountNumberText = accountNumber.getText().trim();
+            Assert.assertTrue("Account number missing",accountNumberText.matches(".*\\d.*"));
+
+            //Available balance title
+            if(!available) {
+                WebElement availableBalanceLabel = card.findElement(
+                        By.xpath(".//div[contains(@class,'heading-5') and contains(text(),'Available balance')]")
+                );
+                Assert.assertTrue("Available balance label missing", availableBalanceLabel.isDisplayed());
+            }
+            //amount
+            WebElement availableBalanceAmount = card.findElement(
+                    By.xpath(".//div[contains(@class,'heading-2')]//span[1]")
+            );
+            String availableBalanceText = availableBalanceAmount.getText().trim();
+            Assert.assertTrue("Available balance amount missing",availableBalanceText.matches(".*\\d.*"));
+
+            //Current balance label
+            if(currBalance){
+                WebElement currentBalanceLabel = card.findElement(
+                    By.xpath(".//div[contains(@class,'heading-5') and contains(text(),'Current balance')]")
+             );
+                Assert.assertTrue("Current balance label missing",currentBalanceLabel.isDisplayed());
+            }
+
+            //nlb-product-card//div[@role="button"]
+            WebElement clickable;
+            try {
+                clickable= card.findElement(By.xpath(".//div[@role='button' and @tabindex='0']"));
+            } catch (NoSuchElementException ex) {
+                throw new AssertionError("Card does not contain inner div with role='button'");
+            }
+            Assert.assertNotNull("Card does not act like a button",clickable);
+        }
+    }
 
 
     @And("Assert element by contains label {string} is displayed")
