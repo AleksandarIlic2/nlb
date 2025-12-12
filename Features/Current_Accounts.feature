@@ -17,11 +17,11 @@ Feature: Current_Accounts
     Then Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-    When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for element by tag "nlb-product-detail-header"
 
     #And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
-    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban"
+    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
@@ -60,7 +60,7 @@ Feature: Current_Accounts
 
     Examples:
       | rowindex |
-      |        2 |
+      |        4 |
 
   #TODO: Dostavljeni useri nemaju CHF
   #@Current_Accounts-Transactions_List_select_Currency_[WEB]_2
@@ -79,11 +79,11 @@ Feature: Current_Accounts
   #  Then Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-  #  When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban"
+  #  When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
   #  And Wait for element by tag "nlb-product-detail-header"
 
   #  And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
-  #  And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban"
+  #  And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
@@ -122,7 +122,7 @@ Feature: Current_Accounts
 
   #  Examples:
   #    | rowindex |
-  #    |        2 |
+  #    |        4 |
 
   @Current_Accounts-Details-Financial_Details_[WEB]
   Scenario Outline: Current_Accounts-Details-Financial_Details_[WEB]
@@ -140,7 +140,7 @@ Feature: Current_Accounts
     Then Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-    When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban3"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for element by tag "nlb-product-detail-header"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
@@ -193,7 +193,7 @@ Feature: Current_Accounts
       Then Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-      When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban"
+      When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
       And Wait for element by tag "nlb-product-detail-header"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
@@ -250,12 +250,12 @@ Feature: Current_Accounts
       Then Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-      When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban2"
+      When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
       And Wait for element by tag "nlb-product-detail-header"
 
     #HEADER DISPLAY
      # Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name2"
-      And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban2"
+      And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
       And Assert Product icon in Product details is displayed and has icon path "https://test.dbp.nlbkb.rs/assets/img/product-icon/CurrentAccount-Icon.svg"
       And Assert available balance and current balance in header
 
@@ -263,7 +263,7 @@ Feature: Current_Accounts
       When Click on tab "Details" from tablist
       And Wait for product details to load
       #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name2"
-      And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban2"
+      And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
       And Assert Product icon in Product details is displayed and has icon path "https://test.dbp.nlbkb.rs/assets/img/product-icon/CurrentAccount-Icon.svg"
       And Assert available balance and current balance in header
 
@@ -289,11 +289,11 @@ Feature: Current_Accounts
       Then Assert element by class "button-bold" and contains text "Edit list"
 
       #User clicks on a current account on the My Products page
-      When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban"
+      When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
       And Wait for element by tag "nlb-product-detail-header"
 
       #And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
-      And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban"
+      And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
       And Assert order of tabs in tablist

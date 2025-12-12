@@ -34,7 +34,7 @@ Feature: Foreign_Current_Account
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for element by tag "nlb-product-detail-header"
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
@@ -65,7 +65,7 @@ Feature: Foreign_Current_Account
     And Click on element by text " Clear filters "
     Examples:
       | rowindex |
-      |        2 |
+      |        4 |
 
 
   @Current_Foreign_Accounts-Transactions-Download_option_[WEB]
@@ -84,11 +84,11 @@ Feature: Foreign_Current_Account
     Then Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-    When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for element by tag "nlb-product-detail-header"
 
     #And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
-    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "personal_account_iban"
+    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
@@ -137,7 +137,7 @@ Feature: Foreign_Current_Account
 
     Examples:
       | rowindex |
-      |        2 |
+      |        4 |
 
 
   @Foreign_Current_Accounts-Multiple-Filter_Invalid_[WEB]
@@ -149,7 +149,7 @@ Feature: Foreign_Current_Account
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for element by tag "nlb-product-detail-header"
     #TODO: Vrati ovaj korak ispod kad se utvrdi ime racuna
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
@@ -267,7 +267,7 @@ Feature: Foreign_Current_Account
     #And Click on element by text " OK "
     Examples:
       | rowindex |
-      |        2 |
+      |        4 |
 
   @Foreign_Current_Account-Transactions-Filter_By_Date-Predefined_Date_Range_[WEB]
   Scenario Outline: Foreign_Current_Account-Transactions-Filter_By_Date-Predefined_Date_Range_[WEB]
@@ -278,7 +278,7 @@ Feature: Foreign_Current_Account
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "personal_account_iban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for element by tag "nlb-product-detail-header"
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"

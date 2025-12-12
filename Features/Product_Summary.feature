@@ -71,8 +71,8 @@ Feature: Product_Summary
     And Wait for element by class "icon-eye"
 
      #PROMENA IMENA TEKUCIH RACUNA
-    And Change name of product from excel "<rowindex>" columnName "personal_account_iban1" into "First current account"
-    And Change name of product from excel "<rowindex>" columnName "personal_account_iban2" into "Second current account"
+    And Change name of product from excel "<rowindex>" columnName "current_account_3_bban" into "First current account"
+    And Change name of product from excel "<rowindex>" columnName "current_account_1_bban" into "Second current account"
 
     #PROMENA IMENA KARTICA
     And Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into "First credit card"
@@ -97,13 +97,13 @@ Feature: Product_Summary
     And Wait for element by class "icon-eye"
 
     #Then Change name of the first product "Foreign currency payment accounts"
-    And Change name of product from excel "<rowindex>" columnName "personal_account_iban1" into "Foreign currency payment accounts"
-    And Change name of product from excel "<rowindex>" columnName "personal_account_iban2" into "Foreign currency payment accounts"
-    And Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into "Visa prepaid"
-    And Change name of product from excel "<rowindex>" columnName "credit_card_2_bban" into "Visa revolving card"
-    And Change name of product from excel "<rowindex>" columnName "savings_account_1_bban" into "A vista deposit account"
-    And Change name of product from excel "<rowindex>" columnName "savings_account_2_bban" into "A vista deposit account"
-    And Change name of product from excel "<rowindex>" columnName "term_deposits_1_bban" into "Term deposits"
+    And Change name of product from excel "<rowindex>" columnName "current_account_3_bban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "current_account_1_bban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "credit_card_2_bban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "savings_account_1_bban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "savings_account_2_bban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "term_deposits_1_bban" to previous one
     Examples:
       | rowindex |
       |        1 |
@@ -122,7 +122,7 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
   And Click on element by text "Edit list"
   And Wait for element by class "icon-eye"
 
-  Then Change name of product from excel "<rowindex>" columnName "personal_account_iban" into more than fifty characters
+  Then Change name of product from excel "<rowindex>" columnName "current_account_1_bban" into more than fifty characters
   Then Assert element by text "You have reached the maximum number of characters. 50/50."
   And Click on element by text " Cancel "
 
@@ -138,8 +138,8 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
   Then Assert element by text "You have reached the maximum number of characters. 50/50."
   And Click on element by text " Cancel "
 
-  Then Change name of product from excel "<rowindex>" columnName "personal_account_iban" into " "
-  #And Assert acc name for iban from excel "<rowindex>" columnName "personal_account_iban"
+  Then Change name of product from excel "<rowindex>" columnName "current_account_1_bban" into " "
+  #And Assert acc name for iban from excel "<rowindex>" columnName "current_account_1_bban"
 
   Then Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into " "
   And Assert acc name for iban from excel "<rowindex>" columnName "credit_card_1_bban"
@@ -169,19 +169,19 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
     And Click on element by text "Edit list"
     And Wait for element by class "icon-eye"
 
-    Then Hide product with iban from excel "<rowindex>" columnName "personal_account_iban"
+    Then Hide product with iban from excel "<rowindex>" columnName "current_account_1_bban"
     And Click on tab "My products" from main sidebar
     And Wait for element by text "Edit list"
     And Assert that products in my products have loaded
-    And Assert element from excel "<rowindex>" columnName "personal_account_iban" is not displayed
+    And Assert element from excel "<rowindex>" columnName "current_account_1_bban" is not displayed
     And Click on element by text "Edit list"
     And Wait for element by class "icon-eye"
-    And Unhide product with iban from excel "<rowindex>" columnName "personal_account_iban"
+    And Unhide product with iban from excel "<rowindex>" columnName "current_account_1_bban"
     And Click on tab "My products" from main sidebar
     And Wait for element by text "Edit list"
     And Assert that products in my products have loaded
-    And Scroll to account from excel "<rowindex>" columnName "personal_account_iban" in my products page
-    And Assert element by contains text from excel "<rowindex>" columnName "personal_account_iban" is displayed
+    And Scroll to account from excel "<rowindex>" columnName "current_account_1_bban" in my products page
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
 
     Examples:
       | rowindex |
