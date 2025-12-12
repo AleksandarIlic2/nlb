@@ -10487,6 +10487,18 @@ public class Steps {
         }
     }
 
+    private String getSlovenskiNazivMeseca(Month mesec) {
+        Locale slovenski = new Locale("sl");
+        return mesec.getDisplayName(TextStyle.FULL, slovenski);
+    }
+
+
+    private void waitForElementToBeClickable(String xpath, int timeout) {
+        WebDriver driver = Base.driver;
+        WebDriverWait wait = new WebDriverWait(driver, timeout);
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
+    }
+
     @And("Select date in Realization date label to be {string}")
     public void selectDateInRealizationDateLabelToBe(String dateString) {
         WebDriver driver = Base.driver;
@@ -10525,5 +10537,57 @@ public class Steps {
     public void enterTextInFieldByXPath(String text, String xPath) throws Throwable {
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         hp.EnterTextToElementWithClick(element, text);
+    }
+
+    @And("Scroll element by xPath {string} into bottom view")
+    public void scrollElementByXPathIntoBottomView(String xPath) throws Throwable {
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        JSHelpers.ScrollIntoViewBottom(element);
+    }
+
+    @Then("Assert amount and currency are displayed by xPaths {string} and {string}")
+    public void assertAmountAndCurrencyAreDisplayedByXPathsAnd(String amountXPath, String currencyXPath) throws Throwable {
+        WebElement amountEl = SelectByXpath.CreateElementByXpath(amountXPath);
+        WebElement currencyEl = SelectByXpath.CreateElementByXpath(currencyXPath);
+
+        Assert.assertTrue("Amount je prikazan", amountEl.isDisplayed());
+        Assert.assertTrue("Valuta je prikazana", currencyEl.isDisplayed());
+    }
+
+    @And("Assert Product number is in BBAN format by xPath {string}")
+    public void assertProductNumberIsInBBANFormatByXPath(String xPath) throws Throwable {
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        String accountNumber = element.getText().trim();
+
+        Assert.assertTrue(accountNumber.matches("^\\d{3}-\\d{13}-\\d{2}$"));
+    }
+
+    @And("Assert Product name is displayed by xPath {string}")
+    public void assertProductNameIsDisplayedByXPath(String xPath) throws Throwable {
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        Assert.assertTrue(element.isDisplayed());
+    }
+
+    @And("Assert Product card is clickable by xPath {string}")
+    public void assertProductCardIsClickableByXPath(String xPath) throws Throwable {
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        try {
+            element.click(); // pokušaj klik
+        } catch (Exception e) {
+            Assert.fail("Kartica nije klikabilna: " + e.getMessage());
+        }
+    }
+
+    @And("Assert user is redirected to the page by contains URL {string}")
+    public void assertUserIsRedirectedToThePageByContainsURL(String url) {
+        WebDriver driver = Base.driver;
+        String currentUrl = driver.getCurrentUrl();
+        Assert.assertTrue(currentUrl.contains(url));
+    }
+
+    @And("Assert element by xPath {string} is displayed")
+    public void assertElementByXPathIsDisplayed(String xPath) throws Throwable {
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        Assert.assertTrue(element.isDisplayed());
     }
 }
