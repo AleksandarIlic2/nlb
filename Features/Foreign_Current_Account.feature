@@ -8,7 +8,11 @@ Feature: Foreign_Current_Account
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     When Wait for element by text "Pay or transfer"
 
-    #And Click on element by containing text from Excel "<rowindex>" columnName "personal_account_name1"
+
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    Then Assert element by class "button-bold" and contains text "Edit list"
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Click on element by text "Details"
 
     #And Scroll screen down
@@ -17,8 +21,7 @@ Feature: Foreign_Current_Account
     And Assert that element "Account type" has value "Current account"
     And Assert that element "BIC" has value "KOBBRSBG"
     #And Assert that element "Account owner" is equal to value from Excel "<rowindex>" columnName "username"
-    And Assert that element "Account number" is equal to value from Excel "<rowindex>" columnName "personal_account_number2"
-
+    And Assert that element "Account number" is equal to value from Excel "<rowindex>" columnName "current_account_1_bban"
 
 
     Examples:

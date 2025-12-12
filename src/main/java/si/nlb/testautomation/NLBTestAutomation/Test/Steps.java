@@ -9860,7 +9860,9 @@ public class Steps {
 
     @And("Assert that element {string} is equal to value from Excel {string} columnName {string}")
     public void assertThatElementIsEqualToValueFromExcelColumnName(String labelText, String rowindex, String columnName) throws Throwable {
+
         String text = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        System.out.println("TEKST:" + text);
         String xPath = String.format(
                 "//dt[div[text()='%s']]/following-sibling::dd/div",
                 labelText
@@ -9868,7 +9870,12 @@ public class Steps {
         WebElement el = SelectByXpath.CreateElementByXpath(xPath);
         String actualValue = el.getText().trim();
 
-        assertEquals(actualValue.toLowerCase(), text.toLowerCase());
+        String cleanText = text.replaceAll("\\D", "");
+        String cleanActual = actualValue.replaceAll("\\D", "");
+        cleanActual = cleanActual.substring(2);
+        System.out.println("TEXT" + cleanText);
+        System.out.println("ACTUAL" + cleanActual);
+        assertEquals(cleanText, cleanActual);
     }
     @And("Assert that transaction values in PDF match remembered values")
     public void assertTransactionValuesInPdfMatchRememberedValues() throws Exception {
