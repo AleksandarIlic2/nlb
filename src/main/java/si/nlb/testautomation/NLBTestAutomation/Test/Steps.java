@@ -37,6 +37,7 @@ import java.nio.file.Paths;
 import java.text.*;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.Year;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -9646,8 +9647,6 @@ public class Steps {
         WebElement transactionsTab = tabs.get(0);
         String selected = transactionsTab.getAttribute("aria-selected");
         assertEquals("true",selected);
-
-
     }
 
     @When("Click on tab {string} from tablist")
@@ -10522,5 +10521,93 @@ public class Steps {
     public void assertElementByXPathIsDisplayed(String xPath) throws Throwable {
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         Assert.assertTrue(element.isDisplayed());
+    }
+
+    @And("Assert all cheques from last year")
+    public void assertAllChequesFromLastYear() {
+        // Issue date value span (za svaki ček)
+        String issueDateValueXpath =
+                "//span[normalize-space()='Issue date']/following-sibling::span[1]";
+
+        List<WebElement> dates = Base.driver.findElements(By.xpath(issueDateValueXpath));
+        Assert.assertFalse("Nijedan Issue date nije pronađen.", dates.isEmpty());
+
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+        LocalDate today = LocalDate.now();
+        LocalDate fromDate = today.minusMonths(12);
+
+        for (WebElement el : dates) {
+            String raw = el.getText().trim(); // npr. "06.03.2024"
+            LocalDate issueDate = LocalDate.parse(raw, fmt);
+
+            Assert.assertTrue(
+                    "Ček nije u poslednjih 12 meseci: " + raw,
+                    ( !issueDate.isBefore(fromDate) && !issueDate.isAfter(today) )
+            );
+        }
+    }
+
+    @And("Assert cheques are sorted by issue date descending")
+    public void assertChequesAreSortedByIssueDateDescending() {
+        String issueDateXpath =
+                "//span[normalize-space()='Issue date']/following-sibling::span[1]";
+
+        List<WebElement> elements = Base.driver.findElements(By.xpath(issueDateXpath));
+        Assert.assertTrue("Nema čekova za proveru sortiranja.", elements.size() > 1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        List<LocalDate> dates = new ArrayList<>();
+
+        for (WebElement el : elements) {
+            dates.add(LocalDate.parse(el.getText().trim(), formatter));
+        }
+
+        for (int i = 0; i < dates.size() - 1; i++) {
+            Assert.assertTrue(
+                    "Čekovi nisu sortirani DESC po Issue date. Problem na poziciji " + i,
+                    !dates.get(i).isBefore(dates.get(i + 1))
+            );
+        }
+    }
+
+    @And("Select date in Realization date label to be {string}")
+    public void selectDateInRealizationDateLabelToBe(String dateString) {
+        WebDriver driver = Base.driver;
+
+        // Očekujemo format npr. "10.07.2024"
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate targetDate = LocalDate.parse(dateString, formatter);
+
+        String dan = String.valueOf(targetDate.getDayOfMonth());
+        String mesec = getSlovenskiNazivMeseca(targetDate.getMonth());
+        int godina = targetDate.getYear();
+
+        String fullTarget = dan + ". " + mesec + " " + godina;
+        // npr. "10. jul 2024"
+
+        String dayXPath = "//div[contains(@aria-label, '" + fullTarget + "')]";
+        String prevMonthButtonXPath = "//*[contains(@aria-label, 'Previous month')]";
+
+        // Klikćemo nazad po mesecima dok ne nađemo zadati datum
+        for (int i = 0; i < 12; i++) {
+            List<WebElement> dates = driver.findElements(By.xpath(dayXPath));
+
+            if (!dates.isEmpty()) {
+                dates.get(0).click();
+                System.out.println("Kliknut je datum (from): " + fullTarget);
+                return;
+            } else {
+                waitForElementToBeClickable(prevMonthButtonXPath, 1);
+                driver.findElement(By.xpath(prevMonthButtonXPath)).click();
+            }
+        }
+        throw new RuntimeException("Datum " + fullTarget + " nije pronađen u kalendaru.");
+    }
+
+    @And("Enter text {string} in field by xPath {string}")
+    public void enterTextInFieldByXPath(String text, String xPath) throws Throwable {
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        hp.EnterTextToElementWithClick(element, text);
     }
 }

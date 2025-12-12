@@ -321,3 +321,63 @@ Feature: Current_Accounts
       Examples:
         | rowindex |
         | 1        |
+
+
+    @Products_Current_Domestic_Accounts-Cheques_[WEB]
+    Scenario Outline: Products_Current_Domestic_Accounts-Cheques_[WEB]
+
+      Given Open Login page
+      And Change language to English
+      And Login to the page using user from Excel "<rowindex>" columnName "username"
+      And Assert that products in my products have loaded
+
+      When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+      And Click on element by text "Cheques"
+      And Scroll element by contains text "end of the list" into view
+#      And Assert all cheques from last year
+      And Assert cheques are sorted by issue date descending
+      And Assert element by xPath "//span[normalize-space()='Cheque number']/following-sibling::span[1]" is displayed
+      And Assert element by xPath "//span[normalize-space()='Issue date']/following-sibling::span[1]" is displayed
+      And Assert element by xPath "//span[normalize-space()='Status']/following-sibling::span[1]" is displayed
+      And Assert element by xPath "//span[normalize-space()='Realization date']/following-sibling::span[1]" is displayed
+      And Assert element by xPath "//span[normalize-space()='Amount']/following-sibling::span[1]" is displayed
+      And Assert element by xPath "//span[normalize-space()='Description']/following-sibling::span[1]" is displayed
+      And Assert element by text " Edit " is displayed
+      
+      Then Scroll element by xPath "(//*[contains(@class, 't-gray-900 tw-border')])[1]" into bottom view
+      And Click on element by xpath "(//*[text()=' Edit '])[1]"
+      And Click on button with tag "i" containing class "icon-calendar-today"
+      And Select date in Realization date label to be "17.12.2025"
+      And Enter text "5000" in field by xPath "//nlb-input-amount-currency/div/div/input"
+      And Enter text "Kupovina" in field by xPath "(//nlb-input-text/div/div/div/div/input)[2]"
+      And Click on element by text " Update "
+
+    Examples:
+      | rowindex |
+      |        4 |
+
+
+  @Products_Current_Domestic_Accounts-Cheques-Filter_[WEB]
+  Scenario Outline: Products_Current_Domestic_Accounts-Cheques-Filter_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Assert that products in my products have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Click on element by text "Cheques"
+    And Scroll element by contains text "end of the list" into view
+#      And Assert all cheques from last year
+    And Assert cheques are sorted by issue date descending
+    And Assert element by xPath "//span[normalize-space()='Cheque number']/following-sibling::span[1]" is displayed
+    And Assert element by xPath "//span[normalize-space()='Issue date']/following-sibling::span[1]" is displayed
+    And Assert element by xPath "//span[normalize-space()='Status']/following-sibling::span[1]" is displayed
+    And Assert element by xPath "//span[normalize-space()='Realization date']/following-sibling::span[1]" is displayed
+    And Assert element by xPath "//span[normalize-space()='Amount']/following-sibling::span[1]" is displayed
+    And Assert element by xPath "//span[normalize-space()='Description']/following-sibling::span[1]" is displayed
+    And Assert element by text " Edit " is displayed
+
+    Examples:
+      | rowindex |
+      |        4 |
