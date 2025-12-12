@@ -9353,6 +9353,17 @@ public class Steps {
         System.out.println("Drugi radio button kliknut. Broj računa: " + accountNumber);
         DataManager.userObject.put(favorite_acc, accountNumber);
     }
+    @And("Click Radio Button with index {string} from excel {string} column {string}")
+    public void clickRadioButtonWithIndexFromExcelColumn(String favorite_acc,String rowindex,String column) {
+        String accountNumber = DataManager.getDataFromHashDatamap(rowindex,column);
+
+        String xPath = "//span[normalize-space()=\"" + accountNumber + "\"]/ancestor::div[@class and contains(@class,\"tw-flex\")][1]/preceding-sibling::nlb-radio-button[1]//input[@type=\"radio\"]";
+        WebElement radio = driver.findElement(By.xpath(xPath));
+
+        radio.click();
+
+        DataManager.userObject.put(favorite_acc, accountNumber);
+    }
 
     @And("Assert for first element in product screen")
     public void assertForFirstElementInProductScreen() {
@@ -10269,5 +10280,38 @@ public class Steps {
     }
 
 
+    @And("Click Radio Button Default")
+    public void clickRadioButtonDefault() {
 
+        String xPath = "//span[contains(normalize-space(), \"Default\")]/ancestor::div[contains(@class,\"tw-flex\")][1]/preceding-sibling::nlb-radio-button[1]//input[@type=\"radio\"]";
+        WebElement radio = driver.findElement(By.xpath(xPath));
+        radio.click();
+    }
+
+    @And("Assert for first element in product screen default")
+    public void assertForFirstElementInProductScreenDefault() {
+        String xPath = "(//span[@class='tw-hidden xs:tw-block subheadline'])[1]";
+
+        WebElement account = driver.findElement(By.xpath(xPath));
+
+        String accountNumber = account.getText().trim();
+        System.out.println("Broj računa koji je prvi u listi: " + accountNumber);
+
+        // Poređenje sa očekivanim iz DataManager-a
+        assertEquals(DataManager.userObject.get("default_acc"), accountNumber);
+
+    }
+
+    @And("Assert for first element in product screen default from excel {string} column {string}")
+    public void assertForFirstElementInProductScreenDefaultFromExcelColumn(String rowindex, String column) {
+        String xPath = "(//span[@class='tw-hidden xs:tw-block subheadline'])[1]";
+
+        WebElement account = driver.findElement(By.xpath(xPath));
+
+        String accountNumber = account.getText().trim();
+        System.out.println("Broj računa koji je prvi u listi: " + accountNumber);
+
+        // Poređenje sa očekivanim iz DataManager-a
+        assertEquals(DataManager.getDataFromHashDatamap(rowindex,column), accountNumber);
+    }
 }
