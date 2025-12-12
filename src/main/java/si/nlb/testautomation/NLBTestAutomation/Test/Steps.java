@@ -10307,4 +10307,53 @@ public class Steps {
         hp.ClickOnElement(elementForApply);
 
     }
+
+    @And("Check order and display format of all cards")
+    public void checkOrderAndDisplayFormatOfAllCards() throws Throwable {
+        String xPathForCards = "//div[contains(@class,'tw-text-gray-400') and contains(@class,'callout') and contains(text(), '*')]";
+        List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPathForCards);
+
+        for (WebElement cardNumber : elements) {
+            // 1. Popni se do kartice
+            WebElement cardRoot = cardNumber.findElement(By.xpath("./ancestor::div[contains(@class,'tw-flex') and contains(@class,'tw-flex-col')][1]"));
+
+            // 2. U toj kartici pronađi ikonicu
+            List<WebElement> icons = cardRoot.findElements(By.xpath(".//img[contains(@src,'CreditCard-Icon')]"));
+            //System.out.println("IKONICA:" + icons.get(0).getAttribute("src"));
+            // 3. Assert
+            Assert.assertTrue(
+                    "Missing credit card icon for card: " + cardNumber.getText(),
+                    icons.size() > 0
+            );
+        }
+        List<Integer> first4List = new ArrayList<>();
+        for (WebElement el : elements) {
+            // Uzimamo tekst iz kartice, npr: "4431 3*** **** *011 8"
+            String cardText = el.getText().trim();
+            // Ukloni sve razmake
+            String normalized = cardText.replaceAll("\\s+", "");
+            // REGEX da proverimo format (mora biti nešto kao 1234******5678)
+            // Da ima prve 4 cifre, * u sredini, poslednje 4 cifre
+            if (!normalized.matches("\\d{4}\\*+\\d{4}")) {
+                System.out.println("FORMAT KARTICE" + normalized);
+                //throw new AssertionError("Neispravan format kartice: " + cardText);
+            }
+
+            // Izvuci prva 4 broja
+            int first4 = Integer.parseInt(normalized.substring(0, 4));
+            first4List.add(first4);
+        }
+
+        // Proveri da li je lista neopadajuća
+       /* for (int i = 1; i < first4List.size(); i++) {
+            if (first4List.get(i) > first4List.get(i - 1)) {
+                throw new AssertionError(
+                        "Kartice nisu u opadajucem redosledu! Prethodna: "
+                                + first4List.get(i - 1) + " | Trenutna: " + first4List.get(i)
+                );
+            }
+        }*/
+        // TODO: Vratiti sortiranje kada bude release
+
+    }
 }

@@ -200,7 +200,7 @@ Examples:
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_bban" to previous one
     And Change name of product from excel "<rowindex>" columnName "savings_account_2_bban" to previous one
     And Change name of product from excel "<rowindex>" columnName "term_deposits_1_bban" to previous one
-
+    #TODO: Dodati korak za payments
     Examples:
       | rowindex |
       |        1 |
