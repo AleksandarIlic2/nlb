@@ -1821,52 +1821,6 @@ public class Steps {
         WaitHelpers.WaitForElement(elForWaitElement);
     }
 
-    @And("Scroll element by xPath {string} into bottom view")
-    public void scrollElementByXPathIntoBottomView(String xPath) throws Throwable {
-        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        JSHelpers.ScrollIntoViewBottom(element);
-    }
-
-    @Then("Assert amount and currency are displayed by xPaths {string} and {string}")
-    public void assertAmountAndCurrencyAreDisplayedByXPathsAnd(String amountXPath, String currencyXPath) throws Throwable {
-        WebElement amountEl = SelectByXpath.CreateElementByXpath(amountXPath);
-        WebElement currencyEl = SelectByXpath.CreateElementByXpath(currencyXPath);
-
-        Assert.assertTrue("Amount je prikazan", amountEl.isDisplayed());
-        Assert.assertTrue("Valuta je prikazana", currencyEl.isDisplayed());
-    }
-
-    @And("Assert Product number is in BBAN format by xPath {string}")
-    public void assertProductNumberIsInBBANFormatByXPath(String xPath) throws Throwable {
-        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        String accountNumber = element.getText().trim();
-
-        Assert.assertTrue(accountNumber.matches("^\\d{3}-\\d{13}-\\d{2}$"));
-    }
-
-    @And("Assert Product name is displayed by xPath {string}")
-    public void assertProductNameIsDisplayedByXPath(String xPath) throws Throwable {
-        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
-    }
-
-    @And("Assert Product card is clickable by xPath {string}")
-    public void assertProductCardIsClickableByXPath(String xPath) throws Throwable {
-        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        try {
-            element.click(); // pokušaj klik
-        } catch (Exception e) {
-            Assert.fail("Kartica nije klikabilna: " + e.getMessage());
-        }
-    }
-
-    @And("Assert user is redirected to the page by contains URL {string}")
-    public void assertUserIsRedirectedToThePageByContainsURL(String url) {
-        WebDriver driver = Base.driver;
-        String currentUrl = driver.getCurrentUrl();
-        Assert.assertTrue(currentUrl.contains(url));
-    }
-
     @And("Hide product with iban from excel {string} columnName {string}")
     public void hideProductWithIbanFromExcelColumnName(String rowindex, String columnName) throws Throwable {
         String stringForProductIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
@@ -4048,7 +4002,7 @@ public class Steps {
 
     @And("Enter {string} to Amount filter {string}")
     public void enterToAmountFilter(String amount, String filterName) throws Throwable {
-        String xPath = "//label[text()='" + filterName + " ']/following-sibling::div/input";
+        String xPath = "//nlb-input-amount-currency//label[contains(text(), '" + filterName + "')]/following-sibling::div/input[@placeholder='0,00'][1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         hp.EnterTextToElement(element, amount);
     }
@@ -9401,6 +9355,17 @@ public class Steps {
         System.out.println("Drugi radio button kliknut. Broj računa: " + accountNumber);
         DataManager.userObject.put(favorite_acc, accountNumber);
     }
+    @And("Click Radio Button with index {string} from excel {string} column {string}")
+    public void clickRadioButtonWithIndexFromExcelColumn(String favorite_acc,String rowindex,String column) {
+        String accountNumber = DataManager.getDataFromHashDatamap(rowindex,column);
+
+        String xPath = "//span[normalize-space()=\"" + accountNumber + "\"]/ancestor::div[@class and contains(@class,\"tw-flex\")][1]/preceding-sibling::nlb-radio-button[1]//input[@type=\"radio\"]";
+        WebElement radio = driver.findElement(By.xpath(xPath));
+
+        radio.click();
+
+        DataManager.userObject.put(favorite_acc, accountNumber);
+    }
 
     @And("Assert for first element in product screen")
     public void assertForFirstElementInProductScreen() {
@@ -9420,22 +9385,26 @@ public class Steps {
     public void accountsAreDisplayedInTheFollowingOrder(DataTable dataTable) {
         List<String> expectedOrder = dataTable.asList();
 
-        List<WebElement> accountTitles = driver.findElements(
+       /* List<WebElement> accountTitles = driver.findElements(
                 By.cssSelector("nlb-product-card .product-type, nlb-product-card h3, nlb-product-card .title")
-        );
+        );*/
+        List<WebElement> accountTitles = driver.findElements(By.xpath("//nlb-product-card//div[contains(@class, 'heading-3')]"));
 
         List<String> normalizedOrder = accountTitles.stream()
                 .map(WebElement::getText)
                 .map(String::trim)
                 .map(text -> {
                     String lower = text.toLowerCase();
-                    if (lower.contains("payment account"))
+                    //System.out.println("naslov: " + lower);
+                    if (lower.contains("payment account") || lower.contains("tekući") || lower.contains("devizni") )
                         return "Current accounts";
-                    else if (lower.contains("visa"))
+                    else if (lower.contains("visa") || lower.contains("card"))
                         return "Cards";
-                    else if (lower.contains("deposit"))
+                    else if (lower.contains("a vista") || lower.contains("saving"))
                         return "Savings accounts";
-                    else if (lower.contains("loan"))
+                    else if (lower.contains("term deposit") || lower.contains("oročeni depozit"))
+                        return "Term deposit";
+                    else if (lower.contains("loan") || lower.contains("kredit"))
                         return "Loans";
                     else
                         return "Other";
@@ -9446,7 +9415,7 @@ public class Steps {
         for (String expected : expectedOrder) {
             int index = normalizedOrder.indexOf(expected);
             if (index == -1) {
-                // Sekcija ne postoji, preskačemo
+                // Sekcija ne postoji
                 continue;
             }
             assertTrue("Section '" + expected + "' is out of order", index >= lastIndex);
@@ -9455,6 +9424,89 @@ public class Steps {
         System.out.println(normalizedOrder);
     }
 
+    @And("Assert product details are displayed")
+    public void assertProductDetailsAreDisplayed() {
+
+        // Pronađi sve kartice proizvoda
+        List<WebElement> cards = driver.findElements(By.cssSelector("nlb-product-card"));
+        boolean available =false;
+        boolean currBalance =true;
+        for (WebElement card : cards) {
+
+            // Ikonica tipa računa
+            WebElement icon = card.findElement(By.cssSelector("nlb-product-icon img"));
+            Assert.assertTrue("Account type icon is missing",icon.isDisplayed());
+
+            //Account name / Nickname
+            WebElement accountName = card.findElement(By.cssSelector("div.heading-3"));
+            String accountNameText = accountName.getText().trim();
+            Assert.assertFalse("Account name is missing",accountNameText.isEmpty());
+            System.out.println("Trenutna kartica: " + accountNameText);
+
+            String iconSrc = icon.getAttribute("src");
+
+            if (accountNameText.toLowerCase().contains("tekuci") ||
+                    accountNameText.toLowerCase().contains("tekući") ||
+                    accountNameText.toLowerCase().contains("current")) {
+                available=true;
+                Assert.assertTrue("Icon does not match Current Account type! Found: " + iconSrc
+                        ,iconSrc.contains("CurrentAccount-Icon"));
+            }else if (accountNameText.toLowerCase().contains("visa") || accountNameText.toLowerCase().contains("card")) {
+                available=true;
+                currBalance=false;
+                Assert.assertTrue("Icon does not match Current Account type! Found: " + iconSrc
+                        , iconSrc.contains("CreditCard-Icon"));
+            }
+            else if (accountNameText.toLowerCase().contains("a vista") || accountNameText.toLowerCase().contains("saving"))
+                Assert.assertTrue("Icon does not match Current Account type! Found: " + iconSrc
+                        ,iconSrc.contains("SavingsAccount-Icon"));
+            else if (accountNameText.toLowerCase().contains("term deposit") || accountNameText.toLowerCase().contains("oročeni depozit")) {
+                currBalance = false;
+
+                Assert.assertTrue("Icon does not match Current Account type! Found: " + iconSrc
+                        , iconSrc.contains("TermDepositAccount-Icon"));
+            }
+            else if (accountNameText.toLowerCase().contains("loan") || accountNameText.toLowerCase().contains("kredit"))
+                Assert.assertTrue("Icon does not match Current Account type! Found: " + iconSrc
+                        ,iconSrc.contains("Loan-Icon"));
+
+            //Account number
+            WebElement accountNumber = card.findElement(By.cssSelector("div.callout"));
+            String accountNumberText = accountNumber.getText().trim();
+            Assert.assertTrue("Account number missing",accountNumberText.matches(".*\\d.*"));
+
+            //Available balance title
+            if(!available) {
+                WebElement availableBalanceLabel = card.findElement(
+                        By.xpath(".//div[contains(@class,'heading-5') and contains(text(),'Available balance')]")
+                );
+                Assert.assertTrue("Available balance label missing", availableBalanceLabel.isDisplayed());
+            }
+            //amount
+            WebElement availableBalanceAmount = card.findElement(
+                    By.xpath(".//div[contains(@class,'heading-2')]//span[1]")
+            );
+            String availableBalanceText = availableBalanceAmount.getText().trim();
+            Assert.assertTrue("Available balance amount missing",availableBalanceText.matches(".*\\d.*"));
+
+            //Current balance label
+            if(currBalance){
+                WebElement currentBalanceLabel = card.findElement(
+                    By.xpath(".//div[contains(@class,'heading-5') and contains(text(),'Current balance')]")
+             );
+                Assert.assertTrue("Current balance label missing",currentBalanceLabel.isDisplayed());
+            }
+
+            //nlb-product-card//div[@role="button"]
+            WebElement clickable;
+            try {
+                clickable= card.findElement(By.xpath(".//div[@role='button' and @tabindex='0']"));
+            } catch (NoSuchElementException ex) {
+                throw new AssertionError("Card does not contain inner div with role='button'");
+            }
+            Assert.assertNotNull("Card does not act like a button",clickable);
+        }
+    }
 
 
     @And("Assert element by contains label {string} is displayed")
@@ -10314,213 +10366,77 @@ public class Steps {
         return LocalDate.parse(dateString, formatter);
     }
 
-    @And("Assert Product BBAN in Product details is from Excel {string} columnName {string}")
-    public void assertProductBBANInProductDetailsIsFromExcelColumnName(String rowindex, String columnName) throws Throwable {
-        String accName = DataManager.getDataFromHashDatamap(rowindex, columnName);
-        String xPath = "//nlb-bban";
-        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        assertEquals(accName, element.getAttribute("innerText"));
-        assertTrue(element.isDisplayed());
-    }
 
-    @Then("Assert element by xPath {string}")
-    public void assertElementByXPath(String xPath) throws Throwable {
-        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
-    }
+    @Then("Assert that account from {string} with columnName {string} is grayed out")
+    public void assertThatAccountFromWithColumnNameIsGrayedOut(String rowindex, String columnName) throws Throwable {
+        String stringForProductIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
 
-    private String getSlovenskiNazivMeseca(Month mesec) {
-        Locale slovenski = new Locale("sl");
-        return mesec.getDisplayName(TextStyle.FULL, slovenski);
+        String ibanXpath = "//span[contains(text(),'" + stringForProductIban + "')]/parent::div";
+
+        WebElement ibanElement = SelectByXpath.CreateElementByXpath(ibanXpath);
+
+        String ibanClasses = ibanElement.getAttribute("class");
+        System.out.println("SVE KLASE:" + ibanClasses);
+        Assert.assertTrue("IBAN is NOT greyed out! Classes: " + ibanClasses,
+                ibanClasses.contains("tw-text-gray-700"));
+
+
     }
 
 
-    private void waitForElementToBeClickable(String xpath, int timeout) {
-        WebDriver driver = Base.driver;
-        WebDriverWait wait = new WebDriverWait(driver, timeout);
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
+    @And("Change name of product from excel {string} columnName {string} to previous one")
+    public void changeNameOfProductFromExcelColumnNameToPreviousOne(String rowindex, String columnName) throws Throwable {
+
+        String stringForProductIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+
+        String xPathForEditIcon = "//*[contains(text(),'" + stringForProductIban + "')]//ancestor::nlb-products-edit-list-item//*[contains(@class,'icon-edit')]";
+        WebElement elementForEditIcon = SelectByXpath.CreateElementByXpath(xPathForEditIcon);
+        JSHelpers.ScrollIntoViewBottom(elementForEditIcon);
+        hp.ClickOnElement(elementForEditIcon);
+
+        By elForEditProductNameAssert = SelectByText.CreateByElementByText("Rename product");
+        WaitHelpers.WaitForElement(elForEditProductNameAssert);
+
+        String xPathForXButton = "//i[contains(@class,'icon-close')]";
+        WebElement xButton = SelectByXpath.CreateElementByXpath(xPathForXButton);
+        hp.ClickOnElement(xButton);
+
+        WebElement elementForApply = SelectByText.CreateElementByXpathContainingText("Apply");
+        hp.ClickOnElement(elementForApply);
+
+    }
+    @And("Assert for first element in product screen default")
+    public void assertForFirstElementInProductScreenDefault() {
+        String xPath = "(//span[@class='tw-hidden xs:tw-block subheadline'])[1]";
+
+        WebElement account = driver.findElement(By.xpath(xPath));
+
+        String accountNumber = account.getText().trim();
+        System.out.println("Broj računa koji je prvi u listi: " + accountNumber);
+
+        // Poređenje sa očekivanim iz DataManager-a
+        assertEquals(DataManager.userObject.get("default_acc"), accountNumber);
+
     }
 
-    @And("Select date in From label to be {string}")
-    public void selectDateInFromLabelToBe(String dateString) {
-        WebDriver driver = Base.driver;
+    @And("Assert for first element in product screen default from excel {string} column {string}")
+    public void assertForFirstElementInProductScreenDefaultFromExcelColumn(String rowindex, String column) {
+        String xPath = "(//span[@class='tw-hidden xs:tw-block subheadline'])[1]";
 
-        // Očekujemo format npr. "10.07.2024"
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate targetDate = LocalDate.parse(dateString, formatter);
+        WebElement account = driver.findElement(By.xpath(xPath));
 
-        String dan = String.valueOf(targetDate.getDayOfMonth());
-        String mesec = getSlovenskiNazivMeseca(targetDate.getMonth());
-        int godina = targetDate.getYear();
+        String accountNumber = account.getText().trim();
+        System.out.println("Broj računa koji je prvi u listi: " + accountNumber);
 
-        String fullTarget = dan + ". " + mesec + " " + godina;
-        // npr. "10. jul 2024"
-
-        String dayXPath = "//div[contains(@aria-label, '" + fullTarget + "')]";
-        String prevMonthButtonXPath = "//*[contains(@aria-label, 'Previous month')]";
-
-        // Klikćemo nazad po mesecima dok ne nađemo zadati datum
-        for (int i = 0; i < 12; i++) {
-            List<WebElement> dates = driver.findElements(By.xpath(dayXPath));
-
-            if (!dates.isEmpty()) {
-                dates.get(0).click();
-                System.out.println("Kliknut je datum (from): " + fullTarget);
-                return;
-            } else {
-                waitForElementToBeClickable(prevMonthButtonXPath, 1);
-                driver.findElement(By.xpath(prevMonthButtonXPath)).click();
-            }
-        }
-
-        throw new RuntimeException("Datum " + fullTarget + " nije pronađen u kalendaru.");
+        // Poređenje sa očekivanim iz DataManager-a
+        assertEquals(DataManager.getDataFromHashDatamap(rowindex,column), accountNumber);
     }
 
-    @And("Select date in To label to be {string}")
-    public void selectDateInToLabelToBe(String dateString) {
-        WebDriver driver = Base.driver;
-
-        // Očekujemo format npr. "10.07.2024"
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate targetDate = LocalDate.parse(dateString, formatter);
-
-        String dan = String.valueOf(targetDate.getDayOfMonth());
-        String mesec = getSlovenskiNazivMeseca(targetDate.getMonth());
-        int godina = targetDate.getYear();
-
-        String fullTarget = dan + ". " + mesec + " " + godina;
-        // npr. "10. jul 2024"
-
-        String dayXPath = "//div[contains(@aria-label, '" + fullTarget + "')]";
-
-        String calendarButtonXPath = "(//nlb-icon[@role='button'])[2]";
-        String nextMonthButtonXPath = "//*[contains(@aria-label, 'Next month')]";
-
-        waitForElementToBeClickable(calendarButtonXPath, 2);
-        driver.findElement(By.xpath(calendarButtonXPath)).click();
-
-        // Klikćemo napred po mesecima dok ne nađemo zadati datum
-        for (int i = 0; i < 12; i++) {
-            List<WebElement> dates = driver.findElements(By.xpath(dayXPath));
-
-            if (!dates.isEmpty()) {
-                dates.get(0).click();
-                System.out.println("Kliknut je datum (to): " + fullTarget);
-                return;
-            } else {
-                waitForElementToBeClickable(nextMonthButtonXPath, 1);
-                driver.findElement(By.xpath(nextMonthButtonXPath)).click();
-            }
-        }
-
-        throw new RuntimeException("Datum " + fullTarget + " nije pronađen u kalendaru.");
-    }
-
-    @And("Assert transaction dates are between {string} and {string}")
-    public void assertTransactionDatesAreBetween(String fromDateString, String toDateString) throws Throwable {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
-        LocalDate fromDate = LocalDate.parse(fromDateString, formatter);
-        LocalDate toDate = LocalDate.parse(toDateString, formatter);
-
-        String datesXPath = "//*[contains(@class, 'caption medium tw-flex')]";
-
-        List<WebElement> dateElements = SelectByXpath.CreateElementsByXpath(datesXPath);
-        Assert.assertFalse("Nije pronađen nijedan datum transakcije!", dateElements.isEmpty());
-
-        for (WebElement element : dateElements) {
-            String rawText = element.getText().trim();
-            if (rawText.isEmpty()) {
-                continue;
-            }
-
-            // Pretpostavljamo format "23.07.2025" u tekstu
-            // (ako ima još teksta, regex će izvući samo datum)
-            Pattern pattern = Pattern.compile("(\\d{2}\\.\\d{2}\\.\\d{4})");
-            Matcher matcher = pattern.matcher(rawText);
-
-            if (!matcher.find()) {
-                Assert.fail("Nisam uspeo da izvučem datum iz stringa: '" + rawText + "'");
-            }
-
-            String dateString = matcher.group(1);
-            LocalDate txDate = LocalDate.parse(dateString, formatter);
-
-            Assert.assertFalse(
-                    "Transakcija sa datumom " + txDate + " je PRE od from datuma " + fromDate,
-                    txDate.isBefore(fromDate)
-            );
-            Assert.assertFalse(
-                    "Transakcija sa datumom " + txDate + " je POSLE to datuma " + toDate,
-                    txDate.isAfter(toDate)
-            );
-        }
-    }
-
-    @And("Assert transaction amounts are between {string} and {string}")
-    public void assertTransactionAmountsAreBetween(String fromStr, String toStr) throws Throwable {
-
-        double from = Double.parseDouble(fromStr.replace(",", "."));
-        double to   = Double.parseDouble(toStr.replace(",", "."));
-
-        String xpath = "//*[contains(@class, 'flex tw-items-start')]";
-
-        List<WebElement> amountElements = SelectByXpath.CreateElementsByXpath(xpath);
-
-        Assert.assertFalse("Nema transakcija na stranici!", amountElements.isEmpty());
-
-        for (WebElement el : amountElements) {
-
-            String rawText = el.getText().trim();
-            if (rawText.isEmpty()) {
-                continue;
-            }
-
-            // 1. Izvući broj iz stringa
-            // Podržava formate:
-            // "-120,00", "120,00", "+120,00", "120", "-120", "120.00"
-            Pattern p = Pattern.compile("([+-]?[0-9]+([.,][0-9]+)?)");
-            Matcher m = p.matcher(rawText);
-
-            if (!m.find()) {
-                Assert.fail("Nisam uspeo da izvučem amount iz: " + rawText);
-            }
-
-            String numberStr = m.group(1).replace(",", ".");
-            double value = Double.parseDouble(numberStr);
-
-            double absValue = Math.abs(value);
-
-            // 2. Provera raspona
-            Assert.assertTrue(
-                    "Vrednost " + value + " (abs=" + absValue +
-                            ") nije u opsegu " + from + " - " + to,
-                    absValue >= from && absValue <= to
-            );
-        }
-    }
-
-    @And("Assert element by contains src {string} is displayed")
-    public void assertElementByContainsSrcIsDisplayed(String src) throws Throwable {
-        String xPath = "//*[contains(@src, 'CreditCard-Icon')]";
-        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
-    }
-
-    @And("Assert PAN card number by containing text {string}")
-    public void assertPANCardNumberByContainingText(String text) throws Throwable {
-        String xPath = "//*[contains(text(), '"+ text +"')]";
-        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-
-        String cardNumber = element.getText().trim();
-        Assert.assertTrue(cardNumber.matches("^\\d{4} \\*{4} \\*{4} \\d{4}$"));
-        Assert.assertTrue(element.isDisplayed());
-    }
-
-    @And("Assert element by xPath {string} is displayed")
-    public void assertElementByXPathIsDisplayed(String xPath) throws Throwable {
-        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        Assert.assertTrue(element.isDisplayed());
+    @And("Click Radio Button Default")
+    public void clickRadioButtonDefault() {
+        String xPath = "//span[contains(normalize-space(), \"Default\")]/ancestor::div[contains(@class,\"tw-flex\")][1]/preceding-sibling::nlb-radio-button[1]//input[@type=\"radio\"]";
+        WebElement radio = driver.findElement(By.xpath(xPath));
+        radio.click();
     }
 
     @And("Assert all cheques from last year")
