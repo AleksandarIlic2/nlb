@@ -50,16 +50,16 @@ Examples:
     Then Hide product with iban from excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for "1" seconds
     Then Assert that account from "<rowindex>" with columnName "current_account_1_bban" is grayed out
-    Then Hide product with iban from excel "<rowindex>" columnName "current_account_1_bban"
+    Then Hide product with iban from excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for "1" seconds
-    Then Assert that account from "<rowindex>" with columnName "current_account_1_bban" is grayed out
-    Then Hide product with iban from excel "<rowindex>" columnName "current_account_1_bban"
+    Then Assert that account from "<rowindex>" with columnName "current_account_2_bban" is grayed out
+    Then Hide product with iban from excel "<rowindex>" columnName "current_account_3_bban"
 
     And Assert element by contains text "At least one current account must be enabled"
     And Wait for "1" seconds
     And Unhide product with iban from excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for "1" seconds
-    And Unhide product with iban from excel "<rowindex>" columnName "current_account_1_bban"
+    And Unhide product with iban from excel "<rowindex>" columnName "current_account_2_bban"
 
 
     Examples:
@@ -227,7 +227,7 @@ Examples:
     And Wait for element by text " Apply "
     Then Assert element by class "tw-items-center" and contains text "Apply"
     #User choose account
-    And Click Radio Button with index "favorite_acc" from excel "<rowindex>" column "personal_account_iban2"
+    And Click Radio Button with index "favorite_acc" from excel "<rowindex>" column "current_account_1_bban"
     #User clicks on Apply button
     And Click on element by text " Apply "
     And Wait for element by text "Success"
