@@ -8,7 +8,11 @@ Feature: Foreign_Current_Account
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     When Wait for element by text "Pay or transfer"
 
-    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_name"
+    #And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_name"
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    Then Assert element by class "button-bold" and contains text "Edit list"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Click on element by text "Details"
 
     #And Scroll screen down

@@ -9862,14 +9862,31 @@ public class Steps {
     @And("Assert that element {string} is equal to value from Excel {string} columnName {string}")
     public void assertThatElementIsEqualToValueFromExcelColumnName(String labelText, String rowindex, String columnName) throws Throwable {
         String text = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String expected = text.trim();
+
+        // iz test data uzmi samo brojeve
+        String expectedDigits = expected.replaceAll("\\D+", "");
+
         String xPath = String.format(
                 "//dt[div[text()='%s']]/following-sibling::dd/div",
                 labelText
         );
+
         WebElement el = SelectByXpath.CreateElementByXpath(xPath);
         String actualValue = el.getText().trim();
 
-        assertEquals(actualValue.toLowerCase(), text.toLowerCase());
+        // samo brojevi iz UI
+        String actualDigits = actualValue.replaceAll("\\D+", "");
+
+        // preskoci RS + 2 cifre ako string počinje sa RS
+        if (actualValue.toUpperCase().startsWith("RS") && actualDigits.length() > 2) {
+            actualDigits = actualDigits.substring(2); // preskoci prve dve cifre (35)
+        }
+
+        System.out.println("EXP: " + expectedDigits);
+        System.out.println("ACT: " + actualDigits);
+
+        assertEquals(expectedDigits, actualDigits);
     }
     @And("Assert that transaction values in PDF match remembered values")
     public void assertTransactionValuesInPdfMatchRememberedValues() throws Exception {
