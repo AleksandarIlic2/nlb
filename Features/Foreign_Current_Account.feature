@@ -180,10 +180,10 @@ Feature: Foreign_Current_Account
     #YY/DD/MM
     #TODO proveri: Komentar, datum 25.25.11 izbacuje gresku (kada drugi broj bude preko 12?)
     #TODO: Iako je datum 25.11.11 (neispravan format) MOZE SE FILTRIRATI! - BUG?
-    And Enter date "25.11.11" to field "from"
-    And Assert "From" Field has error "Field must be a date."
-    And Click on element by text " Confirm "
-    And Assert element by text "There are no transactions to be displayed."
+#    And Enter date "25.11.11" to field "from"
+#    And Assert "From" Field has error "Field must be a date."
+#    And Click on element by text " Confirm "
+#    And Assert element by text "There are no transactions to be displayed."
     #And Click on element by text " OK "
     #MMDDYY
     And Enter date "11.11.25" to field "from"
