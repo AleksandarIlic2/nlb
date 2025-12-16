@@ -229,6 +229,7 @@ Feature: Current_Domestic_Accounts
     And Enter date "petijanuardvehiljadedvadesetpete" to field "from"
     And Assert "From" Field has error "Field must be a date."
     And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
     And Assert element by text "There are no transactions to be displayed."
     #And Click on element by text " OK "
     #start date later than end date TODO
@@ -245,12 +246,14 @@ Feature: Current_Domestic_Accounts
     And Enter date "petijanuardvehiljadedvadesetpete" to field "to"
     And Assert "To" Field has error "Field must be a date."
     And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
     And Assert element by text "There are no transactions to be displayed."
    # And Click on element by text " OK "
     #special characters - END
     And Enter date "11.11.25@" to field "to"
     And Assert "To" Field has error "Field must be a date."
     And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
     And Assert element by text "There are no transactions to be displayed."
    # And Click on element by text " OK "
      #DD/MM/YY - END
@@ -263,6 +266,7 @@ Feature: Current_Domestic_Accounts
     And Enter date "25.25.11" to field "to"
     And Assert "To" Field has error "Field must be a date."
     And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
     And Assert element by text "There are no transactions to be displayed."
    # And Click on element by text " OK "
     #MMDDYY - END
@@ -590,7 +594,7 @@ Feature: Current_Domestic_Accounts
     And Select date in From label to be "10.07.2025"
     And Select date in To label to be "24.07.2025"
     And Click on element by text " Confirm "
-    And Scroll element by contains text " OBJEDINJENA NAPLATA " into view
+    And Scroll element by contains text "end of the list" into view
     And Assert transaction dates are between "10.07.2025" and "24.07.2025"
     And Scroll element by contains text " Clear filters " into view
     And Click on element by text " Clear filters "

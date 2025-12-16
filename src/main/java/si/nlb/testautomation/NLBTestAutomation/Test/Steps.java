@@ -15,6 +15,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import si.nlb.testautomation.NLBTestAutomation.Action.*;
+import si.nlb.testautomation.NLBTestAutomation.Helpers.Log;
 import si.nlb.testautomation.NLBTestAutomation.Helpers.Utilities;
 import si.nlb.testautomation.NLBTestAutomation.JS.JSHelpers;
 import si.nlb.testautomation.NLBTestAutomation.Selectors.*;
@@ -10923,6 +10924,20 @@ public class Steps {
                             ") nije u opsegu " + from + " - " + to,
                     absValue >= from && absValue <= to
             );
+        }
+    }
+
+    @And("Click on {string} button if displayed")
+    public void clickOnButtonIfDisplayed(String text) {
+        String xPath = "//*[text()='" + text + "']";
+
+        List<WebElement> okButtons = driver.findElements(By.xpath(xPath));
+
+        if (!okButtons.isEmpty()) {
+            okButtons.get(0).click();
+            Log.info("OK button found and clicked");
+        } else {
+            Log.info("OK button not displayed – skipping click");
         }
     }
 }

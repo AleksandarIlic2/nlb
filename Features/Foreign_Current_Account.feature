@@ -195,6 +195,7 @@ Feature: Foreign_Current_Account
     And Enter date "petijanuardvehiljadedvadesetpete" to field "from"
     And Assert "From" Field has error "Field must be a date."
     And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
     And Assert element by text "There are no transactions to be displayed."
     #And Click on element by text " OK "
     #start date later than end date TODO
@@ -211,38 +212,37 @@ Feature: Foreign_Current_Account
     And Enter date "petijanuardvehiljadedvadesetpete" to field "to"
     And Assert "To" Field has error "Field must be a date."
     And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
     And Assert element by text "There are no transactions to be displayed."
-   # And Click on element by text " OK "
     #special characters - END
     And Enter date "11.11.25@" to field "to"
     And Assert "To" Field has error "Field must be a date."
     And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
     And Assert element by text "There are no transactions to be displayed."
-   # And Click on element by text " OK "
      #DD/MM/YY - END
     And Enter date "11.11.25" to field "to"
     And Assert "To" Field has error "Field must be a date."
     And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
     And Assert element by text "There are no transactions to be displayed."
-   # And Click on element by text " OK "
     #YY/DD/MM - END
     And Enter date "25.25.11" to field "to"
     And Assert "To" Field has error "Field must be a date."
     And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
     And Assert element by text "There are no transactions to be displayed."
-   # And Click on element by text " OK "
     #MMDDYY - END
     And Enter date "11.11.25" to field "to"
     And Assert "To" Field has error "Field must be a date."
     And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
     And Assert element by text "There are no transactions to be displayed."
-   # And Click on element by text " OK "
     #letters - MINAMOUNT
     And Enter "textAmount" to Amount filter "From"
     And Assert "From" amount field value
     And Click on element by text " Confirm "
     And Assert element by text "There are no transactions to be displayed."
-   # And Click on element by text " OK "
     #specialCharacters - MINAMOUNT
 
     And Enter "@@@" to Amount filter "From"
@@ -256,7 +256,6 @@ Feature: Foreign_Current_Account
     And Assert element by text "From amount must be smaller than To amount."
     And Click on element by text " Confirm "
     And Assert element by text "There are no transactions to be displayed."
-  #  And Click on element by text " OK "
     #letters - MAXAMOUNT
     And Enter "asdasdasd" to Amount filter "To"
     And Assert "To" amount field value
