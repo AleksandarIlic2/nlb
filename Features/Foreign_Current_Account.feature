@@ -121,7 +121,8 @@ Feature: Foreign_Current_Account
     And Select transaction type "Outgoing transactions" in Advanced filters
     And Click on NLB button "Confirm"
     And Wait for first transaction in Product details
-    And Assert there are only Outgoing transactions in transactions list
+    #And Assert there are only Outgoing transactions in transactions list
+    And Assert there are only "Outgoing transactions" transactions in transactions list
 
     Then Remember transactions
       # and clicks on the Download in Excel option
@@ -129,13 +130,14 @@ Feature: Foreign_Current_Account
     And Assert Download transactions options are "EXCEL" and "CSV"
     And Scroll element by contains text "CSV" into bottom view
     And Click on element by containing text "EXCEL"
-    And Assert document with name "Transactions.xlsx" is downloaded
+    And Assert document with name starting with "Transactions" and has file type ".xlsx" is downloaded
+    #And Assert document with name "Transactions.xlsx" is downloaded
     Then Assert xlsx values are correct
        # and clicks on the Download in CSV option
     And Click on normalized text "Download transaction list"
     And Assert Download transactions options are "EXCEL" and "CSV"
     And Click on element by containing text "CSV"
-    And Assert document with name "Transactions.csv" is downloaded
+    And Assert document with name starting with "Transactions" and has file type "csv" is downloaded
     Then Assert csv values are correct
 
 

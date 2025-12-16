@@ -4027,13 +4027,11 @@ public class Steps {
                 String text = element.getAttribute("innerText").replace(",", ".").replace("−", "");
                 double value = Double.parseDouble(text);
 
-                // Check if the value is within the range
                 if (value < lowerBound || value > upperBound) {
                     allInRange = false;
                     break;
                 }
             } catch (NumberFormatException e) {
-                // Handle the exception if conversion fails
                 allInRange = false;
                 break;
             }
@@ -10036,9 +10034,19 @@ public class Steps {
     @Then("Assert csv values are correct")
     public void assertCsvValuesAreCorrect() throws Exception {
         List<Map<String,String>> transactions = (List<Map<String,String>>) DataManager.userObject.get("Transactions");
+        WaitHelpers.waitForSeconds(5);
 
-        String downloadPath = System.getProperty("user.home") + "/Downloads/Transactions.csv";
+        //String downloadPath = System.getProperty("user.home") + "/Downloads/Transactions.csv";
+        String downloadPath = Arrays.stream(
+                        Objects.requireNonNull(new File(System.getProperty("user.home") + "/Downloads")
+                                .listFiles((dir, name) ->
+                                        name.startsWith("Transactions") && (name.endsWith(".csv"))
+                                ))
+                ).max(Comparator.comparingLong(File::lastModified))
+                .orElseThrow(() -> new RuntimeException("Transactions file not found"))
+                .getAbsolutePath();
 
+        System.out.println("Download path csv: " + downloadPath);
         CSVReader reader = new CSVReader(new FileReader(downloadPath));
         List<String[]> rows = reader.readAll();
         reader.close();
@@ -10080,11 +10088,18 @@ public class Steps {
     @Then("Assert xlsx values are correct")
     public void assertXlsxValuesAreCorrect() throws Exception {
 
-        List<Map<String,String>> transactions =
-                (List<Map<String,String>>) DataManager.userObject.get("Transactions");
+        List<Map<String,String>> transactions =(List<Map<String,String>>) DataManager.userObject.get("Transactions");
 
-        String downloadPath = System.getProperty("user.home") + "/Downloads/Transactions.xlsx";
+        WaitHelpers.waitForSeconds(5);
+        //String downloadPath = System.getProperty("user.home") + "/Downloads/Transactions.xlsx";
+        String downloadPath = Arrays.stream(Objects.requireNonNull(new File(System.getProperty("user.home") + "/Downloads")
+                        .listFiles((dir, name) ->
+                                name.startsWith("Transactions") && name.endsWith(".xlsx")))
+                ).max(Comparator.comparingLong(File::lastModified))
+                .orElseThrow(() -> new RuntimeException("Transactions file not found"))
+                .getAbsolutePath();
 
+        System.out.println("Donwload path: " + downloadPath);
         FileInputStream fis = new FileInputStream(downloadPath);
         XSSFWorkbook workbook = new XSSFWorkbook(fis);
         XSSFSheet sheet = workbook.getSheetAt(0);
