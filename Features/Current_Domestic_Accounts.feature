@@ -49,7 +49,7 @@ Feature: Current_Domestic_Accounts
     And Select transaction type "Outgoing transactions" in Advanced filters
     And Click on NLB button "Confirm"
     And Wait for first transaction in Product details
-    And Assert there are only Outgoing transactions in transactions list
+    And Assert there are only "Outgoing transactions" transactions in transactions list
     Then Remember transactions
       # and clicks on the Download in Excel option
     And Click on normalized text "Download transaction list"

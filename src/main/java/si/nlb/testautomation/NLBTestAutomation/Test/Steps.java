@@ -10037,8 +10037,20 @@ public class Steps {
     public void assertCsvValuesAreCorrect() throws Exception {
         List<Map<String,String>> transactions = (List<Map<String,String>>) DataManager.userObject.get("Transactions");
 
-        String downloadPath = System.getProperty("user.home") + "/Downloads/Transactions.csv";
+        //String downloadPath = System.getProperty("user.home") + "/Downloads/Transactions.csv";
 
+        WaitHelpers.waitForSeconds(5);
+        String downloadPath = Arrays.stream(
+                        Objects.requireNonNull(new File(System.getProperty("user.home") + "/Downloads")
+                                .listFiles((dir, name) ->
+                                        name.startsWith("Transactions") &&
+                                                (name.endsWith(".csv"))
+                                ))
+                ).max(Comparator.comparingLong(File::lastModified))
+                .orElseThrow(() -> new RuntimeException("Transactions file not found"))
+                .getAbsolutePath();
+
+        System.out.println("Download path: " + downloadPath);
         CSVReader reader = new CSVReader(new FileReader(downloadPath));
         List<String[]> rows = reader.readAll();
         reader.close();
@@ -10083,8 +10095,20 @@ public class Steps {
         List<Map<String,String>> transactions =
                 (List<Map<String,String>>) DataManager.userObject.get("Transactions");
 
-        String downloadPath = System.getProperty("user.home") + "/Downloads/Transactions.xlsx";
+        //String downloadPath = System.getProperty("user.home") + "/Downloads/Transactions.xlsx";
 
+        WaitHelpers.waitForSeconds(5);
+        String downloadPath = Arrays.stream(
+                        Objects.requireNonNull(new File(System.getProperty("user.home") + "/Downloads")
+                                .listFiles((dir, name) ->
+                                        name.startsWith("Transactions") &&
+                                                (name.endsWith(".xlsx"))
+                                ))
+                ).max(Comparator.comparingLong(File::lastModified))
+                .orElseThrow(() -> new RuntimeException("Transactions file not found"))
+                .getAbsolutePath();
+
+        System.out.println("Download path: " + downloadPath);
         FileInputStream fis = new FileInputStream(downloadPath);
         XSSFWorkbook workbook = new XSSFWorkbook(fis);
         XSSFSheet sheet = workbook.getSheetAt(0);
