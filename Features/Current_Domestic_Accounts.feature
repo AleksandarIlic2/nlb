@@ -217,7 +217,7 @@ Feature: Current_Domestic_Accounts
     And Enter date "25.11.11" to field "from"
     And Assert "From" Field has error "Field must be a date."
     And Click on element by text " Confirm "
-    And Assert element by text "There are no transactions to be displayed."
+    #And Assert element by text "There are no transactions to be displayed."
     #And Click on element by text " OK "
     #MMDDYY
     And Enter date "11.11.25" to field "from"

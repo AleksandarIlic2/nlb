@@ -20,7 +20,7 @@ Feature: Current_Accounts
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for element by tag "nlb-product-detail-header"
 
-    #And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
     And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
@@ -140,7 +140,7 @@ Feature: Current_Accounts
     Then Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for element by tag "nlb-product-detail-header"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
@@ -217,8 +217,8 @@ Feature: Current_Accounts
       #And Assert order of sections in tabpanel
 
       And Assert Account type is displayed correctly in Account details for Current account
-      #And Assert Account owner in Account details is from Excel "<rowindex>" columnName "personal_name"
-      And Assert Account number in Account details is from Excel "<rowindex>" columnName "personal_account_number"
+      And Assert Account owner in Account details is from Excel "<rowindex>" columnName "username"
+      And Assert Account number in Account details is from Excel "<rowindex>" columnName "current_account_1_number"
       And Assert BIC in Account details is "KOBBRSBG"
 
       And Click on element by tag "i" contains class "icon-copy"
@@ -292,7 +292,7 @@ Feature: Current_Accounts
       When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
       And Wait for element by tag "nlb-product-detail-header"
 
-      #And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
+      And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
       And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.

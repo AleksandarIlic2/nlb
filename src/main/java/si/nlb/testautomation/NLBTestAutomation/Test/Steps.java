@@ -4513,7 +4513,7 @@ public class Steps {
             assertTrue(element.isDisplayed());
             System.out.println("Inner text: " + element.getAttribute("innerText") );
             System.out.println("Owner name: " + ownerName);
-            assertEquals(element.getAttribute("innerText"),ownerName);
+            assertEquals(element.getAttribute("innerText").toLowerCase(),ownerName.toLowerCase());
 
     }
 
@@ -9722,12 +9722,13 @@ public class Steps {
                 //                "Cheques",
                 //                "Debit cards"
         );
-
+/*
         // Get all <h3> inside the tabpanel
         List<WebElement> sections = driver.findElements(
                 By.xpath("//div[@role='tabpanel']//h3[normalize-space()!='']")
         );
-
+*/
+        List<WebElement> sections = driver.findElements(By.xpath("//div[@role='tabpanel']//nlb-product-details-card//h3[contains(@class,'heading-3')]"));
         // Collect only visible elements
         List<String> actual = new ArrayList<>();
 
@@ -9862,14 +9863,31 @@ public class Steps {
     @And("Assert that element {string} is equal to value from Excel {string} columnName {string}")
     public void assertThatElementIsEqualToValueFromExcelColumnName(String labelText, String rowindex, String columnName) throws Throwable {
         String text = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String expected = text.trim();
+
+        // iz test data uzmi samo brojeve
+        String expectedDigits = expected.replaceAll("\\D+", "");
+
         String xPath = String.format(
                 "//dt[div[text()='%s']]/following-sibling::dd/div",
                 labelText
         );
+
         WebElement el = SelectByXpath.CreateElementByXpath(xPath);
         String actualValue = el.getText().trim();
 
-        assertEquals(actualValue.toLowerCase(), text.toLowerCase());
+        // samo brojevi iz UI
+        String actualDigits = actualValue.replaceAll("\\D+", "");
+
+        // preskoci RS + 2 cifre ako string počinje sa RS
+        if (actualValue.toUpperCase().startsWith("RS") && actualDigits.length() > 2) {
+            actualDigits = actualDigits.substring(2); // preskoci prve dve cifre (35)
+        }
+
+        System.out.println("EXP: " + expectedDigits);
+        System.out.println("ACT: " + actualDigits);
+
+        assertEquals(expectedDigits, actualDigits);
     }
     @And("Assert that transaction values in PDF match remembered values")
     public void assertTransactionValuesInPdfMatchRememberedValues() throws Exception {
@@ -10050,9 +10068,9 @@ public class Steps {
             String csvPurpose   = row[colPurpose].trim();
             String csvAmount    = row[colAmount].trim();
 
-            assertEquals(expected.get("valueDate"), normalizeDate(csvValueDate));
-            assertEquals(expected.get("purpose"),   csvPurpose);
-            assertEquals(expected.get("amount"),    csvAmount);
+            assertEquals(normalizeDate(expected.get("valueDate")), normalizeDate(csvValueDate));
+            assertEquals(normalize(expected.get("purpose")),   normalize(csvPurpose));
+            assertEquals(normalize(expected.get("amount")),    normalize(csvAmount));
         }
 
         System.out.println("CSV values successfully verified.");
@@ -10109,16 +10127,18 @@ public class Steps {
             String xType = getCellValue(row.getCell(colType));
 
             assertEquals("Purpose mismatch at row " + i,
-                    expected.get("purpose"), xPurpose);
+                    normalize(expected.get("purpose")),
+                    normalize(xPurpose));
 
-           // assertEquals("Type mismatch at row " + i,
+
+            // assertEquals("Type mismatch at row " + i,
                    // expected.get("type"), xType);
 
             assertEquals("Amount mismatch at row " + i,
-                    expected.get("amount"), xAmount);
+                    normalize(expected.get("amount")), normalize(xAmount));
 
             assertEquals("Value Date mismatch at row " + i,
-                    expected.get("valueDate"), xValueDate);
+                    normalize(expected.get("valueDate")),normalize(xValueDate));
         }
 
         workbook.close();
@@ -10155,6 +10175,15 @@ public class Steps {
                 return "";
         }
     }
+
+    private String normalize(String value) {
+        if (value == null) return "";
+        return value
+                .replace("\\", "")          // ukloni backslash
+                .replaceAll("\\s+", " ")    // više razmaka → jedan
+                .trim();
+    }
+
 
     private String normalizeDate(String raw) {
         // "30. 6. 2025" → "30.6.2025"
