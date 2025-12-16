@@ -331,3 +331,56 @@ Feature: Foreign_Current_Account
     Examples:
       | rowindex |
       |        1 |
+
+
+  @Current_Foreign_Accounts-Transactions_List_[WEB]
+  Scenario Outline: Current_Foreign_Accounts-Transactions_List_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Assert that products in my products have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_3_bban"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_3_name"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_3_bban"
+    And Assert element by contains text "Transactions"
+    #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
+    And Assert element by contains text "Statements"
+    And Assert element by contains text "Details"
+    And Assert element by text " Filters"
+    And Click on element by text " Filters"
+    And Scroll element by contains text "Details" into view
+
+    #Assertovanje Date Range (labela datuma od-do)
+    Then Assert element by xPath "//label[text()='From']/following-sibling::div"
+    And Assert element by xPath "//label[text()='To']/following-sibling::div"
+    #Assertovanje Tipa transakcije
+    And Assert element by text "All"
+    And Assert element by text "Incoming transactions"
+    And Assert element by text "Outgoing transactions"
+    #Assertovanje Amount filtera (labela iznosa od-do)
+    And Assert element by xPath "//label[text()='From ']/following-sibling::div"
+    And Assert element by xPath "//label[text()='To ']/following-sibling::div"
+    And Assert element by text " Confirm "
+    And Assert element by text " Clear filters "
+    And Assert element by text " Download transaction list "
+
+    And Scroll to first transaction in Products details
+    #PROMENJENO DA JE 24 TRANSAKCIJE, JER U APLIKACIJI NE POSTOJI FOREIGN RACUN SA 30 TRANSAKCIJA
+    And Assert there are 24 transactions loaded in Products details
+    And Scroll dynamic page down 1 times
+    And Assert there are more than 23 transactions loaded in Products details
+    And Assert there are month categories in transactions list in Products details
+    And Assert transaction dates are ordered correctly
+    And Scroll element by contains text "Transactions" up
+    And Assert element by xPath "//h3[contains(@class, 'heading-5')]" is displayed
+    And Assert element by contains class "heading-5 ng-star-inserted" is displayed
+    And Assert list of elements containing class "category-icon" are displayed
+    And Assert list of elements containing class "medium tw-flex" are displayed
+    And Assert list of elements containing class "caption medium tw-text" are displayed
+    And Assert list of elements containing class "5 tw-flex tw-justify" are displayed
+
+    Examples:
+      | rowindex |
+      |        2 |

@@ -988,6 +988,7 @@ public class Steps {
         for (WebElement element : webElementList) {
             assertTrue(element.isDisplayed());
         }
+        System.out.println("Duzina liste: " + webElementList.size());
     }
 
     @And("Assert {string} in element by contains class {string} ends with {string}")
@@ -10638,5 +10639,61 @@ public class Steps {
         }*/
         // TODO: Vratiti sortiranje kada bude release
 
+    }
+
+    @And("Assert all cheques have status {string}")
+    public void assertAllChequesHaveStatus(String expectedStatus) {
+        String xPath = "//span[normalize-space()='Status']/following-sibling::span[1]";
+        List<WebElement> elements = driver.findElements(By.xpath(xPath));
+
+        if (elements.isEmpty()) {
+            return;
+        }
+
+        for (WebElement element : elements) {
+            String actual = element.getText().trim();
+            Assert.assertEquals(
+                    "Pronađen ček sa pogrešnim statusom. Očekivano: " + expectedStatus + ", a nađeno: " + actual,
+                    expectedStatus,
+                    actual
+            );
+        }
+    }
+
+    @And("Assert element by contains text {string} is displayed")
+    public void assertElementByContainsTextIsDisplayed(String text) throws Throwable {
+        WebElement element = SelectByText.CreateElementByXpathContainingText(text);
+        Assert.assertTrue(element.isDisplayed());
+    }
+
+    @And("Assert Product BBAN in Product details is from Excel {string} columnName {string}")
+    public void assertProductBBANInProductDetailsIsFromExcelColumnName(String rowindex, String columnName) throws Throwable {
+        String accName = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPath = "//nlb-bban";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        assertEquals(accName, element.getAttribute("innerText"));
+        assertTrue(element.isDisplayed());
+    }
+
+    @Then("Assert element by xPath {string}")
+    public void assertElementByXPath(String xPath) throws Throwable {
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        Assert.assertTrue(element.isDisplayed());
+    }
+
+    @And("Assert transaction dates are displayed")
+    public void assertTransactionDatesAreDisplayed() throws Throwable {
+        String xPath = "//nlb-transaction-card//div[contains(@class, 'medium tw-flex tw-items-center tw-text-gray-400 xs:subheadline') and contains(@class,'caption')]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        Assert.assertTrue(element.isDisplayed());
+    }
+
+    @And("Assert list of elements by xPath {string} are displayed")
+    public void assertListOfElementsByXPathAreDisplayed(String xPath) throws Throwable {
+        List<WebElement> webElementList = SelectByXpath.CreateElementsByXpath(xPath);
+        for (WebElement element : webElementList){
+            assertTrue(element.isDisplayed());
+        }
+        System.out.println("Duzina xPath liste: " + webElementList.size());
     }
 }
