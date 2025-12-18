@@ -1,22 +1,16 @@
 package si.nlb.testautomation.NLBTestAutomation.Helpers;
 
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
-import org.testng.xml.XmlSuite;
-import org.testng.xml.XmlTest;
 import si.nlb.testautomation.NLBTestAutomation.Action.ActionApiHelpers;
 import si.nlb.testautomation.NLBTestAutomation.Action.Queries;
 import si.nlb.testautomation.NLBTestAutomation.Data.DataManager;
@@ -24,7 +18,6 @@ import si.nlb.testautomation.NLBTestAutomation.Data.ExcelFactory;
 import si.nlb.testautomation.NLBTestAutomation.Selectors.SelectByXpath;
 import si.nlb.testautomation.NLBTestAutomation.Test.RunTest;
 
-import javax.swing.table.TableStringConverter;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
@@ -1379,6 +1372,60 @@ public class Utilities {
         return false;
     }
 
+
+    public static boolean waitForDownloadAndCheckItByNameAndTypeAndSeconds(
+            String downloadPath,
+            String fileName,
+            int timeoutSec,
+            int intervalSec,
+            String type,
+            int maxFileAgeSec
+    ) {
+
+        File dir = new File(downloadPath);
+        long now;
+        int elapsedTime = 0;
+
+        while (elapsedTime < timeoutSec) {
+
+            File[] dirContents = dir.listFiles();
+            now = System.currentTimeMillis();
+
+            if (dirContents != null) {
+                for (File file : dirContents) {
+
+                    boolean nameMatch = file.getName().startsWith(fileName);
+                    boolean typeMatch = file.getName().endsWith(type);
+                    boolean notPartial =
+                            !file.getName().endsWith(".crdownload") &&
+                                    !file.getName().endsWith(".part");
+
+                    boolean recent =
+                            (now - file.lastModified()) <= maxFileAgeSec * 1000L;
+
+                    boolean validSize = file.length() > 0;
+
+                    if (nameMatch && typeMatch && notPartial && recent && validSize) {
+                        return true;
+                    }
+                }
+            }
+
+            try {
+                TimeUnit.SECONDS.sleep(intervalSec);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Thread interrupted while waiting for download", e);
+            }
+
+            elapsedTime += intervalSec;
+        }
+
+        throw new AssertionError(
+                "Fajl nije skinut u poslednjih " + maxFileAgeSec +
+                        " sekundi (ime: " + fileName + ", tip: " + type + ")"
+        );
+    }
 
 
     public static boolean waitForDownloadAndCheckItByName(String downloadPath, String fileName, int timeout, int interval) {

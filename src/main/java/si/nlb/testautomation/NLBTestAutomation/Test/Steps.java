@@ -4264,7 +4264,8 @@ public class Steps {
     public void assertDocumentWithNameStartingWithAndHasFileTypeIsDownloaded(String name, String fileType) {
         //String path = DataManager.getDataFromHashDatamap("1", "pdf_download_path");
         String path = System.getProperty("user.home") + "\\Downloads";
-        assertTrue(Utilities.waitForDownloadAndCheckItByNameAndType(path, name, 30, 10, fileType));
+        //assertTrue(Utilities.waitForDownloadAndCheckItByNameAndType(path, name, 30, 10, fileType));
+        assertTrue(Utilities.waitForDownloadAndCheckItByNameAndTypeAndSeconds(path,name,30,10,fileType,60));
     }
 
     @And("Assert element by tag {string} and attribute {string} with value {string}")
@@ -9895,6 +9896,7 @@ public class Steps {
         Map<String, String> expected = (Map<String, String>) DataManager.userObject.get("TransactionValues");
 
 
+        WaitHelpers.waitForSeconds(5);
         Path downloads = Paths.get(System.getProperty("user.home"), "Downloads");
         Optional<Path> latestPdf = Files.list(downloads)
                 .filter(p -> p.toString().endsWith(".pdf"))
