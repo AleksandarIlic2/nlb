@@ -88,15 +88,15 @@ Feature: Foreign_Current_Account
     Then Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for element by tag "nlb-product-detail-header"
 
     #And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
-    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
-    And Assert order of tabs in tablist
+    And Assert order of tabs in tablist "foreign"
 
     #Below the tabs, icons for Date picker, Filter, Select category and Search filter are displayed on the left side.
       # On the right side there is a Download option

@@ -24,7 +24,7 @@ Feature: Current_Domestic_Accounts
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
-    And Assert order of tabs in tablist
+    And Assert order of tabs in tablist "domestic"
 
     #Below the tabs, icons for Date picker, Filter, Select category and Search filter are displayed on the left side.
       # On the right side there is a Download option

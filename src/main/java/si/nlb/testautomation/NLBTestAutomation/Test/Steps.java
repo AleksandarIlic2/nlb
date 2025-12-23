@@ -9677,25 +9677,31 @@ public class Steps {
 
     }
 
-    @And("Assert order of tabs in tablist")
-    public void assertOrderOfTabsInTablist() throws Throwable{
+    @And("Assert order of tabs in tablist {string}")
+    public void assertOrderOfTabsInTablist(String acc) throws Throwable{
 
         List<WebElement> tabs=driver.findElements(By.xpath("//div[@role='tablist']/div[@role='tab']"));
         //assert there are exactly 5 tabs
-        assertEquals(5, tabs.size());
 
-        String[] expected = {
+        List<String> expected = new ArrayList<>(Arrays.asList(
                 "Transactions",
                 "Card settings",
                 "Statements",
-                "Details",
-                "Cheques"
-        };
+                "Details"
+        ));
+
+        if (acc.toLowerCase().contains("domestic")) {
+            expected.add("Cheques");
+            assertEquals(5, tabs.size());
+        } else {
+            assertEquals(4, tabs.size());
+        }
+
 
         // assert order of tabs
-        for (int i = 0; i < expected.length; i++) {
+        for (int i = 0; i < expected.size(); i++) {
             String text = tabs.get(i).getText().trim();
-            assertTrue(text.contains(expected[i]));
+            assertTrue(text.contains(expected.get(i)));
         }
 
         // first tab is selected by default
