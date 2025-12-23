@@ -38,11 +38,11 @@ Feature: Foreign_Current_Account
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
     And Wait for element by tag "nlb-product-detail-header"
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
-    And Assert order of tabs in tablist
+    And Assert order of tabs in tablist "foreign"
     And Assert element by text " Download transaction list "
     And Assert element by contains class "icon-download"
     And Assert element by tag "input" and type "search"
@@ -158,7 +158,7 @@ Feature: Foreign_Current_Account
     #TODO: Vrati ovaj korak ispod kad se utvrdi ime racuna
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
-    And Assert order of tabs in tablist
+    And Assert order of tabs in tablist "foreign"
     And Assert element by text " Download transaction list "
     And Assert element by contains class "icon-download"
     And Assert element by tag "input" and type "search"
@@ -281,7 +281,7 @@ Feature: Foreign_Current_Account
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for element by tag "nlb-product-detail-header"
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
@@ -344,9 +344,9 @@ Feature: Foreign_Current_Account
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_3_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_3_iban"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_3_name"
-    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_3_bban"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_3_iban"
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
@@ -404,15 +404,15 @@ Feature: Foreign_Current_Account
     Then Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for element by tag "nlb-product-detail-header"
 
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
-    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
-    And Assert order of tabs in tablist
+    And Assert order of tabs in tablist "foreign"
 
     #Below the tabs, icons for Date picker, Filter, Select category and Search filter are displayed on the left side.
       # On the right side there is a Download option
@@ -475,9 +475,9 @@ Feature: Foreign_Current_Account
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
-    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Statements-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
@@ -515,9 +515,9 @@ Feature: Foreign_Current_Account
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
-    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_iban"
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Statements-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
@@ -572,9 +572,9 @@ Feature: Foreign_Current_Account
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_3_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_3_iban"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_3_name"
-    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_3_bban"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_3_iban"
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
@@ -617,9 +617,9 @@ Feature: Foreign_Current_Account
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
-    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_iban"
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
