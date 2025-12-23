@@ -9883,7 +9883,7 @@ public class Steps {
 
         // preskoci RS + 2 cifre ako string počinje sa RS
         if (actualValue.toUpperCase().startsWith("RS") && actualDigits.length() > 2) {
-            actualDigits = actualDigits.substring(2); // preskoci prve dve cifre (35)
+            //actualDigits = actualDigits.substring(4); // preskoci prve 4 cifre (rs35)
         }
 
         System.out.println("EXP: " + expectedDigits);

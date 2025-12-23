@@ -12,7 +12,7 @@ Feature: Foreign_Current_Account
     When Click on tab "My products" from main sidebar
     And Wait for element by text "Edit list"
     Then Assert element by class "button-bold" and contains text "Edit list"
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Click on element by text "Details"
 
     #And Scroll screen down
@@ -21,7 +21,7 @@ Feature: Foreign_Current_Account
     And Assert that element "Account type" has value "Current account"
     And Assert that element "BIC" has value "KOBBRSBG"
     And Assert that element "Account owner" is equal to value from Excel "<rowindex>" columnName "username"
-    And Assert that element "Account number" is equal to value from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert that element "Account number" is equal to value from Excel "<rowindex>" columnName "current_account_1_iban"
 
 
 
@@ -38,7 +38,7 @@ Feature: Foreign_Current_Account
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for element by tag "nlb-product-detail-header"
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
@@ -153,7 +153,7 @@ Feature: Foreign_Current_Account
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for element by tag "nlb-product-detail-header"
     #TODO: Vrati ovaj korak ispod kad se utvrdi ime racuna
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
