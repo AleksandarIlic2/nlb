@@ -285,7 +285,7 @@ Feature: Foreign_Current_Account
     And Wait for element by tag "nlb-product-detail-header"
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
-    And Assert order of tabs in tablist
+    And Assert order of tabs in tablist "foreign"
 
     And Assert element by text " Download transaction list "
     And Assert element by contains class "icon-download"

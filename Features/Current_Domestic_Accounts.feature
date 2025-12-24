@@ -84,7 +84,7 @@ Feature: Current_Domestic_Accounts
     And Wait for element by tag "nlb-product-detail-header"
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
-    And Assert order of tabs in tablist
+    And Assert order of tabs in tablist "domestic"
     And Assert element by text " Download transaction list "
     And Assert element by contains class "icon-download"
     And Assert element by tag "input" and type "search"
@@ -192,7 +192,7 @@ Feature: Current_Domestic_Accounts
     #TODO: Vrati ovaj korak ispod kad se utvrdi ime racuna
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
-    And Assert order of tabs in tablist
+    And Assert order of tabs in tablist "domestic"
     And Assert element by text " Download transaction list "
     And Assert element by contains class "icon-download"
     And Assert element by tag "input" and type "search"
@@ -384,7 +384,7 @@ Feature: Current_Domestic_Accounts
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
-    And Assert order of tabs in tablist
+    And Assert order of tabs in tablist "domestic"
     #Below the tabs, icons for Date picker, Filter, Select category and Search filter are displayed on the left side.
     # On the right side there is a Download option.
     And Assert element by text " Download transaction list "
@@ -430,12 +430,12 @@ Feature: Current_Domestic_Accounts
     Then Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for element by tag "nlb-product-detail-header"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
-    And Assert order of tabs in tablist
+    And Assert order of tabs in tablist "domestic"
     #Below the tabs, icons for Date picker, Filter, Select category and Search filter are displayed on the left side.
     # On the right side there is a Download option.
     And Assert element by text " Download transaction list "
@@ -455,7 +455,7 @@ Feature: Current_Domestic_Accounts
 
     And Assert Account type is displayed correctly in Account details for Current account
     And Assert Account owner in Account details is from Excel "<rowindex>" columnName "username"
-    And Assert Account number in Account details is from Excel "<rowindex>" columnName "current_account_1_number"
+    And Assert Account number in Account details is from Excel "<rowindex>" columnName "current_account_2_number"
     And Assert BIC in Account details is "KOBBRSBG"
 
     And Click on element by tag "i" contains class "icon-copy"
@@ -486,12 +486,12 @@ Feature: Current_Domestic_Accounts
     Then Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for element by tag "nlb-product-detail-header"
 
     #HEADER DISPLAY
      # Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name2"
-    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
     And Assert Product icon in Product details is displayed and has icon path "https://test.dbp.nlbkb.rs/assets/img/product-icon/CurrentAccount-Icon.svg"
     And Assert available balance and current balance in header
 
@@ -499,7 +499,7 @@ Feature: Current_Domestic_Accounts
     When Click on tab "Details" from tablist
     And Wait for product details to load
       #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name2"
-    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
     And Assert Product icon in Product details is displayed and has icon path "https://test.dbp.nlbkb.rs/assets/img/product-icon/CurrentAccount-Icon.svg"
     And Assert available balance and current balance in header
 

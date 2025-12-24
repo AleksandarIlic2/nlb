@@ -6295,16 +6295,18 @@ public class Steps {
             //account type title
             //String titlexPath = "//h3[contains(text(), 'Account details')]/ancestor::div[1]/following-sibling::div[1]/div[1]/div[1]";
             //String titlexPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card[3]/div/div/dl/div[1]/dt/div";
-            String titlexPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card/div/div//dl/div/dt/div";
-            WebElement titleElement = SelectByXpath.CreateElementByXpath(titlexPath);
+            //String titlexPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card/div/div//dl/div/dt/div";
+
+        String titlexPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card[2]/div/div//dl/div/dt/div";
+        WebElement titleElement = SelectByXpath.CreateElementByXpath(titlexPath);
             assertTrue("Account number not displayed",titleElement.isDisplayed());
             assertEquals("Account number not matching","Account type", titleElement.getAttribute("innerText"));
             //account type value
             //String ATxPath = "//h3[contains(text(), 'Account details')]/ancestor::div[1]/following-sibling::div[1]/div[1]/div[2]/div";
             //String ATxPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card[3]/div/div/dl/div[1]/dd/div";
-            String ATxPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card/div/div/dl/div[1]/dd/div";
+            String ATxPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card[2]/div/div/dl/div[1]/dd/div";
             WebElement ATElement = SelectByXpath.CreateElementByXpath(ATxPath);
-            assertTrue("Xurrent account not displayed",ATElement.isDisplayed());
+            assertTrue("Current account not displayed",ATElement.isDisplayed());
             assertEquals("Current account not matching text","Current account", ATElement.getAttribute("innerText"));
     }
 
