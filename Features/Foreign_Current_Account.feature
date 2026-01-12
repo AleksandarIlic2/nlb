@@ -652,3 +652,45 @@ Feature: Foreign_Current_Account
     Examples:
       | rowindex |
       |        3 |
+
+
+  @Current_Foreign_Accounts-Transactions_Filter-Invalid_[WEB]
+  Scenario Outline: Current_Foreign_Accounts-Transactions_Filter-Invalid_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Assert that products in my products have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Assert element by contains text "Transactions"
+    #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
+    And Assert element by contains text "Statements"
+    And Assert element by contains text "Details"
+    And Assert element by text " Filters"
+    And Click on element by text " Filters"
+    And Scroll element by contains text "Details" into view
+
+    #Assertovanje Date Range (labela datuma od-do)
+    Then Assert element by xPath "//label[text()='From']/following-sibling::div"
+    And Assert element by xPath "//label[text()='To']/following-sibling::div"
+
+    And Assert element by text "Last 7 days "
+    And Assert element by text "Current month"
+    And Assert element by text " Previous month"
+    And Assert element by text " Confirm "
+    #Otvaranje kalendara
+    And Click on button with tag "i" containing class "icon-calendar-today"
+    And Assert window behind Date filter popup is blurred
+    And Assert Select date title in Date filter
+
+    And Select date in From label to be "02.01.2026"
+    And Select date in To label to be "24.12.2025"
+    And Click on element by text " Confirm "
+    And Assert element by text " Please check the date range "
+
+    Examples:
+      | rowindex |
+      |        3 |
