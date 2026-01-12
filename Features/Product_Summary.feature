@@ -100,8 +100,8 @@ Feature: Product_Summary
     And Wait for element by class "icon-eye"
 
      #PROMENA IMENA TEKUCIH RACUNA
-    And Change name of product from excel "<rowindex>" columnName "current_account_3_bban" into "First current account"
-    And Change name of product from excel "<rowindex>" columnName "current_account_1_bban" into "Second current account"
+    And Change name of product from excel "<rowindex>" columnName "current_account_3_iban" into "First current account"
+    And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" into "Second current account"
 
     #PROMENA IMENA KARTICA
     And Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into "First credit card"
@@ -126,8 +126,8 @@ Feature: Product_Summary
     And Wait for element by class "icon-eye"
 
     #Then Change name of the first product "Foreign currency payment accounts"
-    And Change name of product from excel "<rowindex>" columnName "current_account_3_bban" to previous one
-    And Change name of product from excel "<rowindex>" columnName "current_account_1_bban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "current_account_3_iban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" to previous one
     And Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" to previous one
     And Change name of product from excel "<rowindex>" columnName "credit_card_2_bban" to previous one
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_bban" to previous one
