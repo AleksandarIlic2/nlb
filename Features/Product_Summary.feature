@@ -108,11 +108,11 @@ Feature: Product_Summary
     And Change name of product from excel "<rowindex>" columnName "credit_card_2_bban" into "Second credit card"
 
     #PROMENA IMENA STEDNJE
-    And Change name of product from excel "<rowindex>" columnName "savings_account_1_bban" into "First savings account"
-    And Change name of product from excel "<rowindex>" columnName "savings_account_2_bban" into "Second savings account"
+    And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" into "First savings account"
+    And Change name of product from excel "<rowindex>" columnName "savings_account_2_number" into "Second savings account"
 
     #PROMENA OROCENE STEDNJE
-    And Change name of product from excel "<rowindex>" columnName "term_deposits_1_bban" into "First term deposits"
+    And Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" into "First term deposits"
     #Then Change name of the first product "Foreign currency payment accounts2"
     And Click on tab "My products" from main sidebar
     And Assert element by contains text "First current account"
@@ -130,9 +130,9 @@ Feature: Product_Summary
     And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" to previous one
     And Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" to previous one
     And Change name of product from excel "<rowindex>" columnName "credit_card_2_bban" to previous one
-    And Change name of product from excel "<rowindex>" columnName "savings_account_1_bban" to previous one
-    And Change name of product from excel "<rowindex>" columnName "savings_account_2_bban" to previous one
-    And Change name of product from excel "<rowindex>" columnName "term_deposits_1_bban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" to previous one
+    And Change name of product from excel "<rowindex>" columnName "savings_account_2_number" to previous one
+    And Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" to previous one
     Examples:
       | rowindex |
       |        1 |
@@ -151,7 +151,7 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
   And Click on element by text "Edit list"
   And Wait for element by class "icon-eye"
 
-  Then Change name of product from excel "<rowindex>" columnName "current_account_1_bban" into more than fifty characters
+  Then Change name of product from excel "<rowindex>" columnName "current_account_2_bban" into more than fifty characters
   Then Assert element by text "You have reached the maximum number of characters. 50/50."
   And Click on element by text " Cancel "
 
@@ -159,25 +159,25 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
   Then Assert element by text "You have reached the maximum number of characters. 50/50."
   And Click on element by text " Cancel "
 
-  Then Change name of product from excel "<rowindex>" columnName "savings_account_1_bban" into more than fifty characters
+  Then Change name of product from excel "<rowindex>" columnName "savings_account_1_number" into more than fifty characters
   Then Assert element by text "You have reached the maximum number of characters. 50/50."
   And Click on element by text " Cancel "
 
-  Then Change name of product from excel "<rowindex>" columnName "term_deposits_1_bban" into more than fifty characters
+  Then Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" into more than fifty characters
   Then Assert element by text "You have reached the maximum number of characters. 50/50."
   And Click on element by text " Cancel "
 
-  Then Change name of product from excel "<rowindex>" columnName "current_account_1_bban" into " "
+  Then Change name of product from excel "<rowindex>" columnName "current_account_2_bban" into " "
   #And Assert acc name for iban from excel "<rowindex>" columnName "current_account_1_bban"
 
   Then Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into " "
   And Assert acc name for iban from excel "<rowindex>" columnName "credit_card_1_bban"
 
-  Then Change name of product from excel "<rowindex>" columnName "savings_account_1_bban" into " "
-  And Assert acc name for iban from excel "<rowindex>" columnName "savings_account_1_bban"
+  Then Change name of product from excel "<rowindex>" columnName "savings_account_1_number" into " "
+  And Assert acc name for iban from excel "<rowindex>" columnName "savings_account_1_number"
 
-  Then Change name of product from excel "<rowindex>" columnName "term_deposits_1_bban" into " "
-  And Assert acc name for iban from excel "<rowindex>" columnName "term_deposits_1_bban"
+  Then Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" into " "
+  And Assert acc name for iban from excel "<rowindex>" columnName "term_deposits_1_account_number"
 
   Examples:
     | rowindex |
