@@ -1358,7 +1358,11 @@ public class Steps {
     public void enterTextInFieldByTagAttributeAndAttributeValue(String text, String tag, String attributeName, String attributeValue) throws Throwable {
         String xPath = "//" + tag + "[@" + attributeName + "='" + attributeValue + "']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        hp.EnterTextToElement(element, text);
+        element.click();
+        element.clear();
+        element.sendKeys(text);
+
+        //hp.EnterTextToElement(element, text);
     }
 
     @And("Enter text from Excel {string} columnName {string} in input field by id {string}")
@@ -4151,11 +4155,27 @@ public class Steps {
 
     @And("Assert transactions in Product details have Purpose {string}")
     public void assertTransactionsInProductDetailsHavePurpose(String expectedPurpose) throws Throwable {
-        //transactions purposes
-        String purposeXpath = "//nlb-transaction-card//div/div[2]//nlb-heading-text/h5[contains(@class,'tw-text-gray-100')]";
+        //transactions purposes //nlb-transaction-card//h4//nlb-heading-text//div[contains(@class,'heading-5')]
+        //String purposeXpath = "//nlb-transaction-card//div/div[2]//nlb-heading-text/h5[contains(@class,'tw-text-gray-100')]";
+        String purposeXpath = "//nlb-transaction-card//div[contains(@class,'heading-5') and contains(@class,'tw-text-gray-100')]";
         List<WebElement> purposeElements = SelectByXpath.CreateElementsByXpath(purposeXpath);
         for (WebElement element : purposeElements) {
-            assertEquals(expectedPurpose, element.getAttribute("innerText"));
+            System.out.println("-> " + element.getAttribute("innerText"));
+           // assertEquals(expectedPurpose.trim(), element.getAttribute("innerText").trim());
+            assertTrue(element.getAttribute("innerText").contains(expectedPurpose));
+        }
+    }
+
+    @And("Assert transactions in Product details have Amount {string}")
+    public void assertTransactionsInProductDetailsHaveAmount(String expectedAmount) throws Throwable {
+        //transactions purposes //nlb-transaction-card//h4//nlb-heading-text//div[contains(@class,'heading-5')]
+        //String purposeXpath = "//nlb-transaction-card//div/div[2]//nlb-heading-text/h5[contains(@class,'tw-text-gray-100')]";
+        String amountXpath = "//nlb-transaction-card//div[not(contains(@class,'xs:tw-hidden'))]/nlb-amount/div/div[2]";
+        List<WebElement> amountElements = SelectByXpath.CreateElementsByXpath(amountXpath);
+        for (WebElement element : amountElements) {
+            System.out.println("-> " + element.getAttribute("innerText"));
+            // assertEquals(expectedPurpose.trim(), element.getAttribute("innerText").trim());
+            assertTrue(element.getAttribute("innerText").contains(expectedAmount));
         }
     }
 

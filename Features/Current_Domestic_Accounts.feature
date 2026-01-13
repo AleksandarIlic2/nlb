@@ -737,3 +737,50 @@ Feature: Current_Domestic_Accounts
       | rowindex |
       |        3 |
 
+  @Current_Domestic_Accounts-Transactions-Search_[WEB]
+  Scenario Outline: Current_Domestic_Accounts-Transactions-Search_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Assert that products in my products have loaded
+
+    #User is logged into aplication and clicks on the My Products page frome the menu
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    Then Assert element by class "button-bold" and contains text "Edit list"
+
+    #User clicks on a current account on the My Products page
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Wait for element by tag "nlb-product-detail-header"
+
+    And Wait for element by tag "input" attribute "placeholder" with value "Search..."
+    And Assert element by tag "input" and type "search"
+
+    #Search by PURPOSE  -- BUG - NE MOZE DA SE UNESE SPACE KARAKTER
+    And Enter text "Naknada" in field by tag "input" attribute "placeholder" and attribute value "Search..."
+    And Wait for first transaction in Product details
+    And Wait for "3" seconds
+    And Assert transactions in Product details have Purpose "Naknada"
+    And Click on NLB icon close
+    And Wait for first transaction in Product details
+
+        #Search by AMOUNT  -- BUG - NE PREPOZNAJE 150.000, SAMO 150000
+
+    And Enter text "100000" in field by tag "input" attribute "placeholder" and attribute value "Search..."
+    And Wait for first transaction in Product details
+    And Wait for "3" seconds
+    And Assert transactions in Product details have Amount "100.000"
+    And Click on NLB icon close
+    And Wait for first transaction in Product details
+
+    #TO-DO!!!
+    #Search by CREDITOR NAME
+
+    #Search by BIC
+
+    #Search by Reference
+
+    Examples:
+      | rowindex |
+      |        1 |
