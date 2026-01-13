@@ -98,3 +98,43 @@ Feature: Recipients
     Examples:
       | rowindex |
       |        1 |
+
+  @Payments_Recipient-Edit_Recipient-Edit_Account_number-invalid_[WEB]
+  Scenario Outline: Payments_Recipient-Edit_Recipient-Edit_Account_number-invalid_[WEB]
+
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    
+    And Click on tab "Recipients" from main sidebar
+    And Click on element by containing text "205-9001020797842-69"
+    And Assert element by text "Delete "
+    And Assert element by text "Edit"
+
+    Then Click on element by text "Edit"
+    And Assert element by text "Account number" can not be edited
+
+
+
+    Examples:
+      | rowindex |
+      |        1 |
+
+  @Payments_Recipient-Update_Recipient-Update_Account_number_[WEB]
+  Scenario Outline: Payments_Recipient-Update_Recipient-Update_Account_number_[WEB]
+
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+
+    And Click on element by containing text "Pay or transfer"
+    And Click on element by containing text "Select from list"
+    And Click on element by containing text "205-9001020797842-69"
+
+
+
+    Examples:
+      | rowindex |
+      |        1 |

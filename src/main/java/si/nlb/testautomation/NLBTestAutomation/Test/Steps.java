@@ -11117,4 +11117,15 @@ public class Steps {
         assertEquals("Loan accounts are not sorted descending by name", expectedNames, actualNames);
     }
 
+    @And("Assert element by text {string} can not be edited")
+    public void assertElementByTextCanNotBeEdited(String text) {
+
+        List<WebElement> inputs = driver.findElements(
+                By.xpath("//label[contains(text(),'" + text + "')]/following::input")
+        );
+
+        assertTrue("Account number input should not exist", inputs.isEmpty());
+
+
+    }
 }
