@@ -11053,4 +11053,48 @@ public class Steps {
         assertTrue("Account name is missing", accName);
         assertTrue("Amount in EUR not found", hasAmountInEUR);
     }
+
+    @And("Assert that loan contains text from Excel {string} columnName {string}")
+    public void assertThatLoanContainsTextFromExcelColumnName(String rowindex, String columnName) throws Throwable {
+        String text = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String loanName = DataManager.getDataFromHashDatamap(rowindex, "loan_account_1_name");
+        String xPath = "//div[contains(@class,'tw-shadow-productCard')][.//text()[contains(.,'" + text + "')]]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        System.out.println(element.getText());
+        boolean hasSavingsPicture =
+                element.findElements(By.xpath(".//img[contains(@src,'assets/img/product-icon/Loan-Icon.svg')]")).size() > 0;
+        boolean accNumber = element.getText().contains(text);
+        boolean accName = element.getText().contains(loanName);
+        boolean hasAmountInEUR =
+                element.getText().matches("(?s).*\\d+[\\.,]\\d{2}\\s*(EUR|RSD).*");
+
+        assertTrue("Savings picture is missing", hasSavingsPicture);
+        assertTrue("Account number is missing", accNumber);
+        assertTrue("Account name is missing", accName);
+        assertTrue("Amount in EUR not found", hasAmountInEUR);
+    }
+
+    @And("Assert that loan accounts are sorted correctly")
+    public void assertThatLoanAccountsAreSortedCorrectly() throws Throwable {
+
+        String xPathCards = "//div[contains(@class,'tw-shadow-productCard')][.//img[contains(@src,'Loan-Icon.svg')]]";
+        List<WebElement> loanCards = SelectByXpath.CreateElementsByXpath(xPathCards);
+
+        assertFalse("No loan cards found", loanCards.isEmpty());
+
+        List<String> actualNames = new ArrayList<>();
+
+        for (WebElement card : loanCards) {
+            String name = card.findElement(
+                    By.xpath(".//div[contains(@class,'heading-3')]")
+            ).getText().trim();
+            actualNames.add(name.trim());
+        }
+        System.out.println("IME" + actualNames);
+        List<String> expectedNames = new ArrayList<>(actualNames);
+        expectedNames.sort(Comparator.reverseOrder());
+
+        assertEquals("Loan accounts are not sorted descending by name", expectedNames, actualNames);
+    }
+
 }

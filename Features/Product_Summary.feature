@@ -288,3 +288,25 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
       | rowindex |
       |        1 |
 
+  @Product_Summary-Loan_List[WEB]
+  Scenario Outline: Product_Summary-Loan_List[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Assert that products in my products have loaded
+
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    And Assert element by class "button-bold" containing text "Edit list"
+    # TODO: PROVERI DA LI FUNKCIJA ZA SORTIRANJE ISPOD ZAISTA RADI, KADA BUDE DODATO VISE RAZLICITIH LOAN PRODUKTA
+    And Assert that loan accounts are sorted correctly
+    And Assert that loan contains text from Excel "<rowindex>" columnName "loan_account_1_number"
+    And Assert that whole product card of loan account with name "loan_account_1_name" and iban "loan_account_1_number" from Excel "<rowindex>" acts as a clickable button
+    #And Click on element by containing text from Excel "<rowindex>" columnName "loan_account_1_number"
+    #And Assert that element "Interest rate" has value "0,2000%"
+
+
+    Examples:
+      | rowindex |
+      |        5 |
