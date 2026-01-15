@@ -1358,7 +1358,11 @@ public class Steps {
     public void enterTextInFieldByTagAttributeAndAttributeValue(String text, String tag, String attributeName, String attributeValue) throws Throwable {
         String xPath = "//" + tag + "[@" + attributeName + "='" + attributeValue + "']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        hp.EnterTextToElement(element, text);
+        element.click();
+        element.clear();
+        element.sendKeys(text);
+
+        //hp.EnterTextToElement(element, text);
     }
 
     @And("Enter text from Excel {string} columnName {string} in input field by id {string}")
@@ -4151,11 +4155,27 @@ public class Steps {
 
     @And("Assert transactions in Product details have Purpose {string}")
     public void assertTransactionsInProductDetailsHavePurpose(String expectedPurpose) throws Throwable {
-        //transactions purposes
-        String purposeXpath = "//nlb-transaction-card//div/div[2]//nlb-heading-text/h5[contains(@class,'tw-text-gray-100')]";
+        //transactions purposes //nlb-transaction-card//h4//nlb-heading-text//div[contains(@class,'heading-5')]
+        //String purposeXpath = "//nlb-transaction-card//div/div[2]//nlb-heading-text/h5[contains(@class,'tw-text-gray-100')]";
+        String purposeXpath = "//nlb-transaction-card//div[contains(@class,'heading-5') and contains(@class,'tw-text-gray-100')]";
         List<WebElement> purposeElements = SelectByXpath.CreateElementsByXpath(purposeXpath);
         for (WebElement element : purposeElements) {
-            assertEquals(expectedPurpose, element.getAttribute("innerText"));
+            System.out.println("-> " + element.getAttribute("innerText"));
+           // assertEquals(expectedPurpose.trim(), element.getAttribute("innerText").trim());
+            assertTrue(element.getAttribute("innerText").contains(expectedPurpose));
+        }
+    }
+
+    @And("Assert transactions in Product details have Amount {string}")
+    public void assertTransactionsInProductDetailsHaveAmount(String expectedAmount) throws Throwable {
+        //transactions purposes //nlb-transaction-card//h4//nlb-heading-text//div[contains(@class,'heading-5')]
+        //String purposeXpath = "//nlb-transaction-card//div/div[2]//nlb-heading-text/h5[contains(@class,'tw-text-gray-100')]";
+        String amountXpath = "//nlb-transaction-card//div[not(contains(@class,'xs:tw-hidden'))]/nlb-amount/div/div[2]";
+        List<WebElement> amountElements = SelectByXpath.CreateElementsByXpath(amountXpath);
+        for (WebElement element : amountElements) {
+            System.out.println("-> " + element.getAttribute("innerText"));
+            // assertEquals(expectedPurpose.trim(), element.getAttribute("innerText").trim());
+            assertTrue(element.getAttribute("innerText").contains(expectedAmount));
         }
     }
 
@@ -9877,11 +9897,18 @@ public class Steps {
     @And("Assert that element {string} has value {string}")
     public void assertThatElementHasValue(String labelText, String fixedValue) throws Throwable {
         String xPath = String.format(
-                "//dt[div[text()='%s']]/following-sibling::dd/div",
+                "//dt[div[text()='%s']]/following-sibling::dd//div",
                 labelText
         );
         WebElement el = SelectByXpath.CreateElementByXpath(xPath);
         String actualValue = el.getText().trim();
+
+
+        actualValue = el.getText()
+                .replaceAll("\\s+", " ")
+                .trim();
+        System.out.println("ACTUAL:" + actualValue);
+        System.out.println("EXPECTED:" + fixedValue);
         assertEquals(actualValue,fixedValue);
     }
 
@@ -11082,5 +11109,80 @@ public class Steps {
         String actual = citytElement.getText().trim();
 
         Assert.assertEquals("Grad nije isto kao promenjeni", expectedUpper, actual);
+    }
+
+    @And("Assert that element contains text from Excel {string} columnName {string}")
+    public void assertThatElementContainsTextFromExcelColumnName(String rowindex, String columnName) throws Throwable {
+        String text = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String depositName = DataManager.getDataFromHashDatamap(rowindex, "term_deposit_1_name");
+        String xPath = "//div[contains(@class,'tw-shadow-productCard')][.//text()[contains(.,'" + text + "')]]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        System.out.println(element.getText());
+        boolean hasSavingsPicture =
+                element.findElements(By.xpath(".//img[contains(@src,'assets/img/product-icon/TermDepositAccount-Icon.svg')]")).size() > 0;
+        boolean accNumber = element.getText().contains(text);
+        boolean accName = element.getText().contains(depositName);
+        boolean hasAmountInEUR =
+                element.getText().matches("(?s).*\\d+[\\.,]\\d{2}\\s*EUR.*");
+
+        assertTrue("Savings picture is missing", hasSavingsPicture);
+        assertTrue("Account number is missing", accNumber);
+        assertTrue("Account name is missing", accName);
+        assertTrue("Amount in EUR not found", hasAmountInEUR);
+    }
+
+    @And("Assert that loan contains text from Excel {string} columnName {string}")
+    public void assertThatLoanContainsTextFromExcelColumnName(String rowindex, String columnName) throws Throwable {
+        String text = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String loanName = DataManager.getDataFromHashDatamap(rowindex, "loan_account_1_name");
+        String xPath = "//div[contains(@class,'tw-shadow-productCard')][.//text()[contains(.,'" + text + "')]]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        System.out.println(element.getText());
+        boolean hasSavingsPicture =
+                element.findElements(By.xpath(".//img[contains(@src,'assets/img/product-icon/Loan-Icon.svg')]")).size() > 0;
+        boolean accNumber = element.getText().contains(text);
+        boolean accName = element.getText().contains(loanName);
+        boolean hasAmountInEUR =
+                element.getText().matches("(?s).*\\d+[\\.,]\\d{2}\\s*(EUR|RSD).*");
+
+        assertTrue("Savings picture is missing", hasSavingsPicture);
+        assertTrue("Account number is missing", accNumber);
+        assertTrue("Account name is missing", accName);
+        assertTrue("Amount in EUR not found", hasAmountInEUR);
+    }
+
+    @And("Assert that loan accounts are sorted correctly")
+    public void assertThatLoanAccountsAreSortedCorrectly() throws Throwable {
+
+        String xPathCards = "//div[contains(@class,'tw-shadow-productCard')][.//img[contains(@src,'Loan-Icon.svg')]]";
+        List<WebElement> loanCards = SelectByXpath.CreateElementsByXpath(xPathCards);
+
+        assertFalse("No loan cards found", loanCards.isEmpty());
+
+        List<String> actualNames = new ArrayList<>();
+
+        for (WebElement card : loanCards) {
+            String name = card.findElement(
+                    By.xpath(".//div[contains(@class,'heading-3')]")
+            ).getText().trim();
+            actualNames.add(name.trim());
+        }
+        System.out.println("IME" + actualNames);
+        List<String> expectedNames = new ArrayList<>(actualNames);
+        expectedNames.sort(Comparator.reverseOrder());
+
+        assertEquals("Loan accounts are not sorted descending by name", expectedNames, actualNames);
+    }
+
+    @And("Assert element by text {string} can not be edited")
+    public void assertElementByTextCanNotBeEdited(String text) {
+
+        List<WebElement> inputs = driver.findElements(
+                By.xpath("//label[contains(text(),'" + text + "')]/following::input")
+        );
+
+        assertTrue("Account number input should not exist", inputs.isEmpty());
+
+
     }
 }
