@@ -305,7 +305,7 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
     And Assert that whole product card of loan account with name "loan_account_1_name" and iban "loan_account_1_number" from Excel "<rowindex>" acts as a clickable button
     #And Click on element by containing text from Excel "<rowindex>" columnName "loan_account_1_number"
     #And Assert that element "Interest rate" has value "0,2000%"
-
+    #TODO: Kad proradi dovrsiti test...
 
     Examples:
       | rowindex |
