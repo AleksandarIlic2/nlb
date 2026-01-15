@@ -11026,4 +11026,61 @@ public class Steps {
         input.sendKeys(Keys.TAB);
 
     }
+
+    @And("Enter text {string} in field by xPath {string} and remember under key {string}")
+    public void enterTextInFieldByXPathAndRememberUnderKey(String text, String xPath, String key) throws Throwable {
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        hp.EnterTextToElementWithClick(element, text);
+
+        DataManager.userObject.put(key, text);
+    }
+
+    @And("Click on recipient name by key {string}")
+    public void clickOnRecipientNameByKey(String key) throws Throwable {
+        Object nameObj = DataManager.userObject.get(key);
+        String name = nameObj.toString().trim();
+        String nameUpper = name.toUpperCase();
+
+        String recipientNameXPath = "//div[contains(text(), '" + nameUpper + "')]";
+        WebElement nameElement = SelectByXpath.CreateElementByXpath(recipientNameXPath);
+
+        hp.ClickOnElement(nameElement);
+    }
+
+    @And("Assert recipient name equals remembered key {string}")
+    public void assertRecipientNameEqualsRememberedKey(String key) throws Throwable {
+        Object nameObj = DataManager.userObject.get(key);
+        String name = nameObj.toString().trim();
+        String nameUpper = name.toUpperCase();
+
+        String recipientNameXPath = "//*[contains(text(), '" + nameUpper + "')]";
+        WebElement nameElement = SelectByXpath.CreateElementByXpath(recipientNameXPath);
+        String actual = nameElement.getText().trim();
+
+        Assert.assertEquals("Ime se ne slaze sa promenjenim imenom", nameUpper, actual);
+    }
+
+    @And("Assert recipient street equals remembered key {string}")
+    public void assertRecipientStreetEqualsRememberedKey(String key) throws Throwable {
+        String expected = DataManager.userObject.get(key).toString().trim();
+        String expectedUpper = expected.toUpperCase();
+
+        String streetXPath = "//div[contains(text(), '" + expectedUpper + "')]";
+        WebElement streetElement = SelectByXpath.CreateElementByXpath(streetXPath);
+        String actual = streetElement.getText().trim();
+
+        Assert.assertEquals("Ulica nije ista kao promenjena", expectedUpper, actual);
+    }
+
+    @And("Assert recipient city equals remembered key {string}")
+    public void assertRecipientCityEqualsRememberedKey(String key) throws Throwable {
+        String expected = DataManager.userObject.get(key).toString().trim();
+        String expectedUpper = expected.toUpperCase();
+
+        String cityXPath = "//div[contains(text(), '" + expectedUpper + "')]";
+        WebElement citytElement = SelectByXpath.CreateElementByXpath(cityXPath);
+        String actual = citytElement.getText().trim();
+
+        Assert.assertEquals("Grad nije isto kao promenjeni", expectedUpper, actual);
+    }
 }

@@ -22,6 +22,7 @@ Feature: Recipients
     And Click on element by text " Confirm "
     And Click on element by text " Confirm "
     And Wait for element by text "Success"
+    And Assert element by text "Success"
 
 #    ODRADI POSLEDNJA DVA KORAKA KADA RESE VREME ZA SUCCESS PROZOR
 
@@ -61,15 +62,32 @@ Feature: Recipients
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
 
-    When Click on element by text "Recipients"
-    And Click on element by xpath "(//*[contains(@class, 'justify-center tw-cursor')])[2]"
-    And Assert element by text "Delete "
-    And Assert element by text "Edit"
-    And Click on element by text "Edit"
+    When Click on element by text "Pay or transfer"
+    And Click on element by text "Select from list "
+    And Click on element by xpath "(//nlb-contact-item)[2]"
+    And Enter text "koar tgr" in field by xPath "//label[contains(text(), 'name')]/following-sibling::div//input" and remember under key "nameKey"
+    And Enter text "kaludjerica 30" in field by xPath "//label[contains(text(), 'Street')]/following-sibling::div//input" and remember under key "streetKey"
+    And Enter text "niš" in field by xPath "//label[text()='City']/following-sibling::div//input" and remember under key "cityKey"
+    And Enter text "100" in field by xPath "//label[text()='Payment amount ']/following-sibling::div//input"
+    And Click on element by text "Save recipient "
 
-#    And Enter text "Mika Mikic" in field by xPath "//label[contains(text(), 'name')]/following-sibling::div//input"
-#    And Enter text "Bulevar 11" in field by xPath "//label[contains(text(), 'Street')]/following-sibling::div//input"
-#    And Enter text "Beograd" in field by xPath "//label[text()='City']/following-sibling::div//input"
+    And Click on element by text " Confirm "
+    And Click on element by text " Confirm "
+    And Wait for element by text " Confirm "
+    And Click on element by text " Confirm "
+    And Click on element by text " Confirm "
+    And Click on element by text " Confirm "
+    And Click on element by text " Confirm "
+    And Wait for element by text "Success"
+    And Assert element by text "Success"
+
+    #URADI PETI KORAK U TESTU KADA SPUSTE PAYMENT EXECUTION STATUS
+
+    Then Click on element by containing text "Recipients"
+    And Click on recipient name by key "nameKey"
+    And Assert recipient name equals remembered key "nameKey"
+    And Assert recipient street equals remembered key "streetKey"
+    And Assert recipient city equals remembered key "cityKey"
 
     Examples:
       | rowindex |
