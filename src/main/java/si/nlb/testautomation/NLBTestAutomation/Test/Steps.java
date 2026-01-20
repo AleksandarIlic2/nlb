@@ -11185,4 +11185,32 @@ public class Steps {
 
 
     }
+
+    @And("Enter account number")
+    public void enterAccountNumber() throws Throwable {
+
+        String xPath = "//label[normalize-space()='Account number']" +
+                "/following-sibling::div" +
+                "//input[@type='text']";
+        WebElement input = SelectByXpath.CreateElementByXpath(xPath);
+        hp.EnterTextToElement(input, "205-9001020797842-69");
+    }
+
+    @And("Enter recipient name")
+    public void enterRecipientName() throws Throwable {
+
+        String xPath = "//label[normalize-space()='First and last name / Company name']" +
+                "/following-sibling::div" +
+                "//input[@type='text']";
+        WebElement input = SelectByXpath.CreateElementByXpath(xPath);
+        hp.EnterTextToElement(input, "Koar TGR");
+    }
+
+    @And("Assert button by text {string}")
+    public void assertButtonByText(String text) throws Throwable {
+        String xPath = "//nlb-button//*[text()=\"" + text +"\"]";
+        WebElement button = SelectByXpath.CreateElementByXpath(xPath);
+        assertTrue(button.isDisplayed());
+
+    }
 }
