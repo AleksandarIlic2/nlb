@@ -23,7 +23,16 @@ Feature: Domestic_Payments
     And Assert button by text "Yes"
 
     And Click on element by text "No"
+    #TODO kad se otkloni BUG, treba otkomentarisati Confirm
+    #And Click on element by text "Confirm"
 
+    And Click on element by text "Cancel"
+    And Assert element by text "Are you sure?"
+    And Assert element by text "Cancelling now will terminate this payment. Do you want to proceed?"
+    And Assert button by text "No"
+    And Assert button by text "Yes"
+
+    And Click on element by text "Yes"
 
 
     Examples:

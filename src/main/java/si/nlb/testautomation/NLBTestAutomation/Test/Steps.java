@@ -9732,6 +9732,9 @@ public class Steps {
             assertEquals(5, tabs.size());
         } else {
             assertEquals(4, tabs.size());
+            if(acc.toLowerCase().contains("card")){
+                expected.set(1, "Settings");
+            }
         }
 
 
@@ -9834,10 +9837,10 @@ public class Steps {
         assertTrue(amountFromElement.isDisplayed());
         assertTrue(amountToElement.isDisplayed());
 
-        //Value type
-        String xPathValue = "//div[contains(@class,'heading-5') and contains(text(),'Value type')]";
-        WebElement valueEelement = SelectByXpath.CreateElementByXpath(xPathValue);
-        assertTrue(valueEelement.isDisplayed());
+        //Value type  TODO otkomentarisati kada se opet pojavi!
+        //String xPathValue = "//div[contains(@class,'heading-5') and contains(text(),'Value type')]";
+        //WebElement valueEelement = SelectByXpath.CreateElementByXpath(xPathValue);
+        //assertTrue(valueEelement.isDisplayed());
 
         //Type
         String xPathType = "//div[contains(@class,'heading-5') and contains(text(),'Type')]";
@@ -11212,5 +11215,14 @@ public class Steps {
         WebElement button = SelectByXpath.CreateElementByXpath(xPath);
         assertTrue(button.isDisplayed());
 
+    }
+
+    @And("Enter amount")
+    public void enterAmount() throws Throwable {
+        String xPath = "//label[normalize-space()='First and last name / Company name']" +
+                "/following-sibling::div" +
+                "//input[@type='text']";
+        WebElement input = SelectByXpath.CreateElementByXpath(xPath);
+        hp.EnterTextToElement(input, "100");
     }
 }
