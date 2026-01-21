@@ -38,3 +38,31 @@ Feature: Domestic_Payments
     Examples:
       | rowindex |
       |        1 |
+
+  @Payments-Domestic-Payments-Back-Button_[WEB]
+  Scenario Outline: Payments-Domestic-Payments-Back-Button_[WEB]
+
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    When Wait for element by text "Pay or transfer"
+
+    And Click on tab "Payments" from main sidebar
+    And Click on element by text "Domestic payment"
+    And Click on element by text "Select recipient"
+    And Click on element by text "KOAR TGR"
+    And Enter amount
+
+    And Assert element by text "Back"
+    And Assert element by text "Cancel"
+    And Assert element by text "Confirm"
+
+
+    And Click on element by text "Confirm"
+
+
+
+    Examples:
+      | rowindex |
+      |        1 |
