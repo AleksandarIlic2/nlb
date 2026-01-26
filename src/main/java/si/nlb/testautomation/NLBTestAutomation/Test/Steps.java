@@ -29,6 +29,7 @@ import io.cucumber.java.en.When;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import javax.xml.crypto.Data;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.*;
 import java.math.BigDecimal;
@@ -11224,5 +11225,156 @@ public class Steps {
                 "//input[@type='text']";
         WebElement input = SelectByXpath.CreateElementByXpath(xPath);
         hp.EnterTextToElement(input, "100");
+    }
+
+
+    @And("Enter amount {string}")
+    public void enterAmount(String amount) throws Throwable {
+        String xPath ="//label[normalize-space(.)='Payment amount']/following::input[@type='text'][1]";
+        WebElement input = SelectByXpath.CreateElementByXpath(xPath);
+        hp.EnterTextToElement(input, amount);
+    }
+    @And("Remember recipient data")
+    public void rememberRecipientData() throws Throwable {
+
+        Map<String, String> details = new HashMap<>();
+
+    //AMOUNT
+        String paymentAmountXPath =
+                "//nlb-payment-review//span[normalize-space(.)='Payment amount']/following-sibling::span";
+        WebElement paymentAmountEl = SelectByXpath.CreateElementByXpath(paymentAmountXPath);
+        String paymentAmount = paymentAmountEl.getText().split(" ")[0];
+        details.put("paymentAmount", paymentAmount);
+
+    //FEE
+        String feeXPath =
+                "//nlb-payment-review//span[normalize-space(.)='Informative fee']/following-sibling::span";
+        WebElement feeEl = SelectByXpath.CreateElementByXpath(feeXPath);
+        String fee = feeEl.getText().split(" ")[0];
+        details.put("fee", fee);
+
+    //DEBTOR
+        String debtorNameXPath =
+                "//h3[normalize-space(.)='Debtor']/following::dt[normalize-space(.)='First and last name / Company name']/following-sibling::dd[1]";
+        String debtorAddressXPath =
+                "//h3[normalize-space(.)='Debtor']/following::dt[normalize-space(.)='Address']/following-sibling::dd[1]";
+        String debtorBbanXPath =
+                "//h3[normalize-space(.)='Debtor']/following::dt[normalize-space(.)='Account number']/following-sibling::dd[1]";
+
+        details.put("debtorName", SelectByXpath.CreateElementByXpath(debtorNameXPath).getText().trim());
+        details.put("debtorAddress", SelectByXpath.CreateElementByXpath(debtorAddressXPath).getText().trim());
+        details.put("debtorBBAN", SelectByXpath.CreateElementByXpath(debtorBbanXPath).getText().trim());
+    //RECIPIENT
+        String recipientNameXPath =
+                "//h3[normalize-space(.)='Recipient']/following::dt[normalize-space(.)='First and last name / Company name']/following-sibling::dd[1]";
+        String recipientAddressXPath =
+                "//h3[normalize-space(.)='Recipient']/following::dt[normalize-space(.)='Address']/following-sibling::dd[1]";
+        String recipientBbanXPath =
+                "//h3[normalize-space(.)='Recipient']/following::dt[normalize-space(.)='Account number']/following-sibling::dd[1]";
+
+        details.put("recipientName", SelectByXpath.CreateElementByXpath(recipientNameXPath).getText().trim());
+        details.put("recipientAddress", SelectByXpath.CreateElementByXpath(recipientAddressXPath).getText().trim());
+        details.put("recipientBBAN", SelectByXpath.CreateElementByXpath(recipientBbanXPath).getText().trim());
+
+        // PURPOSE =================
+        String purposeXPath =
+                "//h3[normalize-space(.)='Payment']/following::dt[normalize-space(.)='Purpose']/following-sibling::dd[1]";
+        WebElement purposeEl = SelectByXpath.CreateElementByXpath(purposeXPath);
+        assertReadOnly(purposeEl);
+        details.put("purpose", purposeEl.getText().trim());
+
+        String purposeCodeXPath =
+                "//h3[normalize-space(.)='Payment']/following::dt[normalize-space(.)='Purpose code']/following-sibling::dd[1]";
+        WebElement purposeCodeEl = SelectByXpath.CreateElementByXpath(purposeCodeXPath);
+        assertReadOnly(purposeCodeEl);
+        details.put("purposeCode", purposeCodeEl.getText().trim());
+
+        String paymentDateXPath =
+                "//h3[normalize-space(.)='Payment']/following::dt[normalize-space(.)='Payment date']/following-sibling::dd[1]";
+        WebElement paymentDateEl = SelectByXpath.CreateElementByXpath(paymentDateXPath);
+        assertReadOnly(paymentDateEl);
+        details.put("paymentDate", paymentDateEl.getText().trim());
+
+
+        //SAVE
+        DataManager.userObject.put("recipientDetails", details);
+
+        details.forEach((key, value) ->
+                System.out.println(key + " = " + value)
+        );
+
+
+    }
+
+    private void assertReadOnly(WebElement el) {
+        String tag = el.getTagName();
+        String contentEditable = el.getAttribute("contenteditable");
+
+        if ("input".equalsIgnoreCase(tag) || "textarea".equalsIgnoreCase(tag)) {
+            throw new AssertionError("Element is editable (input/textarea): " + el);
+        }
+
+        if ("true".equalsIgnoreCase(contentEditable)) {
+            throw new AssertionError("Element is contentEditable=true: " + el);
+        }
+    }
+    private void assertEqualsFromMap(
+            Map<String, String> map,
+            String key,
+            String actualValue
+    ) {
+        String expected = map.get(key);
+        if (!expected.equals(actualValue)) {
+            throw new AssertionError(
+                    key + " mismatch! Expected: [" + expected + "] but was: [" + actualValue + "]"
+            );
+        }
+    }
+
+
+    @And("Assert recipient data is correct")
+    public void assertRecipientDataIsCorrect() throws Throwable {
+
+        Map<String,String> details= (Map<String, String>) DataManager.userObject.get("recipientDetails");
+
+        String debtorBbanXPath = "//h2[normalize-space(.)='Debtor']/following::div[contains(@class,'subheadline')][1]";
+        String actualDebtorBban =SelectByXpath.CreateElementByXpath(debtorBbanXPath).getText().trim();
+
+        assertEqualsFromMap(details, "debtorBBAN", actualDebtorBban);
+
+
+        String recipientNameXPath = "//h2[normalize-space(.)='Recipient']/following::div[contains(@class,'callout')][1]";
+        String recipientBbanXPath = "//h2[normalize-space(.)='Recipient']/following::div[contains(@class,'subheadline')][2]";
+
+        String actualRecipientName = SelectByXpath.CreateElementByXpath(recipientNameXPath).getText().trim();
+        String actualRecipientBban = SelectByXpath.CreateElementByXpath(recipientBbanXPath).getText().trim();
+
+        assertEqualsFromMap(details, "recipientName", actualRecipientName);
+        assertEqualsFromMap(details, "recipientBBAN", actualRecipientBban);
+
+        String amountXPath = "//label[normalize-space(.)='Payment amount']/following::input[@type='text' and not(@readonly)][1]";
+        String actualAmount = SelectByXpath.CreateElementByXpath(amountXPath).getAttribute("value").trim();
+
+        assertEqualsFromMap(details, "paymentAmount", actualAmount);
+
+        String purposeCodeXPath = "//label[normalize-space(.)='Purpose code']/following::input[@role='combobox'][1]";
+        String actualPurposeCode = SelectByXpath.CreateElementByXpath(purposeCodeXPath).getAttribute("value").split("-")[0].trim();
+
+        assertEqualsFromMap(details, "purposeCode", actualPurposeCode);
+
+        String purposeXPath = "//label[normalize-space(.)='Purpose']/following::input[@type='text'][1]";
+        String actualPurpose = SelectByXpath.CreateElementByXpath(purposeXPath).getAttribute("value").trim();
+
+        assertEqualsFromMap(details, "purpose", actualPurpose);
+
+        String paymentDateXPath = "//label[normalize-space(.)='Payment date']/following::input[@type='text'][1]";
+        String actualPaymentDate = SelectByXpath.CreateElementByXpath(paymentDateXPath).getAttribute("value").trim();
+
+        assertEqualsFromMap(details, "paymentDate", actualPaymentDate);
+
+
+
+
+
     }
 }

@@ -40,7 +40,7 @@ Feature: Domestic_Payments
       |        1 |
 
   @Payments-Domestic-Payments-Back-Button_[WEB]
-  Scenario Outline: Payments-Domestic-Payments-Back-Button_[WEB]
+  Scenario Outline: Payments-Domestic_Payments-Back_Button_[WEB]
 
 
     Given Open Login page
@@ -50,16 +50,23 @@ Feature: Domestic_Payments
 
     And Click on tab "Payments" from main sidebar
     And Click on element by text "Domestic payment"
-    And Click on element by text "Select recipient"
-    And Click on element by text "KOAR TGR"
-    And Enter amount
+    And Click on element by containing text "Select from list"
+    And Click on element by xpath "//button//div[contains(text(),\"Select from list\")]"
+    And Click on element by containing text "KOAR TGR"
+    And Enter amount "100"
+    And Assert element by contains text "Back"
+    And Assert element by contains text "Cancel"
+    And Assert element by contains text "Confirm"
 
-    And Assert element by text "Back"
-    And Assert element by text "Cancel"
-    And Assert element by text "Confirm"
+    And Click on element by containing text "Confirm"
 
-
-    And Click on element by text "Confirm"
+    And Remember recipient data
+    And Assert element by contains text "Back"
+    And Assert element by contains text "Cancel"
+    And Assert element by contains text "Confirm"
+    
+    And Click on element by xpath "//button/div[contains(text(),'Back')]"
+    And Assert recipient data is correct
 
 
 
