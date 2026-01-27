@@ -61,8 +61,7 @@ Feature: Credit_Cards
     And Assert element by xPath "//label[text()='To ']/following-sibling::div"
     And Assert element by text " Confirm "
     And Assert element by text " Clear filters "
-    #TO DO: Odkomentarisati korak ispod kada se resi bug za DOWNLOAD dugme. Treba da bude u aplikaciji, a nema ga
-#    And Assert element by text " Download transaction list "
+    And Assert element by text " Download transaction list "
 
     And Assert element by text "Last 7 days "
     And Assert element by text "Current month"
@@ -103,8 +102,7 @@ Feature: Credit_Cards
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
     And Assert element by contains text "Details"
-    #TO DO: Odkomentarisati korak ispod kada se resi bug za DOWNLOAD dugme. Treba da bude u aplikaciji, a nema ga
-#    And Assert element by text " Download transaction list "
+    And Assert element by text " Download transaction list "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
     And Scroll element by contains text "Details" into view
@@ -156,8 +154,7 @@ Feature: Credit_Cards
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
     And Assert element by contains text "Details"
-    #TO DO: Odkomentarisati korak ispod kada se resi bug za DOWNLOAD dugme. Treba da bude u aplikaciji, a nema ga
-#    And Assert element by text " Download transaction list "
+    And Assert element by text " Download transaction list "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
     And Scroll element by contains text "Details" into view
@@ -174,8 +171,7 @@ Feature: Credit_Cards
     And Assert element by xPath "//label[text()='To ']/following-sibling::div"
     And Assert element by text " Confirm "
     And Assert element by text " Clear filters "
-    #TO DO: Odkomentarisati korak ispod kada se resi bug za DOWNLOAD dugme. Treba da bude u aplikaciji, a nema ga
-#    And Assert element by text " Download transaction list "
+    And Assert element by text " Download transaction list "
 
     And Assert element by contains text "no transactions to be displayed"
 
@@ -277,8 +273,7 @@ Feature: Credit_Cards
     #TODO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
     And Assert element by contains text "Details"
-    #TODO: Odkomentarisati korak ispod kada se resi bug za DOWNLOAD dugme. Treba da bude u aplikaciji, a nema ga
-#    And Assert element by text " Download transaction list "
+    And Assert element by text " Download transaction list "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
 
@@ -328,8 +323,7 @@ Feature: Credit_Cards
     #TODO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
     And Assert element by contains text "Details"
-    #TODO: Odkomentarisati korak ispod kada se resi bug za DOWNLOAD dugme. Treba da bude u aplikaciji, a nema ga
-#    And Assert element by text " Download transaction list "
+    And Assert element by text " Download transaction list "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
     And Enter "100" to Amount filter "From"
