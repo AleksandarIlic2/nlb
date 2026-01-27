@@ -10327,12 +10327,8 @@ public class Steps {
 
     @And("Assert there are only {string} transactions in transactions list")
     public void assertThereAreOnlyTypeTransactionsInTransactionsList(String expectedType) throws Throwable {
-
-        // normalize input
         expectedType = expectedType.trim().toLowerCase(); // "incoming" ili "outgoing"
-
         boolean hasMore = true;
-
         while (hasMore) {
 
             List<WebElement> cards = driver.findElements(By.xpath("//nlb-transaction-card"));
@@ -10341,14 +10337,12 @@ public class Steps {
             for (int i = 0; i < cards.size(); i++) {
 
                 try {
-                    WebElement card = driver.findElements(By.xpath("//nlb-transaction-card")).get(i);
+                    WebElement card = cards.get(i); // ← KLJUČNO
 
-                    // amount
                     WebElement amountElement = card.findElement(By.xpath(".//nlb-amount//div[not(@class)]"));
                     String amountText = amountElement.getText().trim();
                     System.out.println("Read amount: " + amountText);
 
-                    // da li je incoming?
                     boolean isIncoming = !card.findElements(By.cssSelector(".category-incoming")).isEmpty();
                     boolean isOutgoing = !isIncoming;
 
@@ -10364,6 +10358,7 @@ public class Steps {
 
                 } catch (StaleElementReferenceException e) {
                     System.out.println("Element stale → retry index: " + i);
+                    cards = driver.findElements(By.xpath("//nlb-transaction-card"));
                     i--;
                 }
             }
@@ -10373,6 +10368,9 @@ public class Steps {
                 hasMore = false;
             }
         }
+
+
+
     }
     @And("Enter date {string} to field {string}")
     public void enterDateToField(String date, String fieldName) throws Throwable {
@@ -10959,7 +10957,7 @@ public class Steps {
             if (rawText.isEmpty()) {
                 continue;
             }
-
+            System.out.println("RAW TEXT:" + rawText);
             // 1. Izvući broj iz stringa
             // Podržava formate:
             // "-120,00", "120,00", "+120,00", "120", "-120", "120.00"

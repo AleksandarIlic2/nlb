@@ -252,3 +252,95 @@ Feature: Credit_Cards
     Examples:
       | rowindex |
       |        1 |
+
+
+  @Credit_Cards-Transactions_Filter_By_Type_[WEB]
+  Scenario Outline: Credit_Cards-Transactions_Filter_By_Type_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    #User is logged into aplication and clicks on the My Products page frome the menu
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    Then Assert element by class "button-bold" and contains text "Edit list"
+    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_name"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
+    #And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "credit_card_1_name"
+
+    And Assert Transactions tab is selected by default
+    And Assert element by contains text "Transactions"
+    #TODO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
+    And Assert element by contains text "Statements"
+    And Assert element by contains text "Details"
+    #TODO: Odkomentarisati korak ispod kada se resi bug za DOWNLOAD dugme. Treba da bude u aplikaciji, a nema ga
+#    And Assert element by text " Download transaction list "
+    And Assert element by text " Filters"
+    And Click on element by text " Filters"
+
+     #filter by type - incoming
+    And Scroll screen down
+    And Select radio button by text "Incoming transactions"
+    And Click on element by text " Confirm "
+    And Wait for "10" seconds
+    And Assert there are only "Incoming transactions" transactions in transactions list
+    And Assert transaction dates are ordered correctly
+
+    And Click on element by text " Clear filters "
+    And Click on element by text " Filters"
+    And Assert date picker
+    And Scroll screen down
+    And Select radio button by text "Outgoing transactions"
+    And Click on element by text " Confirm "
+    And Wait for "10" seconds
+    And Assert there are only "Outgoing transactions" transactions in transactions list
+    And Assert transaction dates are ordered correctly
+
+
+    Examples:
+      | rowindex |
+      |        1 |
+
+
+  @Credit_Cards-Transactions_Filter_By_Amount_[WEB]
+  Scenario Outline: Credit_Cards-Transactions_Filter_By_Amount_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    #User is logged into aplication and clicks on the My Products page frome the menu
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    Then Assert element by class "button-bold" and contains text "Edit list"
+    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_name"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
+
+    And Assert Transactions tab is selected by default
+    And Assert element by contains text "Transactions"
+    #TODO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
+    And Assert element by contains text "Statements"
+    And Assert element by contains text "Details"
+    #TODO: Odkomentarisati korak ispod kada se resi bug za DOWNLOAD dugme. Treba da bude u aplikaciji, a nema ga
+#    And Assert element by text " Download transaction list "
+    And Assert element by text " Filters"
+    And Click on element by text " Filters"
+    And Enter "100" to Amount filter "From"
+    And Enter "800" to Amount filter "To"
+    And Click on element by text " Confirm "
+    And Wait for "10" seconds
+    #And Scroll element by contains text "end of the list" into view
+    And Assert transaction amounts are between "100" and "800"
+    And Click on element by text " Clear filters "
+
+
+    Examples:
+      | rowindex |
+      |        1 |
