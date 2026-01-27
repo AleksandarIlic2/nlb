@@ -18,7 +18,7 @@ Feature: Domestic_Payments
 
     And Click on element by text "Cancel"
     And Assert element by text "Are you sure?"
-    And Assert element by text "Cancelling now will terminate this payment. Do you want to proceed?"
+    And Assert element by text "Cancelling now will terminate the payment process."
     And Assert button by text "No"
     And Assert button by text "Yes"
 
@@ -28,7 +28,7 @@ Feature: Domestic_Payments
 
     And Click on element by text "Cancel"
     And Assert element by text "Are you sure?"
-    And Assert element by text "Cancelling now will terminate this payment. Do you want to proceed?"
+    And Assert element by text "Cancelling now will terminate the payment process."
     And Assert button by text "No"
     And Assert button by text "Yes"
 
