@@ -73,3 +73,44 @@ Feature: Domestic_Payments
     Examples:
       | rowindex |
       |        1 |
+  @Payments-Domestic_Payments-Create_New_Recipient_[WEB]
+  Scenario Outline: Payments-Domestic_Payments-Create_New_Recipient_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+
+    When Click on element by text "Pay or transfer"
+    And Enter text "340000003253595464" in field by xPath "//label[text()='Account number']/following-sibling::div//input"
+    And Enter text "Ana Janicijevic" in field by xPath "//label[contains(text(), 'name')]/following-sibling::div//input"
+    And Enter text "Bulevar 11" in field by xPath "//label[contains(text(), 'Street')]/following-sibling::div//input"
+    And Enter text "Beograd" in field by xPath "//label[text()='City']/following-sibling::div//input"
+    And Enter text "100" in field by xPath "//label[text()='Payment amount ']/following-sibling::div//input"
+    And Click on element by text "Save recipient "
+
+    And Remember recipient number and name
+    Then Click on element by text " Confirm "
+    And Click on element by text " Confirm "
+    And Wait for element by text " Confirm "
+    And Click on element by text " Confirm "
+    And Click on element by text " Confirm "
+    And Click on element by text " Confirm "
+    And Wait for element by text "Success"
+    And Assert element by text "Success"
+    And Click on element by containing text "OK"
+
+    And Wait for element by text "Success"
+    And Assert element by text "Success"
+    And Assert element by contains text "Recipient saved"
+    And Assert element by contains text "RSD was sent"
+
+
+    And Click on tab "Recipients" from main sidebar
+    And Assert that recipient has same accNumber
+    #TODO -dodati ovo ispod kad bude radio payment do kraja
+    #And Click on tab "Payments" from main sidebar
+    #And Assert that last payment is correct
+
+    Examples:
+      | rowindex |
+      |        1 |

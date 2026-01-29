@@ -287,7 +287,7 @@ Feature: Credit_Cards
 
     And Click on element by text " Clear filters "
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "card"
     And Scroll screen down
     And Select radio button by text "Outgoing transactions"
     And Click on element by text " Confirm "
