@@ -374,6 +374,48 @@ Feature: Credit_Cards
       | rowindex |
       |        1 |
 
+
+
+  @Credit_Cards-Transactions_Details[WEB]
+  Scenario Outline: Credit_Cards-Transactions_Details[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    #User is logged into aplication and clicks on the My Products page frome the menu
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    Then Assert element by class "button-bold" and contains text "Edit list"
+    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_name"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
+
+    And Assert Transactions tab is selected by default
+    And Assert element by contains text "Transactions"
+    And Assert element by contains text "Statements"
+    And Assert element by contains text "Details"
+    And Assert element by text " Download transaction list "
+    And Assert element by text " Filters"
+    And Click on down arrow on first transaction do display details
+    Then Assert element by text "Amount" has following sibling "dd" with text "24.000,00 RSD"
+    And Assert element by text "Settlement date" has following sibling "dd" with text "01.07.2025"
+    And Assert element by text "Value date" has following sibling "dd" with text "01.07.2025"
+    And Assert element by text "Authorization date" has following sibling "dd" with text "01.07.2025"
+    And Assert element by text "Transaction ID" has following sibling "dd" that contains text "0999E688B8E110"
+    And Assert element by tag "span" containing text " Send message "
+    # Korak ispod se koristi kod Slovenaca, treba li da postoji u testu?
+    #And Assert element by tag "div" containing text "Confirmation" is not displayed
+    And Click on down arrow on first transaction do display details
+    And Assert element by contains text "Value date" is not displayed
+    And Assert element by class "tw-text-incomingColor" and index "1"
+
+    Examples:
+      | rowindex |
+      |        1 |
+
   @Credit_Cards-Transactions-Filter-Filter_By_Status_[WEB]
   Scenario Outline: Credit_Cards-Transactions-Filter-Filter_By_Status_[WEB]
   #C2353
@@ -398,7 +440,7 @@ Feature: Credit_Cards
 
     And Click on element by containing text "Filters"
     And Assert date picker "card"
-    
+
     #status option - Executed
     And Click on element by containing text "Executed"
     #TODO  provjera, kada dodaju pending transakcije
