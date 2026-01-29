@@ -9805,8 +9805,8 @@ public class Steps {
 
     }
 
-    @And("Assert date picker")
-    public void assertDatePicker() throws Throwable {
+    @And("Assert date picker {string}")
+    public void assertDatePicker(String productName) throws Throwable {
         String xPathFilterContent = "//div[@id='filters-content']";
         By elWait = SelectByXpath.CreateByElementByXpath(xPathFilterContent);
         WaitHelpers.WaitForElement(elWait);
@@ -9848,6 +9848,22 @@ public class Steps {
         WebElement typeEelement = SelectByXpath.CreateElementByXpath(xPathType);
         assertTrue(typeEelement.isDisplayed());
 
+        if(productName.toLowerCase().contains("card")) {
+            //Status
+            String xPathStatus = "//div[contains(@class,'heading-5') and contains(text(),'Status')]";
+            WebElement statusElement = SelectByXpath.CreateElementByXpath(xPathStatus);
+            assertTrue(statusElement.isDisplayed());
+
+            List<WebElement> status_list = driver.findElements(
+                    By.xpath("//legend[contains(text(),'Status')]/following-sibling::nlb-radio-button//span[@class='ng-star-inserted']")
+            );
+
+            assertEquals(3, status_list.size());
+            assertEquals("All", status_list.get(0).getText().trim());
+            assertEquals("Executed", status_list.get(1).getText().trim());
+            assertEquals("Pending", status_list.get(2).getText().trim());
+
+        }
         //Clear filter
         String xPathClear = "//button//div[contains(text(),'Clear filters')]";
         WebElement clearElement = SelectByXpath.CreateElementByXpath(xPathClear);
@@ -11382,5 +11398,55 @@ public class Steps {
         String xPath = "//nlb-account-selector//i[contains(@class,'icon-chevron-down')]";
         WebElement el = SelectByXpath.CreateElementByXpath(xPath);
         assertTrue(el.isDisplayed());
+    }
+
+    @And("Remember recipient number and name")
+    public void rememberRecipientNumberAndName() {
+
+        WebElement accountNumberInput = driver.findElement(
+                By.xpath("//label[normalize-space()='Account number']/following-sibling::div//input")
+        );
+
+        WebElement nameInput = driver.findElement(
+                By.xpath("//label[contains(normalize-space(),'First and last name')]/following-sibling::div//input")
+        );
+
+        String accountNumberValue = accountNumberInput.getAttribute("value");
+        String nameValue = nameInput.getAttribute("value");
+
+        DataManager.userObject.put("recipientNumber",accountNumberValue);
+        DataManager.userObject.put("recipientName",nameValue);;
+
+    }
+
+    @And("Change input in label {string} to {string}")
+    public void changeRecipientName(String label, String newInput) {
+        WebElement element = driver.findElement(
+                By.xpath("//label[normalize-space()='" + label + "']/following-sibling::div//input")
+        );
+
+        element.clear();
+        element.sendKeys(newInput);
+
+    }
+
+    @And("Assert that recipient has same accNumber")
+    public void assertThatRecipientHasSameAccNumber() {
+
+        String recipientName = (String) DataManager.userObject.get("recipientName");
+        WebElement recipientItem = driver.findElement(
+                By.xpath("//nlb-contact-item[.//div[contains(@class,'callout') and normalize-space()='"
+                        + recipientName + "']]")
+        );
+
+        WebElement accountNumberElement = recipientItem.findElement(
+                By.xpath(".//div[contains(@class,'subheadline') and contains(text(),'-')]")
+        );
+
+        String actualAccountNumber = accountNumberElement.getText().trim();
+
+        String expectedAccountNumber = (String) DataManager.userObject.get("recipientNumber");
+        assertEquals("Account number for recipient '" + recipientName + "' should NOT be changed",expectedAccountNumber.replace("-",""), actualAccountNumber.replace("-",""));
+
     }
 }

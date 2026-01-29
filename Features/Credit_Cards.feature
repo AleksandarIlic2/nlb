@@ -213,7 +213,7 @@ Feature: Credit_Cards
     And Assert element by text "Search "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "domestic"
 
     #User Filters the list with valid parameters
 
@@ -368,6 +368,162 @@ Feature: Credit_Cards
     And Enter "1000" to Amount filter "From"
     And Enter "800" to Amount filter "To"
     And Assert element by contains text "From amount must be smaller than To amount"
+
+
+    Examples:
+      | rowindex |
+      |        1 |
+
+  @Credit_Cards-Transactions-Filter-Filter_By_Status_[WEB]
+  Scenario Outline: Credit_Cards-Transactions-Filter-Filter_By_Status_[WEB]
+  #C2353
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    #User is logged into aplication and clicks on the My Products page frome the menu
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    Then Assert element by class "button-bold" and contains text "Edit list"
+    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_name"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
+
+    And Assert Transactions tab is selected by default
+    And Assert element by contains text "Transactions"
+    And Assert element by text " Filters"
+
+    And Click on element by containing text "Filters"
+    And Assert date picker "card"
+    
+    #status option - Executed
+    And Click on element by containing text "Executed"
+    #TODO  provjera, kada dodaju pending transakcije
+    #status option - Pending
+
+    Examples:
+      | rowindex |
+      |        1 |
+
+
+
+  @Credit_Cards-Transactions-Filter_Multiple_Filter_Invalid_[WEB]
+  Scenario Outline: Credit_Cards-Transactions-Filter_Multiple_Filter_Invalid_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    #User is logged into aplication and clicks on the My Products page frome the menu
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    Then Assert element by class "button-bold" and contains text "Edit list"
+    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_name"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
+
+    And Assert order of tabs in tablist "card"
+    And Assert Transactions tab is selected by default
+    And Assert date picker "card"
+
+
+    And Enter "10000" to Amount filter "From"
+    And Enter "5000" to Amount filter "To"
+    And Assert element by contains text "From amount must be smaller than To amount"
+
+
+    #TODO -BUG prijavljen
+    And Enter date "11.11.25" to field "from"
+    And Enter date "23.11.25" to field "to"
+    And Assert element by contains text "Field must be a date"
+
+    #MMDDYY
+    And Enter date "11.11.25" to field "from"
+    And Assert "From" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+    #And Click on element by text " OK "
+    #letters - START
+    And Enter date "petijanuardvehiljadedvadesetpete" to field "from"
+    And Assert "From" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
+    And Assert element by text "There are no transactions to be displayed."
+    #And Click on element by text " OK "
+    #start date later than end date TODO
+    #special characters
+    And Enter date "11.11.25@" to field "from"
+    And Assert "From" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+   # And Click on element by text " OK "
+    #end date earlier than start date
+
+    #letters - END
+    And Enter date "11.11.25" to field "from"
+    And Enter date "petijanuardvehiljadedvadesetpete" to field "to"
+    And Assert "To" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
+    And Assert element by text "There are no transactions to be displayed."
+    #special characters - END
+    And Enter date "11.11.25@" to field "to"
+    And Assert "To" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
+    And Assert element by text "There are no transactions to be displayed."
+     #DD/MM/YY - END
+    And Enter date "11.11.25" to field "to"
+    And Assert "To" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
+    And Assert element by text "There are no transactions to be displayed."
+    #YY/DD/MM - END
+    And Enter date "25.25.11" to field "to"
+    And Assert "To" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
+    And Assert element by text "There are no transactions to be displayed."
+    #MMDDYY - END
+    And Enter date "11.11.25" to field "to"
+    And Assert "To" Field has error "Field must be a date."
+    And Click on element by text " Confirm "
+    And Click on " OK " button if displayed
+    And Assert element by text "There are no transactions to be displayed."
+    #letters - MINAMOUNT
+    And Enter "textAmount" to Amount filter "From"
+    And Assert "From" amount field value
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+    #specialCharacters - MINAMOUNT
+
+    And Enter "@@@" to Amount filter "From"
+    And Assert "From" amount field value
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+    #And Click on element by text " OK "
+    #Min amount higher than Max amount
+    And Enter "200,00" to Amount filter "From"
+    And Enter "100,00" to Amount filter "To"
+    And Assert element by text "From amount must be smaller than To amount."
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+    #letters - MAXAMOUNT
+    And Enter "asdasdasd" to Amount filter "To"
+    And Assert "To" amount field value
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
+    #And Click on element by text " OK "
+    #specialcharacters - MAXAMOUT
+    And Enter "@@@" to Amount filter "To"
+    And Assert "To" amount field value
+    And Click on element by text " Confirm "
+    And Assert element by text "There are no transactions to be displayed."
 
 
     Examples:

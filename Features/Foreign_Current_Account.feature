@@ -49,7 +49,7 @@ Feature: Foreign_Current_Account
     And Assert element by text "Search "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "foreign"
     #Incoming
     And Scroll screen down
     And Assert radio button by text "All"
@@ -59,7 +59,7 @@ Feature: Foreign_Current_Account
     And Assert transaction dates are ordered correctly
     And Click on element by text " Clear filters "
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "foreign"
     And Scroll screen down
     And Select radio button by text "Outgoing transactions"
     And Click on element by text " Confirm "
@@ -106,7 +106,7 @@ Feature: Foreign_Current_Account
     And Assert element by text "Search "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "foreign"
 
     #User Filters the list with valid parameters
 
@@ -165,7 +165,7 @@ Feature: Foreign_Current_Account
     And Assert element by text "Search "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "foreign"
     And Scroll screen down
     #And Assert radio button by text "All"
     #DD/MM/YY
@@ -293,7 +293,7 @@ Feature: Foreign_Current_Account
     And Assert element by text "Search "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "foreign"
 
     And Click on button with tag "i" containing class "icon-calendar-today"
     And Assert window behind Date filter popup is blurred
@@ -422,7 +422,7 @@ Feature: Foreign_Current_Account
     And Assert element by text "Search "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "foreign"
 
     And Assert EUR currency is selected if product has more than one currency
 

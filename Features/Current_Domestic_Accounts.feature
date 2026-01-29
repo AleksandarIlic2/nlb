@@ -91,7 +91,7 @@ Feature: Current_Domestic_Accounts
     And Assert element by text "Search "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "domestic"
     #Incoming
     And Scroll screen down
     #And Assert radio button by text "All"
@@ -103,7 +103,7 @@ Feature: Current_Domestic_Accounts
         # And Assert Assert there are only Incoming transactions by icon
     And Click on element by text " Clear filters "
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "domestic"
     And Scroll screen down
     And Select radio button by text "Outgoing transactions"
     And Click on element by text " Confirm "
@@ -136,7 +136,7 @@ Feature: Current_Domestic_Accounts
     And Assert element by text "Search "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "domestic"
 
     And Click on button with tag "i" containing class "icon-calendar-today"
     And Assert window behind Date filter popup is blurred
@@ -199,7 +199,7 @@ Feature: Current_Domestic_Accounts
     And Assert element by text "Search "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "domestic"
     And Scroll screen down
     #And Assert radio button by text "All"
     #DD/MM/YY
@@ -393,7 +393,7 @@ Feature: Current_Domestic_Accounts
     And Assert element by text "Search "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "domestic"
 
 
     #User clicks on tab Details
@@ -444,7 +444,7 @@ Feature: Current_Domestic_Accounts
     And Assert element by text "Search "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "domestic"
 
     #User clicks on tab Details
     When Click on tab "Details" from tablist

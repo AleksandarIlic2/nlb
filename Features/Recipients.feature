@@ -148,8 +148,16 @@ Feature: Recipients
     And Login to the page using user from Excel "<rowindex>" columnName "username"
 
     And Click on element by containing text "Pay or transfer"
-    And Click on element by containing text "Select from list"
+    And Click on element by tag "i" contains class "icon-recipients-list"
     And Click on element by containing text "205-9001020797842-69"
+    And Remember recipient number and name
+    And Change input in label "Account number" to "340000003253595464"
+    And Enter amount "100"
+    And Click on element by containing text "Confirm"
+    And Click on element by containing text "Confirm"
+
+    And Click on tab "Recipients" from main sidebar
+    And Assert that recipient has same accNumber
 
 
 
