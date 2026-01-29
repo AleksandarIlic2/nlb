@@ -11375,4 +11375,12 @@ public class Steps {
 
 
     }
+
+    @And("Assert account selector is displayed")
+    public void assertAccountSelectorIsDisplayed() throws Throwable {
+
+        String xPath = "//nlb-account-selector//i[contains(@class,'icon-chevron-down')]";
+        WebElement el = SelectByXpath.CreateElementByXpath(xPath);
+        assertTrue(el.isDisplayed());
+    }
 }

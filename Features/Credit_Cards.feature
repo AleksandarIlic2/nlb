@@ -338,3 +338,38 @@ Feature: Credit_Cards
     Examples:
       | rowindex |
       |        1 |
+
+  @Credit_Cards-Transactions_Filter_By_Amount_invalid_[WEB]
+  Scenario Outline: Credit_Cards-Transactions_Filter_By_Amount_invalid_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    #User is logged into aplication and clicks on the My Products page frome the menu
+    When Click on tab "My products" from main sidebar
+    And Wait for element by text "Edit list"
+    Then Assert element by class "button-bold" and contains text "Edit list"
+    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_name"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
+
+    And Assert Transactions tab is selected by default
+    And Assert element by contains text "Transactions"
+    #TODO:
+      # Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
+    And Assert element by contains text "Statements"
+    And Assert element by contains text "Details"
+    And Assert element by text " Download transaction list "
+    And Assert element by text " Filters"
+    And Click on element by text " Filters"
+    And Enter "1000" to Amount filter "From"
+    And Enter "800" to Amount filter "To"
+    And Assert element by contains text "From amount must be smaller than To amount"
+
+
+    Examples:
+      | rowindex |
+      |        1 |
