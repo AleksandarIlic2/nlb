@@ -26,7 +26,7 @@ Feature: Current_Domestic_Accounts
     #User is by default on Transactions tab.
     And Assert order of tabs in tablist "domestic"
 
-    #Below the tabs, icons for Date picker, Filter, Select category and Search filter are displayed on the left side.
+    #Below the tabs, icons for date picker "domestic", Filter, Select category and Search filter are displayed on the left side.
       # On the right side there is a Download option
     And Assert element by text " Download transaction list "
     And Assert element by contains class "icon-download"
@@ -34,7 +34,7 @@ Feature: Current_Domestic_Accounts
     And Assert element by text "Search "
     And Assert element by text " Filters"
     And Click on element by text " Filters"
-    And Assert date picker
+    And Assert date picker "domestic"
 
     #User Filters the list with valid parameters
 
@@ -385,7 +385,7 @@ Feature: Current_Domestic_Accounts
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
     And Assert order of tabs in tablist "domestic"
-    #Below the tabs, icons for Date picker, Filter, Select category and Search filter are displayed on the left side.
+    #Below the tabs, icons for date picker "domestic", Filter, Select category and Search filter are displayed on the left side.
     # On the right side there is a Download option.
     And Assert element by text " Download transaction list "
     And Assert element by contains class "icon-download"
@@ -436,7 +436,7 @@ Feature: Current_Domestic_Accounts
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
     And Assert order of tabs in tablist "domestic"
-    #Below the tabs, icons for Date picker, Filter, Select category and Search filter are displayed on the left side.
+    #Below the tabs, icons for date picker "domestic", Filter, Select category and Search filter are displayed on the left side.
     # On the right side there is a Download option.
     And Assert element by text " Download transaction list "
     And Assert element by contains class "icon-download"
