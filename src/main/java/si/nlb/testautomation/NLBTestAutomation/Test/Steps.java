@@ -1882,6 +1882,7 @@ public class Steps {
         String text = DataManager.getDataFromHashDatamap(rowindex, columnName);
         By waitEl = SelectByText.CreateByElementByContainsText(text);
         WaitHelpers.WaitForElement(waitEl);
+        System.out.println("TEKST" + text + waitEl);
 
         WebElement element = SelectByXpath.CreateElementBy(waitEl);
         assertTrue(element.isDisplayed());
@@ -10683,8 +10684,8 @@ public class Steps {
     public void assertProductNumberIsInBBANFormatByXPath(String xPath) throws Throwable {
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String accountNumber = element.getText().trim();
-
-        Assert.assertTrue(accountNumber.matches("^\\d{3}-\\d{13}-\\d{2}$"));
+        System.out.println("ACC NUMBER: " + accountNumber);
+        Assert.assertTrue(accountNumber.matches("^\\d{13}$"));
     }
 
     @And("Assert Product name is displayed by xPath {string}")
@@ -11043,8 +11044,9 @@ public class Steps {
 
         WebElement elementForAccountNumber = SelectByXpath.CreateElementByXpath(xPathForAccountNumber);
         String stringForAccountNumber = elementForAccountNumber.getAttribute("innerText");
+        System.out.println("stringForAccNumber:" + stringForAccountNumber);
         assertTrue(elementForAccountNumber.isDisplayed());
-        assertTrue(stringForAccountNumber.matches("^901100\\d{8}$"));
+        assertTrue(stringForAccountNumber.matches("^901100\\d{7}$"));
         System.out.println("Broj partije: " + stringForAccountNumber);
 
         WebElement elementForProductCard1 = SelectByXpath.CreateElementByXpath(xPathForProductCard1);
@@ -11450,5 +11452,26 @@ public class Steps {
         String expectedAccountNumber = (String) DataManager.userObject.get("recipientNumber");
         assertEquals("Account number for recipient '" + recipientName + "' should NOT be changed",expectedAccountNumber.replace("-",""), actualAccountNumber.replace("-",""));
 
+    }
+
+    @And("Assert Savings account are sorted correctly")
+    public void assertSavingsAccountAreSortedCorrectly() {
+        List<WebElement> accountTitles = driver.findElements(By.xpath("//nlb-product-card//div[contains(@class, 'heading-3')]"));
+        List<String> savingAccounts = new ArrayList<>();
+        for (WebElement elem: accountTitles){
+            WebElement numberDiv = elem.findElement(
+                    By.xpath("ancestor::div[contains(@class,'tw-flex-col')]//div[contains(@class,'ellipsis')]")
+            );
+            String value = numberDiv.getText().trim();
+            if (value.startsWith("901100")){
+                savingAccounts.add(value);
+            }
+            System.out.println(value);
+
+        }
+        List<String> sorted = new ArrayList<>(savingAccounts);
+        Collections.sort(sorted);
+        System.out.println(savingAccounts);
+        assertEquals("Lista nije sortirana rastuće!", sorted, savingAccounts);
     }
 }

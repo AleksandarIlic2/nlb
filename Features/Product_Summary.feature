@@ -198,19 +198,24 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
     And Click on element by text "Edit list"
     And Wait for element by class "icon-eye"
 
-    Then Hide product with iban from excel "<rowindex>" columnName "current_account_1_bban"
+    Then Hide product with iban from excel "<rowindex>" columnName "current_account_2_bban"
+
     And Click on tab "My products" from main sidebar
     And Wait for element by text "Edit list"
     And Assert that products in my products have loaded
-    And Assert element from excel "<rowindex>" columnName "current_account_1_bban" is not displayed
+    And Assert element from excel "<rowindex>" columnName "current_account_2_bban" is not displayed
+    And Click on element by text "Payments"
+    And Click on element by containing class "icon-chevron-down" with index "1"
+    And Assert element from excel "<rowindex>" columnName "current_account_2_bban" is not displayed
+    And Click on tab "My products" from main sidebar
     And Click on element by text "Edit list"
     And Wait for element by class "icon-eye"
-    And Unhide product with iban from excel "<rowindex>" columnName "current_account_1_bban"
+    And Unhide product with iban from excel "<rowindex>" columnName "current_account_2_bban"
     And Click on tab "My products" from main sidebar
     And Wait for element by text "Edit list"
     And Assert that products in my products have loaded
-    And Scroll to account from excel "<rowindex>" columnName "current_account_1_bban" in my products page
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
+    And Scroll to account from excel "<rowindex>" columnName "current_account_2_bban" in my products page
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
 
     Examples:
       | rowindex |
@@ -274,15 +279,16 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
 
   @Product_Summary-Savings_Accounts_List_Domestic_[WEB]
   Scenario Outline: Product_Summary-Savings_Accounts_List_Domestic_[WEB]
-
+    #TODO: Dovrsiti test
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
-    
+    And Assert Savings account are sorted correctly
     Then Assert that product card of name "savings_account_1_name" and bban "savings_account_1_number" from Excel "<rowindex>" for domestic savings account are shown correctly
-    And Assert that whole product card of current account with name "savings_account_1_name" and bban "savings_account_1_number" from Excel "<rowindex>" acts as a clickable button
+    And Assert that whole product card of gradual savings account with name "savings_account_1_name" and iban "savings_account_1_number" from Excel "<rowindex>" acts as a clickable button
+    #And Assert that whole product card of current account with name "savings_account_1_name" and bban "savings_account_1_number" from Excel "<rowindex>" acts as a clickable button
 
     Examples:
       | rowindex |
