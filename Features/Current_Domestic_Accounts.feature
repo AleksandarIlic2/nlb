@@ -774,7 +774,7 @@ Feature: Current_Domestic_Accounts
     And Click on NLB icon close
     And Wait for first transaction in Product details
 
-    #TO-DO!!!
+    #TODO!!!
     #Search by CREDITOR NAME
 
     #Search by BIC
