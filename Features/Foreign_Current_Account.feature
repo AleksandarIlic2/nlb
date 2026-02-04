@@ -603,6 +603,18 @@ Feature: Foreign_Current_Account
     And Scroll element by contains text "end of the list" into view
     And Assert transaction amounts are between "100" and "700"
     And Click on element by text " Clear filters "
+    And Assert element by text " Filters"
+    And Click on element by text " Filters"
+    And Scroll element by contains text "Details" into view
+
+    And Enter "68511" to Amount filter "From"
+    And Enter "72311" to Amount filter "To"
+    And Click on element by text " Confirm "
+    And Scroll element by contains text "end of the list" into view
+    And Assert transaction amounts are between "68511" and "72311"
+    And Click on element by text " Clear filters "
+
+
 
     Examples:
       | rowindex |

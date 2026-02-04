@@ -1882,6 +1882,7 @@ public class Steps {
         String text = DataManager.getDataFromHashDatamap(rowindex, columnName);
         By waitEl = SelectByText.CreateByElementByContainsText(text);
         WaitHelpers.WaitForElement(waitEl);
+        System.out.println("TEKST" + text + waitEl);
 
         WebElement element = SelectByXpath.CreateElementBy(waitEl);
         assertTrue(element.isDisplayed());
@@ -2113,6 +2114,14 @@ public class Steps {
         assertEquals(expectedValue, elementForAssert.getAttribute("textContent").trim());
     }
 
+    @And("Assert {string} in pay or transfer screen is from excel {string} columnName {string}")
+    public void assertInPayOrTransferScreenIsFromExcelColumnName(String text, String rowindex, String columnName) throws Throwable {
+        String expectedValue = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForElementAssert = "//label[contains(text(),'" + text + "')]/following-sibling::div//input";
+        WebElement elementForAssert = SelectByXpath.CreateElementByXpath(xPathForElementAssert);
+        assertEquals(expectedValue.replace("-", ""), elementForAssert.getAttribute("value").trim());
+    }
+
     @And("Assert {string} in payment review is from excel {string} columnName {string}")
     public void assertInPaymentReviewIsFromExcelColumnName(String text, String rowindex, String columnName) throws Throwable {
         String expectedValue = DataManager.getDataFromHashDatamap(rowindex, columnName);
@@ -2120,6 +2129,7 @@ public class Steps {
         WebElement elementForAssert = SelectByXpath.CreateElementByXpath(xPathForElementAssert);
         assertEquals(expectedValue, elementForAssert.getAttribute("textContent").trim());
     }
+
 
     @And("Assert second {string} in payment review is from excel {string} columnName {string}")
     public void assertSecondInPaymentReviewIsFromExcelColumnName(String text, String rowindex, String columnName) throws Throwable {
@@ -2140,9 +2150,9 @@ public class Steps {
     @And("Assert today date in Payment date in payment review")
     public void assertTodayDateInPaymentDateInPaymentReview() throws Throwable {
         String expectedDate = ActionApiHelpers.getTodayDate();
-        String xPathForElementAssert = "//dt[contains(text(),'Payment date')]//following-sibling::dd";
+        String xPathForElementAssert = "//label[normalize-space()='Payment date']/following-sibling::div//input";
         WebElement elementForAssert = SelectByXpath.CreateElementByXpath(xPathForElementAssert);
-        assertEquals(expectedDate, elementForAssert.getAttribute("textContent"));
+        assertEquals(expectedDate, elementForAssert.getAttribute("value"));
     }
 
     @And("Select account from Excel {string} columnName {string} in Payments tab")
@@ -2874,9 +2884,11 @@ public class Steps {
     @And("Assert date {int} days in future in payment review")
     public void assertDateDaysInFutureInPaymentReview(int daysInFuture) throws Throwable {
         String expectedDate = ActionApiHelpers.getTodayDatePlusXDaysInFormat(daysInFuture, "dd.MM.YYYY");
-        String xPathForElementAssert = "//*[contains(text(),'Payment date')]//following-sibling::*";
+        String xPathForElementAssert = "//dt[contains(text(),'Payment date')]/following-sibling::dd";
+        //String xPathForElementAssert = "//label[contains(text(),'Payment date')]/following-sibling::div//input";
         WebElement elementForAssert = SelectByXpath.CreateElementByXpath(xPathForElementAssert);
-        assertEquals(expectedDate, elementForAssert.getAttribute("textContent"));
+      //  assertEquals(expectedDate, elementForAssert.getAttribute("value"));
+        assertEquals(expectedDate, elementForAssert.getText());
     }
 
     @And("Assert that payment under key {string} from txt file has date {int} days in future")
@@ -3388,14 +3400,14 @@ public class Steps {
     @And("Assert element by text {string} has following sibling {string} with text from Excel {string} columnName {string}")
     public void assertElementByTextHasFollowingSiblingWithTextFromExcelColumnName(String text, String followingSiblingTag, String rowindex, String columnName) throws Throwable {
         String followingSiblingText = DataManager.getDataFromHashDatamap(rowindex, columnName);
-        WebElement element = SelectByXpath.CreateElementByXpathTextFollowingSibling(text, followingSiblingTag);
-        assertEquals(followingSiblingText, element.getAttribute("textContent"));
+        List<WebElement> element = SelectByXpath.CreateElementByXpathTextFollowingSibling(text, followingSiblingTag);
+        assertEquals(followingSiblingText, element.get(0).getAttribute("textContent"));
     }
 
     @And("Assert element by text {string} has following sibling {string} with text {string}")
     public void assertElementByTextHasFollowingSiblingWithText(String text, String followingSiblingTag, String expectedText) throws Throwable {
-        WebElement element = SelectByXpath.CreateElementByXpathTextFollowingSibling(text, followingSiblingTag);
-        assertEquals(expectedText, element.getAttribute("textContent"));
+        List<WebElement> elements = SelectByXpath.CreateElementByXpathTextFollowingSibling(text, followingSiblingTag);
+        assertEquals(expectedText, elements.get(0).getAttribute("textContent"));
     }
 
     @And("Use mobile app to complete payment using wrong pin")
@@ -3425,6 +3437,7 @@ public class Steps {
         String text = DataManager.getDataFromHashDatamap(rowindex, columnName);
         String xPath = "//*[contains(text(),'" + text + "')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        System.out.println("EXCEL VALUE:" + text);
         hp.ClickOnElement(element);
     }
 
@@ -10683,8 +10696,8 @@ public class Steps {
     public void assertProductNumberIsInBBANFormatByXPath(String xPath) throws Throwable {
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String accountNumber = element.getText().trim();
-
-        Assert.assertTrue(accountNumber.matches("^\\d{3}-\\d{13}-\\d{2}$"));
+        System.out.println("ACC NUMBER: " + accountNumber);
+        Assert.assertTrue(accountNumber.matches("^\\d{13}$"));
     }
 
     @And("Assert Product name is displayed by xPath {string}")
@@ -10957,7 +10970,6 @@ public class Steps {
 
     @And("Assert transaction amounts are between {string} and {string}")
     public void assertTransactionAmountsAreBetween(String fromStr, String toStr) throws Throwable {
-
         double from = Double.parseDouble(fromStr.replace(",", "."));
         double to   = Double.parseDouble(toStr.replace(",", "."));
 
@@ -10967,35 +10979,38 @@ public class Steps {
 
         Assert.assertFalse("Nema transakcija na stranici!", amountElements.isEmpty());
 
+        Pattern p = Pattern.compile("[+-]?(?:\\d{1,3}(?:\\.\\d{3})+|\\d+)(?:[.,]\\d+)?");
+
         for (WebElement el : amountElements) {
 
             String rawText = el.getText().trim();
             if (rawText.isEmpty()) {
                 continue;
             }
-            System.out.println("RAW TEXT:" + rawText);
-            // 1. Izvući broj iz stringa
-            // Podržava formate:
-            // "-120,00", "120,00", "+120,00", "120", "-120", "120.00"
-            Pattern p = Pattern.compile("([+-]?[0-9]+([.,][0-9]+)?)");
+
+            System.out.println("RAW TEXT: " + rawText);
+
             Matcher m = p.matcher(rawText);
 
             if (!m.find()) {
                 Assert.fail("Nisam uspeo da izvučem amount iz: " + rawText);
             }
 
-            String numberStr = m.group(1).replace(",", ".");
-            double value = Double.parseDouble(numberStr);
+            String numberStr = m.group();
 
+            numberStr = numberStr.replace(".", "").replace(",", ".");
+
+            double value = Double.parseDouble(numberStr);
             double absValue = Math.abs(value);
 
-            // 2. Provera raspona
             Assert.assertTrue(
                     "Vrednost " + value + " (abs=" + absValue +
                             ") nije u opsegu " + from + " - " + to,
                     absValue >= from && absValue <= to
             );
         }
+
+
     }
 
     @And("Click on {string} button if displayed")
@@ -11043,8 +11058,9 @@ public class Steps {
 
         WebElement elementForAccountNumber = SelectByXpath.CreateElementByXpath(xPathForAccountNumber);
         String stringForAccountNumber = elementForAccountNumber.getAttribute("innerText");
+        System.out.println("stringForAccNumber:" + stringForAccountNumber);
         assertTrue(elementForAccountNumber.isDisplayed());
-        assertTrue(stringForAccountNumber.matches("^901100\\d{8}$"));
+        assertTrue(stringForAccountNumber.matches("^901100\\d{7}$"));
         System.out.println("Broj partije: " + stringForAccountNumber);
 
         WebElement elementForProductCard1 = SelectByXpath.CreateElementByXpath(xPathForProductCard1);
@@ -11451,4 +11467,73 @@ public class Steps {
         assertEquals("Account number for recipient '" + recipientName + "' should NOT be changed",expectedAccountNumber.replace("-",""), actualAccountNumber.replace("-",""));
 
     }
+
+    @And("Assert Savings account are sorted correctly")
+    public void assertSavingsAccountAreSortedCorrectly() {
+        List<WebElement> accountTitles = driver.findElements(By.xpath("//nlb-product-card//div[contains(@class, 'heading-3')]"));
+        List<String> savingAccounts = new ArrayList<>();
+        for (WebElement elem: accountTitles){
+            WebElement numberDiv = elem.findElement(
+                    By.xpath("ancestor::div[contains(@class,'tw-flex-col')]//div[contains(@class,'ellipsis')]")
+            );
+            String value = numberDiv.getText().trim();
+            if (value.startsWith("901100")){
+                savingAccounts.add(value);
+            }
+            System.out.println(value);
+
+        }
+        List<String> sorted = new ArrayList<>(savingAccounts);
+        Collections.sort(sorted);
+        System.out.println(savingAccounts);
+        assertEquals("Lista nije sortirana rastuće!", sorted, savingAccounts);
+    }
+
+
+    @And("Assert amount currency is displayed in {string}")
+    public void assertAmountCurrencyIsDisplayedIn(String currency) throws Throwable {
+        String xPath = "//input[@nlbamountinput]/following-sibling::input[@readonly]";
+        WebElement currencyInput = SelectByXpath.CreateElementByXpath(xPath);
+        String ariaLabel = currencyInput.getAttribute("aria-label");
+        Assert.assertTrue("Amount se ne nalazi u odgovarajucoj valuti!", ariaLabel.endsWith(currency));
+
+    }
+
+    @And("Assert checkbox Urgent payment is {string}")
+    public void assertCheckboxUrgentPaymentIs(String checked) throws Throwable {
+        String xPath = "//label[.//span[normalize-space()='Urgent payment']]//input[@type='checkbox']\n";
+        WebElement urgentCheckbox = SelectByXpath.CreateElementByXpath(xPath);
+        if (checked.equals("checked"))
+            Assert.assertTrue("Urgent payment checkbox NIJE čekiran!",urgentCheckbox.isSelected());
+        else
+            Assert.assertFalse("Urgent payment checkbox je cekiran, a ne bi trebao biti!",urgentCheckbox.isSelected());
+    }
+
+    @And("Assert date {int} days in future in payment screen")
+    public void assertDateDaysInFutureInPaymentScreen(int daysInFuture) throws Throwable {
+        String expectedDate = ActionApiHelpers.getTodayDatePlusXDaysInFormat(daysInFuture, "dd.MM.YYYY");
+        String xPathForElementAssert = "//label[contains(text(),'Payment date')]/following-sibling::div//input";
+        WebElement elementForAssert = SelectByXpath.CreateElementByXpath(xPathForElementAssert);
+        assertEquals(expectedDate, elementForAssert.getAttribute("value"));
+    }
+
+    @Then("Assert element by text {string} has following sibling {string} with text from Excel {string} columnName {string} and index {int}")
+    public void assertElementByTextHasFollowingSiblingWithTextFromExcelColumnNameAndIndex(String text, String followingSiblingTag, String rowindex, String columnName, Integer index) throws Throwable {
+        String followingSiblingText = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        List<WebElement> elements = SelectByXpath.CreateElementByXpathTextFollowingSibling(text, followingSiblingTag);
+        if (text.equals("Address")) {
+            String address = DataManager.getDataFromHashDatamap(rowindex, "user_address_for_payment_review");
+            String expectedValue = address
+                    .replaceAll("\\s+", " ")
+                    .trim();
+            String actualValue = elements.get(index)
+                    .getAttribute("textContent")
+                    .replaceAll("\\s+", " ")
+                    .trim();
+            assertEquals(actualValue,expectedValue);
+            return;
+        }
+        assertEquals(followingSiblingText.trim().toUpperCase(), elements.get(index).getAttribute("textContent").trim().toUpperCase());
+    }
+
 }

@@ -447,9 +447,9 @@ public class SelectByXpath {
      * @return WebElement
      * @throws Throwable
      */
-    public static WebElement CreateElementByXpathTextFollowingSibling(String text, String followingSibling) throws Throwable {
+    public static List<WebElement> CreateElementByXpathTextFollowingSibling(String text, String followingSibling) throws Throwable {
         String xPath = "//*[text() = '" + text + "']//following-sibling::" + followingSibling;
-        return CreateElementByXpath(xPath);
+        return CreateElementsByXpath(xPath);
     }
 
     /**
