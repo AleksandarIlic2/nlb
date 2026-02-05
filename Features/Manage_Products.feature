@@ -47,18 +47,24 @@ Examples:
     And Wait for element by class "icon-eye"
 
     Then Hide product with iban from excel "<rowindex>" columnName "current_account_1_iban"
-    And Wait for "1" seconds
+    And Wait for "5" seconds
     Then Assert that account from "<rowindex>" with columnName "current_account_1_iban" is grayed out
     Then Hide product with iban from excel "<rowindex>" columnName "current_account_2_bban"
-    And Wait for "1" seconds
+    And Wait for "5" seconds
+
     Then Assert that account from "<rowindex>" with columnName "current_account_2_bban" is grayed out
     Then Hide product with iban from excel "<rowindex>" columnName "current_account_2_iban"
+    And Wait for "5" seconds
+    Then Assert that account from "<rowindex>" with columnName "current_account_2_iban" is grayed out
+    Then Hide product with iban from excel "<rowindex>" columnName "current_account_3_iban"
 
     And Assert element by contains text "At least one current account must be enabled"
     And Wait for "1" seconds
     And Unhide product with iban from excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for "1" seconds
     And Unhide product with iban from excel "<rowindex>" columnName "current_account_2_bban"
+    And Wait for "1" seconds
+    And Unhide product with iban from excel "<rowindex>" columnName "current_account_2_iban"
 
 
     Examples:
@@ -96,9 +102,9 @@ Examples:
     And Assert element by text "First savings account" index "2" is displayed
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" to previous one
     #PROMENA OROCENE STEDNJE
-    And Change name of product from excel "<rowindex>" columnName "term_deposits_1_bban" into "First term deposits"
+    And Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" into "First term deposits"
     And Assert element by text "First term deposits" index "2" is displayed
-    And Change name of product from excel "<rowindex>" columnName "term_deposits_1_bban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" to previous one
 
 
     Examples:
@@ -131,11 +137,11 @@ Examples:
     Then Assert element by text "You have reached the maximum number of characters. 50/50."
     And Click on element by text " Cancel "
 
-    Then Change name of product from excel "<rowindex>" columnName "term_deposits_1_bban" into more than fifty characters
+    Then Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" into more than fifty characters
     Then Assert element by text "You have reached the maximum number of characters. 50/50."
     And Click on element by text " Cancel "
 
-    Then Change name of product from excel "<rowindex>" columnName "current_account_1_bban" into " "
+    Then Change name of product from excel "<rowindex>" columnName "current_account_1_iban" into " "
   #And Assert acc name for iban from excel "<rowindex>" columnName "current_account_1_bban"
 
     Then Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into " "
@@ -206,7 +212,7 @@ Examples:
 
   @Manage_Products-Favorite_account_[WEB]
   Scenario Outline: Manage_Products-Favorite_account_[WEB]
-
+    #TODO: Podignut BUG za prikazivanje bbanova/ibnaova, sacekati da se resi..
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
@@ -243,7 +249,7 @@ Examples:
 
   @Manage_Products-Favorite_account-Removal_of_the_favorite_account_[WEB]
   Scenario Outline: Manage_Products-Favorite_account-Removal_of_the_favorite_account_[WEB]
-
+     #TODO: Podignut BUG za prikazivanje bbanova/ibnaova, sacekati da se resi..
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"

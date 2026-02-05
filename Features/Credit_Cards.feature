@@ -329,7 +329,8 @@ Feature: Credit_Cards
     And Enter "100" to Amount filter "From"
     And Enter "800" to Amount filter "To"
     And Click on element by text " Confirm "
-    And Wait for "10" seconds
+    And Wait for "20" seconds
+    And Wait for first transaction in Product details
     #And Scroll element by contains text "end of the list" into view
     And Assert transaction amounts are between "100" and "800"
     And Click on element by text " Clear filters "
@@ -471,6 +472,7 @@ Feature: Credit_Cards
 
     And Assert order of tabs in tablist "card"
     And Assert Transactions tab is selected by default
+    And Click on element by containing text "Filters"
     And Assert date picker "card"
 
 

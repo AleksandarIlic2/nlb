@@ -19,8 +19,8 @@ Feature: Payments_Overview
     And Click on element by containing text "Past payments"
     And Assert payments in past payments have loaded
     #TODO sa userom koji ima upcoming otkomentarisati
-    #And Click on element by containing text "Past payments"
-    #And Assert payments in past payments have loaded
+    And Click on element by containing text "Past payments"
+    And Assert payments in past payments have loaded
     #TODO sa userom koji ima payments sa savings account-om otkomentarisati
     And Select account from Excel "<rowindex>" columnName "savings_account_2_number" in Payments tab
     # And Click on element by containing text "Past payments"

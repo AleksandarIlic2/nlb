@@ -31,7 +31,7 @@ Feature: Current_Accounts
       And Assert element by tag "input" and type "search"
       And Assert element by text "Search "
       And Assert element by text " Filters"
-      And Click on element by text " Filters"
+      And Click on element by containing text "Filters"
       #And Assert date picker
 
       And Scroll to element by tag "nlb-selected-product-transactions-filters"

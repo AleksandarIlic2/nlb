@@ -279,7 +279,6 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
 
   @Product_Summary-Savings_Accounts_List_Domestic_[WEB]
   Scenario Outline: Product_Summary-Savings_Accounts_List_Domestic_[WEB]
-    #TODO: Dovrsiti test
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
@@ -288,7 +287,6 @@ Scenario Outline: Product_Summary-Edit_Product_view-edit_name_of_account-Invalid
     And Assert Savings account are sorted correctly
     Then Assert that product card of name "savings_account_1_name" and bban "savings_account_1_number" from Excel "<rowindex>" for domestic savings account are shown correctly
     And Assert that whole product card of gradual savings account with name "savings_account_1_name" and iban "savings_account_1_number" from Excel "<rowindex>" acts as a clickable button
-    #And Assert that whole product card of current account with name "savings_account_1_name" and bban "savings_account_1_number" from Excel "<rowindex>" acts as a clickable button
 
     Examples:
       | rowindex |

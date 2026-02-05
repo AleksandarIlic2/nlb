@@ -54,11 +54,11 @@ Feature: Term_Deposits_Accounts
     And Assert that element "Term deposit amount" has value "5.000,00 EUR"
     And Assert that element "Accrued interest" has value "0,00 EUR"
     And Assert that element "Account type" has value "Deposit"
-    And Assert that element "Account owner" has value "OSIR ANOEV"
+    And Assert that element "Account owner" has value "ANOEV OSIR"
     And Assert that element "Account number" has value "9032022325800"
     And Assert that element "Opening date" has value "15.01.2016"
     And Assert that element "Expiration date" has value "15.01.2028"
-
+    #TODO: SVE ZAKUCANE PODATKE VUCI IZ EKSELA (MOZDA)
 
     Examples:
       | rowindex |
@@ -81,7 +81,7 @@ Feature: Term_Deposits_Accounts
     And Assert that element "Term deposit amount" has value "5.000,00 EUR"
     And Assert that element "Accrued interest" has value "0,00 EUR"
     And Assert that element "Account type" has value "Deposit"
-    And Assert that element "Account owner" has value "OSIR ANOEV"
+    And Assert that element "Account owner" has value "ANOEV OSIR"
     And Assert that element "Account number" has value "9032022325800"
     And Assert that element "Opening date" has value "15.01.2016"
     And Assert that element "Expiration date" has value "15.01.2028"

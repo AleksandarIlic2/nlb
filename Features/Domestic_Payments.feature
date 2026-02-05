@@ -52,7 +52,7 @@ Feature: Domestic_Payments
     And Click on element by text "Domestic payment"
     And Click on element by containing text "Select from list"
     And Click on element by xpath "//button//div[contains(text(),\"Select from list\")]"
-    And Click on element by containing text "KOAR TGR"
+    And Click on element by containing text "MIKA MIKIC"
     And Enter amount "100"
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
@@ -79,37 +79,42 @@ Feature: Domestic_Payments
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
-
+    #TODO: Razmotriti da li ove podatke vuci iz eksela
     When Click on element by text "Pay or transfer"
-    And Enter text "340000003253595464" in field by xPath "//label[text()='Account number']/following-sibling::div//input"
-    And Enter text "Ana Janicijevic" in field by xPath "//label[contains(text(), 'name')]/following-sibling::div//input"
-    And Enter text "Bulevar 11" in field by xPath "//label[contains(text(), 'Street')]/following-sibling::div//input"
+    And Click on element by containing class "icon-chevron-down" with index "1"
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Enter text "205900100024380847" in field by xPath "//label[text()='Account number']/following-sibling::div//input"
+    And Enter text "KOAR TGR" in field by xPath "//label[contains(text(), 'name')]/following-sibling::div//input"
+    And Enter text "ULICAA" in field by xPath "//label[contains(text(), 'Street')]/following-sibling::div//input"
     And Enter text "Beograd" in field by xPath "//label[text()='City']/following-sibling::div//input"
-    And Enter text "100" in field by xPath "//label[text()='Payment amount ']/following-sibling::div//input"
+    And Enter text "129" in field by xPath "//label[text()='Payment amount ']/following-sibling::div//input"
     And Click on element by text "Save recipient "
+    And Enter random purpose into purpose field for internal payment in second payment screen and remember it under key "IT_001"
 
     And Remember recipient number and name
     Then Click on element by text " Confirm "
-    And Click on element by text " Confirm "
     And Wait for element by text " Confirm "
     And Click on element by text " Confirm "
-    And Click on element by text " Confirm "
-    And Click on element by text " Confirm "
     And Wait for element by text "Success"
     And Assert element by text "Success"
-    And Click on element by containing text "OK"
 
-    And Wait for element by text "Success"
-    And Assert element by text "Success"
     And Assert element by contains text "Recipient saved"
     And Assert element by contains text "RSD was sent"
 
 
     And Click on tab "Recipients" from main sidebar
     And Assert that recipient has same accNumber
-    #TODO -dodati ovo ispod kad bude radio payment do kraja
-    #And Click on tab "Payments" from main sidebar
-    #And Assert that last payment is correct
+    And Click on tab "Payments" from main sidebar
+    And Click on element by containing text "Upcoming payments"
+    And Click on element by containing class "icon-chevron-down" with index "1"
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Assert payments in past payments have loaded
+
+    And Scroll till you find element under key "IT_001" from txt file and click
+    And Assert that transaction "Recipient" in opened past payment contains text from Excel "<rowindex>" columnName "user_name_short"
+    And Assert that transaction "Recipient" in opened past payment contains text from Excel "<rowindex>" columnName "user_city_short"
+    And Assert that transaction "Recipient" in opened past payment contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    And Assert that transaction "Recipient" in opened past payment contains text from Excel "<rowindex>" columnName "user_country_short"
 
     Examples:
       | rowindex |
@@ -177,7 +182,7 @@ Feature: Domestic_Payments
     And Click on element by containing class "icon-chevron-down" with index "1"
     And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Click on element by text "Select from list "
-    Then Click on element by text " PERA "
+    And Click on element by containing text "MIKA MIKIC"
     And Assert "First and last name / Company name" in pay or transfer screen is from excel "<rowindex>" columnName "user_name_for_payment_review"
     And Assert "Street and street number" in pay or transfer screen is from excel "<rowindex>" columnName "user_street_for_payment_review"
     And Assert "City" in pay or transfer screen is from excel "<rowindex>" columnName "user_city_for_payment_review"
@@ -190,6 +195,8 @@ Feature: Domestic_Payments
     And Click on date 30 days in the future in second payment screen
     And Assert date 30 days in future in payment screen
     And Assert checkbox Urgent payment is "notChecked"
+    And Assert element by tag "input" and type "checkbox" is disabled
+
     #TODO: KADA RESE BUG, DODAIT PROVERU DA NIJE MOGUCE KLIKNUTI NA CHECKBOX KADA JE PLACANJE U BUDUCNOSTI
     Then Click on element by text " Confirm "
     Then Assert element by text "Purpose" has following sibling "dd" with text "TRANSACTIONS BY ORDER OF CITIZENS"

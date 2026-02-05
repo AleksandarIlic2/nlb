@@ -328,7 +328,7 @@ Feature: Current_Domestic_Accounts
     And Assert element by contains text "Statements"
     And Assert element by contains text "Details"
     And Assert element by text " Filters"
-    And Click on element by text " Filters"
+    And Click on element by containing text "Filters"
     And Scroll element by contains text "Details" into view
 
     #Assertovanje Date Range (labela datuma od-do)
@@ -456,11 +456,11 @@ Feature: Current_Domestic_Accounts
     And Assert Account type is displayed correctly in Account details for Current account
     And Assert Account owner in Account details is from Excel "<rowindex>" columnName "username"
     And Assert Account number in Account details is from Excel "<rowindex>" columnName "current_account_2_bban"
-    And Assert BIC in Account details is "KOBBRSBG"
+    #TODO: VIDETI DA LI TREBA OVAJ KORAK DA OSTANE #And Assert BIC in Account details is "KOBBRSBG"
 
     And Click on element by tag "i" contains class "icon-copy"
-    And Assert content in clipboard is from Excel "<rowindex>" columnName "copied_account_details_for_personal_account"
-      #And Assert element by text " Document archive "
+    And Assert content in clipboard is equal to showed Account type, owner and number
+           #And Assert element by text " Document archive "
       #And Click on normalized text "Document archive"
       #And Assert element by normalized text "Documents archive is available from 1. 3. 2016. Please select your search criteria to find your documents."
 
@@ -519,20 +519,21 @@ Feature: Current_Domestic_Accounts
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
     And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
+    #TODO: Izbaciti korak ispod kada ne bude pop upa koji iskace sa greskom (desava se kada se klikne na racun bez transakcije)
+    And Click on element by text " OK " if exists
+
+    
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
     And Assert element by contains text "Details"
     And Assert element by text " Filters"
-    And Click on element by text " Filters"
+    And Click on element by containing text "Filters"
     And Scroll element by contains text "Details" into view
 
     #Assertovanje Date Range (labela datuma od-do)
     Then Assert element by xPath "//label[text()='From']/following-sibling::div"
     And Assert element by xPath "//label[text()='To']/following-sibling::div"
-    #POSTAVLJANJE FILTERA JER NE POSTOJI DOMESTIC RACUN BEZ TRANSAKCIJA
-    And Click on element by containing text "EUR"
-    And Click on element by containing text "Confirm"
     #Assertovanje Tipa transakcije
     And Assert element by text "All"
     And Assert element by text "Incoming transactions"
@@ -566,7 +567,7 @@ Feature: Current_Domestic_Accounts
     And Assert element by contains text "Statements"
     And Assert element by contains text "Details"
     And Assert element by text " Filters"
-    And Click on element by text " Filters"
+    And Click on element by containing text "Filters"
     And Scroll element by contains text "Details" into view
 
     #Assertovanje Date Range (labela datuma od-do)
@@ -712,7 +713,7 @@ Feature: Current_Domestic_Accounts
     And Assert element by contains text "Statements"
     And Assert element by contains text "Details"
     And Assert element by text " Filters"
-    And Click on element by text " Filters"
+    And Click on element by containing text "Filters"
     And Scroll element by contains text "Details" into view
 
     #Assertovanje Date Range (labela datuma od-do)

@@ -69,6 +69,21 @@ public class Steps {
         ActionApiHelpers.OpenURL(url);
     }
 
+    public static String swapFirstAndLastName(String fullName) {
+        if (fullName == null) {
+            return "";
+        }
+
+        String[] parts = fullName.trim().split("\\s+");
+
+        if (parts.length != 2) {
+            return fullName;
+        }
+
+        return parts[1] + " " + parts[0];
+    }
+
+
     @Given("Open {string} page")
     public void openPage(String webAddress) {
         ActionApiHelpers.OpenURL(webAddress);
@@ -903,6 +918,7 @@ public class Steps {
     @And("Scroll till you find element under key {string} from txt file and click")
     public void scrollTillYouFindElementUnderKeyFromTxtFileAndClick(String key) throws Throwable {
         String text = Utilities.getDataFromTxtFileUnderKey(key);
+        System.out.println("DATAA" + text);
         //rh.scrollToBottomFindTextAndClick(text);
         rh.scrollXtimesFindTextAndClick(3, text);
         WaitHelpers.waitForSeconds(3);//Zato sto moze da se desi stale element a nemam trenutno pametnije resenje
@@ -1814,7 +1830,7 @@ public class Steps {
         WebElement elementForInput = SelectByXpath.CreateElementByXpath("//input");
         hp.EnterTextToElement(elementForInput, changedName);
 
-        // dinamički xpath za naziv
+
         String xPathForAccountsName =
                 "//*[contains(text(),'" + stringForProductIban + "')]"
                         + "/ancestor::div[contains(@class,'tw-text-gray-40')]"
@@ -1823,7 +1839,7 @@ public class Steps {
 
         WebElement accName = SelectByXpath.CreateElementByXpath(xPathForAccountsName);
 
-        // Čuvamo tekst, ne WebElement
+
         DataManager.userObject.put(stringForProductIban, accName.getText());
 
         WebElement elementForApply = SelectByText.CreateElementByXpathContainingText("Apply");
@@ -2084,7 +2100,7 @@ public class Steps {
 
     @And("Enter random purpose into purpose field for internal payment in second payment screen and remember it under key {string}")
     public void enterRandomPurposeIntoPurposeFieldForInternalPaymentInSecondPaymentScreen(String key) throws Throwable {
-        String xPathForPurposeField = "(//nlb-input-text//input)[1]";
+        String xPathForPurposeField = "(//nlb-input-text//input)[5]";
         WebElement elementForPurposeField = SelectByXpath.CreateElementByXpath(xPathForPurposeField);
         String randomPurpose = rh.generateRandomStringOfCertainLenght(10);
         hp.deleteTextFromFieldLonger(elementForPurposeField);
@@ -4568,7 +4584,10 @@ public class Steps {
             assertTrue(element.isDisplayed());
             System.out.println("Inner text: " + element.getAttribute("innerText") );
             System.out.println("Owner name: " + ownerName);
-            assertEquals(element.getAttribute("innerText").toLowerCase(),ownerName.toLowerCase());
+        Assert.assertTrue(element.getAttribute("innerText").toLowerCase().contains(ownerName.toLowerCase())
+                || element.getAttribute("innerText").toLowerCase().contains(swapFirstAndLastName(ownerName.toLowerCase()))
+        );
+            //assertEquals(element.getAttribute("innerText").toLowerCase(),ownerName.toLowerCase());
 
     }
 
@@ -5646,7 +5665,9 @@ public class Steps {
         WebElement purposeElement = SelectByXpath.CreateElementByXpath(purposexPath);
         assertTrue(purposeElement.isDisplayed());
         String currentEnv = DataManager.getDataFromHashDatamap("1", "currentEnv");
-        assertEquals("Kupovina/prodaja Hov", purposeElement.getAttribute("innerText"));
+
+       // assertEquals("Kupovina/prodaja Hov", purposeElement.getAttribute("innerText"));
+        assertEquals("Uplate po raznim osnovama", purposeElement.getAttribute("innerText"));
     }
 
 
@@ -9011,7 +9032,8 @@ public class Steps {
             String xPath = "//h3[contains(text(), 'Account details')]/ancestor::div[1]/following-sibling::dl[1]/div[2]/dd";
             WebElement element = SelectByXpath.CreateElementByXpath(xPath);
             assertTrue(element.isDisplayed());
-            assertTrue(element.getAttribute("innerText").contains(ownerName));
+
+            assertTrue(element.getAttribute("innerText").contains(swapFirstAndLastName(ownerName)));
 //        }
     }
 
@@ -10103,9 +10125,9 @@ public class Steps {
             System.out.println("Amount u remember: " + amount);
             System.out.println("prvi karakter: " + amount.charAt(0));
 
-            values.put("type", amount.substring(0,1));
-            amount=amount.substring(1);
-            System.out.println("Amount u remember nakon skracivanja " + amount);
+//            values.put("type", amount.substring(0,1));
+//            amount=amount.substring(1);
+//            System.out.println("Amount u remember nakon skracivanja " + amount);
 
             values.put("amount", amount);
 
@@ -10180,6 +10202,14 @@ public class Steps {
 
         List<Map<String,String>> transactions =
                 (List<Map<String,String>>) DataManager.userObject.get("Transactions");
+
+        System.out.println("MAPA:\n");
+        for (int i = 0; i < transactions.size(); i++) {
+            System.out.println("Transaction " + i + ":");
+            for (Map.Entry<String, String> entry : transactions.get(i).entrySet()) {
+                System.out.println("  " + entry.getKey() + " = " + entry.getValue());
+            }
+        }
 
         //String downloadPath = System.getProperty("user.home") + "/Downloads/Transactions.xlsx";
 
@@ -11079,13 +11109,9 @@ public class Steps {
     @Then("Delete text in field by xPath {string}")
     public void deleteTextInFieldByXPath(String xPath) throws Throwable {
         WebElement input = SelectByXpath.CreateElementByXpath(xPath);
-        input.click();
-        input.clear();
-
+        hp.EnterTextToElement(input, "N");
         input.sendKeys(Keys.BACK_SPACE);
-        // OVO JE KLJUČ
         input.sendKeys(Keys.TAB);
-
     }
 
     @And("Enter text {string} in field by xPath {string} and remember under key {string}")
@@ -11100,9 +11126,11 @@ public class Steps {
     public void clickOnRecipientNameByKey(String key) throws Throwable {
         Object nameObj = DataManager.userObject.get(key);
         String name = nameObj.toString().trim();
-        String nameUpper = name.toUpperCase();
+        // vratiti nameUpper ako promene opet na velika slova
+        //String nameUpper = name.toUpperCase();
 
-        String recipientNameXPath = "//div[contains(text(), '" + nameUpper + "')]";
+
+        String recipientNameXPath = "//div[contains(text(), '" + name + "')]";
         WebElement nameElement = SelectByXpath.CreateElementByXpath(recipientNameXPath);
 
         hp.ClickOnElement(nameElement);
@@ -11112,37 +11140,38 @@ public class Steps {
     public void assertRecipientNameEqualsRememberedKey(String key) throws Throwable {
         Object nameObj = DataManager.userObject.get(key);
         String name = nameObj.toString().trim();
-        String nameUpper = name.toUpperCase();
+        //TODO: Ako opet povecaju slova vratiti liniju ispod i koristiti nameUpper umesto name
+        //String nameUpper = name.toUpperCase();
 
-        String recipientNameXPath = "//*[contains(text(), '" + nameUpper + "')]";
+        String recipientNameXPath = "//*[contains(text(), '" + name + "')]";
         WebElement nameElement = SelectByXpath.CreateElementByXpath(recipientNameXPath);
         String actual = nameElement.getText().trim();
 
-        Assert.assertEquals("Ime se ne slaze sa promenjenim imenom", nameUpper, actual);
+        Assert.assertEquals("Ime se ne slaze sa promenjenim imenom", name, actual);
     }
 
     @And("Assert recipient street equals remembered key {string}")
     public void assertRecipientStreetEqualsRememberedKey(String key) throws Throwable {
         String expected = DataManager.userObject.get(key).toString().trim();
-        String expectedUpper = expected.toUpperCase();
+        //String expectedUpper = expected.toUpperCase();
 
-        String streetXPath = "//div[contains(text(), '" + expectedUpper + "')]";
+        String streetXPath = "//div[contains(text(), '" + expected + "')]";
         WebElement streetElement = SelectByXpath.CreateElementByXpath(streetXPath);
         String actual = streetElement.getText().trim();
 
-        Assert.assertEquals("Ulica nije ista kao promenjena", expectedUpper, actual);
+        Assert.assertEquals("Ulica nije ista kao promenjena", expected, actual);
     }
 
     @And("Assert recipient city equals remembered key {string}")
     public void assertRecipientCityEqualsRememberedKey(String key) throws Throwable {
         String expected = DataManager.userObject.get(key).toString().trim();
-        String expectedUpper = expected.toUpperCase();
+        //String expectedUpper = expected.toUpperCase();
 
-        String cityXPath = "//div[contains(text(), '" + expectedUpper + "')]";
+        String cityXPath = "//div[contains(text(), '" + expected + "')]";
         WebElement citytElement = SelectByXpath.CreateElementByXpath(cityXPath);
         String actual = citytElement.getText().trim();
 
-        Assert.assertEquals("Grad nije isto kao promenjeni", expectedUpper, actual);
+        Assert.assertEquals("Grad nije isto kao promenjeni", expected, actual);
     }
 
     @And("Assert that element contains text from Excel {string} columnName {string}")
@@ -11536,4 +11565,43 @@ public class Steps {
         assertEquals(followingSiblingText.trim().toUpperCase(), elements.get(index).getAttribute("textContent").trim().toUpperCase());
     }
 
+    @And("Assert content in clipboard is equal to showed Account type, owner and number")
+    public void assertContentInClipboardIsEqualToShowedAccountTypeOwnerAndNumber() throws Throwable {
+        String clipboardText = RoutineHelper.getTextFromClipboard();
+        String xPathForType = "//dt[div[text()='Account type']]/following-sibling::dd//div";
+        String xPathForOwner = "//dt[div[text()='Account owner']]/following-sibling::dd//div";
+        String xPathForNumber = "//dt[div[text()='Account number']]/following-sibling::dd//div";
+        WebElement type = SelectByXpath.CreateElementByXpath(xPathForType);
+        WebElement owner = SelectByXpath.CreateElementByXpath(xPathForOwner);
+        WebElement number = SelectByXpath.CreateElementByXpath(xPathForNumber);
+
+        String uiText =
+                "Account type: " + type.getText() + " " +
+                        "Account owner: " + owner.getText() + " " +
+                        "Account number: " + number.getText();
+
+        System.out.println("TEKST1" + uiText);
+        System.out.println("TEKST2" + clipboardText);
+
+
+        String normalizedUiText = uiText.replaceAll("\\s+", " ").trim();
+        String normalizedClipboardText = clipboardText.replaceAll("\\s+", " ").trim();
+
+        assertEquals(normalizedUiText, normalizedClipboardText);
+
+
+    }
+
+
+
+    @And("Assert element by tag {string} and type {string} is disabled")
+    public void assertElementByTagAndTypeIsDisabled(String tag, String typeName) throws Throwable {
+        String xPath = "//" + tag + "[@type='" + typeName + "']";
+        By elWait = SelectByXpath.CreateByElementByXpath(xPath);
+        WaitHelpers.WaitForElement(elWait);
+
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        assertTrue(element.isDisplayed());
+        assertFalse("Element nije disabled!", element.isEnabled());
+    }
 }

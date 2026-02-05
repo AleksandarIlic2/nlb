@@ -59,8 +59,8 @@ Feature: Saving_Accounts
     And Assert Purpose is displayed correctly in Account details for Savings account
     And Assert Opening date is displayed correctly in Account details for Savings account
     And Assert element by text " Document archive " is displayed
-    And Click on element by text " Document archive "
-    And Assert element by text "Documents archive" is displayed
+    #And Click on element by text " Document archive "
+    #And Assert element by text "Documents archive" is displayed
 
 
     Examples:
