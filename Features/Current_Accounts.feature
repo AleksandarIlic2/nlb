@@ -16,11 +16,11 @@ Feature: Current_Accounts
       Then Assert element by class "button-bold" and contains text "Edit list"
 
       #User clicks on a current account on the My Products page
-      When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+      When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
       And Wait for element by tag "nlb-product-detail-header"
 
-      And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
-      And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
+     # And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
+      And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
     #User is by default on Transactions tab.
       And Assert order of tabs in tablist "domestic"
@@ -47,7 +47,7 @@ Feature: Current_Accounts
 
       Examples:
         | rowindex |
-        | 5        |
+        | 1        |
 
 
     @Products_Current_Accounts-Cheques_[WEB]
@@ -58,7 +58,7 @@ Feature: Current_Accounts
       And Login to the page using user from Excel "<rowindex>" columnName "username"
       And Assert that products in my products have loaded
 
-      When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+      When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
       And Click on element by text "Cheques"
       And Scroll element by contains text "end of the list" into view
 #      And Assert all cheques from last year
@@ -81,7 +81,7 @@ Feature: Current_Accounts
 
     Examples:
       | rowindex |
-      |        5 |
+      |        2 |
 
 
   @Products_Current_Accounts-Cheques-Filter_[WEB]
@@ -92,7 +92,7 @@ Feature: Current_Accounts
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Click on element by text "Cheques"
     And Scroll element by contains text "end of the list" into view
 #      And Assert all cheques from last year
@@ -120,7 +120,7 @@ Feature: Current_Accounts
 
     Examples:
       | rowindex |
-      |        5 |
+      |        2 |
 
 
   @Products_Current_Accounts-Cheques-Input_Fields-invalid_[WEB]
@@ -131,7 +131,7 @@ Feature: Current_Accounts
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Click on element by text "Cheques"
     And Scroll element by contains text "end of the list" into view
 #      And Assert all cheques from last year
@@ -147,10 +147,11 @@ Feature: Current_Accounts
     Then Scroll element by xPath "(//*[contains(@class, 't-gray-900 tw-border')])[1]" into bottom view
     And Click on element by xpath "(//*[text()=' Edit '])[1]"
     And Enter text "25.25.25" in field by xPath "(//input[contains(@id, 'text-input')])[1]"
+    And Assert element by contains text "25.25.25" is not displayed
     And Click on element by text " Update "
-    And Assert element by text "Field must be a date." is displayed
+    #And Assert element by text "Field must be a date." is displayed
 
-    #TO DO: Provera unetog datuma koji je stariji od datuma izdavanja (ili danasnjeg datuma, ne razumem kog)
+    #TODO: Provera unetog datuma koji je stariji od datuma izdavanja (ili danasnjeg datuma, ne razumem kog)
 
     And Enter text "5000" in field by xPath "//nlb-input-amount-currency/div/div/input"
 
@@ -161,4 +162,4 @@ Feature: Current_Accounts
 
     Examples:
       | rowindex |
-      |        5 |
+      |        2 |

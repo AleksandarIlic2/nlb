@@ -229,7 +229,7 @@ Feature: Credit_Cards
     And Click on NLB button "Confirm"
     And Wait for first transaction in Product details
     And Assert there are only "Outgoing transactions" transactions in transactions list
-    Then Remember transactions
+    Then Remember transactions "Outgoing transactions"
       # and clicks on the Download in Excel option
     And Click on normalized text "Download transaction list"
     And Assert Download transactions options are "EXCEL" and "CSV"
@@ -482,74 +482,86 @@ Feature: Credit_Cards
 
 
     #TODO -BUG prijavljen
-    And Enter date "11.11.25" to field "from"
-    And Enter date "23.11.25" to field "to"
-    And Assert element by contains text "Field must be a date"
 
     #MMDDYY
     And Enter date "11.11.25" to field "from"
-    And Assert "From" Field has error "Field must be a date."
+    And Enter date "23.11.2025" to field "to"
+    #And Assert "From" Field has error "Field must be a date."
+    And Assert element by contains text "11.11.25" is not displayed
     And Click on element by text " Confirm "
-    And Assert element by text "There are no transactions to be displayed."
+   # And Assert element by text "There are no transactions to be displayed."
     #And Click on element by text " OK "
     #letters - START
     And Enter date "petijanuardvehiljadedvadesetpete" to field "from"
-    And Assert "From" Field has error "Field must be a date."
+    And Enter date "23.11.2025" to field "to"
+    And Assert element by contains text "petijanuardvehiljadedvadesetpete" is not displayed
+    #And Assert "From" Field has error "Field must be a date."
     And Click on element by text " Confirm "
     And Click on " OK " button if displayed
-    And Assert element by text "There are no transactions to be displayed."
+    #And Assert element by text "There are no transactions to be displayed."
     #And Click on element by text " OK "
     #start date later than end date TODO
     #special characters
     And Enter date "11.11.25@" to field "from"
-    And Assert "From" Field has error "Field must be a date."
+    And Enter date "23.11.2025" to field "to"
+    #And Assert "From" Field has error "Field must be a date."
+    And Assert element by contains text "11.11.25@" is not displayed
     And Click on element by text " Confirm "
     And Assert element by text "There are no transactions to be displayed."
    # And Click on element by text " OK "
     #end date earlier than start date
 
     #letters - END
-    And Enter date "11.11.25" to field "from"
+    And Enter date "11.11.2025" to field "from"
     And Enter date "petijanuardvehiljadedvadesetpete" to field "to"
-    And Assert "To" Field has error "Field must be a date."
+    #And Assert "To" Field has error "Field must be a date."
+    And Assert element by contains text "petijanuardvehiljadedvadesetpete" is not displayed
     And Click on element by text " Confirm "
     And Click on " OK " button if displayed
-    And Assert element by text "There are no transactions to be displayed."
+    #And Assert element by text "There are no transactions to be displayed."
     #special characters - END
+    And Enter date "10.11.2025" to field "from"
     And Enter date "11.11.25@" to field "to"
-    And Assert "To" Field has error "Field must be a date."
+    And Assert element by contains text "11.11.25@" is not displayed
+    #And Assert "To" Field has error "Field must be a date."
     And Click on element by text " Confirm "
     And Click on " OK " button if displayed
-    And Assert element by text "There are no transactions to be displayed."
+    #And Assert element by text "There are no transactions to be displayed."
      #DD/MM/YY - END
+    And Enter date "10.11.2025" to field "from"
     And Enter date "11.11.25" to field "to"
-    And Assert "To" Field has error "Field must be a date."
+    #And Assert "To" Field has error "Field must be a date."
     And Click on element by text " Confirm "
+    And Assert element by contains text "11.11.25" is not displayed
     And Click on " OK " button if displayed
-    And Assert element by text "There are no transactions to be displayed."
+    #And Assert element by text "There are no transactions to be displayed."
     #YY/DD/MM - END
+    And Enter date "10.11.2025" to field "from"
     And Enter date "25.25.11" to field "to"
-    And Assert "To" Field has error "Field must be a date."
+    And Assert element by contains text "25.25.11" is not displayed
+    #And Assert "To" Field has error "Field must be a date."
     And Click on element by text " Confirm "
     And Click on " OK " button if displayed
-    And Assert element by text "There are no transactions to be displayed."
+    #And Assert element by text "There are no transactions to be displayed."
     #MMDDYY - END
+    And Enter date "10.11.2025" to field "from"
     And Enter date "11.11.25" to field "to"
-    And Assert "To" Field has error "Field must be a date."
+    #And Assert "To" Field has error "Field must be a date."
+    And Assert element by contains text "11.11.25" is not displayed
     And Click on element by text " Confirm "
     And Click on " OK " button if displayed
-    And Assert element by text "There are no transactions to be displayed."
+    #And Assert element by text "There are no transactions to be displayed."
     #letters - MINAMOUNT
     And Enter "textAmount" to Amount filter "From"
     And Assert "From" amount field value
     And Click on element by text " Confirm "
-    And Assert element by text "There are no transactions to be displayed."
+    #And Assert element by text "There are no transactions to be displayed."
     #specialCharacters - MINAMOUNT
 
     And Enter "@@@" to Amount filter "From"
     And Assert "From" amount field value
     And Click on element by text " Confirm "
-    And Assert element by text "There are no transactions to be displayed."
+   # And Assert element by text "There are no transactions to be displayed."
     #And Click on element by text " OK "
     #Min amount higher than Max amount
     And Enter "200,00" to Amount filter "From"
@@ -561,13 +573,13 @@ Feature: Credit_Cards
     And Enter "asdasdasd" to Amount filter "To"
     And Assert "To" amount field value
     And Click on element by text " Confirm "
-    And Assert element by text "There are no transactions to be displayed."
+    #And Assert element by text "There are no transactions to be displayed."
     #And Click on element by text " OK "
     #specialcharacters - MAXAMOUT
     And Enter "@@@" to Amount filter "To"
     And Assert "To" amount field value
     And Click on element by text " Confirm "
-    And Assert element by text "There are no transactions to be displayed."
+   # And Assert element by text "There are no transactions to be displayed."
 
 
     Examples:

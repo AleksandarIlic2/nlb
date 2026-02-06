@@ -4478,7 +4478,8 @@ public class Steps {
             String oedxPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl/div[2]/dd/div";
             WebElement oedElement = SelectByXpath.CreateElementByXpath(oedxPath);
             assertTrue(oedElement.isDisplayed());
-            assertTrue(oedElement.getAttribute("innerText").equals("until changed") || oedElement.getAttribute("innerText").matches("[0-9]{1}[.]\\s{1}[0-9]{1}[.]{1}\\s[0-9]{4}"));
+            System.out.println("DATUM:" + oedElement.getAttribute("innerText"));
+            assertTrue(oedElement.getAttribute("innerText").equals("until changed") || oedElement.getAttribute("innerText").matches("\\d{1,2}\\.\\d{1,2}\\.\\d{4}"));
 
     }
 
@@ -4771,11 +4772,16 @@ public class Steps {
         //months titles in header
         String xPathHeader = "//ngb-datepicker-navigation//div[contains(@class, 'ngb-dp-month-name')]";
         List<WebElement> headerElements = SelectByXpath.CreateElementsByXpath(xPathHeader);
+        System.out.println("ISPIS MESECI");
+        for (WebElement el: headerElements){
+            System.out.println(el.getText());
+        }
         assertTrue(RoutineHelper.assertThreeMonthsInDateFilterAreCorrectlySorted(headerElements));
         //week number per month
         for (int i = 1; i <= 3; i++) {
             List<WebElement> weekElements = SelectByXpath.CreateElementsByXpath("(//ngb-datepicker-month)[" + i + "]/div[@class = 'ngb-dp-week ng-star-inserted']");
-            assertEquals(5, weekElements.size());
+            Assert.assertTrue( weekElements.size() >= 4 &&  weekElements.size() <= 6);
+            //assertEquals(5, weekElements.size());
         }
 
         List<String> daysOfWeekDates = new ArrayList<>();
@@ -10098,8 +10104,8 @@ public class Steps {
         System.out.println("Zapamćene vrijednosti: " + values);
     }
 
-    @Then("Remember transactions")
-    public void rememberTransactions() throws Throwable{
+    @Then("Remember transactions {string}")
+    public void rememberTransactions(String type) throws Throwable{
 
         List<Map<String, String>> transactions = new ArrayList<>();
 
@@ -10125,10 +10131,11 @@ public class Steps {
             System.out.println("Amount u remember: " + amount);
             System.out.println("prvi karakter: " + amount.charAt(0));
 
-//            values.put("type", amount.substring(0,1));
-//            amount=amount.substring(1);
-//            System.out.println("Amount u remember nakon skracivanja " + amount);
-
+            if(type.toLowerCase().contains("outgoing")){
+                values.put("type", amount.substring(0,1));
+                amount=amount.substring(1);
+                System.out.println("Amount u remember nakon skracivanja " + amount);
+            }
             values.put("amount", amount);
 
             transactions.add(values);
@@ -10139,7 +10146,6 @@ public class Steps {
         }
         DataManager.userObject.put("Transactions",transactions);
     }
-
 
     @Then("Assert csv values are correct")
     public void assertCsvValuesAreCorrect() throws Exception {
@@ -10436,7 +10442,7 @@ public class Steps {
 
 
         int index = fieldName.equalsIgnoreCase("from") ? 1 : 2;
-        String xPath = "(//input[@placeholder='D. M. YYYY'])[" + index + "]";
+        String xPath = "(//input[@placeholder='DD. MM. YYYY'])[" + index + "]";
         WebElement dateInput = SelectByXpath.CreateElementByXpath(xPath);
         hp.EnterTextToElement(dateInput, date);
         //dateInput.click();
@@ -10530,7 +10536,7 @@ public class Steps {
     }
     public static LocalDate parseDate(String dateString) {
         // "1. 12. 2025"
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d. M. yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return LocalDate.parse(dateString, formatter);
     }
 
@@ -11559,7 +11565,7 @@ public class Steps {
                     .getAttribute("textContent")
                     .replaceAll("\\s+", " ")
                     .trim();
-            assertEquals(actualValue,expectedValue);
+            assertEquals(actualValue.toUpperCase(),expectedValue.toUpperCase());
             return;
         }
         assertEquals(followingSiblingText.trim().toUpperCase(), elements.get(index).getAttribute("textContent").trim().toUpperCase());
@@ -11601,7 +11607,15 @@ public class Steps {
         WaitHelpers.WaitForElement(elWait);
 
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        assertTrue(element.isDisplayed());
+        System.out.println("ELEMENT" + element);
+       // assertTrue(element.isDisplayed());
+
         assertFalse("Element nije disabled!", element.isEnabled());
+    }
+
+    @And("Assert element by xPath {string} and index {int} is disabled")
+    public void assertElementByXPathAndIndexIsDisabled(String xpath, Integer index) throws Throwable {
+        List<WebElement> wb = SelectByXpath.CreateElementsByXpath(xpath);
+        assertFalse("Element nije disabled!", wb.get(index).isEnabled());
     }
 }

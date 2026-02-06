@@ -1929,6 +1929,8 @@ public class RoutineHelper {
         monthMap.put("Januar", 1);
         monthMap.put("February", 2);
         monthMap.put("Februarja", 2);
+        monthMap.put("Februar", 2);
+        monthMap.put("Mart", 3);
         monthMap.put("March", 3);
         monthMap.put("Marca", 3);
         monthMap.put("Marec", 3);
@@ -2009,16 +2011,23 @@ public class RoutineHelper {
     public static boolean assertThreeMonthsInDateFilterAreCorrectlySorted(List<WebElement> dateElements){
         Map<String, Integer> monthMap = createMonthMap();
         Assert.assertEquals(3, dateElements.size());
+
         //System.out.println(dateElements);
+
         List<String> datesUnformatted = new ArrayList<>();
+        System.out.println("INNER TEKST");
+
         for(WebElement element : dateElements){
+            System.out.println(element.getAttribute("innerText"));
             datesUnformatted.add(element.getAttribute("innerText"));
         }
         //System.out.println(datesUnformatted);
         LocalDate[] dates = new LocalDate[3];
-
+        System.out.println("PETLJA");
         for (int i = 0; i < 3; i++) {
-            String[] parts = datesUnformatted.get(i).split(" ");
+            System.out.println(datesUnformatted.get(i));
+            String[] parts = datesUnformatted.get(i).trim().split(" ");
+            System.out.println(parts[0].trim());
             System.out.println(parts[0]);
             int month = monthMap.get(parts[0].trim());
             int year = Integer.parseInt(parts[1]);

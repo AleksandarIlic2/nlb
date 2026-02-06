@@ -172,8 +172,8 @@ Examples:
     And Wait for element by class "icon-eye"
 
      #PROMENA IMENA TEKUCIH RACUNA
-    And Change name of product from excel "<rowindex>" columnName "current_account_3_bban" into "First current account"
-    And Change name of product from excel "<rowindex>" columnName "current_account_1_bban" into "Second current account"
+    And Change name of product from excel "<rowindex>" columnName "current_account_2_bban" into "First current account"
+    And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" into "Second current account"
 
     #PROMENA IMENA KARTICA
     And Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into "First credit card"
@@ -198,8 +198,8 @@ Examples:
     And Wait for element by class "icon-eye"
 
     #Then Change name of the first product "Foreign currency payment accounts"
-    And Change name of product from excel "<rowindex>" columnName "current_account_3_bban" to previous one
-    And Change name of product from excel "<rowindex>" columnName "current_account_1_bban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "current_account_2_bban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" to previous one
     And Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" to previous one
     And Change name of product from excel "<rowindex>" columnName "credit_card_2_bban" to previous one
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" to previous one
@@ -240,6 +240,11 @@ Examples:
     #Assert first element
     And Assert for first element in product screen
 
+    And Click on tab "My products" from main sidebar
+    And Assert that products in my products have loaded
+    And Assert that first product shown on my products page is from Excel "<rowindex>" columnName "current_account_3_iban"
+
+
     #TO DO - autorizovani account
     Examples:
       | rowindex |
@@ -268,6 +273,13 @@ Examples:
     And Click on element by text "Set favorite account"
     And Wait for element by text " Apply "
     Then Assert element by class "tw-items-center" and contains text "Apply"
+    And Click Radio Button with index "favorite_acc" from excel "<rowindex>" column "current_account_2_bban"
+
+    #User clicks on Apply button
+    And Click on element by text " Apply "
+    And Wait for element by text "Success"
+    And Assert element by text "Success"
+    And Click on element by text "Set favorite account"
     #User choose Default sorting
     And Click Radio Button Default
     #User clicks on Apply button
@@ -276,7 +288,9 @@ Examples:
     And Assert element by text "Success"
     #Assert first element
     And Assert for first element in product screen default from excel "<rowindex>" column "default_account_bban"
-
+    And Click on tab "My products" from main sidebar
+    And Assert that products in my products have loaded
+    And Assert that first product shown on my products page is from Excel "<rowindex>" columnName "default_account_bban"
     Examples:
       | rowindex |
       | 1        |

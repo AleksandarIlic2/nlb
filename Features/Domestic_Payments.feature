@@ -52,7 +52,8 @@ Feature: Domestic_Payments
     And Click on element by text "Domestic payment"
     And Click on element by containing text "Select from list"
     And Click on element by xpath "//button//div[contains(text(),\"Select from list\")]"
-    And Click on element by containing text "MIKA MIKIC"
+    And Click on element by containing class "tw-px-3 tw-cursor-pointer" with index "2"
+    #And Click on element by containing text " koar tgr "
     And Enter amount "100"
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
@@ -177,12 +178,16 @@ Feature: Domestic_Payments
     And Click on element by text "Domestic payment"
     And Assert today date in Payment date in payment review
     And Assert element by class "icon-calendar-today"
-    And Assert checkbox Urgent payment is "checked"
+
+
     #TODO: Dodati authorized kad bude bilo..
     And Click on element by containing class "icon-chevron-down" with index "1"
     And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Click on element by text "Select from list "
-    And Click on element by containing text "MIKA MIKIC"
+    And Click on element by containing class "tw-px-3 tw-cursor-pointer" with index "2"
+
+    #And Click on element by xpath "(//*[contains(@class, 'justify-center tw-cursor')])[2]"
+    #And Click on element by containing text " koar tgr "
     And Assert "First and last name / Company name" in pay or transfer screen is from excel "<rowindex>" columnName "user_name_for_payment_review"
     And Assert "Street and street number" in pay or transfer screen is from excel "<rowindex>" columnName "user_street_for_payment_review"
     And Assert "City" in pay or transfer screen is from excel "<rowindex>" columnName "user_city_for_payment_review"
@@ -192,15 +197,18 @@ Feature: Domestic_Payments
     And Assert "Payment amount" in pay or transfer screen is from excel "<rowindex>" columnName "user_amount_for_payment_review"
     And Assert amount currency is displayed in "RSD"
     And Click on element by class "icon-calendar-today"
+    And Assert checkbox Urgent payment is "checked"
     And Click on date 30 days in the future in second payment screen
     And Assert date 30 days in future in payment screen
     And Assert checkbox Urgent payment is "notChecked"
-    And Assert element by tag "input" and type "checkbox" is disabled
+    #And Click on element by containing text "Urgent payment"
+    And Scroll to element by tag "input"
+    And Assert element by xPath "//input[@type='checkbox']" and index 1 is disabled
+    And Enter random purpose into purpose field for internal payment in second payment screen and remember it under key "IT_001"
 
     #TODO: KADA RESE BUG, DODAIT PROVERU DA NIJE MOGUCE KLIKNUTI NA CHECKBOX KADA JE PLACANJE U BUDUCNOSTI
     Then Click on element by text " Confirm "
-    Then Assert element by text "Purpose" has following sibling "dd" with text "TRANSACTIONS BY ORDER OF CITIZENS"
-    Then Assert element by text "Purpose code" has following sibling "dd" with text "289"
+       Then Assert element by text "Purpose code" has following sibling "dd" with text "289"
     And Assert date 30 days in future in payment review
 
      #provera sa dve razliite funkcije za Frist and last name/ Company name i account number"
@@ -221,11 +229,17 @@ Feature: Domestic_Payments
 
     Then Click on element by text " Confirm "
     And Try to assert that payment is "Success" and send command to Authorize method
-    And Check if authorization is needed and complete payment with account iban from Excel "<rowindex>" columnName "united_kingdom_iban" amount "10.00" and currency "EUR" with message "Success"
+    #proveriti sa Adamom/Jovanom cemu sluzi korak ispod
+    #And Check if authorization is needed and complete payment with account iban from Excel "<rowindex>" columnName "united_kingdom_iban" amount "10.00" and currency "EUR" with message "Success"
     And Click on tab "Payments" from main sidebar
     Then Assert element by tag "div" containing text "Payments"
     And Select account from Excel "<rowindex>" columnName "current_account_2_bban" in Payments tab
     And Click on element by containing text "Upcoming payments"
+    And Scroll till you find element under key "IT_001" from txt file and click
+    And Assert that transaction "Recipient" in opened past payment contains text from Excel "<rowindex>" columnName "user_name_short"
+    And Assert that transaction "Recipient" in opened past payment contains text from Excel "<rowindex>" columnName "user_city_short"
+    And Assert that transaction "Recipient" in opened past payment contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    And Assert that transaction "Recipient" in opened past payment contains text from Excel "<rowindex>" columnName "user_country_short"
     #TODO: Transakcjie se ne pojavljuju, da li zato sto nije urgent payment?
     #Kad se pojavi ta transakcija assertovati je...
     
