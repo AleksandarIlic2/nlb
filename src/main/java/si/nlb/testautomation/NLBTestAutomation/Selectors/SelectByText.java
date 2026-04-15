@@ -66,6 +66,10 @@ public class SelectByText {
     public static WebElement CreateElementByXpathIndex(String text, String index) throws Throwable {
         return SelectByXpath.CreateElementByXpath("(//*[text()='" + text + "'])[" + index + "]");
     }
+
+    public static WebElement CreateElementByContainsTextIndex(String text, String index) throws Throwable {
+        return SelectByXpath.CreateElementByXpath("(//*[contains(text(), '\" + text + \"')])[\" + index + \"]");
+    }
     //endregion - Basic create methods -
 
     //region - Custom methods -
@@ -89,6 +93,9 @@ public class SelectByText {
     }
     public static By CreateByElementByTextIndex(String text, String index) {
         return SelectByXpath.CreateByElementByXpath("(//*[text()='" + text + "'])[" + index + "]");
+    }
+    public static By CreateByElementByContainsTextIndex(String text, String index) {
+        return SelectByXpath.CreateByElementByXpath("(//*[contains(text(), '" + text + "')])[" + index + "]");
     }
 
     public static By CreateByElementByContainsText(String text) {

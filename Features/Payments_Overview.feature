@@ -1,6 +1,5 @@
 Feature: Payments_Overview
 
-
   @Payments_Payments_Overview_Display_Options_For_The_Selected_Account_[WEB]
   Scenario Outline: Payments_Payments_Overview_Display_Options_For_The_Selected_Account_[WEB]
 
@@ -31,3 +30,24 @@ Feature: Payments_Overview
     Examples:
       | rowindex |
       |        1 |
+
+
+  @Payments-Payments_Overview_[WEB]
+  Scenario Outline: Payments-Payments_Overview_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    When Click on tab "Payments" from main sidebar
+    And Wait for element by text "Domestic payment"
+
+    Then Assert element by contains text "Pay or transfer"
+    And Assert element by tag "a" containing text "Upcoming payments"
+    And Assert element by tag "a" containing text "Past payments"
+
+    Examples:
+      | rowindex |
+      |        2 |

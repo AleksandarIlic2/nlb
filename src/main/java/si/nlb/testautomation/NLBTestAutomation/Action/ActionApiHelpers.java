@@ -43,6 +43,18 @@ public class ActionApiHelpers {
         Log.info("!!!!!!!!!!!!!!!!!!!!!!!!!! Navigate to url: " + url + " !!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
+//    public static void OpenURL(String url) {
+//        if (Base.driver == null) {
+//            throw new RuntimeException("Base.driver je null pre navigate().to(url)");
+//        }
+//        if (url == null || url.trim().isEmpty()) {
+//            throw new RuntimeException("URL je null ili prazan");
+//        }
+//
+//        Base.driver.navigate().to(url);
+//        Log.info("!!!!!!!!!!!!!!!!!!!!!!!!!! Navigate to url: " + url + " !!!!!!!!!!!!!!!!!!!!!!!!");
+//    }
+
     /**
      * Get current URL from web driver
      * @return String url
@@ -703,6 +715,14 @@ public class ActionApiHelpers {
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("EEEE, d. MMMM yyyy", new Locale("sl", "SI"));
         String outputDate = date.format(outputFormatter);
         return outputDate.toLowerCase();
+    }
+
+    public String returnDateInSerbianFormat(String inputDate) {
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate date = LocalDate.parse(inputDate, inputFormatter);
+        DateTimeFormatter outputFormatter =
+                DateTimeFormatter.ofPattern("EEEE, d. MMMM yyyy.", Locale.forLanguageTag("sr-Cyrl-RS"));
+        return date.format(outputFormatter).toLowerCase();
     }
 
     public void DeleteTextFromElement(WebElement element) {

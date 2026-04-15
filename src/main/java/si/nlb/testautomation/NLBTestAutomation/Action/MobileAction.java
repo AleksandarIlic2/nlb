@@ -241,12 +241,20 @@ public class MobileAction {
 
             //BaseMobile.driver.getKeyboard().sendKeys(pin);
             BaseMobile.driver.getKeyboard().sendKeys("1");
-            WaitHelpers.waitForSeconds(3);
+            WaitHelpers.waitForSeconds(1);
+            BaseMobile.driver.getKeyboard().sendKeys("2");
+            WaitHelpers.waitForSeconds(1);
             BaseMobile.driver.getKeyboard().sendKeys("3");
-            WaitHelpers.waitForSeconds(3);
-            BaseMobile.driver.getKeyboard().sendKeys("7");
-            WaitHelpers.waitForSeconds(3);
-            BaseMobile.driver.getKeyboard().sendKeys("9");
+            WaitHelpers.waitForSeconds(1);
+            BaseMobile.driver.getKeyboard().sendKeys("4");
+            WaitHelpers.waitForSeconds(1);
+            BaseMobile.driver.getKeyboard().sendKeys("5");
+            WaitHelpers.waitForSeconds(1);
+            BaseMobile.driver.getKeyboard().sendKeys("1");
+            WaitHelpers.waitForSeconds(1);
+            BaseMobile.driver.getKeyboard().sendKeys("2");
+            WaitHelpers.waitForSeconds(1);
+            BaseMobile.driver.getKeyboard().sendKeys("3");
 
             String xPathForOTPScreen = "//*[@text='One-time password']";
             By elForOTPScreen = SelectMobileByXpath.createByXpath(xPathForOTPScreen);

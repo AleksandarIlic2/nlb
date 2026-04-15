@@ -1,10 +1,5 @@
 package si.nlb.testautomation.NLBTestAutomation.Action;
 
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.parser.PdfTextExtractor;
-import io.appium.java_client.MobileElement;
-import org.apache.pdfbox.text.PDFTextStripperByArea;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import si.nlb.testautomation.NLBTestAutomation.Core.Base;
 import si.nlb.testautomation.NLBTestAutomation.Data.DataManager;
@@ -19,7 +14,6 @@ import org.openqa.selenium.support.ui.Select;
 import si.nlb.testautomation.NLBTestAutomation.Wait.WaitHelpers;
 
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -1813,7 +1807,7 @@ public class RoutineHelper {
             /*String xPathForUsername = "//label[text()='Username']//following-sibling::div//input";
             WebElement elementForUsername = SelectByXpath.CreateElementByXpath(xPathForUsername);
             hp.EnterTextToElement(elementForUsername,username);*/
-            WebElement elementForUsername = SelectById.CreateElementById("username");
+            WebElement elementForUsername = SelectByXpath.CreateElementByXpath("(//*[contains(@id, 'text-input')])[1]");
             hp.EnterTextToElement(elementForUsername,username);
             //Unos otp iz aplikacije
             /*String xPathForOTP = "//label[text()='One-time password']//following-sibling::div//input";
@@ -1821,7 +1815,7 @@ public class RoutineHelper {
             ma.getMobileOTP(pin);
             String text = DataManager.userObject.get("OTP").toString();
             hp.EnterTextToElement(elementForOTP,text);*/
-            WebElement elementForOTP = SelectById.CreateElementById("password");
+            WebElement elementForOTP = SelectByXpath.CreateElementByXpath("(//*[contains(@id, 'text-input')])[2]");
             ma.getMobileOTP(pin);
             String text = DataManager.userObject.get("OTP").toString();
             hp.EnterTextToElement(elementForOTP,text);
@@ -1830,18 +1824,18 @@ public class RoutineHelper {
             hp.ClickOnElement(elementForLoginButton);
 
             //Change language cause why not :)
-            String xPathWaiter = "//*[text()='Plačilo ali prenos']";
-            By elForWaiter = SelectByXpath.CreateByElementByXpath(xPathWaiter);
-            WaitHelpers.WaitForElement(elForWaiter);
-            String xPathForProfileButton = "//*[@aria-label='Uporabniški profil']";
-            WebElement elementForProfileButton = SelectByXpath.CreateElementByXpath(xPathForProfileButton);
-            hp.ClickOnElement(elementForProfileButton);
-            String xPathForEnglishLanguage = "//*[text()=' English ']";
-            WebElement elementForEnglishLanguage = SelectByXpath.CreateElementByXpath(xPathForEnglishLanguage);
-            hp.ClickOnElement(elementForEnglishLanguage);
-            String xPathForOkButton = "//*[text()='V redu']";
-            WebElement elementForOkButton = SelectByXpath.CreateElementByXpath(xPathForOkButton);
-            hp.ClickOnElement(elementForOkButton);
+//            String xPathWaiter = "//*[text()='Plačilo ali prenos']";
+//            By elForWaiter = SelectByXpath.CreateByElementByXpath(xPathWaiter);
+//            WaitHelpers.WaitForElement(elForWaiter);
+//            String xPathForProfileButton = "//*[@aria-label='Uporabniški profil']";
+//            WebElement elementForProfileButton = SelectByXpath.CreateElementByXpath(xPathForProfileButton);
+//            hp.ClickOnElement(elementForProfileButton);
+//            String xPathForEnglishLanguage = "//*[text()=' English ']";
+//            WebElement elementForEnglishLanguage = SelectByXpath.CreateElementByXpath(xPathForEnglishLanguage);
+//            hp.ClickOnElement(elementForEnglishLanguage);
+//            String xPathForOkButton = "//*[text()='V redu']";
+//            WebElement elementForOkButton = SelectByXpath.CreateElementByXpath(xPathForOkButton);
+//            hp.ClickOnElement(elementForOkButton);
 
         } else {
             //Selekcija user-a iz dropdown liste
@@ -2416,5 +2410,27 @@ public class RoutineHelper {
 
     public void checkIfAuthIsNeededAndCompletePaymentForPaymentLimitChange() throws Throwable {
         useMobileAppToCompletePaymentLimitChange();
+    }
+
+    public String getValueForLabel(String labelText) {
+        String xPath = "//dt[.//div[text()='" + labelText + "']]/following-sibling::dd[1]";
+        By by = SelectByXpath.CreateByElementByXpath(xPath);
+
+        WaitHelpers.waitForElement(by, 60);
+
+        WebElement valueElement = driver.findElement(by);
+
+        String actual = valueElement.getText();
+        if (actual == null) {
+            actual = "";
+        }
+
+        actual = actual
+                .replace('\u00A0', ' ')
+                .replace('\u202F', ' ')
+                .replaceAll("\\s+", " ")
+                .trim();
+
+        return actual;
     }
 }

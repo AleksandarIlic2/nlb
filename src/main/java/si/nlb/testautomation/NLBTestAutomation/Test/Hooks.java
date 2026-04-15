@@ -66,9 +66,9 @@ public class Hooks {
         Base.createDriver();
         DataManager.configurationMap = ExcelFactory.getDataFromExcel("testdata/configuration.xlsx","Sheet1");
         DataManager.datamap = ExcelFactory.getDataFromExcel("testdata/data.xlsx","Sheet1");
-        /*if(DataManager.getDataFromHashDatamap("4", "isMock").equals("0")){
+        if(DataManager.getDataFromHashDatamap("1", "isMock").equals("0")){
             BaseMobile.createDriver();
-        }*/
+        }
         FeatureName = ExcelFactory.ReadExcelByKey("testdata/listForExecution.xlsx","TestName",ScName,"Feature");
         FeatureId = ExcelFactory.ReadExcelByKey("testdata/listForExecution.xlsx","TestName",ScName,"ID");
         FeaturePriority = ExcelFactory.ReadExcelByKey("testdata/listForExecution.xlsx","TestName",ScName,"Priority");
@@ -80,6 +80,53 @@ public class Hooks {
         Log.startTestCase(ScName);
         t = Utilities.now();
     }
+
+//    @Before
+//    public void beforeHookFunction(Scenario scenario) throws IOException, InterruptedException {
+//
+//        try {
+//            if (DataManager.envName == null) {
+//                List<String> envList = DataManager.envList;
+//                for (String env : envList) {
+//                    DataManager.setDataForEnv(env);
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        ScName = scenario.getName();
+//        DataManager.userObject.clear();
+//
+//        boolean isIEOnly = scenario.getSourceTagNames().contains("@IE");
+//        boolean shouldRunOnBrowser = !isIEOnly || DataManager.webBrowser.equals("IE");
+//
+//        if(!DataManager.listForExecution.contains(ScName) || !shouldRunOnBrowser) {
+//            throw new AssumptionViolatedException("not in execution");
+//        }
+//
+//        DataManager.configurationMap = ExcelFactory.getDataFromExcel("testdata/configuration.xlsx","Sheet1");
+//        DataManager.datamap = ExcelFactory.getDataFromExcel("testdata/data.xlsx","Sheet1");
+//
+//        Base.createDriver();
+//
+//        System.out.println("webBrowser = " + DataManager.webBrowser);
+//        System.out.println("driverInitialized = " + Base.driverInitialized);
+//        System.out.println("Base.driver posle createDriver = " + Base.driver);
+//
+//        if(DataManager.getDataFromHashDatamap("1", "isMock").equals("0")){
+//            BaseMobile.createDriver();
+//        }
+//
+//        FeatureName = ExcelFactory.ReadExcelByKey("testdata/listForExecution.xlsx","TestName",ScName,"Feature");
+//        FeatureId = ExcelFactory.ReadExcelByKey("testdata/listForExecution.xlsx","TestName",ScName,"ID");
+//        FeaturePriority = ExcelFactory.ReadExcelByKey("testdata/listForExecution.xlsx","TestName",ScName,"Priority");
+//        DataManager.datamap = ExcelFactory.getDataFromExcel("testdata/" + FeatureName + ".xlsx","Sheet1");
+//        dbWriteResults = DataManager.getDataFromConfiguration("1","dbWriteResults");
+//
+//        Log.startTestCase(ScName);
+//        t = Utilities.now();
+//    }
 
     /**
      * checks scenario result and logs it, if failed saves browser screenshot to testdata folder,

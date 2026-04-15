@@ -122,6 +122,11 @@ public class SelectByXpath {
         return CreateElementByXpath(xPath);
     }
 
+    public static WebElement CreateElementByXpathTagContainsAriaLabel(String tag, String ariaLabel) throws Throwable {
+        String xPath = "//" + tag + "[contains(@aria-label, '" + ariaLabel + "')]";
+        return CreateElementByXpath(xPath);
+    }
+
 
     /**
      * Pattern : //*[text()='Neki tekst']/ancestor::a

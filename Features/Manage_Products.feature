@@ -93,9 +93,9 @@ Examples:
     And Assert element by text "First current account" index "2" is displayed
     And Change name of product from excel "<rowindex>" columnName "current_account_2_bban" to previous one
     #PROMENA IMENA KARTICA
-    And Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into "First credit card"
+    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into "First credit card"
     And Assert element by text "First credit card" index "2" is displayed
-    And Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" to previous one
 
     #PROMENA IMENA STEDNJE
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" into "First savings account"
@@ -129,7 +129,7 @@ Examples:
     Then Assert element by text "You have reached the maximum number of characters. 50/50."
     And Click on element by text " Cancel "
 
-    Then Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into more than fifty characters
+    Then Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into more than fifty characters
     Then Assert element by text "You have reached the maximum number of characters. 50/50."
     And Click on element by text " Cancel "
 
@@ -144,8 +144,8 @@ Examples:
     Then Change name of product from excel "<rowindex>" columnName "current_account_1_iban" into " "
   #And Assert acc name for iban from excel "<rowindex>" columnName "current_account_1_bban"
 
-    Then Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into " "
-    And Assert acc name for iban from excel "<rowindex>" columnName "credit_card_1_bban"
+    Then Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into " "
+    And Assert acc name for iban from excel "<rowindex>" columnName "credit_card_1_number"
 
     Then Change name of product from excel "<rowindex>" columnName "savings_account_1_number" into " "
     And Assert acc name for iban from excel "<rowindex>" columnName "savings_account_1_number"
@@ -176,8 +176,8 @@ Examples:
     And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" into "Second current account"
 
     #PROMENA IMENA KARTICA
-    And Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" into "First credit card"
-    And Change name of product from excel "<rowindex>" columnName "credit_card_2_bban" into "Second credit card"
+    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into "First credit card"
+    And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" into "Second credit card"
 
     #PROMENA IMENA STEDNJE
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" into "First savings account"
@@ -200,8 +200,8 @@ Examples:
     #Then Change name of the first product "Foreign currency payment accounts"
     And Change name of product from excel "<rowindex>" columnName "current_account_2_bban" to previous one
     And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" to previous one
-    And Change name of product from excel "<rowindex>" columnName "credit_card_1_bban" to previous one
-    And Change name of product from excel "<rowindex>" columnName "credit_card_2_bban" to previous one
+    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" to previous one
+    And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" to previous one
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" to previous one
     And Change name of product from excel "<rowindex>" columnName "savings_account_2_number" to previous one
     And Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" to previous one

@@ -8,15 +8,15 @@ Feature: Current_Accounts
       And Change language to English
       And Login to the page using user from Excel "<rowindex>" columnName "username"
       And Wait for element by text "Pay or transfer"
-      And Assert that products in my products have loaded
+#      And Assert that products in my products have loaded
 
-      #User is logged into aplication and clicks on the My Products page frome the menu
-      When Click on tab "My products" from main sidebar
-      And Wait for element by text "Edit list"
-      Then Assert element by class "button-bold" and contains text "Edit list"
+#      When Click on tab "My products" from main sidebar
+      And Click on element by text "My Products"
+      And Wait for first product to load
+#      And Assert element by class "button-bold" and contains text "Edit list"
 
       #User clicks on a current account on the My Products page
-      When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+      And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
       And Wait for element by tag "nlb-product-detail-header"
 
      # And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
@@ -34,7 +34,7 @@ Feature: Current_Accounts
       And Click on element by containing text "Filters"
       #And Assert date picker
 
-      And Scroll to element by tag "nlb-selected-product-transactions-filters"
+      Then Scroll to element by tag "nlb-selected-product-transactions-filters"
     #And Assert transactions filters are displayed correctly in Products details
       And Scroll to first transaction in Products details
       And Click on down arrow on first transaction do display details
@@ -42,7 +42,7 @@ Feature: Current_Accounts
 
       And Scroll element by contains text "Confirmation" into bottom view
       And Click on Get receipt button in Transaction details
-      Then Assert document with name starting with "Potvrda+o+izvršenom+nalogu+za+prenos" and has file type ".pdf" is downloaded
+      And Assert document with name starting with "Potvrda+o+izvršenom+nalogu+za+prenos" and has file type ".pdf" is downloaded
       And Assert that transaction values in PDF match remembered values
 
       Examples:

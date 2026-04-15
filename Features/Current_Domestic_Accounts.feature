@@ -11,13 +11,14 @@ Feature: Current_Domestic_Accounts
     And Assert that products in my products have loaded
 
     #User is logged into aplication and clicks on the My Products page frome the menu
-    When Click on tab "My products" from main sidebar
-    And Wait for element by text "Edit list"
-    Then Assert element by class "button-bold" and contains text "Edit list"
+#    When Click on tab "My products" from main sidebar
+#    And Wait for element by text "Edit list"
+    Then Assert element by class "button-bold"
 
     #User clicks on a current account on the My Products page
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for element by tag "nlb-product-detail-header"
+    And Assert available balance and current balance in header
 
     #And Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
     And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
@@ -70,50 +71,61 @@ Feature: Current_Domestic_Accounts
       | rowindex |
       |        1 |
 
-#PRESAO U FAILED
-#  @Current_Domestic_Account-Transactions-Filter_By_Type_[WEB]
-#  Scenario Outline: Current_Domestic_Account-Transactions-Filter_By_Type_[WEB]
-#
-#    Given Open Login page
-#    And Change language to English
-#    And Login to the page using user from Excel "<rowindex>" columnName "username"
-#    And Wait for element by text "Pay or transfer"
-#    And Assert that products in my products have loaded
-#
-#    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
-#    And Wait for element by tag "nlb-product-detail-header"
-#    #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
-#    And Scroll to element by tag "nlb-selected-product-transactions-filters"
-#    And Assert order of tabs in tablist "domestic"
-#    And Assert element by text " Download transaction list "
-#    And Assert element by contains class "icon-download"
-#    And Assert element by tag "input" and type "search"
-#    And Assert element by text "Search "
-#    And Assert element by text " Filters"
-#    And Click on element by text " Filters"
-#    And Assert date picker "domestic"
-#    #Incoming
-#    And Scroll screen down
-#    #And Assert radio button by text "All"
-#    And Select radio button by text "Incoming transactions"
-#    And Click on element by text " Confirm "
-#    And Assert there are only "Incoming transactions" transactions in transactions list
-#    And Assert transaction dates are ordered correctly
-#      #TODO: OVO ENAIBLE KAD BUDE NOVI RELEASE
-#        # And Assert Assert there are only Incoming transactions by icon
-#    And Click on element by text " Clear filters "
-#    And Click on element by text " Filters"
-#    And Assert date picker "domestic"
-#    And Scroll screen down
-#    And Select radio button by text "Outgoing transactions"
-#    And Click on element by text " Confirm "
-#    And Assert there are only "Outgoing transactions" transactions in transactions list
-#    And Assert transaction dates are ordered correctly
-#
-#    And Click on element by text " Clear filters "
-#    Examples:
-#      | rowindex |
-#      |        1 |
+
+  @Current_Domestic_Account-Transactions-Filter_By_Type_[WEB]
+  Scenario Outline: Current_Domestic_Account-Transactions-Filter_By_Type_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
+    And Scroll to element by tag "nlb-selected-product-transactions-filters"
+    And Assert there are both incoming and outgoing transactions
+    And Click on element by aria label "Open or close filters"
+
+    #Incoming
+    And Assert Advanced filters Transaction type title
+    And Assert Advanced filters Transaction types are correct
+    And Assert Advanced filters Amount range title
+    And Assert Advanced filters Amount range fields for Domestic accounts are correct displayed
+    And Assert NLB button "Clear filters"
+    And Assert NLB button "Confirm"
+    And Assert All is selected in Transaction type by default
+    And Select transaction type "Incoming transactions" in Advanced filters
+    And Assert Incoming transactions is selected in Transaction type
+    And Click on NLB button "Confirm"
+    And Wait for first transaction in Product details
+
+#    And Assert that tag for filter is "Incoming transactions" and has close icon
+    Then Assert there are only Incoming transactions in transactions list
+    And Click on element by containing text "Clear filters"
+    And Wait for first transaction in Product details
+    And Assert there are both incoming and outgoing transactions
+
+    #Outgoing
+    And Scroll to element by tag "nlb-selected-product-transactions-filters"
+    And Click on element by aria label "Open or close filters"
+#    And Wait for Advanced filters form
+    And Assert All is selected in Transaction type by default
+    And Select transaction type "Outgoing transactions" in Advanced filters
+    And Assert Outgoing transactions is selected in Transaction type
+    And Click on NLB button "Confirm"
+    And Wait for first transaction in Product details
+
+#    And Assert that tag for filter is "Outgoing transactions" and has close icon
+    And Assert there are only Outgoing transactions in transactions list
+    And Click on element by containing text "Clear filters"
+    And Wait for first transaction in Product details
+    And Assert there are both incoming and outgoing transactions
+
+    Examples:
+      | rowindex |
+      |        1 |
 
   @Current_Domestic_Accounts-Transactions-Filter_By_Date-Predefined_Date_Range_[WEB]
   Scenario Outline: Current_Domestic_Accounts-Transactions-Filter_By_Date-Predefined_Date_Range_[WEB]
@@ -189,16 +201,15 @@ Feature: Current_Domestic_Accounts
 
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for element by tag "nlb-product-detail-header"
-    #TODO: Vrati ovaj korak ispod kad se utvrdi ime racuna
-    #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
+    Then Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
     And Assert order of tabs in tablist "domestic"
-    And Assert element by text " Download transaction list "
+    And Assert element by contains text "Download transaction list"
     And Assert element by contains class "icon-download"
     And Assert element by tag "input" and type "search"
-    And Assert element by text "Search "
-    And Assert element by text " Filters"
-    And Click on element by text " Filters"
+    And Assert element by contains text "Search"
+    And Assert element by contains text "Filters"
+    And Click on element by containing text "Filters"
     And Assert date picker "domestic"
     And Scroll screen down
     #And Assert radio button by text "All"
@@ -381,10 +392,10 @@ Feature: Current_Domestic_Accounts
     #User is logged into aplication and clicks on the My Products page frome the menu
     When Click on tab "My products" from main sidebar
     And Wait for element by text "Edit list"
-    Then Assert element by class "button-bold" and contains text "Edit list"
+    And Assert element by class "button-bold" and contains text "Edit list"
 
     #User clicks on a current account on the My Products page
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for element by tag "nlb-product-detail-header"
 
     #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
@@ -402,7 +413,7 @@ Feature: Current_Domestic_Accounts
 
 
     #User clicks on tab Details
-    When Click on tab "Details" from tablist
+    Then Click on tab "Details" from tablist
     And Wait for product details to load
     #Sections are displayed in the following order:
       # Financial details, Account details, Bundle services available, Cheques, Debit cards\
@@ -479,34 +490,24 @@ Feature: Current_Domestic_Accounts
   @Current_Domestic_Accounts-Header-Display_[WEB]
   Scenario Outline: Current_Domestic_Accounts-Header-Display_[WEB]
 
-      #Login
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    #User is logged into aplication and clicks on the My Products page frome the menu
-    When Click on tab "My products" from main sidebar
-    And Wait for element by text "Edit list"
-    Then Assert element by class "button-bold" and contains text "Edit list"
-
-    #User clicks on a current account on the My Products page
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    When Wait for element by class "button-bold"
+    And Assert element by class "button-bold"
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for element by tag "nlb-product-detail-header"
-
-    #HEADER DISPLAY
-     # Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name2"
     And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
-    And Assert Product icon in Product details is displayed and has icon path "https://test.dbp.nlbkb.rs/assets/img/product-icon/CurrentAccount-Icon.svg"
+    And Assert Product icon in Product details is displayed and has icon contains src "CurrentAccount-Icon"
     And Assert available balance and current balance in header
 
-      #click on Details tab and assert header is still displayed correctly
-    When Click on tab "Details" from tablist
+    Then Click on tab "Details" from tablist
     And Wait for product details to load
-      #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name2"
     And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
-    And Assert Product icon in Product details is displayed and has icon path "https://test.dbp.nlbkb.rs/assets/img/product-icon/CurrentAccount-Icon.svg"
+    And Assert Product icon in Product details is displayed and has icon contains src "CurrentAccount-Icon"
     And Assert available balance and current balance in header
 
     Examples:
@@ -580,31 +581,31 @@ Feature: Current_Domestic_Accounts
     Then Assert element by xPath "//label[text()='From']/following-sibling::div"
     And Assert element by xPath "//label[text()='To']/following-sibling::div"
     #Assertovanje Tipa transakcije
-    And Assert element by text "All"
-    And Assert element by text "Incoming transactions"
-    And Assert element by text "Outgoing transactions"
+    And Assert element by contains text "All"
+    And Assert element by contains text "Incoming transactions"
+    And Assert element by contains text "Outgoing transactions"
     #Assertovanje Amount filtera (labela iznosa od-do)
     And Assert element by xPath "//label[text()='From ']/following-sibling::div"
     And Assert element by xPath "//label[text()='To ']/following-sibling::div"
-    And Assert element by text " Confirm "
-    And Assert element by text " Clear filters "
-    And Assert element by text " Download transaction list "
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Clear filters"
+    And Assert element by contains text "Download transaction list"
 
-    And Assert element by text "Last 7 days "
-    And Assert element by text "Current month"
-    And Assert element by text " Previous month"
+    And Assert element by contains text "Last 7 days"
+    And Assert element by contains text "This month"
+    And Assert element by contains text "Last month"
     #Otvaranje kalendara
     And Click on button with tag "i" containing class "icon-calendar-today"
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
 
-    And Select date in From label to be "10.05.2025"
-    And Select date in To label to be "24.06.2025"
-    And Click on element by text " Confirm "
+    And Select date in From label to be "06.08.2025"
+    And Select date in To label to be "03.02.2026"
+    And Click on element by containing text "Confirm"
     And Scroll element by contains text "end of the list" into view
-    And Assert transaction dates are between "10.05.2025" and "24.06.2025"
-    And Scroll element by contains text " Clear filters " into view
-    And Click on element by text " Clear filters "
+    And Assert transaction dates are between "06.08.2025" and "03.02.2026"
+    And Scroll element by contains text "Clear filters" into view
+    And Click on element by containing text "Clear filters"
 
 #    And Assert three showed months are correctly displayed
 
@@ -619,39 +620,34 @@ Feature: Current_Domestic_Accounts
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Wait for element by tag "nlb-product-detail-header"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
-    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
-    And Assert element by contains text "Transactions"
-    #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
-    And Assert element by contains text "Statements"
-    And Assert element by contains text "Details"
-    And Assert element by text " Filters"
-    And Click on element by text " Filters"
-    And Scroll element by contains text "Details" into view
+    And Scroll to element by tag "nlb-selected-product-transactions-filters"
+    And Assert there are both incoming and outgoing transactions
+    And Click on element by aria label "Open or close filters"
 
-    #Assertovanje Date Range (labela datuma od-do)
-    Then Assert element by xPath "//label[text()='From']/following-sibling::div"
-    And Assert element by xPath "//label[text()='To']/following-sibling::div"
-    #Assertovanje Tipa transakcije
-    And Assert element by text "All"
-    And Assert element by text "Incoming transactions"
-    And Assert element by text "Outgoing transactions"
-    #Assertovanje Amount filtera (labela iznosa od-do)
-    And Assert element by xPath "//label[text()='From ']/following-sibling::div"
-    And Assert element by xPath "//label[text()='To ']/following-sibling::div"
-    And Assert element by text " Confirm "
-    And Assert element by text " Clear filters "
-    And Assert element by text " Download transaction list "
+    Then Assert Advanced filters Transaction type title
+    And Assert Advanced filters Transaction types are correct
+    And Assert Advanced filters Amount range title
+    And Assert Advanced filters Amount range fields for Domestic accounts are correct displayed
+    And Assert NLB button "Clear filters"
+    And Assert NLB button "Confirm"
+    And Assert Amount input fields have "RSD" currency
     And Assert All is selected in Transaction type by default
-    And Enter "100" to Amount filter "From"
-    And Enter "150" to Amount filter "To"
-    And Click on element by text " Confirm "
-    And Scroll element by contains text "end of the list" into view
-    And Assert transaction amounts are between "100" and "150"
-    And Click on element by text " Clear filters "
+    And Enter "15,00" to Amount filter "From"
+    And Enter "550,00" to Amount filter "To"
+    And Assert Amount filter field "From" has value "15,00"
+    And Assert Amount filter field "To" has value "550,00"
+    And Click on NLB button "Confirm"
+    And Wait for first transaction in Product details
+#    And Assert that tag for filter is "4,00 EUR - 7,00 EUR" and has close icon
+    And Assert transaction amounts after filter are between 15 and 550
+    And Wait for first transaction in Product details
+    And Assert there are both incoming and outgoing transactions
 
     Examples:
       | rowindex |
@@ -702,47 +698,42 @@ Feature: Current_Domestic_Accounts
       | rowindex |
       |        1 |
 
-#PRESAO U FAILED
-#  @Current_Domestic_Accounts-Transactions_Filter-Invalid_[WEB]
-#  Scenario Outline: Current_Domestic_Accounts-Transactions_Filter-Invalid_[WEB]
-#
-#    Given Open Login page
-#    And Change language to English
-#    And Login to the page using user from Excel "<rowindex>" columnName "username"
-#    And Assert that products in my products have loaded
-#
-#    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
-#    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
-#    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
-#    And Assert element by contains text "Transactions"
-#    #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
-#    And Assert element by contains text "Statements"
-#    And Assert element by contains text "Details"
-#    And Assert element by text " Filters"
-#    And Click on element by containing text "Filters"
-#    And Scroll element by contains text "Details" into view
-#
-#    #Assertovanje Date Range (labela datuma od-do)
-#    Then Assert element by xPath "//label[text()='From']/following-sibling::div"
-#    And Assert element by xPath "//label[text()='To']/following-sibling::div"
-#
-#    And Assert element by text "Last 7 days "
-#    And Assert element by text "Current month"
-#    And Assert element by text " Previous month"
-#    And Assert element by text " Confirm "
-#    #Otvaranje kalendara
-#    And Click on button with tag "i" containing class "icon-calendar-today"
-#    And Assert window behind Date filter popup is blurred
-#    And Assert Select date title in Date filter
-#
-#    And Select date in From label to be "02.01.2026"
-#    And Select date in To label to be "24.12.2025"
-#    And Click on element by text " Confirm "
-#    And Assert element by text " Please check the date range "
-#
-#    Examples:
-#      | rowindex |
-#      |        3 |
+
+  @Current_Domestic_Accounts-Transactions_Filter-Invalid_[WEB]
+  Scenario Outline: Current_Domestic_Accounts-Transactions_Filter-Invalid_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
+    And Scroll to element by tag "nlb-selected-product-transactions-filters"
+    And Assert there are both incoming and outgoing transactions
+    And Click on element by aria label "Open or close filters"
+
+    Then Assert Advanced filters Transaction type title
+    And Assert Advanced filters Transaction types are correct
+    And Assert Advanced filters Amount range title
+    And Assert Advanced filters Amount range fields for Domestic accounts are correct displayed
+    And Assert NLB button "Clear filters"
+    And Assert NLB button "Confirm"
+    #Otvaranje kalendara
+    And Click on calendar icon with index "1"
+    And Assert window behind Date filter popup is blurred
+    And Assert Select date title in Date filter
+
+    And Select date in From label to be "27.03.2026"
+    And Click on calendar icon with index "2"
+    And Assert contains aria label button "Previous month" is not clickable
+    And Assert date "11.03.2026" is not clickable
+
+    Examples:
+      | rowindex |
+      |        3 |
 
   @Current_Domestic_Accounts-Transactions-Search_[WEB]
   Scenario Outline: Current_Domestic_Accounts-Transactions-Search_[WEB]

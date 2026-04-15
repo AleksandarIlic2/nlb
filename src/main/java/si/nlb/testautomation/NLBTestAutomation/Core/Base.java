@@ -63,13 +63,40 @@ public class Base {
             driverInitialized = base.createDriver(ConfigurationManager.DEFAULT_BROWSER);
     }
 
+//    public static void createDriver(){
+//        Base base = new Base();
+//        config = new ConfigurationManager(true);
+//
+//        System.out.println("webBrowser pre createDriver: [" + DataManager.webBrowser + "]");
+//
+//        if(DataManager.webBrowser != null && !DataManager.webBrowser.trim().isEmpty()){
+//            browserType = BrowserTypes.getBrowserByName(DataManager.webBrowser);
+//            System.out.println("browserType = " + browserType);
+//            driverInitialized = base.createDriver(browserType);
+//        } else {
+//            System.out.println("IDE NA DEFAULT_BROWSER");
+//            System.out.println("DEFAULT_BROWSER = " + ConfigurationManager.DEFAULT_BROWSER);
+//            driverInitialized = base.createDriver(ConfigurationManager.DEFAULT_BROWSER);
+//        }
+//
+//        System.out.println("driverInitialized = " + driverInitialized);
+//        System.out.println("driver posle createDriver = " + driver);
+//    }
+
     /**
      * Release (any potential) resources associated with "framework run" and quit driver
      */
+//    public static void closeDriver(){
+//        // Release (any) resources
+//        // Try to quit and close driver
+//        if(driver !=null) {
+//            driver.quit();
+//        }
+//    }
+
     public static void closeDriver(){
-        // Release (any) resources
-        // Try to quit and close driver
-        if(driver !=null) {
+        System.out.println("ULAZ U Base.closeDriver(), driver = " + driver);
+        if(driver != null) {
             driver.quit();
         }
     }
@@ -176,6 +203,29 @@ public class Base {
         Base.driver = new ChromeDriver(options);
         //ase.driver = new ChromeDriver();
     }
+
+//    private void startChromeDriver() {
+//        System.out.println("ULAZ U startChromeDriver");
+//        File file = new File("src/main/resources/chromedriver.exe");
+//        System.setProperty("webdriver.chrome.driver",file.getAbsolutePath());
+//
+//        ChromeOptions options = new ChromeOptions();
+//        options.addArguments("--ignore-ssl-errors=yes");
+//        options.addArguments("--ignore-certificate-errors");
+//        options.addArguments("--disable-search-engine-choice-screen");
+//        options.addArguments("--no-first-run");
+//        options.addArguments("--no-default-browser-check");
+//
+//        Map<String, Object> prefs = new HashMap<String, Object>();
+//        String userHome = System.getProperty("user.home");
+//        prefs.put("download.default_directory", userHome + "\\Downloads");
+//        prefs.put("download.prompt_for_download", false);
+//        prefs.put("profile.default_content_settings.popups", 0);
+//        options.setExperimentalOption("prefs", prefs);
+//
+//        Base.driver = new ChromeDriver(options);
+//        System.out.println("ChromeDriver napravljen, driver = " + Base.driver);
+//    }
 
     /**
      * Start firefox driver including options if available

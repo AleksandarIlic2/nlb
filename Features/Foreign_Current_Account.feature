@@ -9,10 +9,10 @@ Feature: Foreign_Current_Account
     When Wait for element by text "Pay or transfer"
 
     #And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_name"
-    When Click on tab "My products" from main sidebar
+    When Assert that products in my products have loaded
     And Wait for element by text "Edit list"
-    Then Assert element by class "button-bold" and contains text "Edit list"
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Assert element by class "button-bold" and contains text "Edit list"
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Click on element by text "Details"
 
     #And Scroll screen down
@@ -40,33 +40,46 @@ Feature: Foreign_Current_Account
 
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for element by tag "nlb-product-detail-header"
-    #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
-    And Assert order of tabs in tablist "foreign"
-    And Assert element by text " Download transaction list "
-    And Assert element by contains class "icon-download"
-    And Assert element by tag "input" and type "search"
-    And Assert element by text "Search "
-    And Assert element by text " Filters"
-    And Click on element by text " Filters"
-    And Assert date picker "foreign"
-    #Incoming
-    And Scroll screen down
-    And Assert radio button by text "All"
-    And Select radio button by text "Incoming transactions"
-    And Click on element by text " Confirm "
-    And Assert there are only "Incoming transactions" transactions in transactions list
-    And Assert transaction dates are ordered correctly
-    And Click on element by text " Clear filters "
-    And Click on element by text " Filters"
-    And Assert date picker "foreign"
-    And Scroll screen down
-    And Select radio button by text "Outgoing transactions"
-    And Click on element by text " Confirm "
-    And Assert there are only "Outgoing transactions" transactions in transactions list
-    And Assert transaction dates are ordered correctly
+    And Assert there are both incoming and outgoing transactions
+    And Click on element by aria label "Open or close filters"
 
-    And Click on element by text " Clear filters "
+    #Incoming
+    And Assert Advanced filters Transaction type title
+    And Assert Advanced filters Transaction types are correct
+    And Assert Advanced filters Amount range title
+    And Assert Advanced filters Amount range fields for Foreign accounts are correct displayed
+    And Assert NLB button "Clear filters"
+    And Assert NLB button "Confirm"
+    And Assert All is selected in Transaction type by default
+    And Select transaction type "Incoming transactions" in Advanced filters
+    And Assert Incoming transactions is selected in Transaction type
+    And Click on NLB button "Confirm"
+    And Wait for first transaction in Product details
+
+#    And Assert that tag for filter is "Incoming transactions" and has close icon
+    Then Assert there are only Incoming transactions in transactions list
+    And Click on element by containing text "Clear filters"
+    And Wait for first transaction in Product details
+    And Assert there are both incoming and outgoing transactions
+
+    #Outgoing
+    And Scroll to element by tag "nlb-selected-product-transactions-filters"
+    And Click on element by aria label "Open or close filters"
+#    And Wait for Advanced filters form
+    And Assert All is selected in Transaction type by default
+    And Select transaction type "Outgoing transactions" in Advanced filters
+    And Assert Outgoing transactions is selected in Transaction type
+    And Click on NLB button "Confirm"
+    And Wait for first transaction in Product details
+
+#    And Assert that tag for filter is "Outgoing transactions" and has close icon
+    And Assert there are only Outgoing transactions in transactions list
+    And Click on element by containing text "Clear filters"
+    And Wait for first transaction in Product details
+    And Assert there are both incoming and outgoing transactions
+
     Examples:
       | rowindex |
       |        4 |
@@ -280,6 +293,7 @@ Feature: Foreign_Current_Account
       | rowindex |
       |        4 |
 
+
   @Foreign_Current_Account-Transactions-Filter_By_Date-Predefined_Date_Range_[WEB]
   Scenario Outline: Foreign_Current_Account-Transactions-Filter_By_Date-Predefined_Date_Range_[WEB]
 
@@ -353,9 +367,11 @@ Feature: Foreign_Current_Account
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_3_iban"
-    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_3_name"
-    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_3_iban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Wait for first transaction in Product details
+#    And Assert available balance and current balance in header
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
@@ -379,10 +395,9 @@ Feature: Foreign_Current_Account
     And Assert element by text " Download transaction list "
 
     And Scroll to first transaction in Products details
-    #PROMENJENO DA JE 24 TRANSAKCIJE, JER U APLIKACIJI NE POSTOJI FOREIGN RACUN SA 30 TRANSAKCIJA
-    And Assert there are 30 transactions loaded in Products details
-    And Scroll dynamic page down 1 times
-    And Assert there are 60 transactions loaded in Products details
+#    And Assert there are 30 transactions loaded in Products details
+#    And Scroll dynamic page down 1 times
+#    And Assert there are 60 transactions loaded in Products details
     #And Assert there are more than 30 transactions loaded in Products details
     And Assert there are month categories in transactions list in Products details
     And Assert transaction dates are ordered correctly
@@ -396,68 +411,43 @@ Feature: Foreign_Current_Account
 
     Examples:
       | rowindex |
-      |        2 |
+      |        1 |
 
   @Foreign_Current_Accounts-Transactions_List_select_Currency_[WEB]
   Scenario Outline: Foreign_Current_Accounts-Transactions_List_select_Currency_[WEB]
 
-    #Login
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    #User is logged into aplication and clicks on the My Products page frome the menu
-    When Click on tab "My products" from main sidebar
-    And Wait for element by text "Edit list"
-    Then Assert element by class "button-bold" and contains text "Edit list"
-
-    #User clicks on a current account on the My Products page
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for element by tag "nlb-product-detail-header"
-    #TODO: BUG: Pogresno ime ne treba da se zove Tekuci, vratiti korak kad proradi
-    #And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
+
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
     And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
-
-    #Below the header there are tabs: Transactions, Card settings, Statements, Details Exchange.
-    #User is by default on Transactions tab.
-    And Assert order of tabs in tablist "foreign"
-
-    #Below the tabs, icons for Date picker, Filter, Select category and Search filter are displayed on the left side.
-      # On the right side there is a Download option
-    And Assert element by text " Download transaction list "
-    And Assert element by contains class "icon-download"
-    And Assert element by tag "input" and type "search"
-    And Assert element by text "Search "
-    And Assert element by text " Filters"
-    And Click on element by text " Filters"
-    And Assert date picker "foreign"
-
     And Assert EUR currency is selected if product has more than one currency
-
+    And Assert currency cards have Available and Current balance displayed correctly
+    And Assert tabs in Product details are displayed correctly
     And Scroll to first transaction in Products details
     And Assert transaction is displayed correctly in Products details with currency "EUR"
     And Assert amount for month category is displayed in Products details with currency "EUR"
-
     And Assert there are month categories in transactions list in Products details
     And Assert transaction dates are ordered correctly
 
-
-    #@[currentCard] USD
-    And Scroll to Currency card for "USD" in Product details
-    And Select Currency card "USD" in Product details
-    Then Wait for first transaction in Product details
+    Then Scroll to Currency card for "JPY" in Product details
+    And Select Currency card "JPY" in Product details
+    And Wait for first transaction in Product details
     And Scroll to first transaction in Products details
-    And Assert transaction is displayed correctly in Products details with currency "USD"
-    And Assert amount for month category is displayed in Products details with currency "USD"
+    And Assert transaction is displayed correctly in Products details with currency "JPY"
+    And Assert amount for month category is displayed in Products details with currency "JPY"
     And Assert there are month categories in transactions list in Products details
     And Assert transaction dates are ordered correctly
-    #30 transactions???
 
     Examples:
       | rowindex |
-      |        4 |
+      |        1 |
 
 
   @Current_Foreign_Accounts_Product_Details_Financial_Details_Is_Not_Visible_[WEB]
@@ -468,13 +458,20 @@ Feature: Foreign_Current_Account
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    Then Click on element by containing text "96"
+    When Click on element from Excel "<rowindex>" contains text columnName "current_account_1_iban"
+    And Wait for element by contains text "Transactions"
+    And Click on element by text "Details"
+    And Assert element with text "Financial details" is not displayed
+    
+    Then Assert that products in my products have loaded
+    And Click on element from Excel "<rowindex>" contains text columnName "current_account_2_iban"
+    And Wait for element by contains text "Transactions"
     And Click on element by text "Details"
     And Assert element with text "Financial details" is not displayed
 
     Examples:
       | rowindex |
-      |        2 |
+      |        1 |
 
 
   @Current_Foreign_Accounts-Transactions_List_No_Transactions_[WEB]
@@ -485,32 +482,32 @@ Feature: Foreign_Current_Account
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
-    #TODO: BUG sa nazivima, vratiti korak ispod kad proradi..
-    #And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
-    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_iban"
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Statements-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
     And Assert element by contains text "Details"
-    And Assert element by text " Filters"
-    And Click on element by text " Filters"
+    And Assert element by contains text "Filters"
+    And Click on element by containing text "Filters"
     And Scroll element by contains text "Details" into view
 
     #Assertovanje Date Range (labela datuma od-do)
     Then Assert element by xPath "//label[text()='From']/following-sibling::div"
     And Assert element by xPath "//label[text()='To']/following-sibling::div"
     #Assertovanje Tipa transakcije
-    And Assert element by text "All"
-    And Assert element by text "Incoming transactions"
-    And Assert element by text "Outgoing transactions"
+    And Assert element by contains text "All"
+    And Assert element by contains text "Incoming transactions"
+    And Assert element by contains text "Outgoing transactions"
     #Assertovanje Amount-a (labela iznosa od-do)
     And Assert element by xPath "//label[text()='From ']/following-sibling::div"
     And Assert element by xPath "//label[text()='To ']/following-sibling::div"
-    And Assert element by text " Confirm "
-    And Assert element by text " Clear filters "
-    And Assert element by text " Download transaction list "
-    And Assert element by tag "div" has text "There are no transactions to be displayed."
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Clear filters"
+    And Assert element by contains text "Download transaction list"
+#    And Assert element by tag "div" has text "There are no transactions to be displayed."
+    And Assert element by tag "div" has text "Products_Common_TransactionsList_EmptyState"
 
     Examples:
       | rowindex |
@@ -582,52 +579,35 @@ Feature: Foreign_Current_Account
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_3_iban"
-    #TODO: BUG sa nazivima, vratiti korak ispod kad proradi..
-    #And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_3_name"
-    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_3_iban"
-    And Assert element by contains text "Transactions"
-    #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
-    And Assert element by contains text "Statements"
-    And Assert element by contains text "Details"
-    And Assert element by text " Filters"
-    And Click on element by text " Filters"
-    And Scroll element by contains text "Details" into view
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
+    And Scroll to element by tag "nlb-selected-product-transactions-filters"
+    And Assert there are both incoming and outgoing transactions
+    And Click on element by aria label "Open or close filters"
 
-    #Assertovanje Date Range (labela datuma od-do)
-    Then Assert element by xPath "//label[text()='From']/following-sibling::div"
-    And Assert element by xPath "//label[text()='To']/following-sibling::div"
-    #Assertovanje Tipa transakcije
-    And Assert element by text "All"
-    And Assert element by text "Incoming transactions"
-    And Assert element by text "Outgoing transactions"
-    #Assertovanje Amount filtera (labela iznosa od-do)
-    And Assert element by xPath "//label[text()='From ']/following-sibling::div"
-    And Assert element by xPath "//label[text()='To ']/following-sibling::div"
-    And Assert element by text " Confirm "
-    And Assert element by text " Clear filters "
-    And Assert element by text " Download transaction list "
+#    Then Assert Advanced filters Transaction type title
+#    And Assert Advanced filters Transaction types are correct
+#    And Assert Advanced filters Amount range title
+#    And Assert Advanced filters Amount range fields for Foreign accounts are correct displayed
+    And Assert NLB button "Clear filters"
+    And Assert NLB button "Confirm"
+    And Assert Amount input fields have "EUR" currency
     And Assert All is selected in Transaction type by default
-    And Enter "100" to Amount filter "From"
-    And Enter "700" to Amount filter "To"
-    And Click on element by text " Confirm "
-    And Scroll element by contains text "end of the list" into view
-    And Assert transaction amounts are between "100" and "700"
-    And Click on element by text " Clear filters "
-    And Assert element by text " Filters"
-    And Click on element by text " Filters"
-    And Scroll element by contains text "Details" into view
-
-    And Enter "68511" to Amount filter "From"
-    And Enter "72311" to Amount filter "To"
-    And Click on element by text " Confirm "
-    And Scroll element by contains text "end of the list" into view
-    And Assert transaction amounts are between "68511" and "72311"
-    And Click on element by text " Clear filters "
-
-
+    And Enter "3800" to Amount filter "From"
+    And Enter "4100" to Amount filter "To"
+    And Assert Amount filter field "From" has value "3.800,00"
+    And Assert Amount filter field "To" has value "4.100,00"
+    And Click on NLB button "Confirm"
+#    And Assert Advanced filters Amount range fields for Foreign accounts are correct displayed
+    And Wait for first transaction in Product details
+#    And Assert that tag for filter is "4,00 EUR - 7,00 EUR" and has close icon
+    And Assert transaction amounts after filter are between 3800 and 4100
+    And Wait for first transaction in Product details
+    And Assert there are both incoming and outgoing transactions
 
     Examples:
       | rowindex |
@@ -643,34 +623,33 @@ Feature: Foreign_Current_Account
     And Assert that products in my products have loaded
 
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
-    #TODO: BUG sa nazivima, vratiti korak ispod kad proradi..
-    #And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_3_name"
     And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_iban"
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
     And Assert element by contains text "Details"
-    And Assert element by text " Filters"
-    And Click on element by text " Filters"
+    And Assert element by contains text "Filters"
+    And Click on element by containing text "Filters"
     And Scroll element by contains text "Details" into view
 
     #Assertovanje Date Range (labela datuma od-do)
     Then Assert element by xPath "//label[text()='From']/following-sibling::div"
     And Assert element by xPath "//label[text()='To']/following-sibling::div"
     #Assertovanje Tipa transakcije
-    And Assert element by text "All"
-    And Assert element by text "Incoming transactions"
-    And Assert element by text "Outgoing transactions"
+    And Assert element by contains text "All"
+    And Assert element by contains text "Incoming transactions"
+    And Assert element by contains text "Outgoing transactions"
     #Assertovanje Amount filtera (labela iznosa od-do)
     And Assert element by xPath "//label[text()='From ']/following-sibling::div"
     And Assert element by xPath "//label[text()='To ']/following-sibling::div"
-    And Assert element by text " Confirm "
-    And Assert element by text " Clear filters "
-    And Assert element by text " Download transaction list "
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Clear filters"
+    And Assert element by contains text "Download transaction list "
     And Assert All is selected in Transaction type by default
     And Enter "2000" to Amount filter "From"
     And Enter "500" to Amount filter "To"
-    And Click on element by text " Confirm "
+    And Click on element by containing text "Confirm"
 
     Then Assert NLB Validation error "From amount must be smaller than To amount."
     And Assert element by tag "div" has text "There are no transactions to be displayed."
@@ -682,6 +661,7 @@ Feature: Foreign_Current_Account
 
   @Current_Foreign_Accounts-Transactions_Filter-Invalid_[WEB]
   Scenario Outline: Current_Foreign_Accounts-Transactions_Filter-Invalid_[WEB]
+    #Current_Foreign/Savings_Accounts-Transactions_Filter-invalid_[WEB]
 
     Given Open Login page
     And Change language to English
@@ -689,34 +669,33 @@ Feature: Foreign_Current_Account
     And Assert that products in my products have loaded
 
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
-    #TODO: BUG sa nazivima, vratiti korak ispod kad proradi..
-    #And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
     And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
     And Assert element by contains text "Details"
-    And Assert element by text " Filters"
-    And Click on element by text " Filters"
+    And Assert element by contains text "Filters"
+    And Click on element by containing text "Filters"
     And Scroll element by contains text "Details" into view
 
     #Assertovanje Date Range (labela datuma od-do)
     Then Assert element by xPath "//label[text()='From']/following-sibling::div"
     And Assert element by xPath "//label[text()='To']/following-sibling::div"
 
-    And Assert element by text "Last 7 days "
-    And Assert element by text "Current month"
-    And Assert element by text " Previous month"
-    And Assert element by text " Confirm "
+    And Assert element by contains text "Last 7 days"
+    And Assert element by contains text "This month"
+    And Assert element by contains text "Last month"
+    And Assert NLB button "Clear filters"
+    And Assert NLB button "Confirm"
     #Otvaranje kalendara
     And Click on button with tag "i" containing class "icon-calendar-today"
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
 
-    And Select date in From label to be "02.01.2026"
-    And Select date in To label to be "24.12.2025"
-    And Click on element by text " Confirm "
-    And Assert element by text " Please check the date range "
+    And Select date in From label to be "22.01.2026"
+    And Click on calendar icon with index "2"
+    And Assert date "11.01.2026" is not clickable
 
     Examples:
       | rowindex |

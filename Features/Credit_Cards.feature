@@ -37,9 +37,9 @@ Feature: Credit_Cards
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
-    And Assert Credit card BBAN in Product details is from Excel "<rowindex>" columnName "credit_card_2_bban"
+    And Assert Credit card BBAN in Product details is from Excel "<rowindex>" columnName "credit_card_2_number"
     And Assert Transactions tab is selected by default
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
@@ -94,9 +94,9 @@ Feature: Credit_Cards
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
-    And Assert Credit card BBAN in Product details is from Excel "<rowindex>" columnName "credit_card_2_bban"
+    And Assert Credit card BBAN in Product details is from Excel "<rowindex>" columnName "credit_card_2_number"
     And Assert Transactions tab is selected by default
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
@@ -181,7 +181,6 @@ Feature: Credit_Cards
 
   @Credit_Cards-Transactions-Download_Option_[WEB]
   Scenario Outline: Credit_Cards-Transactions-Download_Option_[WEB]
-
 
     Given Open Login page
     And Change language to English
@@ -281,7 +280,8 @@ Feature: Credit_Cards
     And Scroll screen down
     And Select radio button by text "Incoming transactions"
     And Click on element by text " Confirm "
-    And Wait for "10" seconds
+    And Wait for first transaction in Product details
+#    And Wait for "10" seconds
     And Assert there are only "Incoming transactions" transactions in transactions list
     And Assert transaction dates are ordered correctly
 
@@ -291,7 +291,8 @@ Feature: Credit_Cards
     And Scroll screen down
     And Select radio button by text "Outgoing transactions"
     And Click on element by text " Confirm "
-    And Wait for "10" seconds
+    And Wait for first transaction in Product details
+#    And Wait for "10" seconds
     And Assert there are only "Outgoing transactions" transactions in transactions list
     And Assert transaction dates are ordered correctly
 
@@ -419,7 +420,6 @@ Feature: Credit_Cards
 
   @Credit_Cards-Transactions-Filter-Filter_By_Status_[WEB]
   Scenario Outline: Credit_Cards-Transactions-Filter-Filter_By_Status_[WEB]
-  #C2353
 
     Given Open Login page
     And Change language to English
@@ -427,25 +427,37 @@ Feature: Credit_Cards
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    #User is logged into aplication and clicks on the My Products page frome the menu
     When Click on tab "My products" from main sidebar
     And Wait for element by text "Edit list"
-    Then Assert element by class "button-bold" and contains text "Edit list"
-    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_name"
+    And Assert element by class "button-bold" and contains text "Edit list"
+    And Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
     And Wait for element by tag "nlb-product-detail-header"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
+    And Assert Credit card BBAN in Product details is from Excel "<rowindex>" columnName "credit_card_2_number"
 
     And Assert Transactions tab is selected by default
     And Assert element by contains text "Transactions"
     And Assert element by text " Filters"
-
     And Click on element by containing text "Filters"
     And Assert date picker "card"
 
-    #status option - Executed
-    And Click on element by containing text "Executed"
-    #TODO  provjera, kada dodaju pending transakcije
-    #status option - Pending
+    #executed
+    Then Click on element by containing text "Executed"
+    And Click on element by text " Confirm "
+    And Wait for first transaction in Product details
+    And Assert there are both incoming and outgoing transactions
+
+    #panding
+    And Click on element by containing text "Pending"
+    And Click on element by text " Confirm "
+    And Wait for element by text "There are no transactions to be displayed."
+    And Assert element by text "There are no transactions to be displayed."
+
+    #all
+    And Click on element by text "All" index "2"
+    And Click on element by text " Confirm "
+    And Wait for first transaction in Product details
+    And Assert there are both incoming and outgoing transactions
 
     Examples:
       | rowindex |
