@@ -12,7 +12,7 @@ Feature: Domestic_Payments
 #    And Click on element by text "Domestic payment"
 #    And Click on element by xpath "//nlb-account-selector"
 #    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
-#    And Enter text "Enil" in "First and last name" input field and remember under key "nameKey"
+#    And Enter text "Enil" in "Name" input field and remember under key "nameKey"
 #    And Enter text "0,1" in "Payment amount" input field and remember under key "paymentAmountKey"
 #    And Assert checkbox "Save recipient" is checked "false"
 #    And Assert element by contains text "Payment date"
@@ -31,7 +31,7 @@ Feature: Domestic_Payments
 #
 #    Then Assert element by contains text "Urgent payment"
 #    And Enter text "205-9001010537788-94" in "AccountNumber" input field and remember under key "accountNumberKey"
-#    And Enter text "Enil" in "First and last name" input field and remember under key "nameKey"
+#    And Enter text "Enil" in "Name" input field and remember under key "nameKey"
 #    And Enter text "Kaludjerica" in "street" input field and remember under key "streetKey"
 #    And Enter text "Beograd" in "City" input field and remember under key "cityKey"
 #    And Enter text "0,1" in "Payment amount" input field and remember under key "paymentAmountKey"
@@ -88,7 +88,7 @@ Feature: Domestic_Payments
     When Click on element by xpath "//nlb-account-selector"
     And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Enter text "205-9001010537788-94" in "AccountNumber" input field and remember under key "accountNumberKey"
-    And Enter text "Enil" in "First and last name" input field and remember under key "nameKey"
+    And Enter text "Enil" in "Name" input field and remember under key "nameKey"
     And Enter text "Kaludjerica 11" in "street" input field and remember under key "streetKey"
     And Enter text "Beograd" in "City" input field and remember under key "cityKey"
     And Enter text "0,1" in "Payment amount" input field and remember under key "paymentAmountKey"
@@ -114,7 +114,7 @@ Feature: Domestic_Payments
     And Assert text under key "fullNameKey" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
     And Assert element by contains text "Recipient"
-    And Assert "First and last name" element under key "nameKey" with index "2" is displayed
+    And Assert "Name" element under key "nameKey" with index "2" is displayed
     And Assert address from keys "streetKey" and "cityKey" is displayed
     And Assert "Account number" element under key "accountNumberKey" with index "2" is displayed
 
@@ -130,7 +130,7 @@ Feature: Domestic_Payments
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
     And Click on Recipient account selector in Domestic payment
     And Assert input field by contains text "AccountNumber" has value under remembered key "accountNumberKey"
-    And Assert input field by contains text "First and last name" has value under remembered key "nameKey"
+    And Assert input field by contains text "Name" has value under remembered key "nameKey"
     And Assert input field by contains text "street" has value under remembered key "streetKey"
     And Assert input field by contains text "City" has value under remembered key "cityKey"
     And Assert input field by contains text "Payment amount" has value under remembered key "paymentAmountKey"
@@ -210,8 +210,8 @@ Feature: Domestic_Payments
 
     And Assert element by contains text "AccountNumber"
     And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban2" into "AccountNumber" input field
-    And Assert element by contains text "First and last name"
-    And Enter text "Enil Cicvi" into "First and last name" input field and remember it under key "keyName"
+    And Assert element by contains text "Name"
+    And Enter text "Enil Cicvi" into "Name" input field and remember it under key "keyName"
     And Assert element by contains text "Street and street number"
     And Enter text "Ritopek 21" into "street" input field and remember it under key "keyStreet"
     And Assert element by contains text "City"
@@ -243,13 +243,13 @@ Feature: Domestic_Payments
     And Assert element by contains text "Fee"
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Debtor"
-    And Assert element by contains text "First and last name"
+    And Assert element by contains text "Name"
     And Assert text under key "fullNameKey" is displayed
     And Assert element by contains text "Address"
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
-    And Assert element by tag "dt" containing text "First and last name" with index "2"
+    And Assert element by tag "dt" containing text "Name" with index "2"
     And Assert text under key "keyName" is displayed
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
     And Assert element by contains text from excel "<rowindex>" columnName "domestic_payment_bban2" is displayed
@@ -348,19 +348,19 @@ Feature: Domestic_Payments
     And Click on normalized text "Select from list"
     And Assert element by contains text "Select template"
     #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
-    And Assert element by contains text "Select recepient"
+    And Assert element by contains text "Select recipient"
     And Assert element by contains class "flex tw-w-full tw-flex"
     And Assert "input" field with placeholder "Type here to search"
     And Assert element by contains text "Total number of saved templates:"
     #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
-    And Click on normalized text "Select recepient"
+    And Click on normalized text "Select recipient"
     And Assert element by contains class "flex tw-w-full tw-flex"
     And Click on first recipient
     And Assert element by class "tw-items-center" containing text "Change recipient"
     And Assert element by contains text "AccountNumber"
     And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "AccountNumber" input field
-    And Assert element by contains text "First and last name"
-    And Enter text "Ime Automatizacija Web" into "First and last name" input field and remember it under key "keyName"
+    And Assert element by contains text "Name"
+    And Enter text "Ime Automatizacija Web" into "Name" input field and remember it under key "keyName"
     And Assert element by contains text "Street and street number"
     And Enter text "Juzni bulevar 55" into "street" input field and remember it under key "keyStreet"
     And Assert element by contains text "City"
@@ -391,13 +391,13 @@ Feature: Domestic_Payments
     And Assert element by contains text "Fee"
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Debtor"
-    And Assert element by contains text "First and last name"
+    And Assert element by contains text "Name"
     And Assert text under key "fullNameKey" is displayed
     And Assert element by contains text "Address"
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
-    And Assert element by tag "dt" containing text "First and last name" with index "2"
+    And Assert element by tag "dt" containing text "Name" with index "2"
     And Assert text under key "keyName" is displayed
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
     And Assert element by contains text from excel "<rowindex>" columnName "domestic_payment_bban" is displayed
@@ -455,7 +455,7 @@ Feature: Domestic_Payments
 
     #And Click on element by xpath "(//*[contains(@class, 'justify-center tw-cursor')])[2]"
     #And Click on element by containing text " koar tgr "
-    And Assert "First and last name / Company name" in pay or transfer screen is from excel "<rowindex>" columnName "user_name_for_payment_review"
+    And Assert "Name / Company name" in pay or transfer screen is from excel "<rowindex>" columnName "user_name_for_payment_review"
     And Assert "Street and street number" in pay or transfer screen is from excel "<rowindex>" columnName "user_street_for_payment_review"
     And Assert "City" in pay or transfer screen is from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert "Account number" in pay or transfer screen is from excel "<rowindex>" columnName "user_bban_for_payment_review"
@@ -479,13 +479,13 @@ Feature: Domestic_Payments
     And Assert date 30 days in future in payment review
 
      #provera sa dve razliite funkcije za Frist and last name/ Company name i account number"
-    And Assert "First and last name / Company name" in payment review is from excel "<rowindex>" columnName "username_debtor_for_payment_review"
-    Then Assert element by text "First and last name / Company name" has following sibling "dd" with text from Excel "<rowindex>" columnName "username_debtor_for_payment_review" and index 0
+    And Assert "Name / Company name" in payment review is from excel "<rowindex>" columnName "username_debtor_for_payment_review"
+    Then Assert element by text "Name / Company name" has following sibling "dd" with text from Excel "<rowindex>" columnName "username_debtor_for_payment_review" and index 0
     And Assert "Account number" in payment review is from excel "<rowindex>" columnName "current_account_2_bban"
     Then Assert element by text "Account number" has following sibling "dd" with text from Excel "<rowindex>" columnName "current_account_2_bban" and index 0
 
-    Then Assert element by text "First and last name / Company name" has following sibling "dd" with text from Excel "<rowindex>" columnName "user_name_for_payment_review" and index 1
-    And Assert second "First and last name / Company name" in payment review is from excel "<rowindex>" columnName "user_name_for_payment_review"
+    Then Assert element by text "Name / Company name" has following sibling "dd" with text from Excel "<rowindex>" columnName "user_name_for_payment_review" and index 1
+    And Assert second "Name / Company name" in payment review is from excel "<rowindex>" columnName "user_name_for_payment_review"
     And Assert second "Account number" in payment review is from excel "<rowindex>" columnName "user_bban_for_payment_review"
     Then Assert element by text "Account number" has following sibling "dd" with text from Excel "<rowindex>" columnName "user_bban_for_payment_review" and index 1
 
@@ -530,7 +530,7 @@ Feature: Domestic_Payments
 
 #    When Enter text "205-9001010537788-94" in "Account number" input field and remember under key "accountNumberKey"
     When Enter text "205-9001010537788-94" in "AccountNumber" input field and remember under key "accountNumberKey"
-    And Enter text "Enil" in "First and last name" input field and remember under key "nameKey"
+    And Enter text "Enil" in "Name" input field and remember under key "nameKey"
     And Enter text "Kaludjerica" in "street" input field and remember under key "streetKey"
     And Enter text "Beograd" in "City" input field and remember under key "cityKey"
     And Enter text "0,1" in "Payment amount" input field and remember under key "paymentAmountKey"
@@ -556,7 +556,7 @@ Feature: Domestic_Payments
     And Assert text under key "fullNameKey" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
     And Assert element by contains text "Recipient"
-    And Assert "First and last name" element under key "nameKey" with index "2" is displayed
+    And Assert "Name" element under key "nameKey" with index "2" is displayed
     And Assert address from keys "streetKey" and "cityKey" is displayed
     And Assert "Account number" element under key "accountNumberKey" with index "2" is displayed
 
@@ -612,19 +612,19 @@ Feature: Domestic_Payments
     And Click on normalized text "Select from list"
     And Assert element by contains text "Select template"
     #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
-    And Assert element by contains text "Select recepient"
+    And Assert element by contains text "Select recipient"
     And Assert element by xPath "//nlb-search-box"
     And Assert "input" field with placeholder "Type here to search"
     And Assert element by contains text "Total number of saved templates:"
     #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
-    And Click on normalized text "Select recepient"
+    And Click on normalized text "Select recipient"
     And Assert element by xPath "//nlb-search-box"
     And Click on first recipient
     And Assert element by class "tw-items-center" containing text "Change recipient"
     And Assert element by contains text "AccountNumber"
     And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "AccountNumber" input field
-    And Assert element by contains text "First and last name"
-    And Enter text "Ime Automatizacija Web" into "First and last name" input field and remember it under key "keyName"
+    And Assert element by contains text "Name"
+    And Enter text "Ime Automatizacija Web" into "Name" input field and remember it under key "keyName"
     And Assert element by contains text "Street and street number"
     And Enter text "Juzni bulevar 55" into "street" input field and remember it under key "keyStreet"
     And Assert element by contains text "City"
@@ -639,7 +639,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Purpose code"
     And Assert element by label contains text "Purpose code" with following sibling "div" that has descendant "input" has text "289"
     And Assert element by contains text "Purpose"
-    And Enter text "Payment for services" into "Purpose" input field and remember it under key "keyPurpose"
+    And Enter text "Payment for services 2" into "Purpose" input field and remember it under key "keyPurpose"
     And Assert element by contains text "Model"
     And Assert element by contains text "Reference number"
     And Assert element by contains text "Payment date"
@@ -656,13 +656,13 @@ Feature: Domestic_Payments
     And Assert element by contains text "Fee"
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Debtor"
-    And Assert element by contains text "First and last name"
+    And Assert element by contains text "Name"
     And Assert text under key "fullNameKey" is displayed
     And Assert element by contains text "Address"
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
-    And Assert element by tag "dt" containing text "First and last name" with index "2"
+    And Assert element by tag "dt" containing text "Name" with index "2"
     And Assert text under key "keyName" is displayed
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
     And Assert element by contains text from excel "<rowindex>" columnName "domestic_payment_bban" is displayed
@@ -717,19 +717,19 @@ Feature: Domestic_Payments
     And Click on normalized text "Select from list"
     And Assert element by contains text "Select template"
     #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
-    And Assert element by contains text "Select recepient"
+    And Assert element by contains text "Select recipient"
     And Assert element by xPath "//nlb-search-box"
     And Assert "input" field with placeholder "Type here to search"
     And Assert element by contains text "Total number of saved templates:"
     #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
-    And Click on normalized text "Select recepient"
+    And Click on normalized text "Select recipient"
     And Assert element by xPath "//nlb-search-box"
     And Click on first recipient
     And Assert element by class "tw-items-center" containing text "Change recipient"
     And Assert element by contains text "AccountNumber"
     And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "AccountNumber" input field
-    And Assert element by contains text "First and last name"
-    And Enter text "Ime Automatizacija Web" into "First and last name" input field and remember it under key "keyName"
+    And Assert element by contains text "Name"
+    And Enter text "Ime Automatizacija Web" into "Name" input field and remember it under key "keyName"
     And Assert element by contains text "Street and street number"
     And Enter text "Juzni bulevar 55" into "street" input field and remember it under key "keyStreet"
     And Assert element by contains text "City"
@@ -761,13 +761,13 @@ Feature: Domestic_Payments
     And Assert element by contains text "Fee"
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Debtor"
-    And Assert element by contains text "First and last name"
+    And Assert element by contains text "Name"
     And Assert text under key "fullNameKey" is displayed
     And Assert element by contains text "Address"
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
-    And Assert element by tag "dt" containing text "First and last name" with index "2"
+    And Assert element by tag "dt" containing text "Name" with index "2"
     And Assert text under key "keyName" is displayed
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
     And Assert element by contains text from excel "<rowindex>" columnName "domestic_payment_bban" is displayed

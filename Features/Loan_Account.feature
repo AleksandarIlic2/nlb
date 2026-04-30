@@ -227,16 +227,15 @@ Feature: Loan_Account
     And Wait for element by xPath "(//h3[contains(@class, 'heading-3')])[1]"
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
-    And Assert element by contains text "Details"
-    And Assert element by contains text "Payments_Action"
-    And Assert element by contains text "AnnuityPlan"
+    And Assert Loan account tabs is displayed correctly
     And Assert element by xPath "(//nlb-amount)[1]" has text in format "^\d{1,3}(\.\d{3})*,\d{2}\s*[A-Z]{3}$"
     And Assert Loan labels are displayed in the following order:
       | Financial details   |
       | Account details     |
 
-    Then Click on element by containing text "Payments_Action"
-    And Wait for element by contains text "PaymentsFound"
+#    Then Click on element by containing text "Payments_Action"
+    Then Click on loan tab "Payments"
+    And Wait for element by contains text "Payments found:"
     And Assert element by contains text "From"
     And Assert element by contains text "To"
     And Assert element by xPath "//input" and index 0 is displayed
@@ -276,15 +275,16 @@ Feature: Loan_Account
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
     And Assert element by text "Details"
-    And Assert element by contains text "Payments_Action"
-    And Assert element by contains text "AnnuityPlan"
+#    And Assert element by contains text "Payments_Action"
+#    And Assert element by contains text "AnnuityPlan"
+    And Assert Loan account tabs is displayed correctly
     And Assert element by xPath "(//nlb-amount)[1]" has text in format "^\d{1,3}(\.\d{3})*,\d{2}\s*[A-Z]{3}$"
     And Assert Loan labels are displayed in the following order:
       | Financial details   |
       | Account details     |
 
-    Then Click on element by containing text "Payments_Action"
-    And Wait for element by contains text "PaymentsFound"
+    Then Click on loan tab "Payments"
+    And Wait for element by contains text "Payments found:"
     And Assert element by text "From"
     And Assert element by text "To"
     And Assert element by xPath "//input" and index 0 is displayed
@@ -302,7 +302,7 @@ Feature: Loan_Account
     And Click on calendar icon with index "1"
     And Select date in From label to be "30.04.2025"
     And Select date in To label to be "30.06.2025"
-    And Wait for element by contains text "PaymentsFound"
+    And Wait for element by contains text "Payments found:"
     And Wait for first Loan payment to load
     And Wait for "5" seconds
     And Assert transaction dates in Loans are between "30.04.2025" and "30.06.2025"
@@ -332,15 +332,14 @@ Feature: Loan_Account
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
     And Assert element by text "Details"
-    And Assert element by contains text "Payments_Action"
-    And Assert element by contains text "AnnuityPlan"
+    And Assert Loan account tabs is displayed correctly
     And Assert element by xPath "(//nlb-amount)[1]" has text in format "^\d{1,3}(\.\d{3})*,\d{2}\s*[A-Z]{3}$"
     And Assert Loan labels are displayed in the following order:
       | Financial details   |
       | Account details     |
 
-    Then Click on element by containing text "Payments_Action"
-    And Wait for element by contains text "PaymentsFound"
+    Then Click on loan tab "Payments"
+    And Wait for element by contains text "Payments found:"
     And Assert element by text "From"
     And Assert element by text "To"
     And Assert element by xPath "//input" and index 0 is displayed

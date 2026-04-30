@@ -108,8 +108,8 @@ Feature: Product_Summary
     And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" into "First foreign current account"
 
     #PROMENA IMENA KARTICA
-#    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into "First credit card"
-#    And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" into "Second credit card"
+    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into "First credit card"
+    And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" into "Second credit card"
 
     #PROMENA IMENA STEDNJE
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" into "First savings account"
@@ -125,8 +125,8 @@ Feature: Product_Summary
     And Click on tab "My Products" from main sidebar
     And Assert element by contains text "First domestic current account"
     And Assert element by contains text "First foreign current account"
-#    And Assert element by contains text "First credit card"
-#    And Assert element by contains text "Second credit card"
+    And Assert element by contains text "First credit card"
+    And Assert element by contains text "Second credit card"
     And Assert element by contains text "First savings account"
     And Assert element by contains text "Second savings account"
     And Assert element by contains text "First term deposits"
@@ -137,8 +137,8 @@ Feature: Product_Summary
     #Then Change name of the first product "Foreign currency payment accounts"
     And Change name of product from excel "<rowindex>" columnName "current_account_2_bban" to previous one
     And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" to previous one
-#    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" to previous one
-#    And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" to previous one
+    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" to previous one
+    And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" to previous one
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" to previous one
     And Change name of product from excel "<rowindex>" columnName "savings_account_2_number" to previous one
     And Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" to previous one
@@ -170,9 +170,9 @@ Feature: Product_Summary
     And Assert element by text "You have reached the maximum number of characters. 50/50."
     And Click on element by containing text "Cancel"
 
-#    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into more than fifty characters
-#    And Assert element by text "You have reached the maximum number of characters. 50/50."
-#    And Click on element by containing text "Cancel"
+    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into more than fifty characters
+    And Assert element by text "You have reached the maximum number of characters. 50/50."
+    And Click on element by containing text "Cancel"
 
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" into more than fifty characters
     And Assert element by text "You have reached the maximum number of characters. 50/50."
@@ -192,9 +192,9 @@ Feature: Product_Summary
     And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" into " "
     And Assert acc name for iban from excel "<rowindex>" columnName "current_account_1_iban"
 
-#    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into " "
-#    And Assert acc name for iban from excel "<rowindex>" columnName "credit_card_1_number"
-#
+    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into " "
+    And Assert acc name for iban from excel "<rowindex>" columnName "credit_card_1_number"
+
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" into " "
     And Assert acc name for iban from excel "<rowindex>" columnName "savings_account_1_number"
 
@@ -380,6 +380,43 @@ Feature: Product_Summary
     And Assert that products in my products have loaded
     And Scroll to account from excel "<rowindex>" columnName "current_account_1_iban" in my products page
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_iban" is displayed
+
+    Examples:
+      | rowindex |
+      |        1 |
+
+
+  @Product_Summary-Hide/Show_Product_on_Product_List_[WEB]_Credit_Cards
+  Scenario Outline: Product_Summary-Hide/Show_Product_on_Product_List_[WEB]_Credit_Cards
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+
+    When Assert that products in my products have loaded
+    And Assert element by class "button-bold"
+    And Click on element by class "button-bold"
+    And Wait for element by class "icon-eye"
+
+    And Hide product with iban from excel "<rowindex>" columnName "credit_card_1_number"
+
+#    And Click on tab "My products" from main sidebar
+#    And Wait for element by text "Edit list"
+    Then Assert that products in my products have loaded
+    And Assert element from excel "<rowindex>" columnName "credit_card_1_number" is not displayed
+    And Click on element by text "Payments"
+    And Click on element by containing class "icon-chevron-down" with index "1"
+    And Assert element from excel "<rowindex>" columnName "credit_card_1_number" is not displayed
+    And Assert that products in my products have loaded
+    And Click on element by class "button-bold"
+    And Wait for element by class "icon-eye"
+    And Unhide product with iban from excel "<rowindex>" columnName "credit_card_1_number"
+    And Assert that products in my products have loaded
+#    And Wait for element by text "Edit list"
+    And Assert that products in my products have loaded
+    And Scroll to account from excel "<rowindex>" columnName "credit_card_1_number" in my products page
+    And Assert element by contains text from excel "<rowindex>" columnName "credit_card_1_number" is displayed
 
     Examples:
       | rowindex |

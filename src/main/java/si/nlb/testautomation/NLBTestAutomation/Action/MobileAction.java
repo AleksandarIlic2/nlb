@@ -224,12 +224,14 @@ public class MobileAction {
                 //WaitHelpers.WaitForElement(elForContinueToApp);
                 clickElement(elForContinueToApp);
 
-                String xPathForOneTimePassword = "//*[@text='One-time password']";
+//                String xPathForOneTimePassword = "//*[@text='One-time password']";
+                String xPathForOneTimePassword = "//*[@text='mToken']";
                 By elOneTimePassword = SelectMobileByXpath.createByXpath(xPathForOneTimePassword);
                 //WaitHelpers.WaitForElement(elOneTimePassword);
                 clickElement(elOneTimePassword);
             } else {
-                String xPathForOneTimePassword = "//*[@text='One-time password']";
+//                String xPathForOneTimePassword = "//*[@text='One-time password']";
+                String xPathForOneTimePassword = "//*[@text='mToken']";
                 By elOneTimePassword = SelectMobileByXpath.createByXpath(xPathForOneTimePassword);
                 //WaitHelpers.WaitForElement(elOneTimePassword);
                 clickElement(elOneTimePassword);

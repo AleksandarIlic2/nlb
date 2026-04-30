@@ -461,12 +461,14 @@ Feature: Foreign_Current_Account
     When Click on element from Excel "<rowindex>" contains text columnName "current_account_1_iban"
     And Wait for element by contains text "Transactions"
     And Click on element by text "Details"
+    And Wait for product details to load
     And Assert element with text "Financial details" is not displayed
     
     Then Assert that products in my products have loaded
     And Click on element from Excel "<rowindex>" contains text columnName "current_account_2_iban"
     And Wait for element by contains text "Transactions"
     And Click on element by text "Details"
+    And Wait for product details to load
     And Assert element with text "Financial details" is not displayed
 
     Examples:

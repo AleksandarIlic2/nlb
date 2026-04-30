@@ -3431,7 +3431,7 @@ public class Steps {
         String xPathIconMenu = "//*[contains(@class,'icon-menu')]";
         WebElement elementForIconMenu = SelectByXpath.CreateElementByXpath(xPathIconMenu);
         hp.ClickOnElement(elementForIconMenu);
-        String xPathForSLO = "//*[text()='Login_Menu_Language_Serbian']";
+        String xPathForSLO = "//*[text()='Srpski']";
         WebElement elementForSLO = SelectByXpath.CreateElementByXpath(xPathForSLO);
         hp.ClickOnElement(elementForSLO);
         String xPathForEnglish = "//*[text()=' English ']";
@@ -13332,5 +13332,206 @@ public class Steps {
         for(WebElement element : elements){
             assertTrue(element.getAttribute("value").equals(currency));
         }
+    }
+
+    @And("Assert option buttons in Payments")
+    public void assertOptionButtonsInPayments() throws Throwable {
+        String xPath = "//button/div/following-sibling::div";
+        List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
+        assertEquals(6, elements.size());
+
+        for (int i = 0; i < elements.size(); i++) {
+            switch (i) {
+                case 0:
+                    Assert.assertEquals("Pay or transfer", elements.get(i).getText());
+                    break;
+                case 1:
+                    Assert.assertEquals("Domestic payment", elements.get(i).getText());
+                    break;
+                case 2:
+                    Assert.assertEquals("Own account Transfer", elements.get(i).getText());
+                    break;
+                case 3:
+                    Assert.assertEquals("Foreign payment", elements.get(i).getText());
+                    break;
+                case 4:
+                    Assert.assertEquals("Currency exchange", elements.get(i).getText());
+                    break;
+                case 5:
+                    Assert.assertEquals("Templates", elements.get(i).getText());
+                    break;
+            }
+        }
+    }
+
+    @And("Assert Past payments tab is selected in Payments")
+    public void assertPastPaymentsTabIsSelectedInPayments() throws Throwable {
+        String xPath = "//*[contains(text(), 'Past payments')]/ancestor::h3/ancestor::nlb-heading-text/parent::div";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        Assert.assertEquals("true", element.getAttribute("aria-selected"));
+    }
+
+    @And("Assert Upcoming payments and Past payments tabs is displayed")
+    public void assertUpcomingPaymentsAndPastPaymentsTabsIsDisplayed() throws Throwable {
+        String xPath = "//nlb-tabs/div/div/descendant::a";
+        List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
+        assertEquals(2, elements.size());
+
+        for (int i = 0; i < elements.size(); i++) {
+            switch (i) {
+                case 0:
+                    Assert.assertEquals("Upcoming payments", elements.get(i).getText());
+                    break;
+                case 1:
+                    Assert.assertEquals("Past payments", elements.get(i).getText());
+                    break;
+            }
+        }
+    }
+
+    @And("Assert accounts are sorted by account number priority and currency priority")
+    public void assertAccountsAreSortedByAccountNumberPriorityAndCurrencyPriority() throws Throwable {
+        String accountXPath = "//*[contains(@class, 'accountItemDescription')]";
+        String amountXPath = "//*[contains(@class, 'subheadline bold')]";
+
+        List<WebElement> accountElements = SelectByXpath.CreateElementsByXpath(accountXPath);
+        List<WebElement> amountElements = SelectByXpath.CreateElementsByXpath(amountXPath);
+
+        Assert.assertTrue("Nema dovoljno account elemenata za proveru.", accountElements != null && accountElements.size() > 1);
+        Assert.assertTrue("Nema dovoljno amount elemenata za proveru.", amountElements != null && amountElements.size() > 1);
+
+        // Preskacemo prvi element iz obe liste
+        List<WebElement> filteredAccountElements = accountElements.subList(1, accountElements.size());
+        List<WebElement> filteredAmountElements = amountElements.subList(1, amountElements.size());
+
+        Assert.assertEquals(
+                "Broj računa i broj iznosa/valuta nisu poravnati. Accounts=" + filteredAccountElements.size()
+                        + ", Amounts=" + filteredAmountElements.size(),
+                filteredAccountElements.size(),
+                filteredAmountElements.size()
+        );
+
+        List<AccountRow> actualList = new ArrayList<>();
+
+        for (int i = 0; i < filteredAccountElements.size(); i++) {
+            String accountNumber = safeText(filteredAccountElements.get(i));
+            String amountText = safeText(filteredAmountElements.get(i));
+            String currency = extractCurrency(amountText);
+
+            actualList.add(new AccountRow(accountNumber, currency));
+        }
+
+        List<AccountRow> expectedList = new ArrayList<>(actualList);
+        expectedList.sort(accountComparator());
+
+        for (int i = 0; i < actualList.size(); i++) {
+            AccountRow actual = actualList.get(i);
+            AccountRow expected = expectedList.get(i);
+
+            Assert.assertEquals(
+                    "Pogrešan redosled na poziciji " + i
+                            + ". Očekivano: [" + expected.accountNumber + " | " + expected.currency + "]"
+                            + ", a prikazano: [" + actual.accountNumber + " | " + actual.currency + "]",
+                    expected,
+                    actual
+            );
+        }
+    }
+
+    private Comparator<AccountRow> accountComparator() {
+        return Comparator
+                .comparingInt((AccountRow row) -> getAccountPriority(row.accountNumber))
+                .thenComparingInt(row -> getCurrencyPriority(row.currency));
+    }
+
+    private int getAccountPriority(String accountNumber) {
+        String acc = normalize(accountNumber);
+
+        if (acc.startsWith("205-900")) {
+            return 1;
+        }
+        if (acc.startsWith("RS35 2059")) {
+            return 2;
+        }
+        if (acc.startsWith("901")) {
+            return 3;
+        }
+        return 4;
+    }
+
+    private int getCurrencyPriority(String currency) {
+        return "RSD".equalsIgnoreCase(currency) ? 1 : 2;
+    }
+
+    private String extractCurrency(String amountText) {
+        String text = normalize(amountText);
+
+        Matcher matcher = Pattern.compile("\\b([A-Z]{3})\\b").matcher(text);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+
+        Assert.fail("Nije moguće izvući valutu iz teksta: [" + amountText + "]");
+        return "";
+    }
+
+    private static class AccountRow {
+        String accountNumber;
+        String currency;
+
+        public AccountRow(String accountNumber, String currency) {
+            this.accountNumber = accountNumber;
+            this.currency = currency;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (!(obj instanceof AccountRow)) return false;
+            AccountRow other = (AccountRow) obj;
+            return Objects.equals(this.accountNumber, other.accountNumber)
+                    && Objects.equals(this.currency, other.currency);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(accountNumber, currency);
+        }
+    }
+
+    private String safeText(WebElement element) {
+        String text = element.getAttribute("innerText");
+        if (text == null || text.trim().isEmpty()) {
+            text = element.getText();
+        }
+        return normalize(text);
+    }
+
+    @And("Assert Loan account tabs is displayed correctly")
+    public void assertLoanAccountTabsIsDisplayedCorrectly() throws Throwable {
+        String xPath = "//nlb-tabs/div/div/nlb-heading-text";
+        List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
+        assertEquals(3, elements.size());
+
+        for (int i = 0; i < elements.size(); i++) {
+            switch (i) {
+                case 0:
+                    Assert.assertEquals("Details", elements.get(i).getAttribute("innerText"));
+                    break;
+                case 1:
+                    Assert.assertEquals("Payments", elements.get(i).getAttribute("innerText"));
+                    break;
+                case 2:
+                    Assert.assertEquals("Annuity plan", elements.get(i).getAttribute("innerText"));
+                    break;
+            }
+        }
+    }
+
+    @Then("Click on loan tab {string}")
+    public void clickOnLoanTab(String text) throws Throwable {
+        String xPath = "//h2/div/a[contains(text(),'" + text + "')]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        element.click();
     }
 }

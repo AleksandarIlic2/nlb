@@ -58,9 +58,9 @@ Feature: General
     And Click on element by containing text "Forgotten credentials?"
     And Assert element by contains class "bold heading" containing text "Forgotten credentials instructions"
     And Assert element by contains class "heading-5 ng-star" containing text "Forgotten username"
-    And Assert element by contains text "If you forgot your username, contact us via phone call"
-    And Assert element by contains class "heading-5 ng-star" containing text "Forgotten PIN"
-    And Assert element by contains text "If you forgot your PIN, contact us via phone call"
+    And Assert element by contains text "If you forgot your username or PIN, please call our Contact center on 011 201 86 00"
+#    And Assert element by contains class "heading-5 ng-star" containing text "Forgotten PIN"
+#    And Assert element by contains text "If you forgot your PIN, contact us via phone call"
     And Assert element by contains text "OK"
     And Click on element by containing text "OK"
 

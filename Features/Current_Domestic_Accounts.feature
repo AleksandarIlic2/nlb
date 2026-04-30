@@ -529,7 +529,7 @@ Feature: Current_Domestic_Accounts
     #TODO: Izbaciti korak ispod kada ne bude pop upa koji iskace sa greskom (desava se kada se klikne na racun bez transakcije)
     And Click on element by text " OK " if exists
 
-    
+
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"

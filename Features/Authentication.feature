@@ -46,7 +46,8 @@ Feature: Authentication
     And Click on normalized text "Login to NLB Klik"
     And Assert element by contains text "Credentials you have entered are invalid. Login attempts remaining"
     And Enter text "Automatizacija" into "One-time password" input field in preLogin
-    And Assert element by contains text "Error_Common_DataRequired"
+#    And Assert element by contains text "Error_Common_DataRequired"
+    And Assert element by xPath "//nlb-validation-error" is displayed
 
     Then Enter text "147852369456987" into "One-time password" input field in preLogin
     And Assert input field "One-time password" in preLogin has 8 characters
