@@ -17,7 +17,7 @@ Feature: Loan_Account
     And Assert Loan accounts current loan balance is displayed
 
     Then Click on element from Excel "<rowindex>" contains text columnName "loan_account_2_number"
-    And Wait for element by text "Financial details"
+    And Wait for product details to load
     And Assert Loan labels are displayed in the following order:
       | Financial details   |
       | Account details     |
@@ -43,12 +43,10 @@ Feature: Loan_Account
     And Assert Loan accounts current loan balance is displayed
 
     When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
-    And Wait for element by xPath "(//h3[contains(@class, 'heading-3')])[1]"
+    And Wait for product details to load
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
-    And Assert element by text "Details"
-    And Assert element by text "Payments"
-    And Assert element by text "Annuity Plan"
+    And Assert Loan account tabs is displayed correctly
     And Assert element by xPath "(//nlb-amount)[1]" has text in format "^\d{1,3}(\.\d{3})*,\d{2}\s*[A-Z]{3}$"
     And Assert Loan labels are displayed in the following order:
       | Financial details   |
@@ -75,12 +73,10 @@ Feature: Loan_Account
     And Assert Loan accounts current loan balance is displayed
 
     When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
-    And Wait for element by xPath "(//h3[contains(@class, 'heading-3')])[1]"
+    And Wait for product details to load
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
-    And Assert element by text "Details"
-    And Assert element by contains text "Payments"
-    And Assert element by contains text "Annuity"
+    And Assert Loan account tabs is displayed correctly
     And Assert element by xPath "(//nlb-amount)[1]" has text in format "^\d{1,3}(\.\d{3})*,\d{2}\s*[A-Z]{3}$"
     And Assert Loan labels are displayed in the following order:
       | Financial details   |
@@ -121,7 +117,7 @@ Feature: Loan_Account
     And Assert Loan accounts current loan balance is displayed
 
     When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
-    And Wait for element by xPath "(//h3[contains(@class, 'heading-3')])[1]"
+    And Wait for product details to load
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
     And Assert element by text "Details"
@@ -173,7 +169,7 @@ Feature: Loan_Account
     And Assert Loan accounts current loan balance is displayed
 
     When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
-    And Wait for element by xPath "(//h3[contains(@class, 'heading-3')])[1]"
+    And Wait for product details to load
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
     And Assert element by text "Details"
@@ -224,7 +220,7 @@ Feature: Loan_Account
     And Assert Loan accounts current loan balance is displayed
 
     When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
-    And Wait for element by xPath "(//h3[contains(@class, 'heading-3')])[1]"
+    And Wait for product details to load
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
     And Assert Loan account tabs is displayed correctly
@@ -271,7 +267,7 @@ Feature: Loan_Account
     And Assert Loan accounts current loan balance is displayed
 
     When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
-    And Wait for element by xPath "(//h3[contains(@class, 'heading-3')])[1]"
+    And Wait for product details to load
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
     And Assert element by text "Details"
@@ -328,7 +324,7 @@ Feature: Loan_Account
     And Assert Loan accounts current loan balance is displayed
 
     When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
-    And Wait for element by xPath "(//h3[contains(@class, 'heading-3')])[1]"
+    And Wait for product details to load
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
     And Assert element by text "Details"
