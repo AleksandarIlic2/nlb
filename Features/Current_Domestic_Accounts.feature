@@ -333,6 +333,7 @@ Feature: Current_Domestic_Accounts
     And Assert element by class "button-bold"
     And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for element by tag "nlb-product-detail-header"
+    And Assert tabs in Product details are displayed correctly for Current Domestic Accounts
     And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
     And Assert Product icon in Product details is displayed and has icon contains src "CurrentAccount-Icon"
     And Assert available balance and current balance in header
