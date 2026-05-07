@@ -3721,14 +3721,9 @@ public class Steps {
 
     @And("Wait for first transaction in Product details")
     public void waitForFirstTransactionInProductDetails() throws Throwable {
-        WaitHelpers.waitForSeconds(5);
+        WaitHelpers.waitForSeconds(2);
         String xPath = "(//nlb-transaction-card)[1]";
         WaitHelpers.WaitForElement(SelectByXpath.CreateByElementByXpath(xPath));
-
-        //suma amount za 1 mesec, trenutno ne radi
-//        String xPath1 = "(//nlb-transaction-card//nlb-amount//span[1])[1]";
-//        By element1 = SelectByXpath.CreateByElementByXpath(xPath1);
-//        WaitHelpers.WaitForElement(element1);
     }
 
     @And("Scroll to element by tag {string}")
@@ -3942,7 +3937,7 @@ public class Steps {
 
     @And("Click on button with aria label {string}")
     public void clickOnButtonWithAriaLabel(String ariaLabel) throws Throwable {
-        String xPath = "//button[@aria-label='" + ariaLabel + "']";
+        String xPath = "//*[@aria-label='" + ariaLabel + "']";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         hp.ClickOnElement(element);
     }
@@ -4013,6 +4008,7 @@ public class Steps {
         String fromPresetxPath = "//nlb-input-amount-currency//label[contains(text(), 'From')]/following-sibling::div/input[@placeholder='0,00'][1]";
         WebElement fromPresetElement = SelectByXpath.CreateElementByXpath(fromPresetxPath);
         assertTrue(fromPresetElement.isDisplayed());
+        Assert.assertEquals("0,00", fromPresetElement.getAttribute("placeholder"));
         //from currency
         String fromCurrencyxPath = "//nlb-input-amount-currency//label[contains(text(), 'From')]/following-sibling::div/input[2]";
         WebElement fromCurrencyElement = SelectByXpath.CreateElementByXpath(fromCurrencyxPath);
@@ -4022,6 +4018,7 @@ public class Steps {
         String toPresetPath = "//nlb-input-amount-currency//label[contains(text(), 'To')]/following-sibling::div/input[@placeholder='0,00'][1]";
         WebElement toPresetElement = SelectByXpath.CreateElementByXpath(toPresetPath);
         assertTrue(toPresetElement.isDisplayed());
+        Assert.assertEquals("0,00", toPresetElement.getAttribute("placeholder"));
         //to currency
         String toCurrencyxPath = "//nlb-input-amount-currency//label[contains(text(), 'To')]/following-sibling::div/input[2]";
         WebElement toCurrencyElement = SelectByXpath.CreateElementByXpath(toCurrencyxPath);
@@ -4235,7 +4232,7 @@ public class Steps {
 
     @And("Assert that transaction amounts after filter disabling are not only between {double} and {double}")
     public void assertThatTransactionAmountsAfterFilterDisablingAreNotOnlyBetweenAnd(double lowerBound, double upperBound) throws Throwable {
-        String xPath = "//nlb-transaction-card//h5//nlb-amount/div/div[2]";
+        String xPath = "//nlb-transaction-card//nlb-amount/div/div[2]";
         List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
 
         boolean allInRange = true;
@@ -4583,7 +4580,6 @@ public class Steps {
     @And("Assert Overdraft is displayed correctly in Financial details for Current account")
     public void assertOverdraftIsDisplayedCorrectlyInFinancialDetailsForCurrentAccount() throws Throwable {
         //String currentEnv = DataManager.getDataFromHashDatamap("1","currentEnv");
-
             //overdraft title
             String titlexPath = "//h3[contains(text(), 'Financial details')]/ancestor::div[1]/following-sibling::dl[1]/div[1]/dt[1]/div";
             WebElement titleElement = SelectByXpath.CreateElementByXpath(titlexPath);
@@ -4599,7 +4595,6 @@ public class Steps {
             WebElement currencyElement = SelectByXpath.CreateElementByXpath(currencyxPath);
             assertTrue(currencyElement.isDisplayed());
             assertEquals("RSD", currencyElement.getAttribute("innerText"));
-
     }
 
     @And("Assert Overdraft expiration date is displayed correctly in Financial details for Current accounts")
@@ -4713,32 +4708,32 @@ public class Steps {
 
     @And("Assert Account owner in Account details is from Excel {string} columnName {string}")
     public void assertAccountOwnerInAccountDetailsIsFromExcelColumnName(String rowindex, String columnName) throws Throwable {
-       // String currentEnv = DataManager.getDataFromHashDatamap("1", "currentEnv");
+//        String currentEnv = DataManager.getDataFromHashDatamap("1", "currentEnv");
+        String titlexPath = "//h3[contains(text(), 'Account details')]/ancestor::div[1]/following-sibling::dl/div[2]/dt/div";
+        WebElement titleElement = SelectByXpath.CreateElementByXpath(titlexPath);
+        assertTrue(titleElement.isDisplayed());
+        assertEquals("Account owner", titleElement.getAttribute("innerText"));
 
-            String ownerName = DataManager.getDataFromHashDatamap(rowindex, columnName);
-            //String xPath = "//nlb-product-details-card[3]//div[text() = 'Account owner']/ancestor::dt[1]/following-sibling::dd/div";
-            String xPath = "//nlb-product-details-card//div[text() = 'Account owner']/ancestor::dt[1]/following-sibling::dd/div";
-            WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-            assertTrue(element.isDisplayed());
-            System.out.println("Inner text: " + element.getAttribute("innerText") );
-            System.out.println("Owner name: " + ownerName);
-        Assert.assertTrue(element.getAttribute("innerText").toLowerCase().contains(ownerName.toLowerCase())
-                || element.getAttribute("innerText").toLowerCase().contains(swapFirstAndLastName(ownerName.toLowerCase()))
-        );
-            //assertEquals(element.getAttribute("innerText").toLowerCase(),ownerName.toLowerCase());
-
+        String ownerName = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPath = "//nlb-product-details-card//div[text() = 'Account owner']/ancestor::dt[1]/following-sibling::dd/div";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        assertTrue(element.isDisplayed());
+        Assert.assertEquals(element.getAttribute("innerText"), ownerName);
     }
 
     @And("Assert Account number in Account details is from Excel {string} columnName {string}")
     public void assertAccountNumberInAccountDetailsIsFromExcelColumnName(String rowindex, String columnName) throws Throwable {
-        String currentEnv = DataManager.getDataFromHashDatamap("1", "currentEnv");
+//        String currentEnv = DataManager.getDataFromHashDatamap("1", "currentEnv");
+        String titlexPath = "//h3[contains(text(), 'Account details')]/ancestor::div[1]/following-sibling::dl/div[3]/dt/div";
+        WebElement titleElement = SelectByXpath.CreateElementByXpath(titlexPath);
+        assertTrue(titleElement.isDisplayed());
+        assertEquals("Account number", titleElement.getAttribute("innerText"));
 
-            String ownerName = DataManager.getDataFromHashDatamap(rowindex, columnName);
-            //String xPath = "//nlb-product-details-card[3]//div[text() = 'Account number']/ancestor::dt[1]/following-sibling::dd/div";
-            String xPath = "//nlb-product-details-card//div[text() = 'Account number']/ancestor::dt[1]/following-sibling::dd/div";
-            WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-            assertTrue(element.isDisplayed());
-            assertEquals(ownerName, element.getAttribute("innerText"));
+        String accountNumber = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPath = "//nlb-product-details-card//div[text() = 'Account number']/ancestor::dt[1]/following-sibling::dd/div";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        assertTrue(element.isDisplayed());
+        assertEquals(accountNumber, element.getAttribute("innerText"));
 
     }
 
@@ -4957,7 +4952,8 @@ public class Steps {
             String[] parts = dayOfWeekDate.split(", ")[1].split(" ");
             int day = Integer.parseInt(parts[0].replace(".", ""));
             int month = map.get(parts[1].toLowerCase());
-            int year = Integer.parseInt(parts[2]);
+//            int year = Integer.parseInt(parts[2]);
+            int year = Integer.parseInt(parts[2].replace(".", ""));
             dates.add(LocalDate.of(year, month, day));
         }
         //check if those dates are sorted
@@ -5239,11 +5235,13 @@ public class Steps {
         assertEquals(expected, element.getAttribute("innerText"));
     }
 
-    @And("Assert tabs in Product details are displayed correctly")
-    public void assertTabsInProductDetailsAreDisplayedCorrectly() throws Throwable {
+    @And("Assert tabs in Product details are displayed correctly for Current Domestic Accounts")
+    public void assertTabsInProductDetailsAreDisplayedCorrectlyForCurrentDomesticAccounts() throws Throwable {
         String xPath = "//nlb-tabs//a";
         List<WebElement> tabsElements = SelectByXpath.CreateElementsByXpath(xPath);
         int numOfTabs = tabsElements.size();
+        if(numOfTabs!=4)
+            fail();
         for (int i = 0; i < numOfTabs; i++) {
             if (i == 0) {
                 assertEquals("Transactions", tabsElements.get(i).getAttribute("innerText"));
@@ -5251,8 +5249,10 @@ public class Steps {
                 assertEquals("Statements", tabsElements.get(i).getAttribute("innerText"));
             } else if (i == 2) {
                 assertEquals("Details", tabsElements.get(i).getAttribute("innerText"));
+            } else if (i == 3) {
+                assertEquals("Cheques", tabsElements.get(i).getAttribute("innerText"));
             } else {
-                fail("More than 3 tabs are found");
+                fail("More than 4 tabs are found");
             }
         }
 
@@ -6503,24 +6503,15 @@ public class Steps {
 
     @And("Assert Account type is displayed correctly in Account details for Current account")
     public void assertAccountTypeIsDisplayedCorrectlyInAccountDetailsForCurrentAccount() throws Throwable {
-        //String currentEnv = DataManager.getDataFromHashDatamap("1", "currentEnv");
-
-            //account type title
-            //String titlexPath = "//h3[contains(text(), 'Account details')]/ancestor::div[1]/following-sibling::div[1]/div[1]/div[1]";
-            //String titlexPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card[3]/div/div/dl/div[1]/dt/div";
-            //String titlexPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card/div/div//dl/div/dt/div";
-
-        String titlexPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card[2]/div/div//dl/div/dt/div";
+        String titlexPath = "//h3[contains(text(), 'Account details')]/ancestor::div[1]/following-sibling::dl/div[1]/dt/div";
         WebElement titleElement = SelectByXpath.CreateElementByXpath(titlexPath);
-            assertTrue("Account number not displayed",titleElement.isDisplayed());
-            assertEquals("Account number not matching","Account type", titleElement.getAttribute("innerText"));
-            //account type value
-            //String ATxPath = "//h3[contains(text(), 'Account details')]/ancestor::div[1]/following-sibling::div[1]/div[1]/div[2]/div";
-            //String ATxPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card[3]/div/div/dl/div[1]/dd/div";
-            String ATxPath = "//*[@id=\"tabpanel-3\"]/section/nlb-selected-product-details/div/nlb-product-details-card[2]/div/div/dl/div[1]/dd/div";
-            WebElement ATElement = SelectByXpath.CreateElementByXpath(ATxPath);
-            assertTrue("Current account not displayed",ATElement.isDisplayed());
-            assertEquals("Current account not matching text","Current account", ATElement.getAttribute("innerText"));
+        assertTrue(titleElement.isDisplayed());
+        assertEquals("Account type", titleElement.getAttribute("innerText"));
+        //amount
+        String amountxPath = "//h3[contains(text(), 'Account details')]/ancestor::div[1]/following-sibling::dl/div[1]/dd/div";
+        WebElement amountElement = SelectByXpath.CreateElementByXpath(amountxPath);
+        assertTrue(amountElement.isDisplayed());
+        assertEquals("Account type", titleElement.getAttribute("innerText"));
     }
 
     @And("Assert BIC in Account details is {string}")
@@ -7877,16 +7868,18 @@ public class Steps {
     public void assertTabsInProductDetailsAreDisplayedCorrectlyForCreditCards() throws Throwable {
         String xPath = "//nlb-tabs//a";
         List<WebElement> tabsElements = SelectByXpath.CreateElementsByXpath(xPath);
+        if(tabsElements.size()!=4)
+            fail();
         int numOfTabs = tabsElements.size();
         for (int i = 0; i < numOfTabs; i++) {
             if (i == 0) {
                 assertEquals("Transactions", tabsElements.get(i).getAttribute("innerText"));
             } else if (i == 1) {
-                assertEquals("Settings", tabsElements.get(i).getAttribute("innerText"));
-            } else if (i == 2) {
                 assertEquals("Statements", tabsElements.get(i).getAttribute("innerText"));
-            } else if (i == 3) {
+            } else if (i == 2) {
                 assertEquals("Details", tabsElements.get(i).getAttribute("innerText"));
+            }else if (i == 3) {
+                assertEquals("Settings", tabsElements.get(i).getAttribute("innerText"));
             } else {
                 fail("More than 4 tabs are found");
             }
@@ -10082,12 +10075,14 @@ public class Steps {
         assertTrue(currentLabelElement.getText().contains("Current balance"));
         assertTrue(currentAmountElement.getText().matches("^(?:0|[1-9]\\d{0,2}(?:\\.\\d{3})*),\\d{2}\\s[A-Z]{3}$"));
     }
+
     @And("Assert default account is displayed")
     public void assertDefaultAccountIsDisplayed() throws Throwable {
         String xPath = "//nlb-rounded-square/div/div[contains(@class, 'tw-flex tw-flex-col tw-gap')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         assertTrue(element.isDisplayed());
     }
+
     @And("Assert section {string} by text")
     public void assertSectionByText(String text) throws Throwable {
         WebElement element = SelectByText.CreateElementByXpathText(text);
@@ -10141,6 +10136,7 @@ public class Steps {
 
         assertEquals(expectedDigits, actualDigits);
     }
+
     @And("Assert that transaction values in PDF match remembered values")
     public void assertTransactionValuesInPdfMatchRememberedValues() throws Exception {
         Map<String, String> expected = (Map<String, String>) DataManager.userObject.get("TransactionValues");
@@ -10222,8 +10218,6 @@ public class Steps {
                     .replace(",", "")
                     .replace(" ", "")
                     .toLowerCase();
-
-
     }
 
     @And("Remember values from transcation details")
@@ -11087,7 +11081,6 @@ public class Steps {
     public void selectDateInFromLabelToBe(String dateString) {
         WebDriver driver = Base.driver;
 
-        // Očekujemo format npr. "10.07.2024"
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate targetDate = LocalDate.parse(dateString, formatter);
 
@@ -11096,13 +11089,12 @@ public class Steps {
         int godina = targetDate.getYear();
 
         String fullTarget = dan + ". " + mesec + " " + godina;
-        // npr. "10. jul 2024"
 
         String dayXPath = "//div[contains(@aria-label, '" + fullTarget + "')]//span";
         String prevMonthButtonXPath = "//*[contains(@aria-label, 'Previous month')]";
 
         // Klikćemo nazad po mesecima dok ne nađemo zadati datum
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 24; i++) {
             List<WebElement> dates = driver.findElements(By.xpath(dayXPath));
 
             if (!dates.isEmpty()) {
@@ -11142,7 +11134,7 @@ public class Steps {
         driver.findElement(By.xpath(calendarButtonXPath)).click();
 
         // Klikćemo napred po mesecima dok ne nađemo zadati datum
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 24; i++) {
             List<WebElement> dates = driver.findElements(By.xpath(dayXPath));
 
             if (!dates.isEmpty()) {
@@ -11738,8 +11730,6 @@ public class Steps {
         String normalizedClipboardText = clipboardText.replaceAll("\\s+", " ").trim();
 
         assertEquals(normalizedUiText, normalizedClipboardText);
-
-
     }
 
 
@@ -12536,7 +12526,7 @@ public class Steps {
         System.out.println("Datum: " + transactionValues.get("ValueDate"));
 
         transactionValues.put("DebtorName", driver.findElement(By.xpath(
-                "//div[@class='ng-star-inserted']/div[contains(text(), 'First and last name')]/following-sibling::div/div"
+                "//div[@class='ng-star-inserted']/div[contains(text(), 'Name')]/following-sibling::div/div"
         )).getText().trim());
         System.out.println("Debtor: " + transactionValues.get("DebtorName"));
 
@@ -13475,6 +13465,73 @@ public class Steps {
         return "";
     }
 
+    @And("Assert Credit cards icons is displayed")
+    public void assertCreditCardsIconsIsDisplayed() throws Throwable {
+        String xPath = "//*[contains(text(), '****')]/preceding-sibling::div";
+        List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
+
+        boolean hasVisibleIcon = false;
+        for (WebElement icon : elements) {
+            if (icon.isDisplayed()) {
+                hasVisibleIcon = true;
+                break;
+            }
+        }
+
+        Assert.assertTrue("No visible current foreign account icons on screen.", hasVisibleIcon);
+    }
+
+    @And("Assert Credit cards product names is displayed")
+    public void assertCreditCardsProductNamesIsDisplayed() throws Throwable {
+        String xPath = "//*[contains(text(), '****')]/preceding-sibling::nlb-heading-text/div";
+        List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
+
+        boolean hasVisibleName = false;
+        for (WebElement icon : elements) {
+            if (icon.isDisplayed()) {
+                hasVisibleName = true;
+                break;
+            }
+        }
+
+        Assert.assertTrue(hasVisibleName);
+    }
+
+    @And("Assert Credit cards account numbers is displayed")
+    public void assertCreditCardsAccountNumbersIsDisplayed() throws Throwable {
+        String xPath = "//*[contains(text(), '****')]";
+        List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
+
+        boolean hasVisibleAccountNumber= false;
+        for (WebElement element : elements) {
+            if (element.isDisplayed()) {
+                hasVisibleAccountNumber = true;
+                break;
+            }
+            Assert.assertTrue(element.getText().matches("^\\d{4}\\s\\*{4}\\s\\*{4}\\s\\d{4}$"));
+        }
+
+        Assert.assertTrue(hasVisibleAccountNumber);
+    }
+
+    @And("Assert Credit cards current balances is displayed")
+    public void assertCreditCardsCurrentBalancesIsDisplayed() throws Throwable {
+        String xPath = "//*[contains(text(), '****')]/ancestor::div[contains(@class, 'tw-flex tw-flex')]/descendant::" +
+                "div[contains(text(), 'Available balance')]/ancestor::nlb-heading-text/following-sibling::nlb-heading-text";
+        List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
+
+        boolean hasVisibleCurrentBalance= false;
+        for (WebElement element : elements) {
+            if (element.isDisplayed()) {
+                hasVisibleCurrentBalance = true;
+                break;
+            }
+            Assert.assertTrue(element.getText().matches("^\\d{1,3}(\\.\\d{3})*,\\d{2}\\s*[A-Z]{3}$"));
+        }
+
+        Assert.assertTrue(hasVisibleCurrentBalance);
+    }
+
     private static class AccountRow {
         String accountNumber;
         String currency;
@@ -13533,5 +13590,70 @@ public class Steps {
         String xPath = "//h2/div/a[contains(text(),'" + text + "')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         element.click();
+    }
+
+    @And("Check if date {string} is not enabled")
+    public void checkIfDateIsNotEnabled(String date) throws Throwable {
+        LocalDate d = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        String fullDate = d.getDayOfMonth() + ". " + getSrpskiNazivMeseca(d.getMonth()) + " " + d.getYear();
+
+        WebElement el = SelectByXpath.CreateElementByXpath("//div[contains(@aria-label, '" + fullDate + "')]");
+
+        Assert.assertTrue(
+                el.getAttribute("class").toLowerCase().contains("disabled")
+                        || "true".equalsIgnoreCase(el.getAttribute("aria-disabled"))
+                        || !el.isEnabled()
+        );
+    }
+
+    @And("Assert element by aria label {string} is not enabled")
+    public void assertElementByAriaLabelIsNotEnabled(String ariaName) throws Throwable {
+        String xPath = "//*[@aria-label='" + ariaName + "']";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        Assert.assertFalse(element.isEnabled());
+    }
+
+    @And("Assert element by text {string} has following sibling {string} with regex {string}")
+    public void assertElementByTextHasFollowingSiblingWithRegex(String text, String followingSiblingTag, String regex) throws Throwable {
+        List<WebElement> elements = SelectByXpath.CreateElementByXpathTextFollowingSibling(text, followingSiblingTag);
+        String actualText = elements.get(0)
+//                .getAttribute("textContent")
+                .getAttribute("innerText")
+                .replace('\u00A0', ' ')
+                .replace('\u202F', ' ')
+                .replaceAll("\\s+", " ")
+                .trim();
+        Assert.assertTrue("Text ne odgovara regex-u. Actual=[" + actualText + "], Regex=[" + regex + "]", actualText.matches(regex));
+    }
+
+    @And("Click on Edit button for first Cheque")
+    public void clickOnEditButtonForFirstCheque() throws Throwable {
+        String xPath = "(//*[contains(text(), 'Edit')])[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        element.click();
+    }
+
+    @And("Assert tabs in Product details are displayed correctly for Current Foreign Accounts")
+    public void assertTabsInProductDetailsAreDisplayedCorrectlyForCurrentForeignAccounts() throws Throwable {
+        String xPath = "//nlb-tabs//a";
+        List<WebElement> tabsElements = SelectByXpath.CreateElementsByXpath(xPath);
+        int numOfTabs = tabsElements.size();
+        if(numOfTabs!=3)
+            fail();
+        for (int i = 0; i < numOfTabs; i++) {
+            if (i == 0) {
+                assertEquals("Transactions", tabsElements.get(i).getAttribute("innerText"));
+            } else if (i == 1) {
+                assertEquals("Statements", tabsElements.get(i).getAttribute("innerText"));
+            } else if (i == 2) {
+                assertEquals("Details", tabsElements.get(i).getAttribute("innerText"));
+            } else {
+                fail("More than 3 tabs are found");
+            }
+        }
+
+        String defaultSelectedxPath = "//nlb-tabs//a[contains(@class, ' tw-text-primaryColor')]";
+        WebElement defaultSelectedElement = SelectByXpath.CreateElementByXpath(defaultSelectedxPath);
+        assertEquals("Transactions", defaultSelectedElement.getAttribute("innerText"));
     }
 }

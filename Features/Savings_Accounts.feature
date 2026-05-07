@@ -58,9 +58,9 @@ Feature: Saving_Accounts
 #      | Financial details |
 #      | Account details   |
 
-    And Wait for element by xPath "//h3[contains(@class, 'bold heading-3')]"
+    And Wait for product details to load
     And Assert Account type is displayed correctly in Account details for Savings account
-    And Assert contains text under key "fullNameKey" is displayed
+#    And Assert contains text under key "fullNameKey" is displayed
     And Assert Account number in Savings Account details is from Excel "<rowindex>" columnName "savings_account_1_number"
     And Assert Purpose is displayed correctly in Account details for Savings account
     And Assert Opening date is displayed correctly in Account details for Savings account

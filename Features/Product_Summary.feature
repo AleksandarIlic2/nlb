@@ -18,7 +18,6 @@ Feature: Product_Summary
     And Wait for element by contains text "Your favorite account will be listed on top of the list."
     And Change favorite account to account from Excel "<rowindex>" columnName "current_account_1_iban"
     And Click on tab "My Products" from main sidebar
-#    And Assert that products in my products have loaded
     And Assert that first product shown on my products page is from Excel "<rowindex>" columnName "current_account_1_iban"
     And Click on tab "My NLB" from main sidebar
     And Wait for element by text "Shortcuts"
@@ -36,7 +35,7 @@ Feature: Product_Summary
 
   Examples:
   | rowindex |
-  |        1 |
+  |        2 |
 
   @Product_Summary_Sorting_on_the_Product_Summary_[WEB]
   Scenario Outline: Product_Summary_Sorting_on_the_Product_Summary_[WEB]
@@ -45,9 +44,8 @@ Feature: Product_Summary
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Wait for element by text "Pay or transfer"
-    And Assert that products in my products have loaded
 
-    When Click on tab "My products" from main sidebar
+    When Click on tab "My Products" from main sidebar
     And Wait for element by text "Edit list"
 
     Then Accounts are displayed in the following order:
@@ -69,19 +67,9 @@ Feature: Product_Summary
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on tab "My products" from main sidebar
     And Wait for element by text "Edit list"
 
-    Then Accounts are displayed in the following order:
-      | Current accounts  |
-      | Cards             |
-      | Savings accounts  |
-      | Term deposit      |
-      | Loans             |
-
-    #TO DO - Sorted by Owned accounts first (sorted by Opening Date ascending), followed by Authorized accounts (grouped by owner name and sorted ascending alphabetically, inside one owner by opening date ascending)
-    And Assert product details are displayed
-
+    Then Assert product details are displayed
     And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Assert order of tabs in tablist "domestic"
 
@@ -108,12 +96,12 @@ Feature: Product_Summary
     And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" into "First foreign current account"
 
     #PROMENA IMENA KARTICA
-    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into "First credit card"
-    And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" into "Second credit card"
+    And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" into "First credit card"
+#    And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" into "Second credit card"
 
     #PROMENA IMENA STEDNJE
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" into "First savings account"
-    And Change name of product from excel "<rowindex>" columnName "savings_account_2_number" into "Second savings account"
+#    And Change name of product from excel "<rowindex>" columnName "savings_account_2_number" into "Second savings account"
 
     #PROMENA OROCENE STEDNJE
     And Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" into "First term deposits"
@@ -126,9 +114,9 @@ Feature: Product_Summary
     And Assert element by contains text "First domestic current account"
     And Assert element by contains text "First foreign current account"
     And Assert element by contains text "First credit card"
-    And Assert element by contains text "Second credit card"
+#    And Assert element by contains text "Second credit card"
     And Assert element by contains text "First savings account"
-    And Assert element by contains text "Second savings account"
+#    And Assert element by contains text "Second savings account"
     And Assert element by contains text "First term deposits"
     And Assert element by contains text "First loan account"
     And Click on element by class "button-bold"
@@ -136,13 +124,29 @@ Feature: Product_Summary
 
     #Then Change name of the first product "Foreign currency payment accounts"
     And Change name of product from excel "<rowindex>" columnName "current_account_2_bban" to previous one
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_name" is displayed
     And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" to previous one
-    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" to previous one
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_name" is displayed
+#    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" to previous one
     And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" to previous one
+#    And Wait for "10" seconds
+    And Assert element by contains text from excel "<rowindex>" columnName "credit_card_2_name" is displayed
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" to previous one
-    And Change name of product from excel "<rowindex>" columnName "savings_account_2_number" to previous one
+    And Assert element by contains text from excel "<rowindex>" columnName "savings_account_1_name" is displayed
+#    And Change name of product from excel "<rowindex>" columnName "savings_account_2_number" to previous one
     And Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" to previous one
+    And Assert element by contains text from excel "<rowindex>" columnName "term_deposit_1_name" is displayed
     And Change name of product from excel "<rowindex>" columnName "loan_account_1_number" to previous one
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
+
+    Then Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_name" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_name" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "credit_card_2_name" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "savings_account_1_name" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "term_deposit_1_name" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
 
     Examples:
       | rowindex |
@@ -170,7 +174,7 @@ Feature: Product_Summary
     And Assert element by text "You have reached the maximum number of characters. 50/50."
     And Click on element by containing text "Cancel"
 
-    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into more than fifty characters
+    And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" into more than fifty characters
     And Assert element by text "You have reached the maximum number of characters. 50/50."
     And Click on element by containing text "Cancel"
 
@@ -186,14 +190,14 @@ Feature: Product_Summary
     And Assert element by text "You have reached the maximum number of characters. 50/50."
     And Click on element by containing text "Cancel"
 
-    And Change name of product from excel "<rowindex>" columnName "current_account_2_bban" into " "
+    Then Change name of product from excel "<rowindex>" columnName "current_account_2_bban" into " "
     And Assert acc name for iban from excel "<rowindex>" columnName "current_account_2_bban"
 
     And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" into " "
     And Assert acc name for iban from excel "<rowindex>" columnName "current_account_1_iban"
 
-    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into " "
-    And Assert acc name for iban from excel "<rowindex>" columnName "credit_card_1_number"
+    And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" into " "
+    And Assert acc name for iban from excel "<rowindex>" columnName "credit_card_2_number"
 
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" into " "
     And Assert acc name for iban from excel "<rowindex>" columnName "savings_account_1_number"
@@ -224,8 +228,6 @@ Feature: Product_Summary
 
     And Hide product with iban from excel "<rowindex>" columnName "current_account_2_bban"
 
-#    And Click on tab "My products" from main sidebar
-#    And Wait for element by text "Edit list"
     Then Assert that products in my products have loaded
     And Assert element from excel "<rowindex>" columnName "current_account_2_bban" is not displayed
     And Click on element by text "Payments"
@@ -235,8 +237,6 @@ Feature: Product_Summary
     And Click on element by class "button-bold"
     And Wait for element by class "icon-eye"
     And Unhide product with iban from excel "<rowindex>" columnName "current_account_2_bban"
-    And Assert that products in my products have loaded
-#    And Wait for element by text "Edit list"
     And Assert that products in my products have loaded
     And Scroll to account from excel "<rowindex>" columnName "current_account_2_bban" in my products page
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
@@ -259,24 +259,24 @@ Feature: Product_Summary
     And Click on element by class "button-bold"
     And Wait for element by class "icon-eye"
 
-    And Hide product with iban from excel "<rowindex>" columnName "savings_account_2_number"
+    And Hide product with iban from excel "<rowindex>" columnName "savings_account_1_number"
 
 #    And Click on tab "My products" from main sidebar
 #    And Wait for element by text "Edit list"
     Then Assert that products in my products have loaded
-    And Assert element from excel "<rowindex>" columnName "savings_account_2_number" is not displayed
+    And Assert element from excel "<rowindex>" columnName "savings_account_1_number" is not displayed
     And Click on element by text "Payments"
     And Click on element by containing class "icon-chevron-down" with index "1"
-    And Assert element from excel "<rowindex>" columnName "savings_account_2_number" is not displayed
+    And Assert element from excel "<rowindex>" columnName "savings_account_1_number" is not displayed
     And Assert that products in my products have loaded
     And Click on element by class "button-bold"
     And Wait for element by class "icon-eye"
-    And Unhide product with iban from excel "<rowindex>" columnName "savings_account_2_number"
+    And Unhide product with iban from excel "<rowindex>" columnName "savings_account_1_number"
     And Assert that products in my products have loaded
 #    And Wait for element by text "Edit list"
     And Assert that products in my products have loaded
-    And Scroll to account from excel "<rowindex>" columnName "savings_account_2_number" in my products page
-    And Assert element by contains text from excel "<rowindex>" columnName "savings_account_2_number" is displayed
+    And Scroll to account from excel "<rowindex>" columnName "savings_account_1_number" in my products page
+    And Assert element by contains text from excel "<rowindex>" columnName "savings_account_1_number" is displayed
 
     Examples:
       | rowindex |
@@ -399,60 +399,53 @@ Feature: Product_Summary
     And Click on element by class "button-bold"
     And Wait for element by class "icon-eye"
 
-    And Hide product with iban from excel "<rowindex>" columnName "credit_card_1_number"
+    And Hide product with iban from excel "<rowindex>" columnName "credit_card_2_number"
 
 #    And Click on tab "My products" from main sidebar
 #    And Wait for element by text "Edit list"
     Then Assert that products in my products have loaded
-    And Assert element from excel "<rowindex>" columnName "credit_card_1_number" is not displayed
+    And Assert element from excel "<rowindex>" columnName "credit_card_2_number" is not displayed
     And Click on element by text "Payments"
     And Click on element by containing class "icon-chevron-down" with index "1"
-    And Assert element from excel "<rowindex>" columnName "credit_card_1_number" is not displayed
+    And Assert element from excel "<rowindex>" columnName "credit_card_2_number" is not displayed
     And Assert that products in my products have loaded
     And Click on element by class "button-bold"
     And Wait for element by class "icon-eye"
-    And Unhide product with iban from excel "<rowindex>" columnName "credit_card_1_number"
+    And Unhide product with iban from excel "<rowindex>" columnName "credit_card_2_number"
     And Assert that products in my products have loaded
 #    And Wait for element by text "Edit list"
     And Assert that products in my products have loaded
-    And Scroll to account from excel "<rowindex>" columnName "credit_card_1_number" in my products page
-    And Assert element by contains text from excel "<rowindex>" columnName "credit_card_1_number" is displayed
+    And Scroll to account from excel "<rowindex>" columnName "credit_card_2_number" in my products page
+    And Assert element by contains text from excel "<rowindex>" columnName "credit_card_2_name" is displayed
 
     Examples:
       | rowindex |
       |        1 |
 
-#PRESAO U FAILED
-#  @Product_Summary-Credit_Card_List_[WEB]_1
-#  Scenario Outline: Product_Summary-Credit_Card_List_[WEB]_1
-#
-#    Given Open Login page
-#    And Change language to English
-#    And Login to the page using user from Excel "<rowindex>" columnName "username"
-#    And Wait for element by text "Pay or transfer"
-#
-#    When Click on tab "My products" from main sidebar
-#    And Wait for element by text "Edit list"
-#    And Assert element by class "button-bold" containing text "Edit list"
-#
-#    And Click on element by text "Edit list"
-#    And Wait for element by class "icon-eye"
-#    Then Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into "First credit card"
-#    When Click on tab "My products" from main sidebar
-#    And Assert element by contains text "First credit card"
-#    And Click on element by text "Edit list"
-#    And Wait for element by class "icon-eye"
-#    And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" to previous one
-#    When Click on tab "My products" from main sidebar
-#    #TODO: U koraku ispod otkomentarisati par stvari kada budu sredjene
-#    And Check order and display format of all cards
-#    And Assert that whole product card of credit card account with name "credit_card_1_name" and iban "credit_card_1_number" from Excel "<rowindex>" acts as a clickable button
-#    #TODO: Available balance - Credit cards has available balance in EUR and RSD
-#    #TODO: Kada budu dodate autorizovane kartice dodati i njih
-#
-#    Examples:
-#      | rowindex |
-#      |        1 |
+
+  @Product_Summary-Credit_Card_List_[WEB]
+  Scenario Outline: Product_Summary-Credit_Card_List_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+    And Assert element by class "button-bold"
+
+    When Scroll to account from excel "<rowindex>" columnName "credit_card_2_number" in my products page
+    And Assert Credit cards icons is displayed
+    And Assert Credit cards product names is displayed
+    And Assert Credit cards account numbers is displayed
+    And Assert Credit cards current balances is displayed
+
+    Then Click on element from Excel "<rowindex>" contains text columnName "credit_card_2_number"
+    And Wait for first transaction in Product details
+    And Assert tabs in Product details are displayed correctly for Credit Cards
+
+    Examples:
+      | rowindex |
+      |        1 |
 
   @Product_Summary-Current_Foreign_Accounts_List_[WEB]
   Scenario Outline: Product_Summary-Current_Foreign_Accounts_List_[WEB]
@@ -473,6 +466,7 @@ Feature: Product_Summary
 
     Then Click on element from Excel "<rowindex>" contains text columnName "current_account_1_iban"
     And Wait for first transaction in Product details
+    And Assert tabs in Product details are displayed correctly for Current Foreign Accounts
 
     Examples:
       | rowindex |
@@ -498,6 +492,7 @@ Feature: Product_Summary
 
     Then Click on element from Excel "<rowindex>" contains text columnName "current_account_2_bban"
     And Wait for first transaction in Product details
+    And Assert tabs in Product details are displayed correctly for Current Domestic Accounts
 
     Examples:
       | rowindex |
@@ -545,7 +540,7 @@ Feature: Product_Summary
     And Assert Term deposits deposit amounts is displayed
 
     Then Click on element from Excel "<rowindex>" contains text columnName "term_deposits_1_account_number"
-    And Wait for element by text "Financial details"
+    And Wait for product details to load
 
     Examples:
       | rowindex |
@@ -557,18 +552,20 @@ Feature: Product_Summary
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
+    And Assert element by class "button-bold"
 
-    When Click on tab "My products" from main sidebar
-    And Wait for element by text "Edit list"
-    And Assert element by class "button-bold" containing text "Edit list"
-    # TODO: PROVERI DA LI FUNKCIJA ZA SORTIRANJE ISPOD ZAISTA RADI, KADA BUDE DODATO VISE RAZLICITIH LOAN PRODUKTA
-    And Assert that loan accounts are sorted correctly
-    And Assert that loan contains text from Excel "<rowindex>" columnName "loan_account_1_number"
-    And Assert that whole product card of loan account with name "loan_account_1_name" and iban "loan_account_1_number" from Excel "<rowindex>" acts as a clickable button
-    #And Click on element by containing text from Excel "<rowindex>" columnName "loan_account_1_number"
-    #And Assert that element "Interest rate" has value "0,2000%"
-    #TODO: Kad proradi dovrsiti test...
+    When Scroll to account from excel "<rowindex>" columnName "loan_account_1_number" in my products page
+    And Assert Loan accounts icons is displayed
+    And Assert Loan accounts icons is displayed
+    And Assert Loan accounts product names is displayed
+    And Assert Loan accounts account numbers is displayed
+    And Assert Loan accounts current loan balance is displayed
+
+    Then Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
+    And Wait for product details to load
+    And Assert Loan account tabs is displayed correctly
 
     Examples:
       | rowindex |

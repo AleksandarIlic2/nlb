@@ -1921,31 +1921,43 @@ public class RoutineHelper {
         Map<String, Integer> monthMap = new HashMap<>();
         monthMap.put("January", 1);
         monthMap.put("Januar", 1);
+        monthMap.put("Јануар", 1);
         monthMap.put("February", 2);
         monthMap.put("Februarja", 2);
         monthMap.put("Februar", 2);
+        monthMap.put("Фебруар", 2);
         monthMap.put("Mart", 3);
         monthMap.put("March", 3);
         monthMap.put("Marca", 3);
         monthMap.put("Marec", 3);
+        monthMap.put("Март", 3);
         monthMap.put("April", 4);
         monthMap.put("Aprila", 4);
+        monthMap.put("Април", 4);
         monthMap.put("May", 5);
         monthMap.put("Maja", 5);
+        monthMap.put("Maj", 5);
         monthMap.put("June", 6);
         monthMap.put("Junija", 6);
+        monthMap.put("Јун", 6);
         monthMap.put("July", 7);
         monthMap.put("Julija", 7);
+        monthMap.put("Јул", 7);
         monthMap.put("August", 8);
         monthMap.put("Avgusta", 8);
+        monthMap.put("Август", 8);
         monthMap.put("September", 9);
         monthMap.put("Septembra", 9);
+        monthMap.put("Септембар", 9);
         monthMap.put("October", 10);
         monthMap.put("Oktobra", 10);
+        monthMap.put("Октобар", 10);
         monthMap.put("November", 11);
         monthMap.put("Novembra", 11);
+        monthMap.put("Новембар", 11);
         monthMap.put("December", 12);
         monthMap.put("Decembra", 12);
+        monthMap.put("Децембар", 12);
         monthMap.put("januar", 1);
         monthMap.put("februar", 2);
         monthMap.put("marec", 3);
@@ -1958,6 +1970,19 @@ public class RoutineHelper {
         monthMap.put("oktober", 10);
         monthMap.put("november", 11);
         monthMap.put("december", 12);
+
+        monthMap.put("јануар", 1);
+        monthMap.put("фебруар", 2);
+        monthMap.put("март", 3);
+        monthMap.put("април", 4);
+        monthMap.put("мај", 5);
+        monthMap.put("јун", 6);
+        monthMap.put("јул", 7);
+        monthMap.put("август", 8);
+        monthMap.put("септембар", 9);
+        monthMap.put("октобар", 10);
+        monthMap.put("новембар", 11);
+        monthMap.put("децембар", 12);
         return monthMap;
     }
 
@@ -2002,41 +2027,94 @@ public class RoutineHelper {
         return years;
     }
 
-    public static boolean assertThreeMonthsInDateFilterAreCorrectlySorted(List<WebElement> dateElements){
+//    public static boolean assertThreeMonthsInDateFilterAreCorrectlySorted(List<WebElement> dateElements){
+//        Map<String, Integer> monthMap = createMonthMap();
+//        Assert.assertEquals(3, dateElements.size());
+//
+//        //System.out.println(dateElements);
+//
+//        List<String> datesUnformatted = new ArrayList<>();
+//        System.out.println("INNER TEKST");
+//
+//        for(WebElement element : dateElements){
+//            System.out.println(element.getAttribute("innerText"));
+//            datesUnformatted.add(element.getAttribute("innerText"));
+//        }
+//        //System.out.println(datesUnformatted);
+//        LocalDate[] dates = new LocalDate[3];
+//        System.out.println("PETLJA");
+//        for (int i = 0; i < 3; i++) {
+//            System.out.println(datesUnformatted.get(i));
+//            String[] parts = datesUnformatted.get(i).trim().split(" ");
+//            System.out.println(parts[0].trim());
+//            System.out.println(parts[0]);
+//            int month = monthMap.get(parts[0].trim());
+//            int year = Integer.parseInt(parts[1]);
+//            dates[i] = LocalDate.of(year, month, 1);
+//        }
+//
+//        LocalDate currentDate = LocalDate.now();
+//        YearMonth previousMonth = YearMonth.from(currentDate.minusMonths(1));
+//        YearMonth currentMonth = YearMonth.from(currentDate);
+//        YearMonth nextMonth = YearMonth.from(currentDate.plusMonths(1));
+//
+//        boolean isPreviousMonthCorrect = YearMonth.from(dates[0]).equals(previousMonth);
+//        boolean isCurrentMonthCorrect = YearMonth.from(dates[1]).equals(currentMonth);
+//        boolean isNextMonthCorrect = YearMonth.from(dates[2]).equals(nextMonth);
+//        return isCurrentMonthCorrect && isPreviousMonthCorrect && isNextMonthCorrect;
+//    }
+
+    public static boolean assertThreeMonthsInDateFilterAreCorrectlySorted(List<WebElement> dateElements) {
         Map<String, Integer> monthMap = createMonthMap();
-        Assert.assertEquals(3, dateElements.size());
 
-        //System.out.println(dateElements);
+        Assert.assertEquals("Kalendar ne prikazuje tačno 3 header meseca.", 3, dateElements.size());
 
-        List<String> datesUnformatted = new ArrayList<>();
-        System.out.println("INNER TEKST");
+        List<YearMonth> actualMonths = new ArrayList<>();
 
-        for(WebElement element : dateElements){
-            System.out.println(element.getAttribute("innerText"));
-            datesUnformatted.add(element.getAttribute("innerText"));
+        for (WebElement element : dateElements) {
+            String headerText = element.getAttribute("innerText")
+                    .replace('\u00A0', ' ')
+                    .replaceAll("\\s+", " ")
+                    .trim();
+
+            System.out.println("HEADER MESEC: [" + headerText + "]");
+
+            String[] parts = headerText.split(" ");
+
+            Assert.assertTrue(
+                    "Header meseca nije u očekivanom formatu. Actual=[" + headerText + "]",
+                    parts.length >= 2
+            );
+
+            String monthName = parts[0].trim().toLowerCase();
+            String yearText = parts[1].trim();
+
+            Assert.assertTrue(
+                    "Mesec ne postoji u monthMap. Month=[" + monthName + "], ceo header=[" + headerText + "]",
+                    monthMap.containsKey(monthName)
+            );
+
+            int month = monthMap.get(monthName);
+            int year = Integer.parseInt(yearText);
+
+            actualMonths.add(YearMonth.of(year, month));
         }
-        //System.out.println(datesUnformatted);
-        LocalDate[] dates = new LocalDate[3];
-        System.out.println("PETLJA");
-        for (int i = 0; i < 3; i++) {
-            System.out.println(datesUnformatted.get(i));
-            String[] parts = datesUnformatted.get(i).trim().split(" ");
-            System.out.println(parts[0].trim());
-            System.out.println(parts[0]);
-            int month = monthMap.get(parts[0].trim());
-            int year = Integer.parseInt(parts[1]);
-            dates[i] = LocalDate.of(year, month, 1);
-        }
 
-        LocalDate currentDate = LocalDate.now();
-        YearMonth previousMonth = YearMonth.from(currentDate.minusMonths(1));
-        YearMonth currentMonth = YearMonth.from(currentDate);
-        YearMonth nextMonth = YearMonth.from(currentDate.plusMonths(1));
+        YearMonth currentMonth = YearMonth.now();
+        YearMonth previousMonth = currentMonth.minusMonths(1);
+        YearMonth nextMonth = currentMonth.plusMonths(1);
 
-        boolean isPreviousMonthCorrect = YearMonth.from(dates[0]).equals(previousMonth);
-        boolean isCurrentMonthCorrect = YearMonth.from(dates[1]).equals(currentMonth);
-        boolean isNextMonthCorrect = YearMonth.from(dates[2]).equals(nextMonth);
-        return isCurrentMonthCorrect && isPreviousMonthCorrect && isNextMonthCorrect;
+        System.out.println("Expected previous: " + previousMonth);
+        System.out.println("Expected current: " + currentMonth);
+        System.out.println("Expected next: " + nextMonth);
+
+        System.out.println("Actual first: " + actualMonths.get(0));
+        System.out.println("Actual second: " + actualMonths.get(1));
+        System.out.println("Actual third: " + actualMonths.get(2));
+
+        return actualMonths.get(0).equals(previousMonth)
+                && actualMonths.get(1).equals(currentMonth)
+                && actualMonths.get(2).equals(nextMonth);
     }
 
     public static boolean areDatesSorted(List<String> dates) {

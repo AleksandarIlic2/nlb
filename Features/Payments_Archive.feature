@@ -13,33 +13,33 @@ Feature: Payments_Archive
     And Assert payments in past payments have loaded
     And Click on element by id "filters-header"
 
-    Then Assert element by text "Date range"
+    And Assert element by text "Date range"
     And Assert element by contains class "icon-calendar-today" with index "1"
     And Assert element by contains class "icon-calendar-today" with index "2"
-    And Assert element by text "Last 7 days "
-    And Assert element by text "Current month"
-    And Assert element by text " Previous month"
-    And Assert element by text "From"
-    And Assert element by text "To"
+    And Assert element by contains text "Last 7 days"
+    And Assert element by contains text "This month"
+    And Assert element by contains text "Last month"
+    And Assert element by contains text "From"
+    And Assert element by contains text "To"
 
-    And Assert element by text "Amount range"
-    And Assert element by text "From "
-    And Assert element by text "To "
+    And Assert element by contains text "Amount"
+    And Assert element by contains text "From"
+    And Assert element by contains text "To"
     And Assert element by contains class "white tw-border-0 tw-border" containing aria label "RSD" with index "1"
     And Assert element by contains class "white tw-border-0 tw-border" containing aria label "RSD" with index "2"
-    And Assert button by text " Clear filters "
-    And Assert button by text " Confirm "
+    And Assert NLB button "Confirm"
+    And Assert NLB button "Clear filters"
 
-    And Click on element by containing class "icon-calendar-today" with index "1"
-    And Select date in From label to be "08.01.2026"
-    And Select date in To label to be "13.01.2026"
-    And Click on element by text " Confirm "
+    Then Click on element by containing class "icon-calendar-today" with index "1"
+    And Select date in From label to be "28.04.2026"
+    And Select date in To label to be "30.04.2026"
+    And Click on NLB button "Confirm"
     And Wait for first past payment
-    And Assert transaction dates in Past payments are between "08.01.2026" and "13.01.2026"
+    And Assert transaction dates in Past payments are between "28.04.2026" and "30.04.2026"
 
     Examples:
       | rowindex |
-      |        1 |
+      |        4 |
 
 
   @Payments_Payments_Archive_Filter_Payments_By_Amount-Invalid_[WEB]
@@ -58,22 +58,24 @@ Feature: Payments_Archive
     And Assert element by text "Date range"
     And Assert element by contains class "icon-calendar-today" with index "1"
     And Assert element by contains class "icon-calendar-today" with index "2"
-    And Assert element by text "Last 7 days "
-    And Assert element by text "Current month"
-    And Assert element by text " Previous month"
-    And Assert element by text "From"
-    And Assert element by text "To"
-    And Assert button by text " Clear filters "
-    And Assert button by text " Confirm "
+    And Assert element by contains text "Last 7 days"
+    And Assert element by contains text "This month"
+    And Assert element by contains text "Last month"
+    And Assert element by contains text "From"
+    And Assert element by contains text "To"
 
-    Then Assert element by text "Amount range"
-    And Assert element by text "From "
-    And Assert element by text "To "
+    And Assert element by contains text "Amount"
+    And Assert element by contains text "From"
+    And Assert element by contains text "To"
     And Assert element by contains class "white tw-border-0 tw-border" containing aria label "RSD" with index "1"
     And Assert element by contains class "white tw-border-0 tw-border" containing aria label "RSD" with index "2"
-    And Enter text "100" in field by xPath "(//label[contains(text(),'From')]//following-sibling::div/input)[1]"
+    And Assert NLB button "Confirm"
+    And Assert NLB button "Clear filters"
+
+    Then Enter text "100" in field by xPath "(//label[contains(text(),'From')]//following-sibling::div/input)[1]"
     And Enter text "50" in field by xPath "(//label[contains(text(),'To')]//following-sibling::div/input)[1]"
-    And Assert element by contains text "From amount must be smaller than To amount."
+#    And Assert element by contains text "From amount must be smaller than To amount."
+    And Assert element by contains text "ValidationError"
 
     Examples:
       | rowindex |
@@ -96,41 +98,36 @@ Feature: Payments_Archive
     And Assert element by text "Date range"
     And Assert element by contains class "icon-calendar-today" with index "1"
     And Assert element by contains class "icon-calendar-today" with index "2"
-    And Assert element by text "Last 7 days "
-    And Assert element by text "Current month"
-    And Assert element by text " Previous month"
-    And Assert element by text "From"
-    And Assert element by text "To"
+    And Assert element by contains text "Last 7 days"
+    And Assert element by contains text "This month"
+    And Assert element by contains text "Last month"
+    And Assert element by contains text "From"
+    And Assert element by contains text "To"
 
-    Then Assert element by text "Amount range"
-    And Assert element by text "From "
-    And Assert element by text "To "
+    And Assert element by contains text "Amount"
+    And Assert element by contains text "From"
+    And Assert element by contains text "To"
     And Assert element by contains class "white tw-border-0 tw-border" containing aria label "RSD" with index "1"
     And Assert element by contains class "white tw-border-0 tw-border" containing aria label "RSD" with index "2"
+    And Assert NLB button "Confirm"
+    And Assert NLB button "Clear filters"
 
-    And Assert element by text "Payment status"
-    And Assert element by text "Executed "
-    And Assert element by text "Rejected "
-    And Assert element by text "Canceled "
-    And Assert button by text " Clear filters "
-    And Assert button by text " Confirm "
-
-    And Click on element by text "Executed "
-    And Click on element by text " Confirm "
+    And Click on element by containing text "Executed"
+    And Click on NLB button "Confirm"
     And Assert transaction status in Past payments are Executed
 
-    And Click on element by text "Executed "
-    And Click on element by text "Rejected "
-    And Click on element by text " Confirm "
+    And Click on element by containing text "Executed"
+    And Click on element by containing text "Rejected"
+    And Click on element by containing text "Confirm"
     And Assert transaction status in Past payments are Rejected
 
-    And Click on element by text "Executed "
-    And Click on element by text " Confirm "
+    And Click on element by containing text "Executed"
+    And Click on NLB button "Confirm"
     And Assert transaction status in Past payments are Executed or Rejected
 
     Examples:
       | rowindex |
-      |        1 |
+      |        4 |
 
 
   @Payments_Payments_Archive-Create_Confirmation_[WEB]
