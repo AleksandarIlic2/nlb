@@ -2466,7 +2466,8 @@ public class Steps {
         String randomPurpose = rh.generateRandomStringOfCertainLenght(10);
         hp.deleteTextFromFieldLonger(elementForPurposeField);
         hp.EnterTextToElement(elementForPurposeField, randomPurpose);
-        Utilities.saveTheValueToFile(randomPurpose, key);
+//        Utilities.saveTheValueToFile(randomPurpose, key);
+        DataManager.userObject.put(key, randomPurpose);
     }
 
     @And("Enter text {string} into label contains text {string} with following sibling {string} that has descendant {string}")
