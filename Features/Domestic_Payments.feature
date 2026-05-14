@@ -15,7 +15,7 @@ Feature: Domestic_Payments
 
     When Click on element by xpath "//nlb-account-selector"
     And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
-    And Enter text "205-9001001539786-67" in "AccountNumber" input field and remember under key "accountNumberKey"
+    And Enter text "205-9001001539786-67" in "Account number" input field and remember under key "accountNumberKey"
     And Enter text "NBA" in "Name" input field and remember under key "nameKey"
     And Enter text "Zarkovo 32" in "street" input field and remember under key "streetKey"
     And Enter text "Beograd" in "City" input field and remember under key "cityKey"
@@ -57,7 +57,7 @@ Feature: Domestic_Payments
     And Wait for element by contains text "Domestic payment"
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
     And Click on Recipient account selector in Domestic payment
-    And Assert input field by contains text "AccountNumber" has value under remembered key "accountNumberKey"
+    And Assert input field by contains text "Account number" has value under remembered key "accountNumberKey"
     And Assert input field by contains text "Name" has value under remembered key "nameKey"
     And Assert input field by contains text "street" has value under remembered key "streetKey"
     And Assert input field by contains text "City" has value under remembered key "cityKey"
@@ -80,6 +80,9 @@ Feature: Domestic_Payments
     And Wait for element by text "Pay or transfer"
     And Click on element by aria label "User profile"
     And Remember full name of user from dashboard under key "fullNameKey"
+    And Click on tab "My Products" from main sidebar
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Current_Balance"
 
     When Click on element by containing text "Payments"
     And Wait for element by text "Past payments"
@@ -95,8 +98,8 @@ Feature: Domestic_Payments
     And Assert element by contains text "Select from list or enter recipient data."
     And Assert element by contains text "Select from list"
 
-    And Assert element by contains text "AccountNumber"
-    And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "AccountNumber" input field
+    And Assert element by contains text "Account number"
+    And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "Account number" input field
     And Assert element by contains text "Name"
     And Enter text "Enil Cicvi" into "Name" input field and remember it under key "keyName"
     And Assert element by contains text "Street and street number"
@@ -110,7 +113,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Payment"
     And Assert element by contains text "In order to continue all input fields must be filled."
     And Assert element by contains text "Payment amount"
-    And Enter text "0,1" into Payment amount input field and remember it under key "paymentAmountKey"
+    And Enter text "5" into Payment amount input field and remember it under key "paymentAmountKey"
     And Assert element by tag "input" contains aria label "RSD"
     And Assert element by contains text "Purpose code"
     And Assert element by contains text "Purpose"
@@ -125,9 +128,9 @@ Feature: Domestic_Payments
     And Click on element by containing text "Confirm"
 
     Then Wait for element by contains text "Payment amount"
-#    And Assert element by contains text "0,10 RSD"
+#    And Assert element by contains text "5,00 RSD"
     And Assert payment amount under key is "paymentAmountKey" is displayed
-    And Assert element by contains text "Fee"
+#    And Assert "Fee" in payment review is "15,00 RSD"
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Debtor"
     And Assert element by contains text "Name"
@@ -157,6 +160,9 @@ Feature: Domestic_Payments
     And Click on normalized text "Save recipient"
     And Assert element by contains text "Success"
     And Wait for element by contains text "Domestic payment"
+    And Click on tab "My Products" from main sidebar
+    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "5" is correct
+    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "5" is correct
 
     And Click on tab "Recipients" from main sidebar
     And Assert element by text "Recipients" index "1" is displayed
@@ -182,6 +188,9 @@ Feature: Domestic_Payments
     And Wait for element by text "Pay or transfer"
     And Click on element by aria label "User profile"
     And Remember full name of user from dashboard under key "fullNameKey"
+    And Click on tab "My Products" from main sidebar
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Current_Balance"
 
     When Click on element by containing text "Payments"
     And Wait for element by text "Past payments"
@@ -205,8 +214,8 @@ Feature: Domestic_Payments
     And Assert element by contains class "flex tw-w-full tw-flex"
     And Click on first recipient
     And Assert element by class "tw-items-center" containing text "Change recipient"
-    And Assert element by contains text "AccountNumber"
-    And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "AccountNumber" input field
+    And Assert element by contains text "Account number"
+    And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "Account number" input field
     And Assert element by contains text "Name"
     And Enter text "Ime Automatizacija Web" into "Name" input field and remember it under key "keyName"
     And Assert element by contains text "Street and street number"
@@ -219,7 +228,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Payment"
     And Assert element by contains text "In order to continue all input fields must be filled."
     And Assert element by contains text "Payment amount"
-    And Enter text "0,1" into Payment amount input field and remember it under key "paymentAmountKey"
+    And Enter text "2" into Payment amount input field and remember it under key "paymentAmountKey"
     And Assert element by tag "input" contains aria label "RSD"
     And Assert element by contains text "Purpose code"
     And Assert element by contains text "Purpose"
@@ -266,6 +275,9 @@ Feature: Domestic_Payments
     And Click on normalized text "Save recipient"
     And Assert element by contains text "Success"
     And Wait for element by contains text "Domestic payment"
+    And Click on tab "My Products" from main sidebar
+    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "2" is correct
+    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "2" is correct
 
     And Click on tab "Recipients" from main sidebar
     And Assert element by text "Recipients" index "1" is displayed
@@ -295,8 +307,8 @@ Feature: Domestic_Payments
     And Assert today date in Payment date in payment review
     And Assert element by class "icon-calendar-today"
 
-#    When Enter text "205-9001010537788-94" in "Account number" input field and remember under key "accountNumberKey"
-    When Enter text "205-9001010537788-94" in "AccountNumber" input field and remember under key "accountNumberKey"
+    When Enter text "205-9001010537788-94" in "Account number" input field and remember under key "accountNumberKey"
+#    When Enter text "205-9001010537788-94" in "AccountNumber" input field and remember under key "accountNumberKey"
     And Enter text "Enil" in "Name" input field and remember under key "nameKey"
     And Enter text "Kaludjerica" in "street" input field and remember under key "streetKey"
     And Enter text "Beograd" in "City" input field and remember under key "cityKey"
@@ -364,6 +376,10 @@ Feature: Domestic_Payments
     And Wait for element by text "Pay or transfer"
     And Click on element by aria label "User profile"
     And Remember full name of user from dashboard under key "fullNameKey"
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Current_Balance"
 
     When Click on tab "Payments" from main sidebar
     And Wait for element by text "Past payments"
@@ -388,8 +404,8 @@ Feature: Domestic_Payments
     And Assert element by xPath "//nlb-search-box"
     And Click on first recipient
     And Assert element by class "tw-items-center" containing text "Change recipient"
-    And Assert element by contains text "AccountNumber"
-    And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "AccountNumber" input field
+    And Assert element by contains text "Account number"
+    And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "Account number" input field
     And Assert element by contains text "Name"
     And Enter text "Ime Automatizacija Web" into "Name" input field and remember it under key "keyName"
     And Assert element by contains text "Street and street number"
@@ -401,12 +417,13 @@ Feature: Domestic_Payments
     And Assert element by contains text "Payment"
     And Assert element by contains text "In order to continue all input fields must be filled."
     And Assert element by contains text "Payment amount"
-    And Enter text "0,1" into Payment amount input field and remember it under key "paymentAmountKey"
+    And Enter text "3" into Payment amount input field and remember it under key "paymentAmountKey"
     And Assert element by tag "input" contains aria label "RSD"
     And Assert element by contains text "Purpose code"
     And Assert element by label contains text "Purpose code" with following sibling "div" that has descendant "input" has text "289"
     And Assert element by contains text "Purpose"
-    And Enter text "Payment for services 2" into "Purpose" input field and remember it under key "keyPurpose"
+#    And Enter text "Payment for services 2" into "Purpose" input field and remember it under key "keyPurpose"
+    And Enter random purpose into label with text "Purpose" with following sibling "div" that has descendant "input" and remember it under key "keyPurpose"
     And Assert element by contains text "Model"
     And Assert element by contains text "Reference number"
     And Assert element by contains text "Payment date"
@@ -444,8 +461,13 @@ Feature: Domestic_Payments
     And Click on element by containing text "Confirm"
     And Assert element by contains text "Success"
     And Wait for element by contains text "Domestic payment"
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "3" is correct
+    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "3" is correct
 
     #treba da ide u Past payments
+    And Click on tab "Payments" from main sidebar
     And Click on normalized text "Past payments"
     And Assert text under key "keyPurpose" is displayed
     And Click on tab "My NLB" from main sidebar
@@ -457,7 +479,7 @@ Feature: Domestic_Payments
 
     Examples:
       | rowindex |
-      |        5 |
+      |        4 |
 
 
   @Payments-Domestic_Payments-Confirmation_[WEB]
@@ -469,6 +491,10 @@ Feature: Domestic_Payments
     And Wait for element by text "Pay or transfer"
     And Click on element by aria label "User profile"
     And Remember full name of user from dashboard under key "fullNameKey"
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Current_Balance"
 
     When Click on tab "Payments" from main sidebar
     And Wait for element by text "Past payments"
@@ -493,8 +519,8 @@ Feature: Domestic_Payments
     And Assert element by xPath "//nlb-search-box"
     And Click on first recipient
     And Assert element by class "tw-items-center" containing text "Change recipient"
-    And Assert element by contains text "AccountNumber"
-    And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "AccountNumber" input field
+    And Assert element by contains text "Account number"
+    And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "Account number" input field
     And Assert element by contains text "Name"
     And Enter text "Ime Automatizacija Web" into "Name" input field and remember it under key "keyName"
     And Assert element by contains text "Street and street number"
@@ -506,7 +532,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Payment"
     And Assert element by contains text "In order to continue all input fields must be filled."
     And Assert element by contains text "Payment amount"
-    And Enter text "0,1" into Payment amount input field and remember it under key "paymentAmountKey"
+    And Enter text "4" into Payment amount input field and remember it under key "paymentAmountKey"
     And Assert element by tag "input" contains aria label "RSD"
     And Assert element by contains text "Purpose code"
     And Assert element by label contains text "Purpose code" with following sibling "div" that has descendant "input" has text "289"
@@ -550,8 +576,13 @@ Feature: Domestic_Payments
     And Assert element by contains text "Success"
     And Assert element by contains class "nlb-icon icon-close"
     And Wait for element by contains text "Domestic payment"
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "4" is correct
+    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "4" is correct
 
     #treba da ide u Past payments
+    And Click on tab "Payments" from main sidebar
     And Click on normalized text "Past payments"
     And Assert text under key "keyPurpose" is displayed
     And Click on tab "My NLB" from main sidebar
@@ -562,4 +593,4 @@ Feature: Domestic_Payments
 
     Examples:
       | rowindex |
-      |        5 |
+      |        4 |

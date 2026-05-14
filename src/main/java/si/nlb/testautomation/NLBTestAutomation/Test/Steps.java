@@ -1221,7 +1221,6 @@ public class Steps {
 
             }
         }
-
         Assert.fail("Postoje elementi sa tekstom '" + text + "', ali nijedan nije vidljiv.");
     }
 
@@ -2275,10 +2274,35 @@ public class Steps {
     @And("Assert that transaction {string} in opened past payment is from Excel {string} columnName {string}")
     public void assertThatTransactionInOpenedPastPaymentIsFromExcelColumnName(String text, String rowindex, String columnName) throws Throwable {
         String stringForExpectedValue = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String expected = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        System.out.println("Excel: " + stringForExpectedValue);
+        System.out.println("Excel2: " + expected);
         String xPathForDataCheck = "(//*[text()='" + text + "']//following-sibling::div)[2]";
         WebElement elementForDataCheck = SelectByXpath.CreateElementByXpath(xPathForDataCheck);
-        assertEquals(stringForExpectedValue.trim(), elementForDataCheck.getAttribute("textContent").trim());
+        System.out.println("Web element: " + elementForDataCheck.getText());
+//        assertEquals(stringForExpectedValue.trim(), elementForDataCheck.getAttribute("innerText").trim());
+        assertTrue(stringForExpectedValue.equals(elementForDataCheck.getAttribute("innerText")));
     }
+
+//    @And("Assert that transaction {string} in opened past payment is from Excel {string} columnName {string}")
+//    public void assertThatTransactionInOpenedPastPaymentIsFromExcelColumnName(String text, String rowindex, String columnName) throws Throwable {
+//        String expected = DataManager.getDataFromHashDatamap(rowindex, columnName);
+//
+//        Assert.assertNotNull(
+//                "Vrednost iz Excela je null. Proveri rowindex=[" + rowindex + "] i columnName=[" + columnName + "]",
+//                expected
+//        );
+//
+//        String xPathForDataCheck = "(//*[text()='" + text + "']//following-sibling::div)[2]";
+//        WebElement elementForDataCheck = SelectByXpath.CreateElementByXpath(xPathForDataCheck);
+//
+//        String actual = elementForDataCheck.getAttribute("innerText");
+//
+//        System.out.println("Excel expected: " + expected);
+//        System.out.println("Web actual: " + actual);
+//
+//        Assert.assertEquals(expected.trim(), actual.trim());
+//    }
 
     @And("Assert that transaction {string} in opened past payment is {string}")
     public void assertThatTransactionInOpenedPastPaymentIs(String text, String expectedValue) throws Throwable {
@@ -2298,6 +2322,15 @@ public class Steps {
     @And("Remember current balance for account from Excel {string} columnName {string} under key {string}")
     public void rememberCurrentBalanceForAccountFromExcelColumnName(String rowindex, String columnName, String key) throws Throwable {
         String stringForAccountIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountIban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[2]";
+        WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
+        String stringForCurrentBalance = elementForCurrentBalance.getAttribute("innerText");
+        DataManager.userObject.put(key, stringForCurrentBalance);
+    }
+
+    @And("Remember available balance for account from Excel {string} columnName {string} under key {string}")
+    public void rememberAvailalbleBalanceForAccountFromExcelColumnName(String rowindex, String columnName, String key) throws Throwable {
+        String stringForAccountIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
         String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountIban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[1]";
         WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
         String stringForCurrentBalance = elementForCurrentBalance.getAttribute("innerText");
@@ -2306,6 +2339,24 @@ public class Steps {
 
     @And("Compare if current amount balance from key {string} in my products screen for account from Excel {string} columnName {string} and reduced amount {string} is correct")
     public void compareIfCurrentAmountBalanceFromKeyInMyProductsScreenForAccountFromExcelColumnNameAndReducedAmountIsCorrect(String key, String rowindex, String columnName, String amount) throws Throwable {
+        String stringForAccountIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountIban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[2]";
+        WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
+        String actualAmount = elementForCurrentBalance.getAttribute("textContent").replace(".", "").replace(",", ".");
+        String expectedAmountFromKey = (String) DataManager.userObject.get(key);
+        Double expectedAmountDouble = Double.parseDouble(expectedAmountFromKey.replace(".", "").replace(",", "."));
+        Double reduceBy = Double.parseDouble(amount);
+        Double expectedAmount = expectedAmountDouble - reduceBy;
+        //assertEquals(expectedAmount.toString(),actualAmount);
+        Double doubleActual = Double.parseDouble(actualAmount);
+        System.out.printf("%.2f%n", doubleActual);
+        System.out.printf("%.2f%n", expectedAmount);
+        assertEquals(expectedAmount, doubleActual);
+
+    }
+
+    @And("Compare if available amount balance from key {string} in my products screen for account from Excel {string} columnName {string} and reduced amount {string} is correct")
+    public void compareIfAvailableAmountBalanceFromKeyInMyProductsScreenForAccountFromExcelColumnNameAndReducedAmountIsCorrect(String key, String rowindex, String columnName, String amount) throws Throwable {
         String stringForAccountIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
         String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountIban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[1]";
         WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
@@ -4813,15 +4864,17 @@ public class Steps {
         WebElement elementIcon = SelectByXpath.CreateElementByXpath(xPathIcon);
         hp.ClickOnElement(elementIcon);
         //dropdown menu, 10 elements
-        String xPathMenu = "//div[contains(@class, 'tw-max-h-dropdownList')]/div";
+//        String xPathMenu = "//div[contains(@class, 'tw-max-h-dropdownList')]/div";
+        String xPathMenu = "//ul/li[@role='option']";
         List<WebElement> elementsMenu = SelectByXpath.CreateElementsByXpath(xPathMenu);
         assertEquals(optionAmt, elementsMenu.size());
-        List<String> expectedYearList = rh.getXYearsInPast(10);
+        List<String> expectedYearList = rh.getXYearsInPast(11);
         for (int i = 0; i < elementsMenu.size(); i++) {
             assertEquals(expectedYearList.get(i), elementsMenu.get(i).getAttribute("innerText"));
         }
         //dropdown menu single element
-        String xPathYear = "//div[contains(@class, 'tw-max-h-dropdownList')]/div[contains(text(), '" + year + "')]";
+//        String xPathYear = "//div[contains(@class, 'tw-max-h-dropdownList')]/div[contains(text(), '" + year + "')]";
+        String xPathYear = "//li[contains(text(), '" + year + "')]";
         WebElement elementYear = SelectByXpath.CreateElementByXpath(xPathYear);
         hp.ClickOnElement(elementYear);
     }
@@ -6434,7 +6487,7 @@ public class Steps {
         String stringForExpectedValue = DataManager.getDataFromHashDatamap(rowindex, columnName);
         String xPathForDataCheck = "(//*[text()='" + text + "']//following-sibling::div)[2]";
         WebElement elementForDataCheck = SelectByXpath.CreateElementByXpath(xPathForDataCheck);
-        assertTrue(elementForDataCheck.getAttribute("textContent").contains(stringForExpectedValue));
+        assertTrue(elementForDataCheck.getAttribute("innerText").contains(stringForExpectedValue));
     }
 
     @And("Assert {string} in payment review contains text from excel {string} columnName {string}")
@@ -11359,9 +11412,8 @@ public class Steps {
         //String expectedUpper = expected.toUpperCase();
 
         String cityXPath = "//div[contains(text(), '" + expected + "')]";
-        WebElement citytElement = SelectByXpath.CreateElementByXpath(cityXPath);
-        String actual = citytElement.getText().trim();
-
+        WebElement cityElement = SelectByXpath.CreateElementByXpath(cityXPath);
+        String actual = cityElement.getText().trim();
         Assert.assertEquals("Grad nije isto kao promenjeni", expected, actual);
     }
 
@@ -11426,15 +11478,6 @@ public class Steps {
         expectedNames.sort(Comparator.reverseOrder());
 
         assertEquals("Loan accounts are not sorted descending by name", expectedNames, actualNames);
-    }
-
-    @And("Assert element by text {string} can not be edited")
-    public void assertElementByTextCanNotBeEdited(String text) {
-        List<WebElement> inputs = driver.findElements(
-                By.xpath("//label[contains(text(),'" + text + "')]/following::input")
-        );
-
-        assertTrue("Account number input should not exist", inputs.isEmpty());
     }
 
     @And("Assert button by text {string}")
@@ -12441,7 +12484,7 @@ public class Steps {
     @And("Click on element with text from key {string}")
     public void clickOnElementWithTextFromKey(String key) throws Throwable {
         String keyText = DataManager.userObject.get(key).toString();
-        String xPath = "//*[normalize-space()='" + keyText + "']";
+        String xPath = "(//*[normalize-space()='" + keyText + "'])[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         element.click();
     }
@@ -12646,10 +12689,8 @@ public class Steps {
     public void rememberFullNameOfUserFromDashboardUnderKey(String key) throws Throwable {
         String xPath = "//*[contains(text(), 'Welcome,')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-
         String text = element.getText();
         String fullName = text.replace("Welcome,", "").trim().toUpperCase();
-
         DataManager.userObject.put(key, fullName);
     }
 
@@ -13113,18 +13154,21 @@ public class Steps {
     @And("Click on first recipient")
     public void clickOnFirstRecipient() throws Throwable {
         String xPath = "(//nlb-contact-item/nlb-rounded-square)[1]";
-        By by = By.xpath(xPath);
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        element.click();
 
-        for (int i = 0; i < 3; i++) {
-            try {
-                WaitHelpers.waitForElement(by, 10);
-                WebElement element = driver.findElement(by);
-                element.click();
-                return;
-            } catch (org.openqa.selenium.StaleElementReferenceException e) {
-                if (i == 2) throw e;
-            }
-        }
+//        By by = By.xpath(xPath);
+//
+//        for (int i = 0; i < 3; i++) {
+//            try {
+//                WaitHelpers.waitForElement(by, 10);
+//                WebElement element = driver.findElement(by);
+//                element.click();
+//                return;
+//            } catch (org.openqa.selenium.StaleElementReferenceException e) {
+//                if (i == 2) throw e;
+//            }
+//        }
     }
 
     @And("Enter text from Excel {string} columnName {string} into {string} input field")
@@ -13533,6 +13577,44 @@ public class Steps {
         Assert.assertTrue(hasVisibleCurrentBalance);
     }
 
+    @And("Enter text {string} into {string} input field in Edit recipient")
+    public void enterTextIntoInputFieldInEditRecipient(String text, String labelName) throws Throwable {
+        String xPath = "//label[contains(text(),'" + labelName + "')]/following-sibling::div/div/div/input";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+//        element.clear();
+//        element.sendKeys(text);
+        element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        element.sendKeys(Keys.DELETE);
+        element.sendKeys(Keys.TAB);
+
+        element.sendKeys(text);
+    }
+
+    @And("Assert that transaction amount in payment under name {string} from txt file is {string}")
+    public void assertThatTransactionAmountInPaymentUnderNameFromTxtFileIs(String name, String expectedAmount) throws Throwable {
+//        String purpose = Utilities.getDataFromTxtFileUnderKey(key);
+        String xPathForPaymentAmount = "(//div[contains(text(),'" + name + "')]//ancestor::nlb-payment-item//nlb-amount)[1]//*[contains(text(),'" + expectedAmount + "')]";
+        WebElement elementForPaymentAmount = SelectByXpath.CreateElementByXpath(xPathForPaymentAmount);
+        assertTrue(elementForPaymentAmount.isDisplayed());
+    }
+
+    @And("Assert that transaction currency in payment under name {string} from text file is {string}")
+    public void assertThatTransactionCurrencyInPaymentUnderNameFromTextFileIs(String name, String expectedCurrency) throws Throwable {
+//        String purpose = Utilities.getDataFromTxtFileUnderKey(key);
+        String xPathForPaymentCurrency = "(//div[contains(text(),'" + name + "')]//ancestor::nlb-payment-item//nlb-amount)[1]//*[contains(text(),'" + expectedCurrency + "') and not(contains(@class,'caption'))]";
+        WebElement elementForPaymentCurrency = SelectByXpath.CreateElementByXpath(xPathForPaymentCurrency);
+        assertTrue(elementForPaymentCurrency.isDisplayed());
+    }
+
+    @And("Assert that payment under name {string} from txt file has today date")
+    public void assertThatPaymentUnderNameFromTxtFileHasTodayDate(String name) throws Throwable {
+        String expectedDate = ActionApiHelpers.getTodayDate();
+//        String purpose = Utilities.getDataFromTxtFileUnderKey(key);
+        String xPathForPaymentDate = "//div[contains(text(),'" + name + "')]//ancestor::nlb-payment-item//*[contains(text(),'" + expectedDate + "')]";
+        WebElement elementForPaymentDate = SelectByXpath.CreateElementByXpath(xPathForPaymentDate);
+        assertTrue(elementForPaymentDate.isDisplayed());
+    }
+
     private static class AccountRow {
         String accountNumber;
         String currency;
@@ -13656,5 +13738,145 @@ public class Steps {
         String defaultSelectedxPath = "//nlb-tabs//a[contains(@class, ' tw-text-primaryColor')]";
         WebElement defaultSelectedElement = SelectByXpath.CreateElementByXpath(defaultSelectedxPath);
         assertEquals("Transactions", defaultSelectedElement.getAttribute("innerText"));
+    }
+
+    @And("Assert payment status is {string}")
+    public void assertPaymentStatusIs(String status) throws Throwable {
+        String xPath = "//*[text()='Payment status']/following-sibling::div/div";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        assertTrue(element.getAttribute("innerText").equals(status));
+    }
+
+    @And("Assert Recipient list in recipient tab is displayed")
+    public void assertRecipientListInRecipientTabIsDisplayed() throws Throwable {
+        List<WebElement> elements = SelectByXpath.CreateElementsByXpath("//nlb-contact-item");
+        for (WebElement element : elements){
+            assertTrue(element.isDisplayed());
+        }
+    }
+
+    @And("Remember name of first Recipient in recipient tab under key {string}")
+    public void rememberNameOfFirstRecipientInRecipientTabUnderKey(String key) throws Throwable {
+        String xPath = "(//div[contains(@class, 'callout medium')])[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        DataManager.userObject.put(key, element.getAttribute("innerText"));
+    }
+
+    @And("Assert Recipient payments is displayed correctly")
+    public void assertRecipientPaymentsIsDisplayedCorrectly() throws Throwable {
+        List<WebElement> itemsElements = SelectByXpath.CreateElementsByXpath("//nlb-payment-item");
+        if (itemsElements.size() > 5)
+            fail();
+        for (WebElement element : itemsElements){
+            assertTrue(element.isDisplayed());
+        }
+        List<WebElement> iconsElements = SelectByXpath.CreateElementsByXpath("//i[contains(@class, 'nlb-icon icon-check')]");
+        for (WebElement element : iconsElements){
+            assertTrue(element.isDisplayed());
+        }
+        List<WebElement> datesElements = SelectByXpath.CreateElementsByXpath("//div[contains(@class, 'caption medium tw-text-gray-400')][1]");
+        for (WebElement element : datesElements){
+            assertTrue(element.isDisplayed());
+            assertTrue(element.getAttribute("innerText").matches("^\\d{2}\\.\\d{2}\\.\\d{4}$"));
+        }
+        List<WebElement> purposesElements = SelectByXpath.CreateElementsByXpath("//div[contains(@class, 'caption medium tw-text-gray-400')][1]/following-sibling::div[contains(@class, 'subheadline medium')]");
+        for (WebElement element : purposesElements){
+            assertTrue(element.isDisplayed());
+        }
+        List<WebElement> creditorNamesElements = SelectByXpath.CreateElementsByXpath("//div[contains(@class, 'caption medium tw-text-gray-400')][2]");
+        for (WebElement element : creditorNamesElements){
+            assertTrue(element.isDisplayed());
+        }
+        List<WebElement> amountsElements = SelectByXpath.CreateElementsByXpath("//div[contains(@class, 'tw-flex-col xs:tw')]");
+        for (WebElement element : amountsElements){
+            assertTrue(element.isDisplayed());
+            assertTrue(element.getText().matches("^[A-Z]{3}\\s*-?(?:\\d{1,3}(?:\\.\\d{3})*|\\d+),\\d{2}$"));
+        }
+        List<WebElement> repeatButtonsElements = SelectByXpath.CreateElementsByXpath("//span[contains(@class, 'primaryColor button')]");
+        for (WebElement element : repeatButtonsElements){
+            assertTrue(element.isDisplayed());
+            assertEquals(element.getText(), "Repeat");
+        }
+    }
+
+    @And("Assert text under key {string} is not displayed")
+    public void assertTextUnderKeyIsNotDisplayed(String key) {
+        String text = (String) DataManager.userObject.get(key);
+
+        Assert.assertNotNull(
+                "Ne postoji sačuvan tekst pod ključem: " + key,
+                text
+        );
+
+        By by = SelectByText.CreateByElementByContainsText(text);
+
+        List<WebElement> elements = driver.findElements(by);
+
+        for (WebElement element : elements) {
+            try {
+                if (element.isDisplayed()) {
+                    Assert.fail("Element sa tekstom '" + text + "' je prikazan, a ne bi smeo da bude.");
+                }
+            } catch (Exception e) {
+
+            }
+        }
+    }
+
+    @And("Remember account number of first Recipient in recipient tab under key {string}")
+    public void rememberAccountNumberOfFirstRecipientInRecipientTabUnderKey(String key) throws Throwable {
+        String xPath = "(//*[contains(@class, 'gray-400 subheadline')])[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        DataManager.userObject.put(key, element.getAttribute("innerText"));
+    }
+
+    @And("Remember Recipient street in recipient tab under key {string}")
+    public void rememberRecipientStreetInRecipientTabUnderKey(String key) throws Throwable {
+        WebElement element = SelectByXpath.CreateElementByXpath("//div[contains(@class, 'flex-col subheadline')]/div[1]");
+        DataManager.userObject.put(key, element.getText());
+        System.out.println("Ulica: " + element.getText());
+    }
+
+    @And("Remember Recipient city in recipient tab under key {string}")
+    public void rememberRecipientCityInRecipientTabUnderKey(String key) throws Throwable {
+        WebElement element = SelectByXpath.CreateElementByXpath("//div[contains(@class, 'flex-col subheadline')]/div[2]");
+        DataManager.userObject.put(key, element.getText());
+        System.out.println("Grad: " + element.getText());
+    }
+
+    @And("Assert Account number in Edit recipient is not editable")
+    public void assertAccountNumberInEditRecipientIsNotEditable() throws Throwable {
+        String xPath = "//div[contains(text(), 'Recipient')]/ancestor::nlb-heading-text/following-sibling::div[contains(text(), 'Account number')]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        Assert.assertTrue(element.isDisplayed());
+
+        Boolean editable = (Boolean) ((JavascriptExecutor) driver)
+                .executeScript("return arguments[0].isContentEditable;", element);
+        Assert.assertFalse("Element je editabilan.", editable);
+    }
+
+    @And("Enter random text into {string} input field and remember it under key {string}")
+    public void enterRandomTextIntoInputFieldAndRememberItUnderKey(String inputName, String key) throws Throwable {
+        String xPath = "//label[contains(text(), '" + inputName + "')]/following-sibling::div//input";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        String randomPurpose = rh.generateRandomStringOfCertainLenght(10);
+        hp.deleteTextFromFieldLonger(element);
+        hp.EnterTextToElement(element, randomPurpose);
+        DataManager.userObject.put(key, randomPurpose);
+    }
+
+    @And("Delete last downloaded file")
+    public void deleteLastDownloadedFile() throws IOException {
+        Path download = Paths.get(System.getProperty("user.home"), "Downloads");
+        Optional<Path> latestPdf = Files.list(download)
+                .filter(p -> p.toString().endsWith("pdf"))
+                .filter(p -> !p.toString().endsWith("crdownload"))
+                .max(Comparator.comparingLong(p -> p.toFile().lastModified()));
+
+        if (latestPdf.isPresent()) {
+            Files.delete(latestPdf.get());
+            System.out.println("Obrisan PDF fajl: " + latestPdf.get().getFileName());
+        } else
+            System.out.println("Nema PDF fajla za brisanje");
     }
 }

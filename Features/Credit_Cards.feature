@@ -296,7 +296,7 @@ Feature: Credit_Cards
 #    And Assert element by text "Settlement date" has following sibling "dd" with text "01.07.2025"
     And Assert element by text "Settlement date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
 #    And Assert element by text "Value date" has following sibling "dd" with text "01.07.2025"
-    And Assert element by text "Products_Common_TransactionDetails_ValueDate" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert element by text "Value date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
 #    And Assert element by text "Authorization date" has following sibling "dd" with text "01.07.2025"
     And Assert element by text "Authorization date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
 #    And Assert element by text "Transaction ID" has following sibling "dd" that contains text "0999E688B8E110"
@@ -311,6 +311,7 @@ Feature: Credit_Cards
     Examples:
       | rowindex |
       |        1 |
+
 
   @Credit_Cards-Transactions-Filter-Filter_By_Status_[WEB]
   Scenario Outline: Credit_Cards-Transactions-Filter-Filter_By_Status_[WEB]

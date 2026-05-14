@@ -25,16 +25,48 @@ Feature: Recipients
     And Enter random purpose into label with text "Purpose" with following sibling "div" that has descendant "input" and remember it under key "purposeKey"
     And Click on button with type "submit"
 
-    Then Wait for element by contains text "Payment amount"
+    And Wait for element by contains text "Payment amount"
     And Assert payment amount under key is "paymentAmountKey" is displayed
     And Assert element by contains text "Fee"
     And Assert contains text under key "accountNumberKey" is displayed
     And Assert contains text under key "nameKey" is displayed
     And Assert contains text under key "streetKey" is displayed
-    And Assert contains text under key "streetKey" is displayed
+#    And Assert contains text under key "cityKey" is displayed
     And Assert contains text under key "referenceNumberKey" is displayed
     And Assert contains text under key "purposeKey" is displayed
-    And Wait for "10" seconds
+    And Click on button with type "submit"
+
+    And Assert element by contains text "Success"
+    And Assert element by contains text "Do you want to save payment data?"
+    And Assert element by contains text "Close without saving"
+    And Assert element by contains text "Save recipient"
+    And Assert element by contains text "Save template"
+    And Assert element by contains text "Save both"
+    And Click on normalized text "Save recipient"
+    And Assert element by contains text "Recipient saved"
+    And Wait for element by contains text "Domestic payment"
+    And Assert contains text under key "nameKey" is displayed
+    And Assert contains text under key "purposeKey" is displayed
+    And Click on element with text from key "purposeKey"
+    And Assert contains text under key "accountNumberKey" is displayed
+    And Assert contains text under key "nameKey" is displayed
+    And Assert contains text under key "streetKey" is displayed
+#    And Assert recipient city equals remembered key "cityKey"
+#    And Assert contains text under key "cityKey" is displayed
+    And Assert contains text under key "referenceNumberKey" is displayed
+    And Assert contains text under key "purposeKey" is displayed
+    And Assert payment status is "Executed"
+
+    Then Click on tab "Recipients" from main sidebar
+    And Wait for first recipient
+    And Click on recipient name by key "nameKey"
+    And Assert contains text under key "nameKey" is displayed
+    And Assert contains text under key "streetKey" is displayed
+#    And Assert contains text under key "cityKey" is displayed
+    And Assert recipient city equals remembered key "cityKey"
+    And Assert contains text under key "purposeKey" is displayed
+    And Click on element by tag "span" containing text "Delete"
+    And Click on element by tag "div" and text "Delete"
 
     Examples:
       | rowindex |
@@ -48,21 +80,41 @@ Feature: Recipients
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
 
-    When Click on element by text "Recipients"
-    And Click on element by xpath "(//*[contains(@class, 'justify-center tw-cursor')])[2]"
-    And Assert element by text "Delete "
-    And Assert element by text "Edit"
-    And Click on element by text "Delete "
-    And Assert element by text "Delete recipient"
-    And Assert element by contains text "Are you sure you want to delete this recipient?"
+    When Click on tab "Recipients" from main sidebar
+    And Assert Recipient list in recipient tab is displayed
+    And Remember name of first Recipient in recipient tab under key "nameOfFirstRecipientKey"
+    And Click on first recipient
+    And Assert element by contains text "Recipient details"
+    And Assert element by contains text "Repeat one of the last 5 payments"
+    And Assert Recipient payments is displayed correctly
+    And Assert element by contains text "Delete"
+    And Assert element by contains text "Edit"
+    
+    And Click on element by containing text "Delete"
+    And Assert element by contains text "Delete recipient"
+    And Assert element by contains text "Are you sure you want to delete this recipient? This action cannot be undone"
+    And Assert element by contains text "Cancel"
+    And Assert element by contains text "Delete"
+    And Click on NLB button "Cancel"
+    And Assert Recipient payments is displayed correctly
+    And Click on element by containing text "Delete"
+    And Assert element by contains text "Cancel"
+    And Click on NLB button "Delete"
+    And Assert element by contains text "Success"
+    And Assert element by contains text "You have successfully deleted recipient."
 
-    Then Click on element by text "Cancel"
-    And Click on element by text "Delete "
-    And Click on element by text "Delete"
+    Then Wait for first recipient
+    And Assert text under key "nameOfFirstRecipientKey" is not displayed
+    And Click on tab "Payments" from main sidebar
+    And Click on element by containing text "Domestic payment"
+    And Wait for element by contains text "Debtor"
+    And Click on normalized text "Select from list"
+    And Click on normalized text "Select recipient"
+    And Assert text under key "nameOfFirstRecipientKey" is not displayed
 
     Examples:
       | rowindex |
-      |        1 |
+      |        5 |
 
 
   @Payments_Recipient-Update_Recipient_[WEB]
@@ -72,37 +124,61 @@ Feature: Recipients
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
 
-    When Click on element by text "Pay or transfer"
-    And Click on element by text "Select from list "
-    And Click on element by xpath "(//nlb-contact-item)[2]"
-    And Enter text "koar tgr" in field by xPath "//label[contains(text(), 'name')]/following-sibling::div//input" and remember under key "nameKey"
-    And Enter text "kaludjerica 30" in field by xPath "//label[contains(text(), 'Street')]/following-sibling::div//input" and remember under key "streetKey"
-    And Enter text "niš" in field by xPath "//label[text()='City']/following-sibling::div//input" and remember under key "cityKey"
-    And Enter text "100" in field by xPath "//label[text()='Payment amount ']/following-sibling::div//input"
-    And Click on element by text "Save recipient "
+    When Click on tab "Recipients" from main sidebar
+    And Assert Recipient list in recipient tab is displayed
+    And Remember name of first Recipient in recipient tab under key "nameOfFirstRecipientKey"
+    And Remember account number of first Recipient in recipient tab under key "accountNumberOfFirstRecipientKey"
+    And Click on first recipient
+    And Remember Recipient street in recipient tab under key "streetOfFirstRecipientKey"
+    And Remember Recipient city in recipient tab under key "cityOfFirstRecipientKey"
+    And Click on tab "Payments" from main sidebar
+    And Click on element by containing text "Domestic payment"
+    And Wait for element by contains text "Debtor"
+    And Click on normalized text "Select from list"
+    And Click on normalized text "Select recipient"
+    And Assert text under key "nameOfFirstRecipientKey" is displayed
+    And Assert text under key "accountNumberOfFirstRecipientKey" is displayed
+    And Click on first recipient
+    And Assert element by contains text "Name"
+    And Enter text "Update primaoca" into "Name" input field and remember it under key "changedNameKey"
+    And Assert element by contains text "Street and street number"
+    And Enter text "Krusevacka 22" into "street" input field and remember it under key "changedStreetKey"
+    And Assert element by contains text "City"
+    And Enter text "Krusevac" into "City" input field and remember it under key "changedCityKey"
+    And Assert checkbox "Save recipient" is checked "false"
+    And Click on element by containing text "Save recipient"
+    And Assert checkbox "Save recipient" is checked "true"
+    And Assert element by contains text "Payment amount"
+    And Enter text "0,1" into Payment amount input field and remember it under key "paymentAmountKey"
+    And Click on button with type "submit"
 
-    And Click on element by text " Confirm "
-    And Click on element by text " Confirm "
-#    And Wait for element by text " Confirm "
-#    And Click on element by text " Confirm "
-#    And Click on element by text " Confirm "
-#    And Click on element by text " Confirm "
-#    And Click on element by text " Confirm "
-    And Wait for element by text "Success"
-    And Assert element by text "Success"
+    And Wait for element by contains text "Payment amount"
+    And Assert payment amount under key is "paymentAmountKey" is displayed
+    And Assert element by contains text "Fee"
+    And Click on button with type "submit"
 
-    #URADI PETI KORAK U TESTU KADA SPUSTE PAYMENT EXECUTION STATUS
+    And Assert element by contains text "Success"
+    And Assert element by contains text "Do you want to save payment data?"
+    And Assert element by contains text "Close without saving"
+    And Assert element by contains text "Save recipient"
+    And Assert element by contains text "Save template"
+    And Assert element by contains text "Save both"
+    And Click on normalized text "Save recipient"
+#    And Assert element by contains text "Recipient saved"
+    And Assert element by contains text "Contact updated"
+    And Wait for element by contains text "Domestic payment"
+    And Assert contains text under key "nameOfFirstRecipientKey" is displayed
+    And Click on element with text from key "changedNameKey"
+    And Assert payment status is "Executed"
 
-    Then Click on element by containing text "Recipients"
-    And Wait for "10" seconds
-    And Click on recipient name by key "nameKey"
-    And Assert recipient name equals remembered key "nameKey"
-    And Assert recipient street equals remembered key "streetKey"
-    And Assert recipient city equals remembered key "cityKey"
+    Then Click on tab "Recipients" from main sidebar
+    And Click on recipient name by key "changedNameKey"
+    And Assert text under key "changedStreetKey" is displayed
+    And Assert text under key "changedCityKey" is displayed
 
     Examples:
       | rowindex |
-      |        1 |
+      |        4 |
 
 
   @Payments_Recipient-Edit_Recipient-Invalid_[WEB]
@@ -112,28 +188,38 @@ Feature: Recipients
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
 
-    When Click on element by text "Recipients"
+    When Click on tab "Recipients" from main sidebar
+    And Remember name of first Recipient in recipient tab under key "nameOfFirstRecipientKey"
+    And Remember account number of first Recipient in recipient tab under key "accountNumberOfFirstRecipientKey"
+    And Click on first recipient
+    And Assert element by contains text "Delete"
+    And Assert element by contains text "Edit"
+    And Click on element by containing text "Edit"
+    And Assert element by contains text "Name"
+    And Enter text "" into "Name" input field in Edit recipient
+    And Assert NLB Validation error "Name is required"
+    And Assert element by contains text "Street and street number"
+    And Enter text "" into "street" input field in Edit recipient
+    And Assert NLB Validation error "Street and street number is required"
+    And Assert element by contains text "City"
+    And Enter text "" into "City" input field in Edit recipient
+    And Assert NLB Validation error "City is required"
+    And Click on NLB button "Save"
+    And Assert element by contains text "Edit recipient"
+    And Assert text under key "accountNumberOfFirstRecipientKey" is displayed
 
-    And Wait for "10" seconds
-    And Click on element by containing class "tw-flex tw-items-center tw-justify-center tw-cursor-pointer" with index "1"
-    #And Click on element by xpath ""
-    And Assert element by text "Delete "
-    And Wait for element by text "Edit"
-    And Assert element by text "Edit"
-    And Click on element by text "Edit"
-
-    Then Delete text in field by xPath "//label[contains(text(), 'name')]/following-sibling::div//input"
-    And Assert element by contains text " First and last name / Company name is required "
-    And Click on element by text "Save"
-    And Assert element by contains text " First and last name / Company name is required "
-    And Click on element by containing text "Save"
-
-    #And Assert element by contains text "name is required"
-    #NE IZLAZI GRESKA KADA AUTOMATIZUJEM APLIKACIJU. VIDI ZASTO I RESI - TREBALO BI DA JE RESENO, PROVERITI SA ALEKSOM
+    Then Click on NLB button "Cancel"
+    And Assert element by contains text "Discard changes"
+    And Assert element by contains text "Are you sure you want to discard your changes? This action cannot be undone"
+    And Assert NLB button "Cancel"
+    And Assert NLB button "Discard"
+    And Click on NLB button "Discard"
+    And Assert text under key "nameOfFirstRecipientKey" is displayed
 
     Examples:
       | rowindex |
       |        1 |
+
 
   @Payments_Recipient-Edit_Recipient-Edit_Account_number-invalid_[WEB]
   Scenario Outline: Payments_Recipient-Edit_Recipient-Edit_Account_number-invalid_[WEB]
@@ -143,24 +229,22 @@ Feature: Recipients
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
 
-    And Click on tab "Recipients" from main sidebar
-    And Click on element by containing class "tw-flex tw-items-center tw-justify-center tw-cursor-pointer" with index "1"
-   # And Click on element by containing text "205-9001020797842-69"
-    And Assert element by text "Delete "
-    And Assert element by text "Edit"
+    When Click on tab "Recipients" from main sidebar
+    And Click on first recipient
+    And Assert element by contains text "Delete"
+    And Assert element by contains text "Edit"
+    And Click on element by containing text "Edit"
 
-    Then Click on element by text "Edit"
-    And Assert element by text "Account number" can not be edited
-
-
+    Then Assert Account number in Edit recipient is not editable
 
     Examples:
       | rowindex |
       |        1 |
 
+
+    #Stabilizuj test kada ne bude imao bug. Sad moze da se menja account number
   @Payments_Recipient-Update_Recipient-Update_Account_number_[WEB]
   Scenario Outline: Payments_Recipient-Update_Recipient-Update_Account_number_[WEB]
-
 
     Given Open Login page
     And Change language to English
@@ -178,7 +262,53 @@ Feature: Recipients
     And Click on tab "Recipients" from main sidebar
     And Assert that recipient has same accNumber
 
+    Examples:
+      | rowindex |
+      |        1 |
 
+
+  @Payments_Recipient-Edit_Recipient_[WEB]
+  Scenario Outline: Payments_Recipient-Edit_Recipient_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+
+    When Click on tab "Recipients" from main sidebar
+    And Remember name of first Recipient in recipient tab under key "nameOfFirstRecipientKey"
+    And Remember account number of first Recipient in recipient tab under key "accountNumberOfFirstRecipientKey"
+    And Click on first recipient
+    And Assert element by contains text "Delete"
+    And Assert element by contains text "Edit"
+    And Click on element by containing text "Edit"
+
+    And Assert Account number in Edit recipient is not editable
+    And Assert element by contains text "Name"
+    And Enter random text into "Name" input field and remember it under key "keyName"
+    And Assert element by contains text "Street and street number"
+    And Enter random text into "Street" input field and remember it under key "keyStreet"
+    And Assert element by contains text "City"
+    And Enter random text into "City" input field and remember it under key "keyCity"
+    And Assert NLB button "Cancel"
+    And Assert NLB button "Save"
+    And Click on NLB button "Save"
+    
+    Then Assert element by contains text "Success"
+    And Assert element by contains text "Recipient saved"
+    And Assert text under key "nameOfFirstRecipientKey" is not displayed
+    And Assert text under key "accountNumberOfFirstRecipientKey" is displayed
+    And Assert text under key "keyName" is displayed
+    And Click on element with text from key "keyName"
+    And Assert text under key "keyStreet" is displayed
+    And Assert text under key "keyCity" is displayed
+
+    And Click on tab "Payments" from main sidebar
+    And Click on element by containing text "Domestic payment"
+    And Wait for element by contains text "Debtor"
+    And Click on normalized text "Select from list"
+    And Click on normalized text "Select recipient"
+    And Assert text under key "keyName" is displayed
+    And Assert text under key "accountNumberOfFirstRecipientKey" is displayed
 
     Examples:
       | rowindex |
