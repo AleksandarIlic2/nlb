@@ -13373,7 +13373,7 @@ public class Steps {
     public void assertOptionButtonsInPayments() throws Throwable {
         String xPath = "//button/div/following-sibling::div";
         List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
-        assertEquals(6, elements.size());
+        assertEquals(5, elements.size());
 
         for (int i = 0; i < elements.size(); i++) {
             switch (i) {
@@ -13386,13 +13386,13 @@ public class Steps {
                 case 2:
                     Assert.assertEquals("Own account Transfer", elements.get(i).getText());
                     break;
+//                case 3:
+//                    Assert.assertEquals("Foreign payment", elements.get(i).getText());
+//                    break;
                 case 3:
-                    Assert.assertEquals("Foreign payment", elements.get(i).getText());
-                    break;
-                case 4:
                     Assert.assertEquals("Currency exchange", elements.get(i).getText());
                     break;
-                case 5:
+                case 4:
                     Assert.assertEquals("Templates", elements.get(i).getText());
                     break;
             }

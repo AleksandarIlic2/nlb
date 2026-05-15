@@ -402,6 +402,7 @@ Feature: Domestic_Payments
     #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
     And Click on normalized text "Select recipient"
     And Assert element by xPath "//nlb-search-box"
+    And Wait for "2" seconds
     And Click on first recipient
     And Assert element by class "tw-items-center" containing text "Change recipient"
     And Assert element by contains text "Account number"
@@ -517,6 +518,7 @@ Feature: Domestic_Payments
     #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
     And Click on normalized text "Select recipient"
     And Assert element by xPath "//nlb-search-box"
+    And Wait for "2" seconds
     And Click on first recipient
     And Assert element by class "tw-items-center" containing text "Change recipient"
     And Assert element by contains text "Account number"

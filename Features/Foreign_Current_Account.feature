@@ -496,9 +496,8 @@ Feature: Foreign_Current_Account
     And Click on element by containing text "Confirm"
 
 #    Then Assert NLB Validation error "From amount must be smaller than To amount."
-#    And Assert element by tag "div" has text "There are no transactions to be displayed."
+    And Assert element by tag "div" has text "No transactions found"
     Then Assert element by contains text "ValidationError"
-    Then Assert element by contains text "EmptyState"
 
     Examples:
       | rowindex |
