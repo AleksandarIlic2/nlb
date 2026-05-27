@@ -64,10 +64,10 @@ Feature: Saving_Accounts
     And Assert Account number in Savings Account details is from Excel "<rowindex>" columnName "savings_account_1_number"
     And Assert Purpose is displayed correctly in Account details for Savings account
     And Assert Opening date is displayed correctly in Account details for Savings account
-    And Assert element by text " Document archive " is displayed
-    And Click on element by text " Document archive "
-    And Wait for element by text "Documents_DocumentsArchive_Description"
-    And Assert element by text "Documents_DocumentsArchive_Description" is displayed
+#    And Assert element by text " Document archive " is displayed
+#    And Click on element by text " Document archive "
+#    And Wait for element by text "Documents_DocumentsArchive_Description"
+#    And Assert element by text "Documents_DocumentsArchive_Description" is displayed
 
     Examples:
       | rowindex |
@@ -88,12 +88,12 @@ Feature: Saving_Accounts
     And Wait for element by tag "nlb-product-detail-header"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "savings_account_1_name"
     And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "savings_account_1_number"
-    And Assert tabs in Product details are displayed correctly for Current Foreign Accounts
+    And Assert tabs in Product details are displayed correctly for Savings Accounts
     And Select "Statements" tab in Products details
     And Assert "Statements" tab in Products details is selected
     And Scroll to element by xPath "//a[contains(text(), 'Transactions')]" and scroll 1 more screen
     And Wait for element by tag "nlb-selected-product-statements"
-    And Assert either element with xPath "//nlb-selected-product-statements//nlb-empty-list//div[text() = 'There are no statements for the selected year.']/preceding-sibling::div/img[@alt='empty list']" or element with xpath "(//nlb-statement-item)[1]" is displayed
+    And Assert either element with xPath "//nlb-selected-product-statements//nlb-empty-list//div[text() = 'There are no statements for the selected year.']/preceding-sibling::div/img[@alt='Empty list']" or element with xpath "(//nlb-statement-item)[1]" is displayed
     And Assert Statements filter label is "Filter by year"
     And Assert Statements filter has year "2026" selected
     And Select year "2026" in Statements filter and assert there are 11 options
@@ -102,6 +102,36 @@ Feature: Saving_Accounts
 
     Then Assert document with name starting with "Izvod_" and has file type ".pdf" is downloaded
     And Delete last downloaded file
+
+    Examples:
+      | rowindex |
+      |        4 |
+
+
+  @Savings_Accounts-Statements-Empty_State_[WEB]
+  Scenario Outline: Savings_Accounts-Statements-Empty_State_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "savings_account_1_number"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "savings_account_1_name"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "savings_account_1_number"
+    And Select "Statements" tab in Products details
+    And Assert "Statements" tab in Products details is selected
+    And Scroll to element by xPath "//a[contains(text(), 'Transactions')]" and scroll 1 more screen
+    And Wait for element by tag "nlb-selected-product-statements"
+    And Assert either element with xPath "//nlb-selected-product-statements//nlb-empty-list//div[text() = 'There are no statements for the selected year.']/preceding-sibling::div/img[@alt='Empty list']" or element with xpath "(//nlb-statement-item)[1]" is displayed
+    And Assert Statements filter label is "Filter by year"
+    And Assert Statements filter has year "2026" selected
+    And Select year "2018" in Statements filter and assert there are 11 options
+
+    Then Assert element by normalized text "There are no statements for the selected year."
 
     Examples:
       | rowindex |

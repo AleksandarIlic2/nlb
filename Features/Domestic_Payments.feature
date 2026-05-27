@@ -81,6 +81,7 @@ Feature: Domestic_Payments
     And Click on element by aria label "User profile"
     And Remember full name of user from dashboard under key "fullNameKey"
     And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
     And Remember available balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Available_Balance"
     And Remember current balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Current_Balance"
 
@@ -367,6 +368,7 @@ Feature: Domestic_Payments
       |        5 |
 
 
+    #Automatizovano na UAT-u. Nema ga u Excelu za TST
   @Payments-Domestic_Payments_[WEB]
   Scenario Outline: Payments-Domestic_Payments_[WEB]
 
@@ -483,6 +485,7 @@ Feature: Domestic_Payments
       |        4 |
 
 
+    #Automatizovano na UAT-u. Nema ga u Excelu za TST
   @Payments-Domestic_Payments-Confirmation_[WEB]
   Scenario Outline: Payments-Domestic_Payments-Confirmation_[WEB]
 
@@ -510,7 +513,6 @@ Feature: Domestic_Payments
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
     And Click on normalized text "Select from list"
     And Assert element by contains text "Select template"
-    #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
     And Assert element by contains text "Select recipient"
     And Assert element by xPath "//nlb-search-box"
     And Assert "input" field with placeholder "Type here to search"

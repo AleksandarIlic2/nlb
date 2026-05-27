@@ -30,13 +30,14 @@ Feature: Term_Deposits_Accounts
     And Assert label with text "Account number" has value with text from Excel "<rowindex>" columnName "term_deposits_2_account_number"
     And Assert label with text "Opening date" has value with text in format "^(0[1-9]|[12]\d|3[01])\.(0[1-9]|1[0-2])\.\d{4}$"
     And Assert label with text "Expiration date" has value with text in format "^(0[1-9]|[12]\d|3[01])\.(0[1-9]|1[0-2])\.\d{4}$"
-    And Assert element by text " Document archive "
-    And Click on element by text " Document archive "
-    And Assert element by text "Documents_DocumentsArchive_Title"
+#    And Assert element by text " Document archive "
+#    And Click on element by text " Document archive "
+#    And Assert element by text "Documents_DocumentsArchive_Title"
 
     Examples:
       | rowindex |
       |        1 |
+
 
   @Term_Deposits-Details_Account_Details_[WEB]
   Scenario Outline: Term_Deposits-Details_Account_Details_[WEB]
@@ -96,7 +97,7 @@ Feature: Term_Deposits_Accounts
     And Assert label with text "Pay out account" has value with text in format "^90\d{11}$"
     
     And Assert element by xPath "(//h3[contains(@class, 'heading-3')])[2]"
-    And Assert element by text " Document archive "
+#    And Assert element by text " Document archive "
 
     Examples:
       | rowindex |

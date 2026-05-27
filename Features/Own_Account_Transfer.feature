@@ -12,15 +12,16 @@ Feature: Own_Account_Transfer
     And Assert element by contains text "Pay or transfer"
     And Assert account selector is displayed
     And Assert element by tag "div" containing text "Domestic payment"
-    And Assert element by tag "div" containing text "Own account Transfer"
+    And Assert element by tag "div" containing text "Internal transfer"
 #    And Assert element by tag "div" containing text "Foreign payment"
     And Assert element by tag "div" containing text "Currency exchange"
     And Assert element by tag "a" containing text "Upcoming payments"
     And Assert element by tag "a" containing text "Past payments"
 
-    And Click on element by containing text "Own account Transfer"
-    And Wait for element by contains text " Own account Transfer "
-    And Assert element by contains text " Own account Transfer "
+    And Click on element by containing text "Internal transfer"
+    And Wait for element by contains text "Internal transfer"
+    And Wait for "2" seconds
+    And Assert element by contains text "Internal transfer"
     And Assert element by contains text " Check data and choose “Next” "
 
     And Wait for element by contains text "Debtor"
@@ -53,7 +54,7 @@ Feature: Own_Account_Transfer
     And Assert element by contains text "No"
     And Assert element by contains text "Yes"
     And Click on element by containing text "No"
-    And Assert element by contains text "Own account Transfer"
+    And Assert element by contains text "Internal transfer"
 
     And Click on element by containing text "Cancel"
     And Assert element by contains text "Are you sure?"
@@ -63,9 +64,9 @@ Feature: Own_Account_Transfer
     And Click on element by containing text "Yes"
     And Wait for element by text "Currency exchange"
 
-    And Click on element by containing text "Own account Transfer"
-    And Wait for element by contains text "Own account Transfer"
-    And Assert element by contains text "Own account Transfer"
+    And Click on element by containing text "Internal transfer"
+    And Wait for element by contains text "Internal transfer"
+    And Assert element by contains text "Internal transfer"
     And Assert element by contains text "Check data and choose “Next”"
 
     And Assert element by contains text "Debtor"
@@ -127,15 +128,16 @@ Feature: Own_Account_Transfer
     And Assert element by contains text "Pay or transfer"
     And Assert account selector is displayed
     And Assert element by tag "div" containing text "Domestic payment"
-    And Assert element by tag "div" containing text "Own account Transfer"
+    And Assert element by tag "div" containing text "Internal transfer"
 #    And Assert element by tag "div" containing text "Foreign payment"
     And Assert element by tag "div" containing text "Currency exchange"
     And Assert element by tag "a" containing text "Upcoming payments"
     And Assert element by tag "a" containing text "Past payments"
 
-    And Click on element by text "Own account Transfer"
-    And Wait for element by text " Own account Transfer "
-    And Assert element by text " Own account Transfer "
+    And Click on element by containing text "Internal transfer"
+    And Wait for "2" seconds
+    And Wait for element by contains text "Internal transfer"
+    And Assert element by contains text "Internal transfer"
     And Assert element by text " Check data and choose “Next” "
     And Wait for element by contains text "Debtor"
 
@@ -204,15 +206,16 @@ Feature: Own_Account_Transfer
     And Assert element by contains text "Pay or transfer"
     And Assert account selector is displayed
     And Assert element by tag "div" containing text "Domestic payment"
-    And Assert element by tag "div" containing text "Own account Transfer"
+    And Assert element by tag "div" containing text "Internal transfer"
 #    And Assert element by tag "div" containing text "Foreign payment"
     And Assert element by tag "div" containing text "Currency exchange"
     And Assert element by tag "a" containing text "Upcoming payments"
     And Assert element by tag "a" containing text "Past payments"
 
-    And Click on element by text "Own account Transfer"
-    And Wait for element by text " Own account Transfer "
-    And Assert element by text " Own account Transfer "
+    And Click on element by text "Internal transfer"
+    And Wait for "2" seconds
+    And Wait for element by contains text "Internal transfer"
+    And Assert element by contains text "Internal transfer"
     And Assert element by text " Check data and choose “Next” "
 
     And Assert element by text " Debtor "
@@ -282,15 +285,16 @@ Feature: Own_Account_Transfer
 #    And Assert element by contains text "Pay or transfer"
 #    And Assert account selector is displayed
 #    And Assert element by tag "div" containing text "Domestic payment"
-#    And Assert element by tag "div" containing text "Own account Transfer"
-#    And Assert element by tag "div" containing text "Foreign payment"
+#    And Assert element by tag "div" containing text "Internal transfer"
+##    And Assert element by tag "div" containing text "Foreign payment"
 #    And Assert element by tag "div" containing text "Currency exchange"
 #    And Assert element by tag "a" containing text "Upcoming payments"
 #    And Assert element by tag "a" containing text "Past payments"
 #
-#    And Click on element by text "Own account Transfer"
-#    And Wait for element by text " Own account Transfer "
-#    And Assert element by text " Own account Transfer "
+#    And Click on element by text "Internal transfer"
+#    And Wait for "2" seconds
+#    And Wait for element by contains text "Internal transfer"
+#    And Assert element by contains text "Internal transfer"
 #    And Assert element by text " Check data and choose “Next” "
 #
 #    And Wait for element by contains text "Debtor"
@@ -364,15 +368,15 @@ Feature: Own_Account_Transfer
     And Assert element by contains text "Pay or transfer"
     And Assert account selector is displayed
     And Assert element by tag "div" containing text "Domestic payment"
-    And Assert element by tag "div" containing text "Own account Transfer"
+    And Assert element by tag "div" containing text "Internal transfer"
 #    And Assert element by tag "div" containing text "Foreign payment"
     And Assert element by tag "div" containing text "Currency exchange"
     And Assert element by tag "a" containing text "Upcoming payments"
     And Assert element by tag "a" containing text "Past payments"
 
-    And Click on element by text "Own account Transfer"
-    And Wait for element by text " Own account Transfer "
-    And Assert element by text " Own account Transfer "
+    And Click on element by text "Internal transfer"
+    And Wait for element by contains text "Internal transfer"
+    And Assert element by contains text "Internal transfer"
     And Assert element by text " Check data and choose “Next” "
 
     And Assert element by text " Debtor "
@@ -462,14 +466,15 @@ Feature: Own_Account_Transfer
     And Assert element by contains text "Pay or transfer"
     And Assert account selector is displayed
     And Assert element by tag "div" containing text "Domestic payment"
-    And Assert element by tag "div" containing text "Own account Transfer"
+    And Assert element by tag "div" containing text "Internal transfer"
 #    And Assert element by tag "div" containing text "Foreign payment"
     And Assert element by tag "div" containing text "Currency exchange"
     And Assert element by tag "a" containing text "Upcoming payments"
     And Assert element by tag "a" containing text "Past payments"
 
-    And Click on element by text "Own account Transfer"
-#    And Wait for element by contains text "Own account Transfer"
+    And Click on element by text "Internal transfer"
+    And Wait for "2" seconds
+#    And Wait for element by contains text "Internal transfer"
 #    And Assert element by text "Own account Transfer"
     And Assert element by contains text "Check data and choose “Next”"
 
@@ -544,14 +549,14 @@ Feature: Own_Account_Transfer
 #    And Assert element by contains text "Pay or transfer"
 #    And Assert account selector is displayed
 #    And Assert element by tag "div" containing text "Domestic payment"
-#    And Assert element by tag "div" containing text "Own account Transfer"
+#    And Assert element by tag "div" containing text "Internal transfer"
 #    And Assert element by tag "div" containing text "Foreign payment"
 #    And Assert element by tag "div" containing text "Currency exchange"
 #    And Assert element by tag "a" containing text "Upcoming payments"
 #    And Assert element by tag "a" containing text "Past payments"
 #
 #    And Click on element by text "Own account Transfer"
-##    And Wait for element by contains text "Own account Transfer"
+##    And Wait for element by contains text "Internal transfer"
 ##    And Assert element by text "Own account Transfer"
 #    And Assert element by contains text "Check data and choose “Next”"
 #
@@ -624,7 +629,7 @@ Feature: Own_Account_Transfer
     And Assert element by contains text "Pay or transfer"
     And Assert account selector is displayed
     And Assert element by tag "div" containing text "Domestic payment"
-    And Assert element by tag "div" containing text "Own account Transfer"
+    And Assert element by tag "div" containing text "Internal transfer"
 #    And Assert element by tag "div" containing text "Foreign payment"
     And Assert element by tag "div" containing text "Currency exchange"
     And Assert element by tag "a" containing text "Upcoming payments"
@@ -640,13 +645,13 @@ Feature: Own_Account_Transfer
 #    And Assert element by contains class "accountItemDescription" have and index 0 have value from Excel "<rowindex>" columnName "current_account_1_bban"
     And Assert element by tag "span" containing text "RSD" with index "1"
     And Click on account selector with index "1"
-    And Click on element from Excel "<rowindex>" contains text columnName "current_account_1_bban"
+    And Click on element from Excel "<rowindex>" contains text columnName "current_account_2_bban"
 
     #current account
     Then Click on account selector with index "2"
     And Assert account name "Devizni platni račun" is not displayed
     And Assert account number containing "RS" is not displayed
-    And Assert account number from Excel "<rowindex>" columnName "current_account_1_bban" is not displayed
+    And Assert account number from Excel "<rowindex>" columnName "current_account_2_bban" is not displayed
 
     #saving account
     And Click on account selector with index "1"
@@ -694,7 +699,7 @@ Feature: Own_Account_Transfer
 
     Examples:
       | rowindex |
-      |        4 |
+      |        1 |
 
 
   @Payments-Own_Account_Transfer-From_Current_Account_RSD_To_Current_Account_RSD_[WEB]
@@ -712,15 +717,15 @@ Feature: Own_Account_Transfer
     And Assert element by contains text "Pay or transfer"
     And Assert account selector is displayed
     And Assert element by tag "div" containing text "Domestic payment"
-    And Assert element by tag "div" containing text "Own account Transfer"
+    And Assert element by tag "div" containing text "Internal transfer"
 #    And Assert element by tag "div" containing text "Foreign payment"
     And Assert element by tag "div" containing text "Currency exchange"
     And Assert element by tag "a" containing text "Upcoming payments"
     And Assert element by tag "a" containing text "Past payments"
 
-    And Click on element by text "Own account Transfer"
-    And Wait for element by text " Own account Transfer "
-    And Assert element by text " Own account Transfer "
+    And Click on element by text "Internal transfer"
+    And Wait for element by contains text "Internal transfer"
+    And Assert element by contains text "Internal transfer"
     And Assert element by text " Check data and choose “Next” "
 
     And Assert element by text " Debtor "
@@ -805,21 +810,21 @@ Feature: Own_Account_Transfer
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
     And Remember current balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Balance"
-    And Remember current balance for account from Excel "<rowindex>" columnName "credit_card_1_number" under key "IT_001_Creditor_Balance"
+    And Remember available balance for account from Excel "<rowindex>" columnName "credit_card_1_number" under key "IT_001_Creditor_Balance"
 
     When Click on tab "Payments" from main sidebar
     And Assert element by contains text "Pay or transfer"
     And Assert account selector is displayed
     And Assert element by tag "div" containing text "Domestic payment"
-    And Assert element by tag "div" containing text "Own account Transfer"
+    And Assert element by tag "div" containing text "Internal transfer"
 #    And Assert element by tag "div" containing text "Foreign payment"
     And Assert element by tag "div" containing text "Currency exchange"
     And Assert element by tag "a" containing text "Upcoming payments"
     And Assert element by tag "a" containing text "Past payments"
 
-    And Click on element by text "Own account Transfer"
-    And Wait for element by text " Own account Transfer "
-    And Assert element by text " Own account Transfer "
+    And Click on element by text "Internal transfer"
+    And Wait for element by contains text "Internal transfer"
+    And Assert element by contains text "Internal transfer"
     And Assert element by text " Check data and choose “Next” "
 
     And Assert element by text " Debtor "
@@ -903,22 +908,23 @@ Feature: Own_Account_Transfer
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
-    And Remember current balance for account from Excel "<rowindex>" columnName "savings_account_1_number" under key "IT_001_Debtor_Balance"
-    And Remember current balance for account from Excel "<rowindex>" columnName "credit_card_1_number" under key "IT_001_Creditor_Balance"
+#    And Remember current balance for account from Excel "<rowindex>" columnName "savings_account_1_number" under key "IT_001_Debtor_Balance"
+    And Remember current balance for saving account from Excel "<rowindex>" columnName "savings_account_1_number" under key "IT_001_Debtor_Balance"
+    And Remember available balance for account from Excel "<rowindex>" columnName "credit_card_1_number" under key "IT_001_Creditor_Balance"
 
     When Click on tab "Payments" from main sidebar
     And Assert element by contains text "Pay or transfer"
     And Assert account selector is displayed
     And Assert element by tag "div" containing text "Domestic payment"
-    And Assert element by tag "div" containing text "Own account Transfer"
+    And Assert element by tag "div" containing text "Internal transfer"
 #    And Assert element by tag "div" containing text "Foreign payment"
     And Assert element by tag "div" containing text "Currency exchange"
     And Assert element by tag "a" containing text "Upcoming payments"
     And Assert element by tag "a" containing text "Past payments"
 
-    And Click on element by text "Own account Transfer"
-    And Wait for element by text " Own account Transfer "
-    And Assert element by text " Own account Transfer "
+    And Click on element by text "Internal transfer"
+    And Wait for element by contains text "Internal transfer"
+    And Assert element by contains text "Internal transfer"
     And Assert element by text " Check data and choose “Next” "
 
     And Assert element by text " Debtor "

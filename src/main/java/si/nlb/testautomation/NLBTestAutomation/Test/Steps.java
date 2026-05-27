@@ -12575,7 +12575,7 @@ public class Steps {
         System.out.println("Debtor: " + transactionValues.get("DebtorName"));
 
         transactionValues.put("RecipientAccountNumber", driver.findElement(By.xpath(
-                "//div[contains(@class, 'tw-hidden xs:tw-block')]/div[text()='Creditor account']/following-sibling::div"
+                "//div[contains(@class, 'tw-hidden xs:tw-block')]/div[text()='Recipient account']/following-sibling::div"
         )).getText().trim());
         System.out.println("Recipient Account Number: " + transactionValues.get("RecipientAccountNumber"));
 
@@ -13384,7 +13384,7 @@ public class Steps {
                     Assert.assertEquals("Domestic payment", elements.get(i).getText());
                     break;
                 case 2:
-                    Assert.assertEquals("Own account Transfer", elements.get(i).getText());
+                    Assert.assertEquals("Internal transfer", elements.get(i).getText());
                     break;
 //                case 3:
 //                    Assert.assertEquals("Foreign payment", elements.get(i).getText());
@@ -13878,5 +13878,38 @@ public class Steps {
             System.out.println("Obrisan PDF fajl: " + latestPdf.get().getFileName());
         } else
             System.out.println("Nema PDF fajla za brisanje");
+    }
+
+    @And("Remember current balance for saving account from Excel {string} columnName {string} under key {string}")
+    public void rememberCurrentBalanceForSavingAccountFromExcelColumnNameUnderKey(String rowindex, String columnName, String key) throws Throwable {
+        String stringForAccountNumber = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForCurrentBalance = "//nlb-product-card//*[contains(text(),'" + stringForAccountNumber + "')]//ancestor::nlb-product-card//nlb-heading-text/div/div/nlb-amount/div/span[1]";
+        WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
+        String stringForCurrentBalance = elementForCurrentBalance.getAttribute("innerText");
+        DataManager.userObject.put(key, stringForCurrentBalance);
+    }
+
+    @And("Assert tabs in Product details are displayed correctly for Savings Accounts")
+    public void assertTabsInProductDetailsAreDisplayedCorrectlyForSavingsAccounts() throws Throwable {
+        String xPath = "//nlb-tabs//a";
+        List<WebElement> tabsElements = SelectByXpath.CreateElementsByXpath(xPath);
+        int numOfTabs = tabsElements.size();
+        if(numOfTabs!=3)
+            fail();
+        for (int i = 0; i < numOfTabs; i++) {
+            if (i == 0) {
+                assertEquals("Transactions", tabsElements.get(i).getAttribute("innerText"));
+            } else if (i == 1) {
+                assertEquals("Statements", tabsElements.get(i).getAttribute("innerText"));
+            } else if (i == 2) {
+                assertEquals("Details", tabsElements.get(i).getAttribute("innerText"));
+            } else {
+                fail("More than 3 tabs are found");
+            }
+        }
+
+        String defaultSelectedxPath = "//nlb-tabs//a[contains(@class, ' tw-text-primaryColor')]";
+        WebElement defaultSelectedElement = SelectByXpath.CreateElementByXpath(defaultSelectedxPath);
+        assertEquals("Transactions", defaultSelectedElement.getAttribute("innerText"));
     }
 }

@@ -128,8 +128,7 @@ Feature: Credit_Cards
     And Assert Credit card BBAN in Product details is from Excel "<rowindex>" columnName "credit_card_2_number"
     And Assert Transactions tab is selected by default
 
-#    Then Assert element by contains text "no transactions to be displayed"
-    Then Assert element by contains text "EmptyState"
+    Then Assert element by contains text "No transactions found"
 
     Examples:
       | rowindex |
@@ -274,8 +273,8 @@ Feature: Credit_Cards
 
 
 
-  @Credit_Cards-Transactions_Details[WEB]
-  Scenario Outline: Credit_Cards-Transactions_Details[WEB]
+  @Credit_Cards-Transactions_Details_[WEB]
+  Scenario Outline: Credit_Cards-Transactions_Details_[WEB]
 
     Given Open Login page
     And Change language to English
@@ -304,7 +303,8 @@ Feature: Credit_Cards
     And Assert element by tag "span" containing text "Send message"
     # Korak ispod se koristi kod Slovenaca, treba li da postoji u testu?
     And Assert element by tag "div" containing text "Confirmation" is not displayed
-    And Click on down arrow on first transaction do display details
+
+    Then Click on down arrow on first transaction do display details
     And Assert element by contains text "Value date" is not displayed
     And Assert element by class "tw-text-incomingColor" and index "1"
 

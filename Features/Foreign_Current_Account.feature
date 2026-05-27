@@ -555,7 +555,6 @@ Feature: Foreign_Current_Account
     And Assert that products in my products have loaded
 
     #User is logged into aplication and clicks on the My Products page frome the menu
-    When Click on tab "My products" from main sidebar
     And Wait for element by text "Edit list"
     Then Assert element by class "button-bold" and contains text "Edit list"
 
@@ -614,7 +613,7 @@ Feature: Foreign_Current_Account
     And Assert "Statements" tab in Products details is selected
     And Scroll to element by xPath "//a[contains(text(), 'Transactions')]" and scroll 1 more screen
     And Wait for element by tag "nlb-selected-product-statements"
-    And Assert either element with xPath "//nlb-selected-product-statements//nlb-empty-list//div[text() = 'There are no statements for the selected year.']/preceding-sibling::div/img[@alt='empty list']" or element with xpath "(//nlb-statement-item)[1]" is displayed
+    And Assert either element with xPath "//nlb-selected-product-statements//nlb-empty-list//div[text() = 'There are no statements for the selected year.']/preceding-sibling::div/img[@alt='Empty list']" or element with xpath "(//nlb-statement-item)[1]" is displayed
     And Assert Statements filter label is "Filter by year"
     And Assert Statements filter has year "2026" selected
     And Select year "2023" in Statements filter and assert there are 11 options
@@ -623,6 +622,37 @@ Feature: Foreign_Current_Account
 
     Then Assert document with name starting with "Izvod_" and has file type ".pdf" is downloaded
     And Delete last downloaded file
+
+    Examples:
+      | rowindex |
+      |        2 |
+
+
+  @Current_Foreign_Accounts-Statements-Empty_State_[WEB]
+  Scenario Outline: Current_Foreign_Accounts-Statements-Empty_State_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
+    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Assert tabs in Product details are displayed correctly for Current Foreign Accounts
+    And Select "Statements" tab in Products details
+    And Assert "Statements" tab in Products details is selected
+    And Scroll to element by xPath "//a[contains(text(), 'Transactions')]" and scroll 1 more screen
+    And Wait for element by tag "nlb-selected-product-statements"
+    And Assert either element with xPath "//nlb-selected-product-statements//nlb-empty-list//div[text() = 'There are no statements for the selected year.']/preceding-sibling::div/img[@alt='Empty list']" or element with xpath "(//nlb-statement-item)[1]" is displayed
+    And Assert Statements filter label is "Filter by year"
+    And Assert Statements filter has year "2026" selected
+    And Select year "2023" in Statements filter and assert there are 11 options
+
+    Then Assert element by normalized text "There are no statements for the selected year."
 
     Examples:
       | rowindex |

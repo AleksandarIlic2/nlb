@@ -83,7 +83,7 @@ Feature: Loan_Account
       | Account details     |
 
     Then Click on element by containing text "Annuity"
-    And Wait for element by contains text "InstallmentsFound:"
+    And Wait for element by contains text "Installments"
     And Assert element by text "From"
     And Assert element by text "To"
     And Assert element by xPath "//input" and index 0 is displayed
@@ -129,7 +129,7 @@ Feature: Loan_Account
       | Account details     |
 
     Then Click on element by containing text "Annuity"
-    And Wait for element by contains text "InstallmentsFound:"
+    And Wait for element by contains text "Installments"
     And Assert element by text "From"
     And Assert element by text "To"
     And Assert element by xPath "//input" and index 0 is displayed
@@ -181,7 +181,7 @@ Feature: Loan_Account
       | Account details     |
 
     Then Click on element by containing text "Annuity"
-    And Wait for element by contains text "InstallmentsFound:"
+    And Wait for element by contains text "Installments"
     And Assert element by text "From"
     And Assert element by text "To"
     And Assert element by xPath "//input" and index 0 is displayed
@@ -213,7 +213,7 @@ Feature: Loan_Account
     And Assert that products in my products have loaded
 
     And Scroll to account from excel "<rowindex>" columnName "loan_account_1_number" in my products page
-#    And Assert that loan accounts are sorted correctly
+    And Assert that loan accounts are sorted correctly
     And Assert Loan accounts icons is displayed
     And Assert Loan accounts product names is displayed
     And Assert Loan accounts account numbers is displayed

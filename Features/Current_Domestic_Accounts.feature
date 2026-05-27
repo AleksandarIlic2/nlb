@@ -117,6 +117,7 @@ Feature: Current_Domestic_Accounts
       | rowindex |
       |        2 |
 
+
   @Current_Domestic_Accounts-Transactions-Filter_By_Date-Predefined_Date_Range_[WEB]
   Scenario Outline: Current_Domestic_Accounts-Transactions-Filter_By_Date-Predefined_Date_Range_[WEB]
 
@@ -200,57 +201,57 @@ Feature: Current_Domestic_Accounts
       | rowindex |
       |        1 |
 
-#PRESAO U STATUS FAILED
-#  @Current_Domestic_Accounts-Transactions_List_[WEB]
-#  Scenario Outline: Current_Domestic_Accounts-Transactions_List_[WEB]
-#
-#    Given Open Login page
-#    And Change language to English
-#    And Login to the page using user from Excel "<rowindex>" columnName "username"
-#    And Assert that products in my products have loaded
-#
-#    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
-#    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
-#    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
-#    And Assert element by contains text "Transactions"
-#    #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
-#    And Assert element by contains text "Statements"
-#    And Assert element by contains text "Details"
-#    And Assert element by text " Filters"
-#    And Click on element by containing text "Filters"
-#    And Scroll element by contains text "Details" into view
-#
-#    #Assertovanje Date Range (labela datuma od-do)
-#    Then Assert element by xPath "//label[text()='From']/following-sibling::div"
-#    And Assert element by xPath "//label[text()='To']/following-sibling::div"
-#    #Assertovanje Tipa transakcije
-#    And Assert element by text "All"
-#    And Assert element by text "Incoming transactions"
-#    And Assert element by text "Outgoing transactions"
-#    #Assertovanje Amount filtera (labela iznosa od-do)
-#    And Assert element by xPath "//label[text()='From ']/following-sibling::div"
-#    And Assert element by xPath "//label[text()='To ']/following-sibling::div"
-#    And Assert element by text " Confirm "
-#    And Assert element by text " Clear filters "
-#    And Assert element by text " Download transaction list "
-#
-#    And Scroll to first transaction in Products details
-#    And Assert there are 30 transactions loaded in Products details
-#    And Scroll dynamic page down 1 times
-#    And Assert there are more than 30 transactions loaded in Products details
-#    And Assert there are month categories in transactions list in Products details
-#    And Assert transaction dates are ordered correctly
-#    And Scroll element by contains text "Transactions" up
-#    And Assert element by xPath "//h3[contains(@class, 'heading-5')]" is displayed
-#    And Assert element by contains class "heading-5 ng-star-inserted" is displayed
-#    And Assert list of elements containing class "category-icon" are displayed
-#    And Assert list of elements containing class "medium tw-flex" are displayed
-#    And Assert list of elements containing class "caption medium tw-text" are displayed
-#    And Assert list of elements containing class "5 tw-flex tw-justify" are displayed
-#
-#    Examples:
-#      | rowindex |
-#      |        6 |
+
+  @Current_Domestic_Accounts-Transactions_List_[WEB]
+  Scenario Outline: Current_Domestic_Accounts-Transactions_List_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Assert that products in my products have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Assert element by contains text "Transactions"
+    #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
+    And Assert element by contains text "Statements"
+    And Assert element by contains text "Details"
+    And Assert element by text " Filters"
+    And Click on element by containing text "Filters"
+    And Scroll element by contains text "Details" into view
+
+    #Assertovanje Date Range (labela datuma od-do)
+    Then Assert element by xPath "//label[text()='From']/following-sibling::div"
+    And Assert element by xPath "//label[text()='To']/following-sibling::div"
+    #Assertovanje Tipa transakcije
+    And Assert element by text "All"
+    And Assert element by text "Incoming transactions"
+    And Assert element by text "Outgoing transactions"
+    #Assertovanje Amount filtera (labela iznosa od-do)
+    And Assert element by xPath "//label[text()='From ']/following-sibling::div"
+    And Assert element by xPath "//label[text()='To ']/following-sibling::div"
+    And Assert element by text " Confirm "
+    And Assert element by text " Clear filters "
+    And Assert element by text " Download transaction list "
+
+    And Scroll to first transaction in Products details
+    And Assert there are 30 transactions loaded in Products details
+    And Scroll dynamic page down 1 times
+    And Assert there are more than 30 transactions loaded in Products details
+    And Assert there are month categories in transactions list in Products details
+    And Assert transaction dates are ordered correctly
+    And Scroll element by contains text "Transactions" up
+    And Assert element by xPath "//h3[contains(@class, 'heading-5')]" is displayed
+    And Assert element by contains class "heading-5 ng-star-inserted" is displayed
+    And Assert list of elements containing class "category-icon" are displayed
+    And Assert list of elements containing class "medium tw-flex" are displayed
+    And Assert list of elements containing class "caption medium tw-text" are displayed
+    And Assert list of elements containing class "5 tw-flex tw-justify" are displayed
+
+    Examples:
+      | rowindex |
+      |        1 |
 
   @Current_Domestic_Accounts-Details-Financial_Details_[WEB]
   Scenario Outline: Current_Domestic_Accounts-Details-Financial_Details_[WEB]
@@ -363,9 +364,8 @@ Feature: Current_Domestic_Accounts
     And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
     #TODO: Izbaciti korak ispod kada ne bude pop upa koji iskace sa greskom (desava se kada se klikne na racun bez transakcije)
     And Click on element by text " OK " if exists
-    
-#    Then Assert element by tag "div" has text "There are no transactions to be displayed."
-    Then Assert element by contains text "EmptyState"
+
+    Then Assert element by contains text "No transactions found"
 
     Examples:
       | rowindex |
@@ -593,7 +593,7 @@ Feature: Current_Domestic_Accounts
     And Assert "Statements" tab in Products details is selected
     And Scroll to element by xPath "//a[contains(text(), 'Transactions')]" and scroll 1 more screen
     And Wait for element by tag "nlb-selected-product-statements"
-    And Assert either element with xPath "//nlb-selected-product-statements//nlb-empty-list//div[text() = 'There are no statements for the selected year.']/preceding-sibling::div/img[@alt='empty list']" or element with xpath "(//nlb-statement-item)[1]" is displayed
+    And Assert either element with xPath "//nlb-selected-product-statements//nlb-empty-list//div[text() = 'There are no statements for the selected year.']/preceding-sibling::div/img[@alt='Empty list']" or element with xpath "(//nlb-statement-item)[1]" is displayed
     And Assert Statements filter label is "Filter by year"
     And Assert Statements filter has year "2026" selected
     And Select year "2023" in Statements filter and assert there are 11 options
@@ -602,6 +602,36 @@ Feature: Current_Domestic_Accounts
 
     Then Assert document with name starting with "Izvod_" and has file type ".pdf" is downloaded
     And Delete last downloaded file
+
+    Examples:
+      | rowindex |
+      |        2 |
+
+
+  @Current_Accounts_RSD-Statements-Empty_State_[WEB]
+  Scenario Outline: Current_Accounts_RSD-Statements-Empty_State_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert transactions in my product have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Assert tabs in Product details are displayed correctly for Current Domestic Accounts
+    And Select "Statements" tab in Products details
+    And Assert "Statements" tab in Products details is selected
+    And Scroll to element by xPath "//a[contains(text(), 'Transactions')]" and scroll 1 more screen
+    And Wait for element by tag "nlb-selected-product-statements"
+    And Assert either element with xPath "//nlb-selected-product-statements//nlb-empty-list//div[text() = 'There are no statements for the selected year.']/preceding-sibling::div/img[@alt='Empty list']" or element with xpath "(//nlb-statement-item)[1]" is displayed
+    And Assert Statements filter label is "Filter by year"
+    And Assert Statements filter has year "2026" selected
+    And Select year "2023" in Statements filter and assert there are 11 options
+    
+    Then Assert element by normalized text "There are no statements for the selected year."
 
     Examples:
       | rowindex |

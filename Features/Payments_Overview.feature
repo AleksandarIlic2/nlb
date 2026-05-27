@@ -23,6 +23,7 @@ Feature: Payments_Overview
       |        1 |
 
 
+    #UAT automatizovan
   @Payments-Payments_Overview_[WEB]
   Scenario Outline: Payments-Payments_Overview_[WEB]
 
