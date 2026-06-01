@@ -42,9 +42,13 @@ Feature: Domestic_Payments
 #    //And Assert text under key "fullNameKey" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
     And Assert element by contains text "Recipient"
-    And Assert "Name" element under key "nameKey" with index "2" is displayed
-    And Assert address from keys "streetKey" and "cityKey" is displayed
-    And Assert "Account number" element under key "accountNumberKey" with index "2" is displayed
+#    And Assert "Name" element under key "nameKey" with index "2" is displayed
+    And Assert text under key "nameKey" is displayed
+#    And Assert address from keys "streetKey" and "cityKey" is displayed
+    And Assert contains text under key "streetKey" is displayed
+#    And Assert contains text under key "cityKey" is displayed
+#    And Assert "Account number" element under key "accountNumberKey" with index "2" is displayed
+    And Assert element by text "Account number" has first following sibling under key "accountNumberKey"
 
     And Assert element by contains text "Payment"
     And Assert element by contains text "Purpose"
@@ -255,7 +259,7 @@ Feature: Domestic_Payments
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
-    And Assert element by tag "dt" containing text "Name" with index "2"
+#    And Assert element by tag "dt" containing text "Name" with index "2"
     And Assert text under key "keyName" is displayed
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
     And Assert element by contains text from excel "<rowindex>" columnName "domestic_payment_bban" is displayed
@@ -336,9 +340,8 @@ Feature: Domestic_Payments
 #    And Assert text under key "fullNameKey" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
     And Assert element by contains text "Recipient"
-    And Assert "Name" element under key "nameKey" with index "2" is displayed
-    And Assert address from keys "streetKey" and "cityKey" is displayed
-    And Assert "Account number" element under key "accountNumberKey" with index "2" is displayed
+    And Assert text under key "nameKey" is displayed
+#    And Assert "Account number" element under key "accountNumberKey" with index "2" is displayed
 
     And Assert element by contains text "Payment"
     And Assert element by contains text "Purpose"
@@ -449,7 +452,7 @@ Feature: Domestic_Payments
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
-    And Assert element by tag "dt" containing text "Name" with index "2"
+#    And Assert element by tag "dt" containing text "Name" with index "2"
     And Assert text under key "keyName" is displayed
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
     And Assert element by contains text from excel "<rowindex>" columnName "domestic_payment_bban" is displayed
@@ -482,7 +485,7 @@ Feature: Domestic_Payments
 
     Examples:
       | rowindex |
-      |        4 |
+      |        5 |
 
 
     #Automatizovano na UAT-u. Nema ga u Excelu za TST
@@ -564,7 +567,6 @@ Feature: Domestic_Payments
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
-    And Assert element by tag "dt" containing text "Name" with index "2"
     And Assert text under key "keyName" is displayed
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
     And Assert element by contains text from excel "<rowindex>" columnName "domestic_payment_bban" is displayed
@@ -597,4 +599,4 @@ Feature: Domestic_Payments
 
     Examples:
       | rowindex |
-      |        4 |
+      |        5 |

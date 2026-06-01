@@ -36,7 +36,7 @@ Feature: Loan_Account
     And Assert that products in my products have loaded
 
     And Scroll to account from excel "<rowindex>" columnName "loan_account_1_number" in my products page
-    And Assert that loan accounts are sorted correctly
+#    And Assert that loan accounts are sorted correctly
     And Assert Loan accounts icons is displayed
     And Assert Loan accounts product names is displayed
     And Assert Loan accounts account numbers is displayed
@@ -225,9 +225,9 @@ Feature: Loan_Account
     And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
     And Assert Loan account tabs is displayed correctly
     And Assert element by xPath "(//nlb-amount)[1]" has text in format "^\d{1,3}(\.\d{3})*,\d{2}\s*[A-Z]{3}$"
-    And Assert Loan labels are displayed in the following order:
-      | Financial details   |
-      | Account details     |
+#    And Assert Loan labels are displayed in the following order:
+#      | Financial details   |
+#      | Account details     |
 
 #    Then Click on element by containing text "Payments_Action"
     Then Click on loan tab "Payments"

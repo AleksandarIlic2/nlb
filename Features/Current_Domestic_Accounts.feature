@@ -311,7 +311,7 @@ Feature: Current_Domestic_Accounts
     Then Click on tab "Details" from tablist
     And Wait for product details to load
     And Assert Account type is displayed correctly in Account details for Current account
-    And Assert Account owner in Account details is from Excel "<rowindex>" columnName "account_details_owner"
+    And Assert Account owner in Account details is from Excel "<rowindex>" columnName "account_details_owner2"
     And Assert Account number in Account details is from Excel "<rowindex>" columnName "current_account_2_bban"
     And Click on element by tag "i" contains class "icon-copy"
     And Assert content in clipboard is equal to showed Account type, owner and number

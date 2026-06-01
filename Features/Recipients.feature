@@ -70,7 +70,7 @@ Feature: Recipients
 
     Examples:
       | rowindex |
-      |        4 |
+      |        5 |
 
 
   @Payments_Recipient-Delete_Recipient_[WEB]

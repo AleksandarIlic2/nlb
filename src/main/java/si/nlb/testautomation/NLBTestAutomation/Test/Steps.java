@@ -2,6 +2,7 @@ package si.nlb.testautomation.NLBTestAutomation.Test;
 import com.opencsv.CSVReader;
 import io.appium.java_client.MobileElement;
 import io.cucumber.datatable.DataTable;
+import io.cucumber.java.PendingException;
 import io.cucumber.java.sl.In;
 import net.sf.cglib.core.Local;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -8973,7 +8974,7 @@ public class Steps {
     @And("Assert element by text {string} has following sibling {string} that contains text from txt file under key {string} in attribute {string} inside modal")
     public void assertElementByTextHasFollowingSiblingThatContainsTextFromTxtFileUnderKeyInAttributeInsideModal(String text, String followingSiblingTag, String key, String attribute) throws Throwable {
         String expectedValue = Utilities.getDataFromTxtFileUnderKey(key);
-        String xPath = "(//nlb-modal//*[normalize-space(text())='"+text+"']/following-sibling::"+followingSiblingTag+")[1]";
+        String xPath = "(//*//*[normalize-space(text())='"+text+"']/following-sibling::"+followingSiblingTag+")[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String actualValue = element.getAttribute(attribute);
         System.out.println(expectedValue);
@@ -12067,7 +12068,7 @@ public class Steps {
 
     @And("Assert Loan accounts current loan balance is displayed")
     public void assertLoanAccountsCurrentLoanBalanceIsDisplayed() throws Throwable {
-        String xPath = "//div[text()=' Remaining debt ']/ancestor::nlb-heading-text/following-sibling::nlb-heading-text";
+        String xPath = "//div[text()=' Remaining principal amount ']/ancestor::nlb-heading-text/following-sibling::nlb-heading-text";
         List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
         Assert.assertFalse("Loan current loan balance are not found.", elements.isEmpty());
 
@@ -14032,5 +14033,13 @@ public class Steps {
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         assertEquals(accNumber, element.getAttribute("innerText"));
         assertTrue(element.isDisplayed());
+    }
+
+    @And("Assert element by text {string} has first following sibling under key {string}")
+    public void assertElementByTextHasFirstFollowingSiblingUnderKey(String firstText, String key) throws Throwable {
+        String expected = DataManager.userObject.get(key).toString();
+        String xPath = "//*[contains(text(), '" + firstText + "')]/following-sibling::*[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        assertEquals(element.getText(), expected);
     }
 }
