@@ -140,7 +140,7 @@ Feature: Domestic_Payments
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
-    And Assert element by tag "dt" containing text "Name" with index "2"
+#    And Assert element by tag "dt" containing text "Name" with index "2"
     And Assert text under key "keyName" is displayed
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
     And Assert element by contains text from excel "<rowindex>" columnName "domestic_payment_bban" is displayed

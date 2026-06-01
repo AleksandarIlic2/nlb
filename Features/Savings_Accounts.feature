@@ -136,3 +136,79 @@ Feature: Saving_Accounts
     Examples:
       | rowindex |
       |        4 |
+
+
+  @Savings_Accounts-Transactions_Details_[WEB]
+  Scenario Outline: Savings_Accounts-Transactions_Details_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    When Assert element by class "button-bold" and contains text "Edit list"
+    And Click on element by containing text from Excel "<rowindex>" columnName "savings_account_1_number"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "savings_account_1_name"
+
+    And Assert Transactions tab is selected by default
+    And Wait for first transaction in Product details
+    And Click on down arrow on first transaction do display details
+    And Assert element by text "Account number" has following sibling "dd" with one of two regex "^205-900100\\d{7}-\\d{2}$" and "^901100\\d{7}$"
+    And Assert element by text "Amount" has following sibling "dd" with regex "^\d{1,3}(\.\d{3})*,\d{2}\s*RSD$"
+    And Assert element by text "Description" has following sibling "dd" with regex "^.*$"
+    And Assert element by text "Products_Common_TransactionDetails_BookingDate" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert element by text "Value date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert element by text "Transaction ID" has following sibling "dd" with regex "^0999[A-Za-z][A-Za-z0-9]{9}$"
+#    And Assert element by tag "span" containing text "Send message"
+    And Assert element by tag "div" containing text "Confirmation" is not displayed
+
+    Then Click on down arrow on first transaction do display details
+    And Assert element by class "tw-text-incomingColor" and index "1"
+
+    Examples:
+      | rowindex |
+      |        1 |
+
+
+  @Savings_accounts-Transactions_List_[WEB]
+  Scenario Outline: Savings_accounts-Transactions_List_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    When Scroll to Product card with IBAN from Excel "<rowindex>" columnName "savings_account_1_number"
+    And Click on element by containing text from Excel "<rowindex>" columnName "savings_account_1_name"
+    And Wait for element by tag "nlb-product-detail-header"
+
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "savings_account_1_name"
+    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "savings_account_1_number"
+    And Wait for first transaction in Product details
+    And Scroll to first transaction in Products details
+    And Assert transaction is displayed correctly in Products details
+    And Assert amount for month category is displayed in Products details with currency "RSD"
+#    And Assert there are 30 transactions loaded in Products details
+#    And Scroll screen "3" down
+#    And Wait for "3" seconds
+#    And Assert there are more than 30 transactions loaded in Products details
+    And Assert transaction dates are ordered correctly
+    And Scroll element by contains text "Transactions" up
+    And Click on element by attribute "name" and value "icon-chevron-down"
+    And Click on element by containing text "This month"
+    And Click on NLB button "Confirm"
+
+    Then Wait for first transaction in Product details
+    And Scroll till the end of transactions
+    And Calculate the sum of all transactions under key "sum"
+    And Scroll element by contains text "Transactions" up
+    And Click on element by containing text "Clear filters"
+    And Wait for first transaction in Product details
+    And Assert amount sum for current month has value from key "sum"
+
+    Examples:
+      | rowindex |
+      |        2 |

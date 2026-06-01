@@ -3841,7 +3841,7 @@ public class Steps {
         String currencyxPath = "(//nlb-transaction-card//nlb-amount//span[2])[1]";
         WebElement currencyElement = SelectByXpath.CreateElementByXpath(currencyxPath);
         assertTrue(currencyElement.isDisplayed());
-        assertEquals("EUR", currencyElement.getAttribute("innerText"));
+        assertEquals("RSD", currencyElement.getAttribute("innerText"));
         //transaction details toggle button
         String trxDetailsxPath = "(//nlb-transaction-card//nlb-icon/i[contains(@class, 'icon-chevron-down')])[1]";
         WebElement trxDetailsElement = SelectByXpath.CreateElementByXpath(trxDetailsxPath);
@@ -13615,6 +13615,59 @@ public class Steps {
         assertTrue(elementForPaymentDate.isDisplayed());
     }
 
+    @And("Assert dates of Upcoming payments are displayed correctly")
+    public void assertDatesOfUpcomingPaymentsAreDisplayedCorrectly() throws Throwable {
+        WebElement element = SelectByXpath.CreateElementByXpath("//div[contains(@class, 'caption medium')]");
+        assertTrue(element.isDisplayed());
+        assertTrue(element.getText().matches("^\\d{2}\\.\\d{2}\\.\\d{4}$"));
+    }
+
+    @And("Assert icons for Upcoming payments are displayed")
+    public void assertIconsForUpcomingPaymentsAreDisplayed() throws Throwable {
+        String xPath = "//i[contains(@class, 'icon-upcoming-payments') and contains(@class, 'tw-text-2xl')]";
+        List<WebElement> elements = driver.findElements(By.xpath(xPath));
+        Assert.assertFalse("Nije pronađena nijedna Upcoming payments ikonica.", elements.isEmpty());
+
+        boolean isAnyDisplayed = false;
+        for (WebElement element : elements) {
+            if (element.isDisplayed()) {
+                isAnyDisplayed = true;
+                break;
+            }
+        }
+        Assert.assertTrue("Upcoming payments ikonica postoji u DOM-u, ali nijedna nije vidljiva.", isAnyDisplayed);
+    }
+
+    @And("Assert list of creditor names of Upcoming payments are displayed")
+    public void assertListOfCreditorNamesOfUpcomingPaymentsAreDisplayed() throws Throwable {
+        WebElement element = SelectByXpath.CreateElementByXpath("//div[contains(@class, 'xs:subheadline xs:medium')]");
+        assertTrue(element.isDisplayed());
+        assertTrue(element.getText().matches("^.+$"));
+    }
+
+    @And("Assert list of amounts with currencies of Upcoming payments are displayed correctly")
+    public void assertListOfAmountsWithCurrenciesOfUpcomingPaymentsAreDisplayedCorrectly() throws Throwable {
+        String xPath = "(//div[contains(@class, 'tw-flex tw-flex-col xs')])[position() mod 2 = 1]";
+        List<WebElement> elements = driver.findElements(By.xpath(xPath));
+        Assert.assertFalse("Nije pronađen nijedan amount element za Upcoming payments.", elements.isEmpty());
+
+        String amountWithCurrencyRegex = "^(\\d{1,3}(\\.\\d{3})*,\\d{2}\\s*RSD|RSD\\s*\\d{1,3}(\\.\\d{3})*,\\d{2})$";
+        for (WebElement element : elements) {
+            Assert.assertTrue("Element nije prikazan: " + element.getText(), element.isDisplayed());
+            String actualText = element.getText()
+                    .replace("\u00A0", " ")
+                    .replace("\u202F", " ")
+                    .replaceAll("\\s+", " ")
+                    .trim();
+            System.out.println("Amount element: [" + actualText + "]");
+
+            Assert.assertTrue(
+                    "Amount ne odgovara očekivanom formatu. Actual=[" + actualText + "]",
+                    actualText.matches(amountWithCurrencyRegex)
+            );
+        }
+    }
+
     private static class AccountRow {
         String accountNumber;
         String currency;
@@ -13911,5 +13964,73 @@ public class Steps {
         String defaultSelectedxPath = "//nlb-tabs//a[contains(@class, ' tw-text-primaryColor')]";
         WebElement defaultSelectedElement = SelectByXpath.CreateElementByXpath(defaultSelectedxPath);
         assertEquals("Transactions", defaultSelectedElement.getAttribute("innerText"));
+    }
+
+    @And("Assert element by text {string} has following sibling {string} with one of two regex {string} and {string}")
+    public void assertElementByTextHasFollowingSiblingWithOneOfTwoRegexAnd(String text, String followingSiblingTag, String regex1, String regex2) throws Throwable {
+        List<WebElement> elements = SelectByXpath.CreateElementByXpathTextFollowingSibling(text, followingSiblingTag);
+
+        Assert.assertFalse("Element nije pronađen za text: " + text, elements.isEmpty());
+
+        for (WebElement element : elements) {
+            String actualText = element.getAttribute("innerText").trim();
+            System.out.println("Actual text: " + actualText);
+            System.out.println("Regex1: " + regex1);
+            System.out.println("Regex2: " + regex2);
+
+            Assert.assertTrue(
+                    "Tekst [" + actualText + "] ne odgovara ni regex1 ni regex2",
+                    actualText.matches(regex1) || actualText.matches(regex2)
+            );
+        }
+    }
+
+    @And("Wait for first Card in Cards menu")
+    public void waitForFirstCardInCardsMenu() throws InterruptedException {
+        String xPath = "(//nlb-card-items-card/div)[1]";
+        By element = SelectByXpath.CreateByElementByXpath(xPath);
+        WaitHelpers.WaitForElement(element);
+    }
+
+    @And("Assert tabs in Product details are displayed correctly for Card from Cards menu")
+    public void assertTabsInProductDetailsAreDisplayedCorrectlyForCardFromCardsMenu() throws Throwable {
+        String xPath = "//nlb-tabs//a";
+        List<WebElement> tabsElements = SelectByXpath.CreateElementsByXpath(xPath);
+        if(tabsElements.size()!=4)
+            fail();
+        int numOfTabs = tabsElements.size();
+        for (int i = 0; i < numOfTabs; i++) {
+            if (i == 0) {
+                assertEquals("Transactions", tabsElements.get(i).getAttribute("innerText"));
+            } else if (i == 1) {
+                assertEquals("Setting", tabsElements.get(i).getAttribute("innerText"));
+            } else if (i == 2) {
+                assertEquals("Details", tabsElements.get(i).getAttribute("innerText"));
+            } else {
+                fail("More than 3 tabs are found");
+            }
+        }
+
+        String defaultSelectedxPath = "//nlb-tabs//a[contains(@class, ' tw-text-primaryColor')]";
+        WebElement defaultSelectedElement = SelectByXpath.CreateElementByXpath(defaultSelectedxPath);
+        assertEquals("Transactions", defaultSelectedElement.getAttribute("innerText"));
+    }
+
+    @And("Assert Card name from Cards menu in Card details is from Excel {string} columnName {string}")
+    public void assertCardNameFromCardsMenuInCardDetailsIsFromExcelColumnName(String rowindex, String columnName) throws Throwable {
+        String accName = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPath = "//div[contains(@class, 'medium heading-6 tw')]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        assertEquals(accName, element.getAttribute("innerText"));
+        assertTrue(element.isDisplayed());
+    }
+
+    @And("Assert Card number from Cards menu in Card details is from Excel {string} columnName {string}")
+    public void assertCardNumberFromCardsMenuInCardDetailsIsFromExcelColumnName(String rowindex, String columnName) throws Throwable {
+        String accNumber = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPath = "(//div[contains(@class, 'subheadline tw-text-gray-300')])[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        assertEquals(accNumber, element.getAttribute("innerText"));
+        assertTrue(element.isDisplayed());
     }
 }

@@ -283,7 +283,7 @@ Feature: Credit_Cards
     And Assert that products in my products have loaded
 
     When Assert element by class "button-bold" and contains text "Edit list"
-    And Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_name"
+    And Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
     And Wait for element by tag "nlb-product-detail-header"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
 
@@ -292,16 +292,11 @@ Feature: Credit_Cards
     And Click on down arrow on first transaction do display details
     And Assert element by text "Amount" has following sibling "dd" with regex "^\d{1,3}(\.\d{3})*,\d{2}\s*RSD$"
     And Assert element by text "Amount in local currency" has following sibling "dd" with regex "^\d{1,3}(\.\d{3})*,\d{2}\s*RSD$"
-#    And Assert element by text "Settlement date" has following sibling "dd" with text "01.07.2025"
     And Assert element by text "Settlement date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
-#    And Assert element by text "Value date" has following sibling "dd" with text "01.07.2025"
     And Assert element by text "Value date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
-#    And Assert element by text "Authorization date" has following sibling "dd" with text "01.07.2025"
     And Assert element by text "Authorization date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
-#    And Assert element by text "Transaction ID" has following sibling "dd" that contains text "0999E688B8E110"
     And Assert element by text "Transaction ID" has following sibling "dd" with regex "^0999E[A-Za-z0-9]{9}$"
     And Assert element by tag "span" containing text "Send message"
-    # Korak ispod se koristi kod Slovenaca, treba li da postoji u testu?
     And Assert element by tag "div" containing text "Confirmation" is not displayed
 
     Then Click on down arrow on first transaction do display details
