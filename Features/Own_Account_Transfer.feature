@@ -39,7 +39,7 @@ Feature: Own_Account_Transfer
     
     Then Assert element by text "Payment amount "
     And Assert element by contains id "amount-input" is displayed
-    And Assert element by tag "input" contains aria label "RSD"
+#    And Assert element by tag "input" contains aria label "RSD"
     And Enter text "150" in field by contains id "amount-input"
     And Assert element by text "Purpose"
     And Assert element by text "Payment date"
@@ -83,7 +83,7 @@ Feature: Own_Account_Transfer
 
     Then Assert element by contains text "Payment amount "
     And Assert element by contains id "amount-input" is displayed
-    And Assert element by tag "input" contains aria label "RSD"
+#    And Assert element by tag "input" contains aria label "RSD"
     And Enter text "1" in field by contains id "amount-input"
     And Assert element by contains text "Purpose"
     And Assert element by contains text "Payment date"

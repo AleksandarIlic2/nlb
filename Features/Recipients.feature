@@ -178,7 +178,7 @@ Feature: Recipients
 
     Examples:
       | rowindex |
-      |        4 |
+      |        5 |
 
 
   @Payments_Recipient-Edit_Recipient-Invalid_[WEB]

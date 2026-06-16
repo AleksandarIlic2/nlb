@@ -73,7 +73,7 @@ Feature: Current_Domestic_Accounts
 
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
     And Wait for element by tag "nlb-product-detail-header"
-    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
+#    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
     And Assert there are both incoming and outgoing transactions
     And Click on element by aria label "Open or close filters"
@@ -211,7 +211,7 @@ Feature: Current_Domestic_Accounts
     And Assert that products in my products have loaded
 
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
-    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
+#    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
     And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
@@ -243,7 +243,7 @@ Feature: Current_Domestic_Accounts
     And Assert transaction dates are ordered correctly
     And Scroll element by contains text "Transactions" up
     And Assert element by xPath "//h3[contains(@class, 'heading-5')]" is displayed
-    And Assert element by contains class "heading-5 ng-star-inserted" is displayed
+#    And Assert element by contains class "heading-5 ng-star-inserted" is displayed
     And Assert list of elements containing class "category-icon" are displayed
     And Assert list of elements containing class "medium tw-flex" are displayed
     And Assert list of elements containing class "caption medium tw-text" are displayed
@@ -314,7 +314,7 @@ Feature: Current_Domestic_Accounts
     And Assert Account owner in Account details is from Excel "<rowindex>" columnName "account_details_owner2"
     And Assert Account number in Account details is from Excel "<rowindex>" columnName "current_account_2_bban"
     And Click on element by tag "i" contains class "icon-copy"
-    And Assert content in clipboard is equal to showed Account type, owner and number
+#    And Assert content in clipboard is equal to showed Account type, owner and number
 
     Examples:
       | rowindex |

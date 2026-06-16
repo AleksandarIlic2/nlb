@@ -182,7 +182,7 @@ Feature: Saving_Accounts
     And Assert that products in my products have loaded
 
     When Scroll to Product card with IBAN from Excel "<rowindex>" columnName "savings_account_1_number"
-    And Click on element by containing text from Excel "<rowindex>" columnName "savings_account_1_name"
+    And Click on element by containing text from Excel "<rowindex>" columnName "savings_account_1_number"
     And Wait for element by tag "nlb-product-detail-header"
 
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "savings_account_1_name"
@@ -198,7 +198,7 @@ Feature: Saving_Accounts
     And Assert transaction dates are ordered correctly
     And Scroll element by contains text "Transactions" up
     And Click on element by attribute "name" and value "icon-chevron-down"
-    And Click on element by containing text "This month"
+    And Click on element by containing text "Last month"
     And Click on NLB button "Confirm"
 
     Then Wait for first transaction in Product details
@@ -211,4 +211,4 @@ Feature: Saving_Accounts
 
     Examples:
       | rowindex |
-      |        2 |
+      |        1 |

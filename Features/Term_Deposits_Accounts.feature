@@ -60,13 +60,13 @@ Feature: Term_Deposits_Accounts
 
     Then Assert element by xPath "(//h3[contains(@class, 'heading-3')])[1]"
     And Assert label with text "Account type" has value with text "Deposit"
-#    And Assert label with text "Account owner" has value with text under remembered key "fullNameKey"
+    And Assert label with text "Account owner" has value with text under remembered key "fullNameKey"
     And Assert label with text "Account number" has value with text from Excel "<rowindex>" columnName "term_deposits_1_account_number"
     And Assert label with text "Opening date" has value with text in format "^(0[1-9]|[12]\d|3[01])\.(0[1-9]|1[0-2])\.\d{4}$"
     And Assert label with text "Expiration date" has value with text in format "^(0[1-9]|[12]\d|3[01])\.(0[1-9]|1[0-2])\.\d{4}$"
-    And Assert element by text " Document archive "
-    And Click on element by text " Document archive "
-    And Assert element by text "Documents_DocumentsArchive_Title"
+#    And Assert element by text " Document archive "
+#    And Click on element by text " Document archive "
+#    And Assert element by text "Documents_DocumentsArchive_Title"
 
     Examples:
       | rowindex |

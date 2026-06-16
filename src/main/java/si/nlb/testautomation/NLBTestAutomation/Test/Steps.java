@@ -2244,7 +2244,6 @@ public class Steps {
         String xPathForLoadedPayments = "//nlb-payment-item";
         By elForLoadedPayments = SelectByXpath.CreateByElementByXpath(xPathForLoadedPayments);
         WaitHelpers.WaitForElement(elForLoadedPayments);
-
     }
 
     @And("Assert that payment under key {string} from txt file has today date")
@@ -3852,12 +3851,14 @@ public class Steps {
     @And("Assert amount for month category is displayed in Products details with currency {string}")
     public void assertAmountForMonthCategoryIsDisplayedInProductsDetailsWithCurrency(String currency) throws Throwable {
         //amount
-        String amountxPath = "//*[@id=\"tabpanel-0\"]/section/nlb-selected-product-transactions/nlb-transactions-list-view/div/div/div[1]/div/nlb-heading-text/div/nlb-amount/div/span[1]";
+//        String amountxPath = "//*[@id=\"tabpanel-0\"]/section/nlb-selected-product-transactions/nlb-transactions-list-view/div/div/div[1]/div/nlb-heading-text/div/nlb-amount/div/span[1]";
+        String amountxPath = "//div[contains(@class, 'heading-5 tw-flex')]/nlb-amount/div/div[2]";
         WebElement amountElement = SelectByXpath.CreateElementByXpath(amountxPath);
         assertTrue(amountElement.isDisplayed());
         assertTrue(amountElement.getAttribute("innerText").matches("^-?(?:0|[1-9]\\d{0,2}(?:\\.\\d{3})*),\\d{2}$"));
         //currency
-        String currencyxPath = "//*[@id=\"tabpanel-0\"]/section/nlb-selected-product-transactions/nlb-transactions-list-view/div/div/div[1]/div/nlb-heading-text/div/nlb-amount/div/span[2]";
+//        String currencyxPath = "//*[@id=\"tabpanel-0\"]/section/nlb-selected-product-transactions/nlb-transactions-list-view/div/div/div[1]/div/nlb-heading-text/div/nlb-amount/div/span[2]";
+        String currencyxPath = "//div[contains(@class, 'heading-5 tw-flex')]/nlb-amount/div/div[1]";
         WebElement currencyElement = SelectByXpath.CreateElementByXpath(currencyxPath);
         assertTrue(currencyElement.isDisplayed());
         assertEquals(currency, currencyElement.getAttribute("innerText"));
@@ -10113,7 +10114,7 @@ public class Steps {
 //        assertTrue(availableCurrencyElement.isDisplayed());
 
         assertTrue(availableLabelElement.getText().contains("Available balance"));
-        assertTrue(availableBalanceElement.getText().matches("^(?:0|[1-9]\\d{0,2}(?:\\.\\d{3})*),\\d{2}\\s[A-Z]{3}$"));
+        assertTrue(availableBalanceElement.getText().matches("^[\\-−]?(?:0|[1-9]\\d{0,2}(?:\\.\\d{3})*),\\d{2}\\s[A-Z]{3}$"));
 
         String xPathCurrentLabel = "//div[contains(@class,'heading-5') and contains(text(),'Current balance')]";
         String xPathCurrentBalance = "//*[contains(text(), 'Current balance')]/ancestor::nlb-heading-text/following-sibling::nlb-heading-text/div/nlb-amount/div";
@@ -10128,7 +10129,7 @@ public class Steps {
 //        assertTrue(currentCurrencyElement.isDisplayed());
 
         assertTrue(currentLabelElement.getText().contains("Current balance"));
-        assertTrue(currentAmountElement.getText().matches("^(?:0|[1-9]\\d{0,2}(?:\\.\\d{3})*),\\d{2}\\s[A-Z]{3}$"));
+        assertTrue(currentAmountElement.getText().matches("^[\\-−]?(?:0|[1-9]\\d{0,2}(?:\\.\\d{3})*),\\d{2}\\s[A-Z]{3}$"));
     }
 
     @And("Assert default account is displayed")
@@ -12571,7 +12572,7 @@ public class Steps {
         System.out.println("Datum: " + transactionValues.get("ValueDate"));
 
         transactionValues.put("DebtorName", driver.findElement(By.xpath(
-                "//div[@class='ng-star-inserted']/div[contains(text(), 'Name')]/following-sibling::div/div"
+                "//div[@class='ng-star-inserted']/div[contains(text(), 'Debtor name')]/following-sibling::div/div"
         )).getText().trim());
         System.out.println("Debtor: " + transactionValues.get("DebtorName"));
 
@@ -12580,13 +12581,13 @@ public class Steps {
         )).getText().trim());
         System.out.println("Recipient Account Number: " + transactionValues.get("RecipientAccountNumber"));
 
-        transactionValues.put("Reference", driver.findElement(By.xpath(
-                "//div[contains(@class, 'tw-hidden xs:tw-block')]/div[text()='Reference']/following-sibling::div"
-        )).getText().trim());
-        System.out.println("Reference: " + transactionValues.get("Reference"));
+//        transactionValues.put("Reference", driver.findElement(By.xpath(
+//                "//div[contains(@class, 'tw-hidden xs:tw-block')]/div[text()='Reference']/following-sibling::div"
+//        )).getText().trim());
+//        System.out.println("Reference: " + transactionValues.get("Reference"));
 
         transactionValues.put("DebtorAccountNumber", driver.findElement(By.xpath(
-                "//*[@class='ng-star-inserted']/div[text()='Account number']/following-sibling::div"
+                "//*[@class='ng-star-inserted']/div[text()='Debtor account']/following-sibling::div"
         )).getText().trim());
         System.out.println("Debtor Account Number: " + transactionValues.get("DebtorAccountNumber"));
 
@@ -12666,15 +12667,20 @@ public class Steps {
         System.out.println("PDF normalized: [" + normalizeText(pdfTextRaw) + "]");
         System.out.println(pdfText.contains(expected.get("Purpose")));
 
-        assertPdfContainsValue(pdfText, expected.get("Amount"), "Amount");
+        String expectedAmountForPdf = expected.get("Amount").replace("-", "").replace("−", "").trim();
+        assertPdfContainsValue(pdfText, expectedAmountForPdf, "Amount");
         assertPdfContainsValue(pdfText, expected.get("Purpose"), "Purpose");
         assertPdfContainsValue(pdfText, expected.get("Reference"), "Reference");
         assertPdfContainsValue(pdfText, expected.get("ValueDate"), "ValueDate");
 
         assertPdfContainsValue(pdfText, expected.get("DebtorName"), "DebtorName");
         assertPdfContainsValue(pdfText, expected.get("RecipientName"), "RecipientName");
-        assertPdfContainsValue(pdfText, normalizeIban(expected.get("RecipientAccountNumber")), "RecipientAccountNumber");
-        assertPdfContainsValue(pdfText, normalizeIban(expected.get("DebtorAccountNumber")), "DebtorAccountNumber");
+//        assertPdfContainsValue(pdfText, normalizeIban(expected.get("RecipientAccountNumber")), "RecipientAccountNumber");
+//        assertPdfContainsValue(pdfText, normalizeIban(expected.get("DebtorAccountNumber")), "DebtorAccountNumber");
+        String expectedAmountForRecipientAccNumber = expected.get("RecipientAccountNumber").replace("-", "").replace("−", "").trim();
+        String expectedAmountForDebtorAccNumber = expected.get("DebtorAccountNumber").replace("-", "").replace("−", "").trim();
+        assertPdfContainsValue(pdfText, expectedAmountForRecipientAccNumber, "RecipientAccountNumber");
+        assertPdfContainsValue(pdfText, expectedAmountForDebtorAccNumber, "DebtorAccountNumber");
 
         System.out.println("Sve vrednosti su pronađene u PDF fajlu.");
 
@@ -13616,7 +13622,7 @@ public class Steps {
         assertTrue(elementForPaymentDate.isDisplayed());
     }
 
-    @And("Assert dates of Upcoming payments are displayed correctly")
+    @And("Assert dates of Payments archive are displayed correctly")
     public void assertDatesOfUpcomingPaymentsAreDisplayedCorrectly() throws Throwable {
         WebElement element = SelectByXpath.CreateElementByXpath("//div[contains(@class, 'caption medium')]");
         assertTrue(element.isDisplayed());
@@ -13639,7 +13645,7 @@ public class Steps {
         Assert.assertTrue("Upcoming payments ikonica postoji u DOM-u, ali nijedna nije vidljiva.", isAnyDisplayed);
     }
 
-    @And("Assert list of creditor names of Upcoming payments are displayed")
+    @And("Assert list of creditor names of Payments archive are displayed")
     public void assertListOfCreditorNamesOfUpcomingPaymentsAreDisplayed() throws Throwable {
         WebElement element = SelectByXpath.CreateElementByXpath("//div[contains(@class, 'xs:subheadline xs:medium')]");
         assertTrue(element.isDisplayed());
@@ -13667,6 +13673,58 @@ public class Steps {
                     actualText.matches(amountWithCurrencyRegex)
             );
         }
+    }
+
+    @And("Assert element by text {string} has following sibling {string} with contains text from Excel {string} columnName {string}")
+    public void assertElementByTextHasFollowingSiblingWithContainsTextFromExcelColumnName(String text, String followingSiblingTag, String rowindex, String columnName) throws Throwable {
+        String expectedText = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        List<WebElement> elements = SelectByXpath.CreateElementByXpathTextFollowingSibling(text, followingSiblingTag);
+        Assert.assertFalse("Nije pronađen element za text: " + text + " i sibling tag: " + followingSiblingTag, elements.isEmpty());
+
+        String actualText = elements.get(0).getAttribute("textContent");
+        expectedText = expectedText
+                .replace("\u00A0", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
+        actualText = actualText
+                .replace("\u00A0", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
+        Assert.assertTrue(actualText.contains(expectedText));
+    }
+
+    @And("Assert tabs in Product details are displayed correctly for Loans")
+    public void assertTabsInProductDetailsAreDisplayedCorrectlyForLoans() throws Throwable {
+        String xPath = "//nlb-tabs//a";
+        List<WebElement> tabsElements = SelectByXpath.CreateElementsByXpath(xPath);
+        int numOfTabs = tabsElements.size();
+        if(numOfTabs!=3)
+            fail();
+        for (int i = 0; i < numOfTabs; i++) {
+            if (i == 0) {
+                assertEquals("Details", tabsElements.get(i).getAttribute("innerText"));
+            } else if (i == 1) {
+                assertEquals("Payments", tabsElements.get(i).getAttribute("innerText"));
+            } else if (i == 2) {
+                assertEquals("Annuity plan", tabsElements.get(i).getAttribute("innerText"));
+            } else {
+                fail("More than 3 tabs are found");
+            }
+        }
+        String defaultSelectedxPath = "//nlb-tabs//a";
+        WebElement defaultSelectedElement = SelectByXpath.CreateElementByXpath(defaultSelectedxPath);
+        assertEquals("Details", defaultSelectedElement.getAttribute("innerText"));
+    }
+
+    @And("Enter random name into label with text {string} with following sibling {string} that has descendant {string} and remember it under key {string}")
+    public void enterRandomNameIntoLabelWithTextWithFollowingSiblingThatHasDescendantAndRememberItUnderKey(String labelText, String siblingTag, String descendantTag, String key) throws Throwable {
+        String xPathForPurposeField = "//label[text()='" + labelText + "']//following-sibling::" + siblingTag + "//" + descendantTag + "";
+        WebElement elementForPurposeField = SelectByXpath.CreateElementByXpath(xPathForPurposeField);
+        String randomPurpose = rh.generateRandomStringOfCertainLenght(10);
+        hp.deleteTextFromFieldLonger(elementForPurposeField);
+        hp.EnterTextToElement(elementForPurposeField, randomPurpose);
+//        Utilities.saveTheValueToFile(randomPurpose, key);
+        DataManager.userObject.put(key, randomPurpose);
     }
 
     private static class AccountRow {

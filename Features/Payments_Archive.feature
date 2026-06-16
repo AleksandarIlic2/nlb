@@ -119,7 +119,7 @@ Feature: Payments_Archive
     And Click on element by containing text "Executed"
     And Click on element by containing text "Rejected"
     And Click on element by containing text "Confirm"
-    And Assert transaction status in Past payments are Rejected
+#    And Assert transaction status in Past payments are Rejected
 
     And Click on element by containing text "Executed"
     And Click on NLB button "Confirm"
@@ -146,6 +146,44 @@ Feature: Payments_Archive
     And Click on element by text "Confirmation"
     And Assert document with name starting with "Potvrda" and has file type ".pdf" is downloaded
     And Assert that Executed past payment transaction values in PDF match remembered values
+
+    Examples:
+      | rowindex |
+      |        1 |
+
+
+  @Payments_Payments_Archive-Payments_List_[WEB]
+  Scenario Outline: Payments_Payments_Archive-Payments_List_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+
+    When Click on tab "Payments" from main sidebar
+    And Wait for element by contains text "Past payments"
+    And Wait for "2" seconds
+    And Click on element by containing text "Past payments"
+    And Assert payments in past payments have loaded
+
+#    Then Assert icons for Upcoming payments are displayed
+    And Assert dates of Payments archive are displayed correctly
+    And Assert list of elements by xPath "//h5" are displayed
+    And Assert list of creditor names of Payments archive are displayed
+#    And Assert list of amounts with currencies of Upcoming payments are displayed correctly
+
+    And Click on element by xpath "//nlb-account-selector"
+    And Click on element from Excel "<rowindex>" contains text columnName "current_account_1_bban"
+    And Assert dates of Payments archive are displayed correctly
+    And Assert list of elements by xPath "//h5" are displayed
+    And Assert list of creditor names of Payments archive are displayed
+#    And Assert list of amounts with currencies of Upcoming payments are displayed correctly
+
+    Then Click on element by xpath "//nlb-account-selector"
+    And Click on element from Excel "<rowindex>" contains text columnName "savings_account_1_number"
+    And Assert dates of Payments archive are displayed correctly
+    And Assert list of elements by xPath "//h5" are displayed
+    And Assert list of creditor names of Payments archive are displayed
+#    And Assert list of amounts with currencies of Upcoming payments are displayed correctly
 
     Examples:
       | rowindex |

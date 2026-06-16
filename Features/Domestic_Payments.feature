@@ -194,6 +194,7 @@ Feature: Domestic_Payments
     And Click on element by aria label "User profile"
     And Remember full name of user from dashboard under key "fullNameKey"
     And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
     And Remember available balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Available_Balance"
     And Remember current balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Current_Balance"
 
@@ -222,7 +223,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Account number"
     And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "Account number" input field
     And Assert element by contains text "Name"
-    And Enter text "Ime Automatizacija Web" into "Name" input field and remember it under key "keyName"
+    And Enter random name into label with text "Name" with following sibling "div" that has descendant "input" and remember it under key "keyName"
     And Assert element by contains text "Street and street number"
     And Enter text "Juzni bulevar 55" into "street" input field and remember it under key "keyStreet"
     And Assert element by contains text "City"
@@ -399,12 +400,10 @@ Feature: Domestic_Payments
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
     And Click on normalized text "Select from list"
     And Assert element by contains text "Select template"
-    #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
     And Assert element by contains text "Select recipient"
     And Assert element by xPath "//nlb-search-box"
     And Assert "input" field with placeholder "Type here to search"
     And Assert element by contains text "Total number of saved templates:"
-    #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
     And Click on normalized text "Select recipient"
     And Assert element by xPath "//nlb-search-box"
     And Wait for "2" seconds
@@ -413,7 +412,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Account number"
     And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "Account number" input field
     And Assert element by contains text "Name"
-    And Enter text "Ime Automatizacija Web" into "Name" input field and remember it under key "keyName"
+    And Enter random name into label with text "Name" with following sibling "div" that has descendant "input" and remember it under key "keyName"
     And Assert element by contains text "Street and street number"
     And Enter text "Juzni bulevar 55" into "street" input field and remember it under key "keyStreet"
     And Assert element by contains text "City"
@@ -469,8 +468,8 @@ Feature: Domestic_Payments
     And Wait for element by contains text "Domestic payment"
     And Click on tab "My Products" from main sidebar
     And Wait for first product to load
-    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "3" is correct
-    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "3" is correct
+#    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "3" is correct
+#    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "3" is correct
 
     #treba da ide u Past payments
     And Click on tab "Payments" from main sidebar

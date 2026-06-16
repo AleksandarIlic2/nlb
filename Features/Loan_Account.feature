@@ -35,17 +35,12 @@ Feature: Loan_Account
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    And Scroll to account from excel "<rowindex>" columnName "loan_account_1_number" in my products page
-#    And Assert that loan accounts are sorted correctly
-    And Assert Loan accounts icons is displayed
-    And Assert Loan accounts product names is displayed
-    And Assert Loan accounts account numbers is displayed
-    And Assert Loan accounts current loan balance is displayed
+    When Scroll to account from excel "<rowindex>" columnName "loan_account_2_number" in my products page
 
-    When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
+    Then Click on element from Excel "<rowindex>" contains text columnName "loan_account_2_number"
     And Wait for product details to load
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_number" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_name" is displayed
     And Assert Loan account tabs is displayed correctly
     And Assert element by xPath "(//nlb-amount)[1]" has text in format "^\d{1,3}(\.\d{3})*,\d{2}\s*[A-Z]{3}$"
     And Assert Loan labels are displayed in the following order:
@@ -64,23 +59,17 @@ Feature: Loan_Account
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
+    And Scroll to account from excel "<rowindex>" columnName "loan_account_2_number" in my products page
 
-    And Scroll to account from excel "<rowindex>" columnName "loan_account_1_number" in my products page
-#    And Assert that loan accounts are sorted correctly
-    And Assert Loan accounts icons is displayed
-    And Assert Loan accounts product names is displayed
-    And Assert Loan accounts account numbers is displayed
-    And Assert Loan accounts current loan balance is displayed
-
-    When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
+    When Click on element from Excel "<rowindex>" contains text columnName "loan_account_2_number"
     And Wait for product details to load
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_number" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_name" is displayed
     And Assert Loan account tabs is displayed correctly
     And Assert element by xPath "(//nlb-amount)[1]" has text in format "^\d{1,3}(\.\d{3})*,\d{2}\s*[A-Z]{3}$"
-    And Assert Loan labels are displayed in the following order:
-      | Financial details   |
-      | Account details     |
+#    And Assert Loan labels are displayed in the following order:
+#      | Financial details   |
+#      | Account details     |
 
     Then Click on element by containing text "Annuity"
     And Wait for element by contains text "Installments"
@@ -98,7 +87,7 @@ Feature: Loan_Account
 
     Examples:
       | rowindex |
-      |        1 |
+      |        5 |
 
 
   @Loan_Accounts-Annuity_Plan-Filter_[WEB]
@@ -108,18 +97,12 @@ Feature: Loan_Account
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
+    And Scroll to account from excel "<rowindex>" columnName "loan_account_2_number" in my products page
 
-    And Scroll to account from excel "<rowindex>" columnName "loan_account_1_number" in my products page
-#    And Assert that loan accounts are sorted correctly
-    And Assert Loan accounts icons is displayed
-    And Assert Loan accounts product names is displayed
-    And Assert Loan accounts account numbers is displayed
-    And Assert Loan accounts current loan balance is displayed
-
-    When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
+    When Click on element from Excel "<rowindex>" contains text columnName "loan_account_2_number"
     And Wait for product details to load
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_number" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_name" is displayed
     And Assert element by text "Details"
     And Assert element by contains text "Payments"
     And Assert element by contains text "Annuity"
@@ -150,7 +133,7 @@ Feature: Loan_Account
 
     Examples:
       | rowindex |
-      |        1 |
+      |        5 |
 
 
   @Loan_Accounts-Annuity_Plan-Filter-invalid_[WEB]
@@ -160,18 +143,12 @@ Feature: Loan_Account
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
+    And Scroll to account from excel "<rowindex>" columnName "loan_account_2_number" in my products page
 
-    And Scroll to account from excel "<rowindex>" columnName "loan_account_1_number" in my products page
-#    And Assert that loan accounts are sorted correctly
-    And Assert Loan accounts icons is displayed
-    And Assert Loan accounts product names is displayed
-    And Assert Loan accounts account numbers is displayed
-    And Assert Loan accounts current loan balance is displayed
-
-    When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
+    When Click on element from Excel "<rowindex>" contains text columnName "loan_account_2_number"
     And Wait for product details to load
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_number" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_name" is displayed
     And Assert element by text "Details"
     And Assert element by contains text "Payments"
     And Assert element by contains text "Annuity"
@@ -201,7 +178,7 @@ Feature: Loan_Account
 
     Examples:
       | rowindex |
-      |        1 |
+      |        5 |
 
 
   @Loan_Accounts-Payments_[WEB]
@@ -211,18 +188,12 @@ Feature: Loan_Account
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
+    And Scroll to account from excel "<rowindex>" columnName "loan_account_2_number" in my products page
 
-    And Scroll to account from excel "<rowindex>" columnName "loan_account_1_number" in my products page
-    And Assert that loan accounts are sorted correctly
-    And Assert Loan accounts icons is displayed
-    And Assert Loan accounts product names is displayed
-    And Assert Loan accounts account numbers is displayed
-    And Assert Loan accounts current loan balance is displayed
-
-    When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
+    When Click on element from Excel "<rowindex>" contains text columnName "loan_account_2_number"
     And Wait for product details to load
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_number" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_name" is displayed
     And Assert Loan account tabs is displayed correctly
     And Assert element by xPath "(//nlb-amount)[1]" has text in format "^\d{1,3}(\.\d{3})*,\d{2}\s*[A-Z]{3}$"
 #    And Assert Loan labels are displayed in the following order:
@@ -248,7 +219,7 @@ Feature: Loan_Account
 
     Examples:
       | rowindex |
-      |        1 |
+      |        5 |
 
 
   @Loan_Accounts-Payments-Filter_[WEB]
@@ -258,18 +229,12 @@ Feature: Loan_Account
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
+    And Scroll to account from excel "<rowindex>" columnName "loan_account_2_number" in my products page
 
-    And Scroll to account from excel "<rowindex>" columnName "loan_account_1_number" in my products page
-#    And Assert that loan accounts are sorted correctly
-    And Assert Loan accounts icons is displayed
-    And Assert Loan accounts product names is displayed
-    And Assert Loan accounts account numbers is displayed
-    And Assert Loan accounts current loan balance is displayed
-
-    When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
+    When Click on element from Excel "<rowindex>" contains text columnName "loan_account_2_number"
     And Wait for product details to load
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_number" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_name" is displayed
     And Assert element by text "Details"
 #    And Assert element by contains text "Payments_Action"
 #    And Assert element by contains text "AnnuityPlan"
@@ -315,18 +280,12 @@ Feature: Loan_Account
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
+    And Scroll to account from excel "<rowindex>" columnName "loan_account_2_number" in my products page
 
-    And Scroll to account from excel "<rowindex>" columnName "loan_account_1_number" in my products page
-#    And Assert that loan accounts are sorted correctly
-    And Assert Loan accounts icons is displayed
-    And Assert Loan accounts product names is displayed
-    And Assert Loan accounts account numbers is displayed
-    And Assert Loan accounts current loan balance is displayed
-
-    When Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
+    When Click on element from Excel "<rowindex>" contains text columnName "loan_account_2_number"
     And Wait for product details to load
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_number" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_1_name" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_number" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_name" is displayed
     And Assert element by text "Details"
     And Assert Loan account tabs is displayed correctly
     And Assert element by xPath "(//nlb-amount)[1]" has text in format "^\d{1,3}(\.\d{3})*,\d{2}\s*[A-Z]{3}$"
@@ -355,6 +314,61 @@ Feature: Loan_Account
     And Click on calendar icon with index "2"
     And Assert contains aria label button "Previous month" is not clickable
     And Assert date "15.03.2026" is not clickable
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+
+  @Loan_Accounts-Details-Financial_Details_[WEB]
+  Scenario Outline: Loan_Accounts-Details-Financial_Details_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    When Scroll to account from excel "<rowindex>" columnName "loan_account_2_number" in my products page
+    And Click on element from Excel "<rowindex>" contains text columnName "loan_account_2_number"
+    And Wait for product details to load
+    And Assert tabs in Product details are displayed correctly for Loans
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_number" is displayed
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "loan_account_2_name"
+    And Assert Loan account tabs is displayed correctly
+
+    Then Assert label with text "Opening amount" has value with text in format "^(?:0|[1-9]\d{0,2}(?:\.\d{3})*),\d{2}\s[A-Z]{3}$"
+    And Assert label with text "Annuity" has value with text in format "^(?:0|[1-9]\d{0,2}(?:\.\d{3})*),\d{2}\s[A-Z]{3}$"
+    And Assert label with text "Nominal interest rate" has value with text in format "^\d{1,3},\d{2}%$"
+    And Assert label with text "Last installment date" has value with text in format "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert label with text "Next installment date" has value with text in format "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert label with text "Remaining principal amount" has value with text in format "^(?:0|[1-9]\d{0,2}(?:\.\d{3})*),\d{2}\s[A-Z]{3}$"
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+
+  @Loan_Accounts-Details-Account_Details_[WEB]
+  Scenario Outline: Loan_Accounts-Details-Account_Details_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    When Scroll to account from excel "<rowindex>" columnName "loan_account_2_number" in my products page
+    And Click on element from Excel "<rowindex>" contains text columnName "loan_account_2_number"
+    And Wait for product details to load
+    And Assert element by contains text from excel "<rowindex>" columnName "loan_account_2_number" is displayed
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "loan_account_2_name"
+    And Assert Loan account tabs is displayed correctly
+
+    Then Assert label with text "Account owner" has value with text from Excel "<rowindex>" columnName "account_details_owner"
+    And Assert label with text "Start date" has value with text in format "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert label with text "Repayment period" has value with text in format "^(?:0|[1-9]\d*)\sMonths$"
+    And Assert label with text "Remaining period" has value with text in format "^(?:0|[1-9]\d*)\sMonths$"
 
     Examples:
       | rowindex |

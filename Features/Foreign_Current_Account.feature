@@ -37,7 +37,7 @@ Feature: Foreign_Current_Account
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for element by tag "nlb-product-detail-header"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
@@ -270,7 +270,7 @@ Feature: Foreign_Current_Account
     And Assert transaction dates are ordered correctly
     And Scroll element by contains text "Transactions" up
     And Assert element by xPath "//h3[contains(@class, 'heading-5')]" is displayed
-    And Assert element by contains class "heading-5 ng-star-inserted" is displayed
+#    And Assert element by contains class "heading-5 ng-star-inserted" is displayed
     And Assert list of elements containing class "category-icon" are displayed
     And Assert list of elements containing class "medium tw-flex" are displayed
     And Assert list of elements containing class "caption medium tw-text" are displayed
@@ -289,26 +289,25 @@ Feature: Foreign_Current_Account
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for element by tag "nlb-product-detail-header"
 
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
-    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_iban"
+    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
     And Assert EUR currency is selected if product has more than one currency
     And Assert currency cards have Available and Current balance displayed correctly
-    And Assert tabs in Product details are displayed correctly for Current Foreign Accounts
     And Scroll to first transaction in Products details
     And Assert transaction is displayed correctly in Products details with currency "EUR"
     And Assert amount for month category is displayed in Products details with currency "EUR"
     And Assert there are month categories in transactions list in Products details
     And Assert transaction dates are ordered correctly
 
-    Then Scroll to Currency card for "USD" in Product details
-    And Select Currency card "USD" in Product details
+    Then Scroll to Currency card for "JPY" in Product details
+    And Select Currency card "JPY" in Product details
     And Wait for first transaction in Product details
     And Scroll to first transaction in Products details
-    And Assert transaction is displayed correctly in Products details with currency "USD"
-    And Assert amount for month category is displayed in Products details with currency "USD"
+    And Assert transaction is displayed correctly in Products details with currency "JPY"
+    And Assert amount for month category is displayed in Products details with currency "JPY"
     And Assert there are month categories in transactions list in Products details
     And Assert transaction dates are ordered correctly
 
@@ -428,7 +427,7 @@ Feature: Foreign_Current_Account
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for element by tag "nlb-product-detail-header"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"

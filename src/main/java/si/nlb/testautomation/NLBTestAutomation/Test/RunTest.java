@@ -80,7 +80,7 @@ public class RunTest {
                 Utilities.saveResults(DataManager.resultContainer);
                 //Added for running failed tests again
                 DataManager.tryCallTestrail();
-                //Utilities.replaceExecutionListWithFailedExecutionList();
+                Utilities.replaceExecutionListWithFailedExecutionList();
                 Utilities.savePreviousTestResults();
                 try {
                     Utilities.archiveStatusFile();
