@@ -676,7 +676,7 @@ Feature: Domestic_Payments
     And Refresh page
     And Wait for first past payment
 
-    And Assert first Upcoming payment has purpose under key "keyPurpose"
+    And Assert first past or upcoming payment has purpose under key "keyPurpose"
     And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
     And Assert first past or upcoming payment has name from key "keyRecipientName"
     And Assert first past or upcoming payment has today date
@@ -708,7 +708,6 @@ Feature: Domestic_Payments
     Examples:
       | rowindex |
       |        5 |
-
 
 
   @Payments_Domestic_Payments_Internal_Non_Urgent_Payment_[WEB]
@@ -790,7 +789,7 @@ Feature: Domestic_Payments
     And Wait for "1" seconds
     And Wait for first past payment
 
-    And Assert first Upcoming payment has purpose under key "keyPurpose"
+    And Assert first past or upcoming payment has purpose under key "keyPurpose"
     And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
     And Assert first past or upcoming payment has name from key "keyRecipientName"
     And Assert first past or upcoming payment has today date
@@ -801,7 +800,6 @@ Feature: Domestic_Payments
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
     And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert field "Purpose code" in payment confirmation has text "289"
-
     #And Assert label "Debtor name" in payment confirmation contains value from excel "<rowindex>" columnName "username"
     And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
 
@@ -819,3 +817,840 @@ Feature: Domestic_Payments
     Examples:
       | rowindex |
       |        5 |
+
+
+  @Payments_Domestic_Payments_External_Urgent_Payment_No_Model_[WEB]
+  Scenario Outline: Payments_Domestic_Payments_External_Urgent_Payment_No_Model_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+    And Click on element by aria label "User profile"
+    And Remember full name of user from dashboard under key "keyDebtorFullName"
+
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Current_Balance"
+
+    When Click on tab "Payments" from main sidebar
+    And Wait for element by text "Past payments"
+    And Click on normalized text "Domestic payment"
+    And Wait for element by contains text "Select from list"
+    And Assert element by contains text "Domestic payment"
+    And Assert element by contains text "Check data and choose “Next”"
+    And Assert element by contains text "Recipient"
+    And Assert element by contains text "Select from list or enter recipient data."
+    And Assert element by contains src "CurrentAccount-Icon" is displayed
+    And Assert element by contains class "subheadline bold" ends with "RSD"
+
+    And Assert element by contains text "Account number"
+    And Enter text "170-0010371461000-09" into "Account number" input field and remember it under key "keyRecipientAccountNumber"
+    And Enter random text into "Name" input field and remember it under key "keyRecipientName"
+    And Assert element by contains text "Street and street number"
+    And Enter text "stara 552" into "street" input field and remember it under key "keyStreet"
+    And Enter text "bor" into "City" input field and remember it under key "keyCity"
+    And Assert element by contains text "Save recipient"
+    And Assert checkbox "Save recipient" is checked "false"
+
+    And Assert element by contains text "Payment"
+    And Enter text "3" into Payment amount input field and remember it under key "keyPaymentAmount"
+    And Assert element by tag "input" contains aria label "RSD"
+    And Assert element by contains text "Purpose code"
+    And Assert element by label contains text "Purpose code" with following sibling "div" that has descendant "input" has text "289"
+    And Enter random purpose into label with text "Purpose" with following sibling "div" that has descendant "input" and remember it under key "keyPurpose"
+
+    And Assert element by contains text "Model"
+    And Assert element by contains text "Reference number"
+    And Assert payment date is todays date and in valid date format in Domestic payment
+    And Assert checkbox "Urgent payment" is checked "True"
+
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Click on element by containing text "Confirm"
+
+      #PAYMENT REVIEW
+    And Wait for element by contains text "Payment amount"
+    And Assert payment amount under key is "keyPaymentAmount" is displayed
+    And Assert element with text "Fee" with following sibling has text "0,00 RSD"
+    And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
+    And Assert element by class "bold heading-5 ng-star-inserted" containing text "Payment details"
+
+    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
+    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+
+    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
+    And Assert element with text "Account number" with following sibling has text under key "keyRecipientAccountNumber"
+    And Assert element with text "Purpose" with following sibling has text under key "keyPurpose"
+    And Assert element with text "Purpose code" with following sibling has text "289"
+    And Assert value date is todays date and in valid date format in Payment review
+
+    And Assert element by contains text "Urgent payment"
+    And Assert element by contains text "Payments_Wizard_Domestic"
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Assert element by contains text "Cancel"
+    And Click on element by containing text "Confirm"
+    And Assert element by contains text "Success"
+
+    And Wait for element by contains text "Domestic payment"
+    And Wait for "1" seconds
+    And Refresh page
+    And Wait for first past payment
+
+    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
+    And Assert first past or upcoming payment has name from key "keyRecipientName"
+    And Assert first past or upcoming payment has today date
+    And Click on normalized text from key "keyRecipientName"
+    And Assert label "Recipient" in payment confirmation has value under remembered key "keyRecipientName"
+    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
+    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
+    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert field "Purpose code" in payment confirmation has text "289"
+    And Assert field "Purpose" in payment confirmation has text from key "keyPurpose"
+    And Assert field "Payment date" in payment confirmation has valid date displayed
+    And Assert field "Execution date" in payment confirmation has valid date displayed
+    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+
+    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+#    And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
+#    And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert field "Payment status" in payment confirmation has text "Executed"
+    And Assert field "Fee" in payment confirmation contains text "0,00"
+    And Assert field "Fee" in payment confirmation contains text "RSD"
+    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+
+    Then Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "3" is correct
+    And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "3" is correct
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+
+  @Payments_Domestic_Payments_External_Urgent_Payment_Model11_Invalid_Bez_Poziva_Na_Broj_[WEB]
+  Scenario Outline: Payments_Domestic_Payments_External_Urgent_Payment_Model11_Invalid_Bez_Poziva_Na_Broj_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Current_Balance"
+
+    When Click on tab "Payments" from main sidebar
+    And Wait for element by text "Past payments"
+    And Click on normalized text "Domestic payment"
+    And Wait for element by contains text "Select from list"
+    And Assert element by contains text "Domestic payment"
+    And Assert element by contains text "Check data and choose “Next”"
+    And Assert element by contains text "Recipient"
+    And Assert element by contains text "Select from list or enter recipient data."
+    And Assert element by contains src "CurrentAccount-Icon" is displayed
+    And Assert element by contains class "subheadline bold" ends with "RSD"
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
+
+    And Assert element by contains text "Account number"
+    And Enter text "170-0010371461000-09" into "Account number" input field
+    And Enter text "pera" into "Name" input field
+    And Assert element by contains text "Street and street number"
+    And Enter text "nova 444" into "street" input field
+    And Enter text "beograd" into "City" input field
+
+    And Assert element by contains text "Save recipient"
+    And Assert checkbox "Save recipient" is checked "false"
+
+    And Assert element by contains text "Payment"
+    And Assert element by contains text "Payment amount"
+    And Enter text "3" in field by contains id "amount-input"
+    And Assert element by tag "input" contains aria label "RSD"
+    And Assert element by contains text "Purpose code"
+    And Assert element by label contains text "Purpose code" with following sibling "div" that has descendant "input" has text "289"
+
+    And Enter text "QSSSSDDDD" into "Purpose" input field
+    And Assert element by contains text "Model"
+    And Select payment model "11" from dropdown
+    And Assert element by label contains text "Model" with following sibling "div" that has descendant "input" has text "11"
+    And Assert element by contains text "Reference number"
+    And Assert payment date is todays date and in valid date format in Domestic payment
+    And Assert checkbox "Urgent payment" is checked "True"
+
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Click on element by containing text "Confirm"
+
+    Then Wait for element by contains text "Neispravan poziv na broj  za model 11"
+    And Assert element by contains text "Error"
+    And Assert element by contains class "alert-triangle" is displayed
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+
+  @Payments_Domestic_Payments_External_Non_Urgent_Payment_Model11_[WEB]
+  Scenario Outline: Payments_Domestic_Payments_External_Non_Urgent_Payment_Model11_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+    And Click on element by aria label "User profile"
+    And Remember full name of user from dashboard under key "keyDebtorFullName"
+
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Current_Balance"
+
+    When Click on tab "Payments" from main sidebar
+    And Wait for element by text "Past payments"
+    And Click on normalized text "Domestic payment"
+    And Wait for element by contains text "Select from list"
+    And Assert element by contains class "subheadline bold" ends with "RSD"
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
+
+    And Enter text "200-2206180101000-48" into "Account number" input field and remember it under key "keyRecipientAccountNumber"
+    And Enter random text into "Name" input field and remember it under key "keyRecipientName"
+    And Assert element by contains text "Street and street number"
+    And Enter text "niska 55" into "street" input field and remember it under key "keyStreet"
+    And Enter text "Irig" into "City" input field and remember it under key "keyCity"
+    And Assert element by contains text "Save recipient"
+    And Assert checkbox "Save recipient" is checked "false"
+
+    And Assert element by contains text "Payment"
+    And Assert element by contains text "Payment amount"
+    And Enter text "2" into Payment amount input field and remember it under key "keyPaymentAmount"
+    And Assert element by tag "input" contains aria label "RSD"
+    And Enter random purpose into label with text "Purpose" with following sibling "div" that has descendant "input" and remember it under key "keyPurpose"
+
+    And Assert element by contains text "Purpose"
+    And Assert element by contains text "Model"
+    And Select payment model "11" from dropdown and remember it under key "keyPaymentModel"
+    And Assert element by label contains text "Model" with following sibling "div" that has descendant "input" has text "11"
+    And Assert element by label contains text "Purpose code" with following sibling "div" that has descendant "input" has text "289"
+    And Enter text "801240107032-25119-1" into "Reference number" input field and remember it under key "keyReferenceNumber"
+    And Assert payment date is todays date and in valid date format in Domestic payment
+
+    And Click on normalized text "Urgent payment"
+    And Assert checkbox "Urgent payment" is checked "False"
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Click on element by containing text "Confirm"
+
+      ### PAYMENT REVIEW UI ###
+    And Wait for element by contains text "Payment amount"
+    And Assert payment amount under key is "keyPaymentAmount" is displayed
+    And Assert element with text "Fee" with following sibling has text "0,00 RSD"
+    And Assert element by contains text "Debtor"
+    And Assert element by contains text "Recipient"
+    And Assert element by contains text "Payment details"
+
+    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
+#    And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+#    And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+
+    #And Assert element by text "Debtor account" has following sibling "dd" with text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
+    And Assert element with text "Account number" with following sibling contains text under key "keyRecipientAccountNumber"
+    And Assert element with text "Purpose" with following sibling contains text under key "keyPurpose"
+    And Assert element with text "Purpose code" with following sibling has text "289"
+    And Assert value date is todays date and in valid date format in Payment review
+    And Assert element with text "Reference number" with following sibling contains text under key "keyReferenceNumber"
+
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Assert element by contains text "Cancel"
+    And Click on element by containing text "Confirm"
+    And Assert element by contains text "Success"
+
+    And Wait for element by contains text "Domestic payment"
+    And Click on normalized text "Upcoming payments"
+    And Wait for first past payment
+    And Wait for "1" seconds
+    And Refresh page
+    And Wait for first past payment
+
+    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+    And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
+    And Assert first past or upcoming payment has name from key "keyRecipientName"
+    And Assert first past or upcoming payment has today date
+
+    And Click on normalized text from key "keyRecipientName"
+    And Assert label "Recipient" in payment confirmation contains value under remembered key "keyRecipientName"
+    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
+    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
+    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert field "Purpose code" in payment confirmation has text "289"
+    And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
+    And Assert label "Model" in payment confirmation contains value under remembered key "keyPaymentModel"
+
+    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert field "Payment status" in payment confirmation has text "Pending"
+    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+
+    Then Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
+    And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+
+  @Payments_Domestic_Payments_External_Urgent_Payment_Model97_Invalid_Bez_Poziva_Na_Broj_[WEB]
+  Scenario Outline: Payments_Domestic_Payments_External_Urgent_Payment_Model97_Invalid_Bez_Poziva_Na_Broj_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Current_Balance"
+
+    When Click on tab "Payments" from main sidebar
+    And Wait for element by text "Past payments"
+    And Click on normalized text "Domestic payment"
+    And Wait for element by contains text "Select from list"
+    And Assert element by contains text "Domestic payment"
+    And Assert element by contains text "Check data and choose “Next”"
+    And Assert element by contains text "Recipient"
+    And Assert element by contains text "Select from list or enter recipient data."
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
+
+    And Enter text "170-0010371461000-09" into "Account number" input field
+    And Enter text "pera" into "Name" input field
+    And Assert element by contains text "Street and street number"
+    And Enter text "nova 2322" into "street" input field
+    And Enter text "beograd" into "City" input field
+    And Assert element by contains text "Save recipient"
+    And Assert checkbox "Save recipient" is checked "false"
+
+    And Assert element by contains text "Payment"
+    And Assert element by contains text "Payment amount"
+    And Enter text "3" in field by contains id "amount-input"
+    And Assert element by tag "input" contains aria label "RSD"
+    And Assert element by contains text "Purpose code"
+    And Assert element by label contains text "Purpose code" with following sibling "div" that has descendant "input" has text "289"
+    And Enter text "qwertyui" into "Purpose" input field
+
+    And Assert element by contains text "Purpose"
+    And Assert element by contains text "Model"
+    And Select payment model "97" from dropdown
+    And Assert element by label contains text "Model" with following sibling "div" that has descendant "input" has text "97"
+    And Assert element by contains text "Reference number"
+
+    And Assert payment date is todays date and in valid date format in Domestic payment
+    And Assert checkbox "Urgent payment" is checked "True"
+
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Click on element by containing text "Confirm"
+
+    Then Wait for element by contains text "Neispravan poziv na broj  za model 97"
+    And Assert element by contains text "Error"
+    And Assert element by contains class "alert-triangle" is displayed
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+
+  @Payments_Domestic_Payments_External_Non_Urgent_Payment_Model97_[WEB]
+  Scenario Outline: Payments_Domestic_Payments_External_Non_Urgent_Payment_Model97_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+    And Click on element by aria label "User profile"
+    And Remember full name of user from dashboard under key "keyDebtorFullName"
+
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Current_Balance"
+
+    When Click on tab "Payments" from main sidebar
+    And Wait for element by text "Past payments"
+    And Click on normalized text "Domestic payment"
+    And Wait for element by contains text "Select from list"
+    And Assert element by contains class "subheadline bold" ends with "RSD"
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
+
+    And Assert element by contains text "Account number"
+    And Enter text "265-1110312345678-24" into "Account number" input field and remember it under key "keyRecipientAccountNumber"
+    And Enter random text into "Name" input field and remember it under key "keyRecipientName"
+    And Assert element by contains text "Street and street number"
+    And Enter text "niska 55" into "street" input field and remember it under key "keyStreet"
+    And Enter text "Irig" into "City" input field and remember it under key "keyCity"
+    And Assert element by contains text "Save recipient"
+    And Assert checkbox "Save recipient" is checked "false"
+
+    And Assert element by contains text "Payment"
+    And Assert element by contains text "Payment amount"
+    And Enter text "5" into Payment amount input field and remember it under key "keyPaymentAmount"
+    And Assert element by tag "input" contains aria label "RSD"
+    And Enter random purpose into label with text "Purpose" with following sibling "div" that has descendant "input" and remember it under key "keyPurpose"
+
+    And Assert element by contains text "Model"
+    And Select payment model "97" from dropdown and remember it under key "keyPaymentModel"
+    And Assert element by label contains text "Model" with following sibling "div" that has descendant "input" has text "97"
+    And Assert element by contains text "Reference number"
+    And Enter text "30600268000161" into "Reference number" input field and remember it under key "keyReferenceNumber"
+    And Assert payment date is todays date and in valid date format in Domestic payment
+
+    And Click on normalized text "Urgent payment"
+    And Assert checkbox "Urgent payment" is checked "False"
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Click on element by containing text "Confirm"
+
+      ### PAYMENT REVIEW UI ###
+    And Wait for element by contains text "Payment amount"
+    And Assert payment amount under key is "keyPaymentAmount" is displayed
+    And Assert element with text "Fee" with following sibling has text "0,00 RSD"
+    And Assert element by contains text "Debtor"
+    And Assert element by contains text "Recipient"
+    And Assert element by contains text "Payment details"
+
+    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
+    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+
+    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
+    And Assert element with text "Account number" with following sibling contains text under key "keyRecipientAccountNumber"
+    And Assert element with text "Purpose" with following sibling contains text under key "keyPurpose"
+    And Assert element with text "Purpose code" with following sibling has text "289"
+    And Assert value date is todays date and in valid date format in Payment review
+    And Assert element with text "Reference number" with following sibling contains text under key "keyReferenceNumber"
+
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Assert element by contains text "Cancel"
+    And Click on element by containing text "Confirm"
+    And Assert element by contains text "Success"
+
+    And Wait for element by contains text "Domestic payment"
+    And Click on normalized text "Upcoming payments"
+    And Wait for "1" seconds
+    And Refresh page
+    And Wait for first past payment
+
+    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+    And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
+    And Assert first past or upcoming payment has name from key "keyRecipientName"
+    And Assert first past or upcoming payment has today date
+    And Click on normalized text from key "keyRecipientName"
+
+    And Assert label "Recipient" in payment confirmation contains value under remembered key "keyRecipientName"
+    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
+    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
+    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert field "Purpose code" in payment confirmation has text "289"
+    And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
+    And Assert label "Model" in payment confirmation contains value under remembered key "keyPaymentModel"
+    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+
+    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert field "Payment status" in payment confirmation has text "Pending"
+    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+
+    Then Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
+    And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+
+  @Payments_Domestic_Payments_Budzetski_Urgent_Payment_Purpose_Code_289_Invalid_[WEB]
+  Scenario Outline: Payments_Domestic_Payments_Budzetski_Urgent_Payment_Purpose_Code_289_Invalid_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Current_Balance"
+
+    When Click on tab "Payments" from main sidebar
+    And Wait for element by text "Past payments"
+    And Click on normalized text "Domestic payment"
+    And Wait for element by contains text "Select from list"
+    And Assert element by contains text "Domestic payment"
+    And Assert element by contains text "Check data and choose “Next”"
+    And Assert element by contains text "Recipient"
+    And Assert element by contains text "Select from list or enter recipient data."
+    And Assert element by contains src "CurrentAccount-Icon" is displayed
+    And Assert element by contains class "subheadline bold" ends with "RSD"
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
+
+    And Assert element by contains text "Account number"
+    And Enter text "840-0000713121843-57" into "Account number" input field
+    And Enter text "zika" into "Name" input field
+    And Assert element by contains text "Street and street number"
+    And Enter text "nova 555" into "street" input field
+    And Assert element by contains text "City"
+    And Enter text "nis" into "City" input field
+    And Assert element by contains text "Save recipient"
+    And Assert checkbox "Save recipient" is checked "false"
+
+    And Assert element by contains text "Payment"
+    And Assert element by contains text "Payment amount"
+    And Enter text "3" in field by contains id "amount-input"
+    And Assert element by tag "input" contains aria label "RSD"
+    And Assert element by contains text "Purpose code"
+    And Assert element by label contains text "Purpose code" with following sibling "div" that has descendant "input" has text "289"
+    And Enter text "ZXCVBVBBNM" into "Purpose" input field
+
+    And Assert element by contains text "Purpose"
+    And Assert element by contains text "Model"
+    And Select payment model "97" from dropdown
+    And Assert element by label contains text "Model" with following sibling "div" that has descendant "input" has text "97"
+    And Assert element by contains text "Reference number"
+    And Enter text "020201701973791828" into "Reference number" input field
+    And Assert payment date is todays date and in valid date format in Domestic payment
+    And Assert checkbox "Urgent payment" is checked "True"
+
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Click on element by containing text "Confirm"
+
+    Then Wait for element by contains text "Neispravna šifra plaćanja za račun"
+    And Assert element by contains text "Error"
+    And Assert element by contains class "alert-triangle" is displayed
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+
+  @Payments_Domestic_Payments_Budzetski_Urgent_Payment_Without_Reference_Number_Invalid_[WEB]
+  Scenario Outline: Payments_Domestic_Payments_Budzetski_Urgent_Payment_Without_Reference_Number_Invalid_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Current_Balance"
+
+    When Click on tab "Payments" from main sidebar
+    And Wait for element by text "Past payments"
+    And Click on normalized text "Domestic payment"
+    And Wait for element by contains text "Select from list"
+    And Assert element by contains text "Domestic payment"
+    And Assert element by contains text "Check data and choose “Next”"
+    And Assert element by contains text "Recipient"
+    And Assert element by contains text "Select from list or enter recipient data."
+    And Assert element by contains src "CurrentAccount-Icon" is displayed
+    And Assert element by contains class "subheadline bold" ends with "RSD"
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
+
+    And Enter text "840-0000713121843-57" into "Account number" input field
+    And Enter text "zika" into "Name" input field
+    And Assert element by contains text "Street and street number"
+    And Enter text "nova 555" into "street" input field
+    And Enter text "nis" into "City" input field
+    And Assert element by contains text "Save recipient"
+    And Assert checkbox "Save recipient" is checked "false"
+
+    And Assert element by contains text "Payment"
+    And Assert element by contains text "Payment amount"
+    And Enter text "3" in field by contains id "amount-input"
+    And Assert element by tag "input" contains aria label "RSD"
+    And Click on normalized text "Purpose code"
+    And Wait for element by contains text "253"
+    And Click on normalized text "253 - PAYMENT OF PUBLIC REVENUES EXCEPT TAXES AND CONTRIBUTIONS WITHHELD AT SOURCE"
+    And Assert element by label contains text "Purpose code" with following sibling "div" that has descendant "input" has text "253"
+    And Enter text "ZXCVBVBBNM" into "Purpose" input field
+
+    And Assert element by contains text "Purpose"
+    And Assert element by contains text "Model"
+    And Select payment model "97" from dropdown
+    And Assert element by label contains text "Model" with following sibling "div" that has descendant "input" has text "97"
+    And Assert element by contains text "Reference number"
+    And Assert payment date is todays date and in valid date format in Domestic payment
+    And Assert checkbox "Urgent payment" is checked "True"
+
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Click on element by containing text "Confirm"
+
+    Then Wait for element by contains text "Neispravan poziv na broj za račun"
+    And Assert element by contains text "Error"
+    And Assert element by contains class "alert-triangle" is displayed
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+
+  @Payments_Domestic_Payments_Budzetski_Urgent_Payment_Model97_[WEB]
+  Scenario Outline: Payments_Domestic_Payments_Budzetski_Urgent_Payment_Model97_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+    And Click on element by aria label "User profile"
+    And Remember full name of user from dashboard under key "keyDebtorFullName"
+
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Current_Balance"
+
+    When Click on tab "Payments" from main sidebar
+    And Wait for element by text "Past payments"
+    And Click on normalized text "Domestic payment"
+    And Wait for element by contains text "Select from list"
+    And Assert element by contains text "Domestic payment"
+    And Assert element by contains text "Recipient"
+    And Assert element by contains class "subheadline bold" ends with "RSD"
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
+
+    And Enter text "840-0000713121843-57" into "Account number" input field and remember it under key "keyRecipientAccountNumber"
+    And Enter random text into "Name" input field and remember it under key "keyRecipientName"
+    And Assert element by contains text "Street and street number"
+    And Enter text "nova 55" into "street" input field and remember it under key "keyStreet"
+    And Enter text "bor" into "City" input field and remember it under key "keyCity"
+    And Assert element by contains text "Save recipient"
+    And Assert checkbox "Save recipient" is checked "false"
+
+    And Assert element by contains text "Payment amount"
+    And Enter text "1" into Payment amount input field and remember it under key "keyPaymentAmount"
+    And Assert element by tag "input" contains aria label "RSD"
+
+    And Enter random purpose into label with text "Purpose" with following sibling "div" that has descendant "input" and remember it under key "keyPurpose"
+    And Click on normalized text "Purpose code"
+    And Click on normalized text "253 - PAYMENT OF PUBLIC REVENUES EXCEPT TAXES AND CONTRIBUTIONS WITHHELD AT SOURCE"
+    And Assert element by label contains text "Purpose code" with following sibling "div" that has descendant "input" has text "253"
+
+    And Assert element by contains text "Purpose"
+    And Assert element by contains text "Model"
+    And Select payment model "97" from dropdown and remember it under key "keyPaymentModel"
+    And Assert element by label contains text "Model" with following sibling "div" that has descendant "input" has text "97"
+    And Enter text "020201701973791828" into "Reference number" input field and remember it under key "keyReferenceNumber"
+    And Assert payment date is todays date and in valid date format in Domestic payment
+    And Assert checkbox "Urgent payment" is checked "True"
+
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Click on element by containing text "Confirm"
+
+      #PAYMENT REVIEW
+    And Wait for element by contains text "Payment amount"
+    And Assert payment amount under key is "keyPaymentAmount" is displayed
+    And Assert element with text "Fee" with following sibling has text "0,00 RSD"
+    And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
+    And Assert element by class "bold heading-5 ng-star-inserted" containing text "Payment details"
+
+    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
+    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+
+    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
+    And Assert element with text "Account number" with following sibling has text under key "keyRecipientAccountNumber"
+    And Assert element with text "Purpose" with following sibling has text under key "keyPurpose"
+    And Assert element with text "Purpose code" with following sibling has text "253"
+    And Assert value date is todays date and in valid date format in Payment review
+
+    And Assert element by contains text "Urgent payment"
+    And Assert element by contains text "Payments_Wizard_Domestic"
+    And Assert element with text "Reference number" with following sibling has text under key "keyReferenceNumber"
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Assert element by contains text "Cancel"
+    And Click on element by containing text "Confirm"
+    And Assert element by contains text "Success"
+
+    And Wait for element by contains text "Domestic payment"
+    And Assert Past payments tab is selected in Payments
+    And Wait for "1" seconds
+    And Refresh page
+    And Wait for first past payment
+
+    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
+    And Assert first past or upcoming payment has name from key "keyRecipientName"
+    And Assert first past or upcoming payment has today date
+
+    And Click on normalized text from key "keyRecipientName"
+    And Assert label "Recipient" in payment confirmation has value under remembered key "keyRecipientName"
+    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
+    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
+    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert label "Model" in payment confirmation contains value under remembered key "keyPaymentModel"
+    And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
+    And Assert field "Purpose code" in payment confirmation has text "253"
+    And Assert field "Payment date" in payment confirmation has valid date displayed
+    And Assert field "Execution date" in payment confirmation has valid date displayed
+    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+
+    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert field "Payment status" in payment confirmation has text "Executed"
+    And Assert field "Fee" in payment confirmation contains text "0,00"
+    And Assert field "Fee" in payment confirmation contains text "RSD"
+    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+
+    Then Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "1" is correct
+    And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "1" is correct
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+  @Payments_Domestic_Payments_Budzetski_Non_Urgent_Payment_Model97_[WEB]
+  Scenario Outline: Payments_Domestic_Payments_Budzetski_Non_Urgent_Payment_Model97_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+    And Click on element by aria label "User profile"
+    And Remember full name of user from dashboard under key "keyDebtorFullName"
+
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Current_Balance"
+
+    When Click on tab "Payments" from main sidebar
+    And Wait for element by text "Past payments"
+    And Click on normalized text "Domestic payment"
+    And Wait for element by contains text "Select from list"
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
+
+    And Enter text "840-0000713121843-57" into "Account number" input field and remember it under key "keyRecipientAccountNumber"
+    And Enter random text into "Name" input field and remember it under key "keyRecipientName"
+    And Assert element by contains text "Street and street number"
+    And Enter text "niska 55" into "street" input field and remember it under key "keyStreet"
+    And Enter text "Irig" into "City" input field and remember it under key "keyCity"
+    And Assert element by contains text "Save recipient"
+    And Assert checkbox "Save recipient" is checked "false"
+
+    And Assert element by contains text "Payment"
+    And Assert element by contains text "Payment amount"
+    And Enter text "2" into Payment amount input field and remember it under key "keyPaymentAmount"
+    And Assert element by tag "input" contains aria label "RSD"
+    And Enter random purpose into label with text "Purpose" with following sibling "div" that has descendant "input" and remember it under key "keyPurpose"
+    And Click on normalized text "Purpose code"
+    And Click on normalized text "253 - PAYMENT OF PUBLIC REVENUES EXCEPT TAXES AND CONTRIBUTIONS WITHHELD AT SOURCE"
+    And Assert element by label contains text "Purpose code" with following sibling "div" that has descendant "input" has text "253"
+
+    And Assert element by contains text "Purpose"
+    And Assert element by contains text "Model"
+    And Select payment model "97" from dropdown and remember it under key "keyPaymentModel"
+    And Assert element by label contains text "Model" with following sibling "div" that has descendant "input" has text "97"
+    And Assert element by contains text "Reference number"
+    And Enter text "020201701973791828" into "Reference number" input field and remember it under key "keyReferenceNumber"
+    And Assert payment date is todays date and in valid date format in Domestic payment
+
+    And Click on normalized text "Urgent payment"
+    And Assert checkbox "Urgent payment" is checked "False"
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Click on element by containing text "Confirm"
+
+    ### PAYMENT REVIEW UI ###
+    And Wait for element by contains text "Payment amount"
+    And Assert payment amount under key is "keyPaymentAmount" is displayed
+    And Assert element with text "Fee" with following sibling has text "0,00 RSD"
+    And Assert element by contains text "Debtor"
+    And Assert element by contains text "Recipient"
+    And Assert element by contains text "Payment details"
+    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
+    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+
+    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
+    And Assert element with text "Account number" with following sibling contains text under key "keyRecipientAccountNumber"
+    And Assert element with text "Purpose" with following sibling contains text under key "keyPurpose"
+    And Assert element with text "Purpose code" with following sibling has text "253"
+    And Assert value date is todays date and in valid date format in Payment review
+    And Assert element with text "Reference number" with following sibling contains text under key "keyReferenceNumber"
+
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Assert element by contains text "Cancel"
+    And Click on element by containing text "Confirm"
+    And Assert element by contains text "Success"
+
+    And Wait for element by contains text "Domestic payment"
+    And Click on normalized text "Upcoming payments"
+    And Wait for "2" seconds
+    And Refresh page
+    And Wait for first past payment
+
+    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+    And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
+    And Assert first past or upcoming payment has name from key "keyRecipientName"
+    And Assert first past or upcoming payment has today date
+
+    And Click on normalized text from key "keyRecipientName"
+    And Assert label "Recipient" in payment confirmation contains value under remembered key "keyRecipientName"
+    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
+    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
+    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert field "Purpose code" in payment confirmation has text "253"
+    And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
+    And Assert label "Model" in payment confirmation contains value under remembered key "keyPaymentModel"
+    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert field "Payment status" in payment confirmation has text "Pending"
+    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+
+    Then Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
+    And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+

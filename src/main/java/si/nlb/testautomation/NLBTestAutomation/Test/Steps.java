@@ -14138,7 +14138,7 @@ public class Steps {
         Assert.assertTrue(actualText.contains(expectedText));
     }
 
-    @And("Assert first Upcoming payment has purpose under key {string}")
+    @And("Assert first past or upcoming payment has purpose under key {string}")
     public void assertFirstUpcomingPaymentHasPurposeUnderKey(String key) throws Throwable {
         String expected = DataManager.userObject.get(key).toString();
         String xPath = "(//h5)[1]";
@@ -14309,5 +14309,41 @@ public class Steps {
         WaitHelpers.waitForElement(By.xpath(xpath),5);
         WebElement element = SelectByXpath.CreateElementByXpath(xpath);
         element.click();
+    }
+
+    @And("Select payment model {string} from dropdown")
+    public void selectPaymentModelFromDropdown(String model) throws Throwable {
+        String modelDropDownXpath = "(//input[@aria-haspopup='listbox'])[2]";
+        String modelItemXpath = "//li[contains(text(), '" + model + "')]";
+        WaitHelpers.waitForElement(By.xpath(modelDropDownXpath),3);
+        WebElement elementDropDown = SelectByXpath.CreateElementByXpath(modelDropDownXpath);
+        elementDropDown.click();
+        WaitHelpers.waitForElement(By.xpath(modelItemXpath),3);
+        WebElement elementItem = SelectByXpath.CreateElementByXpath(modelItemXpath);
+        elementItem.click();
+    }
+
+    @And("Select payment model {string} from dropdown and remember it under key {string}")
+    public void selectPaymentModelFromDropdownAndRememberItUnderKey(String model, String key) throws Throwable {
+        String modelDropDownXpath = "(//input[@aria-haspopup='listbox'])[2]";
+        String modelItemXpath = "//li[contains(text(), '" + model + "')]";
+        WaitHelpers.waitForElement(By.xpath(modelDropDownXpath),3);
+        WebElement elementDropDown = SelectByXpath.CreateElementByXpath(modelDropDownXpath);
+        elementDropDown.click();
+        WaitHelpers.waitForElement(By.xpath(modelItemXpath),3);
+        WebElement elementItem = SelectByXpath.CreateElementByXpath(modelItemXpath);
+        elementItem.click();
+        DataManager.userObject.put(key, model);
+    }
+
+    @And("Assert element with text {string} with following sibling contains text under key {string}")
+    public void assertElementContainsTextWithFollowingSiblingHasTextUnderKey(String contains, String key) throws Throwable {
+        String xpath = "//*[normalize-space()='"+contains+"']/following-sibling::*[1]";
+        String expectedText = DataManager.userObject.get(key).toString();
+        System.out.println(expectedText+ " EXPECTED TEXT");
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualText = element.getText();
+        System.out.println(actualText+ " ACTUAL TEXT");
+        Assert.assertTrue(actualText.contains(expectedText));
     }
 }
