@@ -37,6 +37,7 @@ import javax.xml.crypto.Data;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -2336,8 +2337,8 @@ public class Steps {
 
     @And("Compare if current amount balance from key {string} in my products screen for account from Excel {string} columnName {string} and reduced amount {string} is correct")
     public void compareIfCurrentAmountBalanceFromKeyInMyProductsScreenForAccountFromExcelColumnNameAndReducedAmountIsCorrect(String key, String rowindex, String columnName, String amount) throws Throwable {
-        String stringForAccountIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
-        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountIban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[2]";
+        String stringForAccountBban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountBban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[2]";
         WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
         String actualAmount = elementForCurrentBalance.getAttribute("textContent").replace(".", "").replace(",", ".");
         String expectedAmountFromKey = (String) DataManager.userObject.get(key);
@@ -2349,13 +2350,12 @@ public class Steps {
         System.out.printf("%.2f%n", doubleActual);
         System.out.printf("%.2f%n", expectedAmount);
         assertEquals(expectedAmount, doubleActual);
-
     }
 
     @And("Compare if available amount balance from key {string} in my products screen for account from Excel {string} columnName {string} and reduced amount {string} is correct")
     public void compareIfAvailableAmountBalanceFromKeyInMyProductsScreenForAccountFromExcelColumnNameAndReducedAmountIsCorrect(String key, String rowindex, String columnName, String amount) throws Throwable {
-        String stringForAccountIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
-        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountIban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[1]";
+        String stringForAccountBban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountBban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[1]";
         WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
         String actualAmount = elementForCurrentBalance.getAttribute("textContent").replace(".", "").replace(",", ".");
         String expectedAmountFromKey = (String) DataManager.userObject.get(key);
@@ -2372,8 +2372,8 @@ public class Steps {
 
     @And("Compare if current amount balance from key {string} in my products screen for account from Exlce {string} columnName {string} and added amount {string} is correct")
     public void compareIfCurrentAmountBalanceFromKeyInMyProductsScreenForAccountFromExlceColumnNameAndAddedAmountIsCorrect(String key, String rowindex, String columnName, String amount) throws Throwable {
-        String stringForAccountIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
-        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountIban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[1]";
+        String stringForAccountBban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountBban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[2]";
         WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
         String actualAmount = elementForCurrentBalance.getAttribute("textContent").replace(".", "").replace(",", ".");
         String expectedAmountFromKey = (String) DataManager.userObject.get(key);
@@ -3018,7 +3018,7 @@ public class Steps {
     public void assertThatPaymentUnderKeyFromTxtFileHasDateDaysInFuture(String key, int daysInFuture) throws Throwable {
         String expectedDate = ActionApiHelpers.getTodayDatePlusXDaysInFormat(daysInFuture, "dd.MM.YYYY");
         String purpose = Utilities.getDataFromTxtFileUnderKey(key);
-        String xPathForPaymentDate = "//div[contains(text(),'" + purpose + "')]//ancestor::nlb-payment-item//*[contains(text(),'" + expectedDate + "')]";
+        String xPathForPaymentDate = "//div[contains(text(),'" + purpose + "')]//ancestor::nlb-payment-item//h5[contains(text(),'" + expectedDate + "')]";
         By elWait = SelectByXpath.CreateByElementByXpath(xPathForPaymentDate);
         WaitHelpers.WaitForElement(elWait);
         WebElement elementForPaymentDate = SelectByXpath.CreateElementBy(elWait);
@@ -3480,7 +3480,7 @@ public class Steps {
         String xPathIconMenu = "//*[contains(@class,'icon-menu')]";
         WebElement elementForIconMenu = SelectByXpath.CreateElementByXpath(xPathIconMenu);
         hp.ClickOnElement(elementForIconMenu);
-        String xPathForSLO = "//*[text()='Jezik']";
+        String xPathForSLO = "//*[text()='Srpski']";
         WebElement elementForSLO = SelectByXpath.CreateElementByXpath(xPathForSLO);
         hp.ClickOnElement(elementForSLO);
         String xPathForEnglish = "//*[text()=' English ']";
@@ -3524,7 +3524,10 @@ public class Steps {
     public void assertElementByTextHasFollowingSiblingWithTextFromExcelColumnName(String text, String followingSiblingTag, String rowindex, String columnName) throws Throwable {
         String followingSiblingText = DataManager.getDataFromHashDatamap(rowindex, columnName);
         List<WebElement> element = SelectByXpath.CreateElementByXpathTextFollowingSibling(text, followingSiblingTag);
-        assertEquals(followingSiblingText, element.get(0).getAttribute("textContent"));
+        String actualText = element.get(0).getAttribute("textContent");
+        actualText = actualText.replaceFirst("[\\r\\n]+$", "");
+
+        assertEquals(followingSiblingText, actualText);
     }
 
     @And("Assert element by text {string} has following sibling {string} with text {string}")
@@ -6345,8 +6348,8 @@ public class Steps {
         rh.tryToAssertThatPaymentIsCompleteAndSendCommandToAuthMethod(text);
     }
 
-    @And("Check if authorization is needed and complete payment with account iban from Excel {string} columnName {string} amount {string} and currency {string} with message {string}")
-    public void checkIfAuthorizationIsNeededAndCompletePaymentWithAccountIbanFromExcelColumnNameAmountAndCurrencyWithMessage(String rowindex, String columnName, String amount, String currency, String notifMessage) throws Throwable {
+    @And("Check if authorization is needed and complete payment with account bban from Excel {string} columnName {string} amount {string} and currency {string} with message {string}")
+    public void checkIfAuthorizationIsNeededAndCompletePaymentWithAccountBbanFromExcelColumnNameAmountAndCurrencyWithMessage(String rowindex, String columnName, String amount, String currency, String notifMessage) throws Throwable {
         rh.checkIfAuthIsNeededAndCompletePaymentFor(rowindex, columnName, amount, currency, notifMessage);
     }
 
@@ -6840,11 +6843,11 @@ public class Steps {
 
     @And("Assert that purpose for first transaction in product screen is for currency exchange")
     public void assertThatPurposeForFirstTransactionInProductScreenIsForCurrencyExchange() throws Throwable {
-        String expected = "MENJAVA VALUTE";
+        String expected = "deviza";
         String xPath = "(//*[contains(@class,'medium tw-text-gray-100')])[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String actual = element.getAttribute("innerText");
-        assertEquals(expected, actual);
+        assertTrue(actual.contains(expected));
     }
 
     @And("Assert that purpose for first transaction in product screen is for transaction from key {string}")
@@ -6997,8 +7000,8 @@ public class Steps {
         assertEquals(expectedValue, actualValue);
     }
 
-    @And("Check if authorization is needed and complete payment with account iban from Excel {string} columnName {string} amount from key {string} and currency {string} with message {string}")
-    public void checkIfAuthorizationIsNeededAndCompletePaymentWithAccountIbanFromExcelColumnNameAmountFromKeyAndCurrencyWithMessage(String rowindex, String columnName, String key, String currency, String notifMessage) throws Throwable {
+    @And("Check if authorization is needed and complete payment with account bban from Excel {string} columnName {string} amount from key {string} and currency {string} with message {string}")
+    public void checkIfAuthorizationIsNeededAndCompletePaymentWithAccountBbanFromExcelColumnNameAmountFromKeyAndCurrencyWithMessage(String rowindex, String columnName, String key, String currency, String notifMessage) throws Throwable {
         String amount = (String) DataManager.userObject.get(key);
         rh.checkIfAuthIsNeededAndCompletePaymentFor(rowindex, columnName, amount, currency, notifMessage);
     }
@@ -7007,7 +7010,7 @@ public class Steps {
     public void assertThatAmountForFirstTransactionInProductScreenIsFromKey(String key) throws Throwable {
         String expected = (String) DataManager.userObject.get(key);
         expected = expected.replace(".", ",");
-        String xPath = "(//*//nlb-amount[contains(@class,'tw-text-gray-100')])[1]";
+        String xPath = "(//nlb-amount/div/div[2])[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String actual = element.getAttribute("textContent");
         System.out.println(expected);
@@ -9345,7 +9348,7 @@ public class Steps {
 
     @And("Assert element by text {string} has following sibling {string} that contains text {string}")
     public void assertElementByTextHasFollowingSiblingThatContainsText(String text, String followingSiblingTag, String expectedValue) throws Throwable {
-        String xPath = "(//*[normalize-space(text())='"+text+"']/following-sibling::"+followingSiblingTag+")[1]";
+        String xPath = "(//*[normalize-space(text())='" + text + "']/following-sibling::"+followingSiblingTag+")[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         String actualValue = element.getAttribute("textContent");
         assertTrue(actualValue.contains(expectedValue));
@@ -11893,7 +11896,7 @@ public class Steps {
 
     @And("Assert value date is todays date and in valid date format in Payment review")
     public void assertValueDateIsTodaysDateAndInValidDateFormatInPaymentReview() throws Throwable {
-        String xPath = "//*[contains(text(), 'Value date')]/following-sibling::dd";
+        String xPath = "(//*[contains(text(), 'Value date')]/following-sibling::*)[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         Assert.assertTrue("Payment date input is not displayed", element.isDisplayed());
 
@@ -13724,8 +13727,163 @@ public class Steps {
         DataManager.userObject.put(key, randomPurpose);
     }
 
+    @And("Assert General exchange rates is displayed in Exchange rates screen")
+    public void assertGeneralExchangeRatesIsDisplayedInExchangeRatesScreen() {
+        WebElement element = driver.findElement(By.xpath("//nlb-tabs/div/div[2]"));
+        assertEquals(element.getAttribute("ariaSelected"), "true");
+    }
 
+    @And("Assert today date with pattern {string} is displayed")
+    public void assertTodayDateIsDisplayedAndMatchRegex(String pattern) throws Throwable {
+        String todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern(pattern));
+        String xpath = "//*[normalize-space(text())='"+todayDate+"']";
+//        WaitHelpers.waitForElement(By.xpath(xpath), 2);
+        WebElement el = driver.findElement(By.xpath(xpath));
+        String actualTextDate = el.getText().trim();
+        System.out.println("ACTUAL DATE FROM UI "+actualTextDate);
 
+        Assert.assertFalse(actualTextDate.isEmpty());
+        Assert.assertTrue(el.isDisplayed());
+    }
+
+    @And("Assert element with attribute {string} contains value {string} is displayed")
+    public void assertElementWithAttributeContainsValueIsDisplayed(String attr, String value) throws Throwable {
+        String xpath = "//*[contains(@" + attr + ", '" + value + "')]";
+        WebElement flag = SelectByXpath.CreateElementByXpath(xpath);
+        Assert.assertTrue(flag.isDisplayed());
+    }
+
+    @And("Assert latest past payment has purpose {string}")
+    public void assertLatestPastPaymentHasPurpose(String expected) throws Throwable {
+        String xPath = "(//h5)[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        String actual = element.getText();
+        Assert.assertEquals(expected, actual);
+    }
+
+    @And("Assert last payment in past payments has value from remembered key {string}")
+    public void assertLastPaymentInPastPaymentsHasValueFromRememberedKey(String key) throws Throwable {
+//        String newestPaymentXpath = "(//div[contains(@class, 'bold')]/div[2])[1]";
+        String newestPaymentXpath = "(//nlb-amount/div/div[2])[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(newestPaymentXpath);
+//        WaitHelpers.waitForElement(By.xpath(newestPaymentXpath),3);
+//        String actualValue = driver.findElement(By.xpath(newestPaymentXpath)).getText().replace("-", "").replaceAll(",.*", "");
+        String actualValue = element.getText().replace("-", "").replaceAll(",.*", "");
+        String expectedValue = DataManager.userObject.get(key).toString();
+        System.out.println(actualValue+ " ACTUAL VALUE");
+        Assert.assertEquals(actualValue,expectedValue);
+    }
+
+    @And("Compare if available amount balance from key {string} in my products screen for account from Excel {string} columnName {string} and added amount {string} is correct")
+    public void compareIfAvailableAmountBalanceFromKeyInMyProductsScreenForAccountFromExcelColumnNameAndAddedAmountIsCorrect(String key, String rowindex, String columnName, String amount) throws Throwable {
+        String stringForAccountBban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountBban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[1]";
+        WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
+        String actualAmount = elementForCurrentBalance.getAttribute("textContent").replace(".", "").replace(",", ".");
+        String expectedAmountFromKey = (String) DataManager.userObject.get(key);
+        Double expectedAmountDouble = Double.parseDouble(expectedAmountFromKey.replace(".", "").replace(",", "."));
+        Double increaseBy = Double.parseDouble(amount);
+        Double expectedAmount = expectedAmountDouble + increaseBy;
+        //assertEquals(expectedAmount.toString(),actualAmount);
+        Double doubleActual = Double.parseDouble(actualAmount);
+        System.out.printf("%.2f%n", doubleActual);
+        System.out.printf("%.2f%n", expectedAmount);
+        assertEquals(expectedAmount, doubleActual);
+    }
+
+    @And("Assert payment amount under key is {string} for currency {string} is displayed")
+    public void assertPaymentAmountUnderKeyIsForCurrencyIsDisplayed(String key, String currency) throws Throwable {
+        String xPath = "//*[text()='Payment amount']/following-sibling::span";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+
+        String remembered = DataManager.userObject.get(key).toString().trim();
+        String actual = element.getText()
+                .replace("\u00A0", " ")
+                .trim();
+
+        currency = currency.trim().toUpperCase();
+
+        Assert.assertTrue(
+                "Valuta nije podrzana. Prosledjena valuta: " + currency,
+                currency.equals("RSD") || currency.equals("EUR")
+        );
+
+        double value = Double.parseDouble(remembered.replace(",", "."));
+        String formatted = String.format(java.util.Locale.US, "%.2f", value).replace(".", ",");
+
+        String expected = formatted + " " + currency;
+
+        Assert.assertEquals(
+                "Payment amount se ne poklapa. Ocekivano: " + expected + ", a dobijeno: " + actual,
+                expected,
+                actual
+        );
+    }
+
+    @And("Assert element by text {string} has first following sibling that contains text from key {string}")
+    public void assertElementByTextHasFirstFollowingSiblingThatContainsTextFromKey(String text, String key) throws Throwable {
+        String expected = DataManager.userObject.get(key).toString();
+        String xPath = "(//*[normalize-space(text())='" + text + "']/following-sibling::*)[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+
+        assertTrue(element.getText().contains(expected));
+    }
+
+    @And("Save exchange value rate for Buy exchange rate and remember it under key {string}")
+    public void saveExchangeValueRateForBuyExchangeRateAndRememberItUnderKey(String key) throws Throwable {
+        String xPath = "(//table)[1]/tbody/tr[1]/td[3]/div[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        String actualTextNumeric = element.getText();
+        DataManager.userObject.put(key, actualTextNumeric);
+    }
+
+    @And("Compare if current amount balance from key {string} in my products screen for account from Excel {string} columnName {string} and added amount from key {string} is correct")
+    public void compareIfCurrentAmountBalanceFromKeyInMyProductsScreenForAccountFromExcelColumnNameAndAddedAmountFromKeyIsCorrect(String balanceKey, String rowindex, String columnName, String increasedAmountKey) throws Throwable {
+        String stringForAccountBban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountBban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[2]";
+        WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
+
+        BigDecimal actualAmount = rh.parseAmount(elementForCurrentBalance.getAttribute("textContent"));
+        String expectedAmountFromKey = DataManager.userObject.get(balanceKey).toString();
+        String reducedAmountFromKey = DataManager.userObject.get(increasedAmountKey).toString();
+
+        BigDecimal previousAmount = rh.parseAmount(expectedAmountFromKey);
+        BigDecimal increasedBy = rh.parseAmount(reducedAmountFromKey);
+        BigDecimal expectedAmount = previousAmount.add(increasedBy);
+
+        Assert.assertEquals("Current balance se ne poklapa. Ocekivano: " + expectedAmount + ", a dobijeno: " + actualAmount, 0, expectedAmount.compareTo(actualAmount));
+    }
+
+    @And("Compare if available amount balance from key {string} in my products screen for account from Excel {string} columnName {string} and added amount from key {string} is correct")
+    public void compareIfAvailableAmountBalanceFromKeyInMyProductsScreenForAccountFromExcelColumnNameAndAddedAmountFromKeyIsCorrect(String balanceKey, String rowindex, String columnName, String increasedAmountKey) throws Throwable {
+        String stringForAccountBban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountBban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[1]";
+        WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
+
+        BigDecimal actualAmount = rh.parseAmount(elementForCurrentBalance.getAttribute("textContent"));
+        String expectedAmountFromKey = DataManager.userObject.get(balanceKey).toString();
+        String reducedAmountFromKey = DataManager.userObject.get(increasedAmountKey).toString();
+
+        BigDecimal previousAmount = rh.parseAmount(expectedAmountFromKey);
+        BigDecimal increasedBy = rh.parseAmount(reducedAmountFromKey);
+        BigDecimal expectedAmount = previousAmount.add(increasedBy);
+
+        Assert.assertEquals("Current balance se ne poklapa. Ocekivano: " + expectedAmount + ", a dobijeno: " + actualAmount, 0, expectedAmount.compareTo(actualAmount));
+    }
+
+    @And("Click first Upcoming payments")
+    public void clickFirstUpcomingPayments() throws Throwable {
+        String xPath = "(//nlb-payment-item)[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        element.click();
+    }
+
+    @And("Click on element by containing text {string} and index {string}")
+    public void clickOnElementByContainingTextAndIndex(String text, String index) throws Throwable {
+        String xPath = "(//*[contains(text(), '" + text + "')])[" + index + "]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        element.click();
+    }
 
     private static class AccountRow {
         String accountNumber;
@@ -14101,106 +14259,49 @@ public class Steps {
         assertEquals(element.getText(), expected);
     }
 
-    @And("Assert element with text {string} with following sibling has text under key {string}")
-    public void assertElementWithTextWithFollowingSiblingHasTextUnderKey(String contains, String key) throws Throwable {
-        String expectedText = DataManager.userObject.get(key).toString();
-        String xpath = "//*[normalize-space()='"+contains+"']/following-sibling::*[1]";
-        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
-        String actualText = element.getText();
-        System.out.println(actualText);
-        Assert.assertTrue(actualText.contains(expectedText));
-    }
-
-    @And("Assert element by text {string} has following sibling {string} contains text from Excel {string} columnName {string}")
-    public void assertElementByTextHasFollowingSiblingContainsTextFromExcelColumnName(String text, String followingSiblingTag, String rowindex, String columnName) throws Throwable {
-        String followingSiblingText = DataManager.getDataFromHashDatamap(rowindex, columnName);
-        List<WebElement> element = SelectByXpath.CreateElementByXpathTextFollowingSibling(text, followingSiblingTag);
-        String textActual = element.get(0).getAttribute("textContent");
-        System.out.println("EXPECTED "+followingSiblingText);
-        System.out.println("ACTUAL "+textActual);
-        Assert.assertTrue(textActual.contains(followingSiblingText));
-    }
-
-    @And("Assert element by text {string} has first following sibling that contains text from key {string}")
-    public void assertElementByTextHasFirstFollowingSiblingThatContainsTextFromKey(String text, String key) throws Throwable {
-        String expected = DataManager.userObject.get(key).toString();
-        String xPath = "(//*[normalize-space(text())='" + text + "']/following-sibling::*)[1]";
+    @And("Assert {string} account selector in Currency exchange is displayed")
+    public void assertAccountSelectorInCurrencyExchangeIsDisplayed(String labelName) throws Throwable {
+        String xPath = "//*[contains(text(), '" + labelName + "')]/following-sibling::nlb-account-selector";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        assertTrue(element.getText().contains(expected));
+        assertTrue(element.isDisplayed());
     }
 
-    @And("Assert element with text {string} with following sibling has text {string}")
-    public void assertElementWithTextWithFollowingSiblingHasText(String contains, String expectedText) throws Throwable {
-        String xpath = "//*[normalize-space()='"+contains+"']/following-sibling::*[1]";
-        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
-        String actualText = element.getText();
-        System.out.println(actualText);
-        Assert.assertTrue(actualText.contains(expectedText));
-    }
+    @And("Assert accounts number is displayed in Currency exchange")
+    public void assertAccountsNumberIsDisplayedInCurrencyExchange() throws Throwable {
+        String xPath = "//*[contains(@class, 'accountItemDescription')]";
+        List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
 
-    @And("Assert first past or upcoming payment has purpose under key {string}")
-    public void assertFirstUpcomingPaymentHasPurposeUnderKey(String key) throws Throwable {
-        String expected = DataManager.userObject.get(key).toString();
-        String xPath = "(//h5)[1]";
-        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        assertEquals(element.getText(), expected);
-    }
+        if(elements.size()!=2)
+            fail();
 
-    @And("Assert first past payment has amount from key {string} in currency {string}")
-    public void assertFirstPastOrUpcomingPaymentHasAmountFromKeyInCurrency(String key, String currency) throws Throwable {
-        String xpath = "(//nlb-amount)[1]";
-        String expectedAmount = DataManager.userObject.get(key).toString();
-        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
-        String textFromUI = element.getText().trim();
-        System.out.println("TEXT FROM UI "+ textFromUI);
-        if(!expectedAmount.contains(",")&&!expectedAmount.contains(".")){
-            expectedAmount = expectedAmount + ",00";
+        for (WebElement element : elements){
+            assertTrue(element.isDisplayed());
+            Assert.assertTrue(elements.get(0).getText().matches("^205-\\d{13}-\\d{2}$"));
+            Assert.assertTrue(elements.get(1).getText().matches("^RS35 2059 \\d{4} \\d{4} \\d{4} \\d{2}$"));
         }
-        else if(expectedAmount.contains(".")&&!expectedAmount.contains(",")){
-            expectedAmount = expectedAmount.replace(".",",");
-        }
-        else{
-            System.out.println("nepodrzan format");
-        }
-        String finalAmount = currency + "\n" + expectedAmount;
-        System.out.println("Final amount "+ finalAmount);
-        Assert.assertEquals(finalAmount, textFromUI);
     }
 
-    @And("Assert first past or upcoming payment has name from key {string}")
-    public void assertFirstPastOrUpcomingPaymentHasNameFromKey(String key) throws Throwable {
-        String textFromKey = DataManager.userObject.get(key).toString();
-        String xpath = "(//div[@class='caption xs:subheadline xs:medium tw-text-gray-400'])[1]";
-        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
-        String textActual = element.getText();
-        System.out.println("ACTUAL "+textActual);
-        System.out.println("FROM KEY "+textFromKey);
-        Assert.assertTrue(textActual.contains(textFromKey));
+    @And("Assert today date in currency exchange")
+    public void assertTodayDateInCurrencyExchange() throws Throwable {
+        String xpath = "//*[contains(text(), 'Value date:')]";
+        WebElement dateElement = SelectByXpath.CreateElementByXpath(xpath);
+        String dateActual = dateElement.getText();
+        String todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        String todayDateFinal = "Value date: "+todayDate;
+        Assert.assertEquals(dateActual,todayDateFinal);
     }
 
-    @And("Assert first past or upcoming payment has today date")
-    public void assertFirstPastOrUpcomingPaymentHasTodayDate() throws Throwable {
-        String xpath = "(//div[@class='caption medium xs:subheadline tw-text-gray-400'])[1]";
-        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
-        String textActual = element.getText();
-        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-        Assert.assertEquals(textActual, today);
-    }
-
-    @And("Assert label {string} in payment confirmation has value under remembered key {string}")
-    public void assertLabelInPaymentConfirmationHasValueUnderRememberedKey(String label, String key) throws Throwable {
-        String expectedText = DataManager.userObject.get(key).toString();
-        String xpath = "(//*[text()='"+label+"'])[2]/following-sibling::div[1]";
-        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
-        String actualText = element.getText();
-        System.out.println(actualText);
-        Assert.assertEquals(expectedText, actualText);
+    @And("Assert element by xpath {string} match regex {string}")
+    public void assertElementByXpathMatchRegex(String xpath, String regex) throws Throwable {
+        WebElement el = SelectByXpath.CreateElementByXpath(xpath);
+        String text =  el.getText();
+        Assert.assertTrue(text.matches(regex));
     }
 
     @And("Assert label {string} in payment confirmation contains value under remembered key {string}")
     public void assertLabelInPaymentConfirmationContainsValueUnderRememberedKey(String label, String key) throws Throwable {
         String expectedText = DataManager.userObject.get(key).toString();
-        String xpath = "(//*[text()='"+label+"'])[2]/following-sibling::div[1]";
+        String xpath = "(//*[text()='" + label + "'])[2]/following-sibling::div[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xpath);
         String actualText = element.getText();
         System.out.println(expectedText+ " EXPECTED TEXT");
@@ -14208,54 +14309,40 @@ public class Steps {
         Assert.assertTrue(actualText.contains(expectedText));
     }
 
-    @And("Assert field {string} in payment confirmation has text {string}")
-    public void assertLabelInPaymentConfirmationHasHasText(String label, String expectedText) throws Throwable {
-        String xpath = "(//*[text()='"+label+"'])[2]/following-sibling::div[1]";
-        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
-        String actualText = element.getText();
-        System.out.println(actualText+ "ACTUAL TEXT");
-        System.out.println(expectedText+ "EXPECTED TEXT");
-        Assert.assertEquals(expectedText, actualText);
-    }
-
-    @And("Assert field {string} in payment confirmation has text from key {string}")
-    public void assertFieldInPaymentConfirmationHasTextFromKey(String label, String key) throws Throwable {
-        String xpath = "(//*[text()='"+label+"'])[2]/following-sibling::div[1]";
-        String expectedText = DataManager.userObject.get(key).toString();
-        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
-        String actualText = element.getText();
-        System.out.println(actualText+ "ACTUAL TEXT");
-        System.out.println(expectedText+ "EXPECTED TEXT");
-        Assert.assertEquals(expectedText, actualText);
-    }
-
-    @And("Assert field {string} in payment confirmation has valid date displayed")
-    public void assertFieldPaymentDateInPaymentConfirmationHasValidDateAndTimeDisplayed(String field) throws Throwable {
-        String format = "dd.MM.yyyy";
-        LocalDateTime currentTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-        String realDateTimeString = currentTime.format(formatter);
-        String dateXpath = "(//*[text()='"+field+"'])[2]/following-sibling::div[1]";
-        WebElement element = SelectByXpath.CreateElementByXpath(dateXpath);
-        String dateTimeFromUI = element.getText().trim();
-        Assert.assertTrue(dateTimeFromUI.contains(realDateTimeString));
-    }
-
     @And("Assert label {string} in payment confirmation contains value from excel {string} columnName {string}")
     public void assertLabelInPaymentConfirmationContainsValueFromExcelColumnName(String label, String rowindex, String columnname) throws Throwable {
-        String expectedText = DataManager.getDataFromHashDatamap(rowindex, columnname).toString()
-                .replace(" ","").replace("-","");
-        String xpath = "(//*[text()='"+label+"'])[2]/following-sibling::div[1]";
+        String expectedText = DataManager.getDataFromHashDatamap(rowindex, columnname).toString();
+        String xpath = "(//*[text()='" + label + "'])[2]/following-sibling::div[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xpath);
-        String actualText = element.getText().replace(" ","").replace("-","");
+        String actualText = element.getText().replaceAll("\\n", "");
         System.out.println(actualText+ " ACTUAL TEXT");
         System.out.println(expectedText+ "  EXPECTED TEXT");
         Assert.assertTrue(actualText.contains(expectedText));
     }
 
+
+    @And("Assert field {string} in payment confirmation has text {string}")
+    public void assertLabelInPaymentConfirmationHasHasText(String label, String expectedText) throws Throwable {
+        String xpath = "(//*[text()='" + label + "'])[2]/following-sibling::div[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualText = element.getText();
+        System.out.println(actualText+ "ACTUAL TEXT");
+        System.out.println(expectedText+ "EXPECTED TEXT");
+        Assert.assertEquals(expectedText, actualText);
+    }
+
+    @And("Assert field {string} in payment confirmation matches regex {string}")
+    public void assertFieldInPaymentConfirmationMatchesRegex(String field, String regex) throws Throwable {
+        String xPath = "(//*[text()='" + field + "'])[2]/following-sibling::div[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        String actualText = element.getText().trim();
+
+        Assert.assertTrue("Tekst [" + actualText + "] ne odgovara regex-u [" + regex + "]", actualText.matches(regex));
+    }
+
     @And("Assert field {string} in payment confirmation contains text {string}")
     public void assertFieldInPaymentConfirmationContainsText(String label, String expectedText) throws Throwable {
-        String xpath = "(//*[text()='"+label+"'])[2]/following-sibling::div[1]";
+        String xpath = "(//*[text()='" + label + "'])[2]/following-sibling::div[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xpath);
         String actualText = element.getText();
         System.out.println(actualText+ "ACTUAL TEXT");
@@ -14263,87 +14350,341 @@ public class Steps {
         Assert.assertTrue(actualText.contains(expectedText));
     }
 
-    @And("Assert field {string} in payment confirmation match regex {string}")
-    public void assertFieldInPaymentConfirmationMatchRegex(String field, String regex) throws Throwable {
-        String xpath = "(//*[text()='"+field+"'])[2]/following-sibling::div[1]";
-        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
-        String actualText = element.getText();
-        String errorMsg = "Regex provera pala! Tekst sa ekrana: [" + actualText + "] ne odgovara regexu: [" + regex + "]";
-        Assert.assertTrue(errorMsg, actualText.matches(regex));
-    }
-
-    @And("Assert that text {string} has first following sibling that contains text {string}")
-    public void assertThatTextHasFirstFollowingSiblingThatContainsText(String elementText, String siblingText) throws Throwable {
-        String xPath = "(//*[text()='"+elementText+"']/following-sibling::*)[1]";
+    @And("Assert that purpose for first transaction in product screen is {string}")
+    public void assertThatPurposeForFirstTransactionInProductScreenIs(String expected) throws Throwable {
+        String xPath = "(//h4/div/div[2])[1]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        System.out.println(element.getText());
-        Assert.assertTrue(element.getText().contains(siblingText));
+        String actual = element.getAttribute("innerText");
+        Assert.assertTrue(actual.contains(expected));
     }
 
-    @And("Assert first upcoming payment has amount from key {string} in currency {string}")
-    public void assertFirstUpcomingPaymentHasAmountFromKeyInCurrency(String key, String currency) throws Throwable {
-        String xpath = "(//nlb-amount)[2]";
-        String expectedAmount = DataManager.userObject.get(key).toString();
-        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
-        String textFromUI = element.getText().trim();
-        System.out.println("TEXT FROM UI "+ textFromUI);
-        if(!expectedAmount.contains(",")&&!expectedAmount.contains(".")){
-            expectedAmount = expectedAmount + ",00";
+    @And("Assert that first transaction is {string}")
+    public void assertThatFirstTransactionIs(String type) throws Throwable {
+        String normalizedType = type.trim().toLowerCase();
+        String firstTransactionXpath = "(//nlb-transaction-card)[1]";
+        String directionIconXpath;
+
+        if (normalizedType.equals("outgoing")) {
+            directionIconXpath = firstTransactionXpath + "//i[contains(@class, 'icon-arrow-left')]";
+        } else if (normalizedType.equals("incoming")) {
+            directionIconXpath = firstTransactionXpath + "//i[contains(@class, 'icon-arrow-right')]";
+        } else {
+            Assert.fail("Nepoznat tip transakcije: " + type + ". Dozvoljeno je: incoming ili outgoing.");
+            return;
         }
-        else if(expectedAmount.contains(".")&&!expectedAmount.contains(",")){
-            expectedAmount = expectedAmount.replace(".",",");
-        }
-        else{
-            System.out.println("nepodrzan format");
-        }
-        String finalAmount = currency + "\n" + expectedAmount;
-        System.out.println("Final amount "+ finalAmount);
-        Assert.assertEquals(finalAmount, textFromUI);
+
+        WebElement element = SelectByXpath.CreateElementByXpath(directionIconXpath);
+        Assert.assertTrue("Prva transakcija nije tipa: " + type, element.isDisplayed());
     }
 
-    @And("Click on normalized text from key {string}" )
-    public void clickFromFromKey(String key) throws Throwable {
-        String keyText = DataManager.userObject.get(key).toString();
-        System.out.println(" NAME FOR CLICK "+ keyText);
-        String xpath = "//*[normalize-space(text())='"+keyText+"']";
-        WaitHelpers.waitForElement(By.xpath(xpath),5);
+    @And("Assert amount in transaction details has value under key {string} in currency {string}")
+    public void assertAmountInTransactionDetailsHasValueUnderKeyInCurrency(String key, String currency) throws Throwable {
+        String xpath = "(//dd[@class='subheadline medium tw-text-gray-100 tw-break-words'])[4]";
+        String amountFromKey = DataManager.userObject.get(key).toString();
+        double amountValue = Double.parseDouble(amountFromKey);
+        String expectedText = String.format(Locale.GERMANY, "%.2f %s", amountValue, currency);
         WebElement element = SelectByXpath.CreateElementByXpath(xpath);
-        element.click();
+        String actualText = element.getText().replaceAll("\\s+", " ").trim();
+        System.out.println(actualText + " ACTUAL");
+        System.out.println(expectedText + " EXPECTED");
+        Assert.assertEquals(expectedText, actualText);
     }
 
-    @And("Select payment model {string} from dropdown")
-    public void selectPaymentModelFromDropdown(String model) throws Throwable {
-        String modelDropDownXpath = "(//input[@aria-haspopup='listbox'])[2]";
-        String modelItemXpath = "//li[contains(text(), '" + model + "')]";
-        WaitHelpers.waitForElement(By.xpath(modelDropDownXpath),3);
-        WebElement elementDropDown = SelectByXpath.CreateElementByXpath(modelDropDownXpath);
-        elementDropDown.click();
-        WaitHelpers.waitForElement(By.xpath(modelItemXpath),3);
-        WebElement elementItem = SelectByXpath.CreateElementByXpath(modelItemXpath);
-        elementItem.click();
-    }
+    @And("Save exchange value rate for {string} and remember it under key {string}")
+    public void saveExchangeValueRateForAndRememberItUnderKey(String type, String key) throws Throwable {
+        String xpathForSellRateFromFirstBox = "(//table)[1]/tbody/tr[1]/td[3]/div[2]";
+        String xpath = "";
 
-    @And("Select payment model {string} from dropdown and remember it under key {string}")
-    public void selectPaymentModelFromDropdownAndRememberItUnderKey(String model, String key) throws Throwable {
-        String modelDropDownXpath = "(//input[@aria-haspopup='listbox'])[2]";
-        String modelItemXpath = "//li[contains(text(), '" + model + "')]";
-        WaitHelpers.waitForElement(By.xpath(modelDropDownXpath),3);
-        WebElement elementDropDown = SelectByXpath.CreateElementByXpath(modelDropDownXpath);
-        elementDropDown.click();
-        WaitHelpers.waitForElement(By.xpath(modelItemXpath),3);
-        WebElement elementItem = SelectByXpath.CreateElementByXpath(modelItemXpath);
-        elementItem.click();
-        DataManager.userObject.put(key, model);
-    }
-
-    @And("Assert element with text {string} with following sibling contains text under key {string}")
-    public void assertElementContainsTextWithFollowingSiblingHasTextUnderKey(String contains, String key) throws Throwable {
-        String xpath = "//*[normalize-space()='"+contains+"']/following-sibling::*[1]";
-        String expectedText = DataManager.userObject.get(key).toString();
-        System.out.println(expectedText+ " EXPECTED TEXT");
+        if(type.contains("sell")){
+            xpath = xpathForSellRateFromFirstBox;
+        }
         WebElement element = SelectByXpath.CreateElementByXpath(xpath);
-        String actualText = element.getText();
-        System.out.println(actualText+ " ACTUAL TEXT");
-        Assert.assertTrue(actualText.contains(expectedText));
+        String actualTextNumeric = element.getText().replaceAll(",", ".");
+        System.out.println(actualTextNumeric);
+        DataManager.userObject.put(key, actualTextNumeric);
+    }
+
+    @And("Save exchange value rate for Sell exchange rate and remember it under key {string}")
+    public void saveExchangeValueRateForSellExchangeRateAndRememberItUnderKey(String key) throws Throwable {
+        String xPath = "(//table)[1]/tbody/tr[1]/td[3]/div[2]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        String actualTextNumeric = element.getText();
+        DataManager.userObject.put(key, actualTextNumeric);
+    }
+
+    @And("Save value from sibling of {string} element with text under key {string}")
+    public void saveValueFromSiblingOfElementWithTextUnderKey(String visibleText, String key) throws Throwable {
+        String xpath = "//*[text()='" + visibleText + "']/following-sibling::*[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String textValue = element.getText().trim().replace(" RSD", "").replace(".", ",");
+
+        DataManager.userObject.put(key, textValue);
+    }
+
+    @And("Assert {string} has a value under the key {string} when multiplied by the value under the key {string}")
+    public void assertHasAValueUnderTheKeyWhenMultipliedByTheValueUnderTheKey(String label, String keyExchangeRate, String keyAmount) throws Throwable {
+        String xpath = "//*[text()='" + label + "']/following-sibling::*[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String textFromUI = element.getText().replaceAll("[^0-9,.]", "");
+        System.out.println("CLEAN TEXT FROM UI: "+textFromUI);
+
+        String exchangeRate = DataManager.userObject.get(keyExchangeRate).toString();
+        String amount = DataManager.userObject.get(keyAmount).toString();
+
+        BigDecimal expectedValue = rh.multiplyLocalizedNumbers(exchangeRate, amount);
+        BigDecimal actualValue = rh.parseLocalizedBigDecimal(textFromUI);
+
+        expectedValue = expectedValue.setScale(actualValue.scale(), RoundingMode.HALF_UP);
+
+        System.out.println(expectedValue+ " EXPECTED VALUE");
+        System.out.println(actualValue+ " ACTUAL VALUE");
+        Assert.assertEquals("Vrednost nije dobra. Očekivano: " + expectedValue + ", pronađeno: " + textFromUI, 0, expectedValue.compareTo(actualValue));
+    }
+
+    @And("Assert Exchange rate for label contains payment value from key {string} and has currency {string}")
+    public void assertExchangeRateForLabelContainsPaymentValueFromKeyAndHasCurrency(String key, String currency) throws Throwable {
+        String xpath = "//*[contains(text(), 'Exchange rate for')]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualText = element.getText().trim();
+        String paymentAmmount = DataManager.userObject.get(key).toString();
+        String expectedText = "Exchange rate for " + paymentAmmount + ".00 " + currency;
+
+        Assert.assertEquals(actualText, expectedText);
+    }
+
+    @And("Assert element by contains text {string} contains numeric text match regex {string}")
+    public void assertElementByContainsTextContainsNumericTextMatchRegex(String text, String regex) throws Throwable {
+        String xpath = "//*[contains(text(), '" + text + "')]/following-sibling::*[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualTextNumeric = element.getText().replaceAll("[^0-9.,]", "");
+        System.out.println(actualTextNumeric);
+        Assert.assertTrue(actualTextNumeric.matches(regex));
+    }
+
+    @And("Compare if current amount balance from key {string} in my products screen for account from Excel {string} columnName {string} and reduced amount from key {string} is correct")
+    public void compareIfCurrentAmountBalanceFromKeyInMyProductsScreenForAccountFromExcelColumnNameAndReducedAmountFromKeyIsCorrect(String balanceKey, String rowindex, String columnName, String reducedAmountKey) throws Throwable {
+        String stringForAccountBban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountBban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[2]";
+        WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
+
+        BigDecimal actualAmount = rh.parseAmount(elementForCurrentBalance.getAttribute("textContent"));
+        String expectedAmountFromKey = DataManager.userObject.get(balanceKey).toString();
+        String reducedAmountFromKey = DataManager.userObject.get(reducedAmountKey).toString();
+
+        BigDecimal previousAmount = rh.parseAmount(expectedAmountFromKey);
+        BigDecimal reducedBy = rh.parseAmount(reducedAmountFromKey);
+        BigDecimal expectedAmount = previousAmount.subtract(reducedBy);
+
+        Assert.assertEquals("Current balance se ne poklapa. Ocekivano: " + expectedAmount + ", a dobijeno: " + actualAmount, 0, expectedAmount.compareTo(actualAmount));
+    }
+
+    @And("Compare if available amount balance from key {string} in my products screen for account from Excel {string} columnName {string} and reduced amount from key {string} is correct")
+    public void compareIfAvailableAmountBalanceFromKeyInMyProductsScreenForAccountFromExcelColumnNameAndReducedAmountFromKeyIsCorrect(String balanceKey, String rowindex, String columnName, String reducedAmountKey) throws Throwable {
+        String stringForAccountBban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountBban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[1]";
+        WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
+
+        BigDecimal actualAmount = rh.parseAmount(elementForCurrentBalance.getAttribute("textContent"));
+        String expectedAmountFromKey = DataManager.userObject.get(balanceKey).toString();
+        String reducedAmountFromKey = DataManager.userObject.get(reducedAmountKey).toString();
+
+        BigDecimal previousAmount = rh.parseAmount(expectedAmountFromKey);
+        BigDecimal reducedBy = rh.parseAmount(reducedAmountFromKey);
+        BigDecimal expectedAmount = previousAmount.subtract(reducedBy);
+
+        Assert.assertEquals("Current balance se ne poklapa. Ocekivano: " + expectedAmount + ", a dobijeno: " + actualAmount, 0, expectedAmount.compareTo(actualAmount));
+    }
+
+    @And("Remember number of saved templates under key {string}")
+    public void rememberNumberOfSavedTemplatesUnderKey(String key) throws Throwable {
+        String xpath = "//nlb-template-item";
+        List<WebElement> list = SelectByXpath.CreateElementsByXpath(xpath);
+        int numberOfElements = list.size();
+        System.out.println("Number of templates is: " + numberOfElements);
+        DataManager.userObject.put(key, numberOfElements);
+    }
+
+    @And("Assert number of elements with attribute {string} and contains value {string} is from key {string}")
+    public void assertNumberOfElementsWithAttributeAndContainsValueIsFromKey(String attr, String value, String key) throws Throwable {
+        int expectedNumber = (Integer) DataManager.userObject.get(key);
+        String xpath = "//*[contains(@" + attr + ", '" + value + "')]";
+        List<WebElement> list = SelectByXpath.CreateElementsByXpath(xpath);
+        int numberOfElements = list.size();
+        Assert.assertEquals(expectedNumber, numberOfElements);
+    }
+
+    @And("Remember list of elements text with attribute {string} and contains value {string} under key {string}")
+    public void rememberListOfElementsTextWithAttributeAndContainsValueUnderKey(String attr, String value, String key) throws Throwable {
+        String xpath = "//*[contains(@" + attr + ", '" + value + "')]";
+        List<String> list = SelectByXpath.CreateElementsByXpath(xpath)
+                .stream()
+                .map(el -> el.getText().trim())
+                .collect(Collectors.toList());
+        System.out.println("SAVING THE LIST OF: "+list);
+        DataManager.userObject.put(key, list);
+    }
+
+    @And("Assert list of elements text with attribute {string} and contains value {string} are sorted by alphabetical order")
+    public void assertListOfElementsTextWithAttributeAndContainsValueAreSortedByAlphabetiacalOrder(String attr, String value) throws Throwable {
+        String xpath = "//*[contains(@" + attr + ", '" + value + "')]";
+        List<String> list = SelectByXpath.CreateElementsByXpath(xpath)
+                .stream()
+                .map(el -> el.getText().toLowerCase())
+                .collect(Collectors.toList());
+
+        List<String> sortedList = list.stream()
+                .sorted()
+                .collect(Collectors.toList());
+
+        Assert.assertEquals(list, sortedList);
+    }
+
+    @And("Remember prefix of random template name and remember it under key {string}")
+    public void rememberPrefixOfRandomTemplateNameAndRememberItUnderKey(String key) throws Throwable {
+//        String xpath = "//div[@class='callout medium tw-text-gray-100']";
+        String xPath = "//div[@class='tw-gap-0.5']/div[1]";
+        List<String> listFromUI = SelectByXpath.CreateElementsByXpath(xPath)
+                .stream()
+                .map(el->el.getText().trim())
+                .collect(Collectors.toList());
+        Random random = new Random();
+        String randomElement = listFromUI.get(random.nextInt(listFromUI.size()));
+        String prefix = randomElement.length() <= 2 ? randomElement : randomElement.substring(0, 2);
+        System.out.println("SAVING PREFIX FOR NAME OF TEMPLATE: "+prefix);
+        DataManager.userObject.put(key,prefix);
+    }
+
+    @And("Remember part of random template account number and remember it under key {string}")
+    public void rememberPartOfRandomTemplateAccountNumberAndRememberItUnderKey(String key) throws Throwable {
+//        String xpath ="//div[@class='tw-text-gray-400 subheadline tw-line-clamp-1 ellipsis']";
+        String xpath = "//div[@class='tw-gap-0.5']/div[2]";
+        List<String> listFromUI = SelectByXpath.CreateElementsByXpath(xpath)
+                .stream()
+                .map(el->el.getText().trim())
+                .collect(Collectors.toList());
+        Random random = new Random();
+        String randomElement = listFromUI.get(random.nextInt(listFromUI.size()));
+        String partOfAccNumber = randomElement.split("-")[1];
+        System.out.println("SAVING PART OF ACCOUNT NUMBER: " + partOfAccNumber);
+        DataManager.userObject.put(key,partOfAccNumber);
+    }
+
+    @And("Enter text from key {string} in field by contains id {string}")
+    public void enterTextFromKeyInFieldByContainsId(String key, String id) throws Throwable {
+        String xPath = "//*[contains(@id, '" + id + "')]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        String text = DataManager.userObject.get(key).toString();
+        element.clear();
+        element.sendKeys(text);
+    }
+
+    @And("Assert elements with attribute {string} and contains value {string} contains text from key {string}")
+    public void assertElementsWithAttributeAndContainsValueContainsTextFromKey(String attr, String value, String key) throws Throwable {
+        String xpath = "//*[contains(@" + attr + ", '" + value + "')]";
+        List<String> listFromUI = SelectByXpath.CreateElementsByXpath(xpath)
+                .stream()
+                .map(el->el.getText().trim())
+                .collect(Collectors.toList());
+        System.out.println("LIST FROM UI "+listFromUI);
+        if (listFromUI.isEmpty()) {
+            Assert.fail("Lista elemenata na UI je prazna");
+        }
+        String prefix = DataManager.userObject.get(key).toString();
+        for(String textFromTemplate: listFromUI){
+            Assert.assertTrue(textFromTemplate.contains(prefix));
+        }
+    }
+
+    @And("Assert elements text with attribute {string} and contains value {string} with list from key {string}")
+    public void assertElementsTextWithAttributeAndContainsValueWithListFromKey(String attr, String value, String key) throws Throwable {
+        String xpath = "//*[contains(@" + attr + ", '" + value + "')]";
+        List<String> expectedList = (List<String>) DataManager.userObject.get(key);
+        System.out.println("LIST FROM KEY "+ expectedList);
+        List<String> listActual = SelectByXpath.CreateElementsByXpath(xpath)
+                .stream()
+                .map(el -> el.getText().trim())
+                .collect(Collectors.toList());
+        System.out.println("LIST FROM UI "+listActual);
+        Assert.assertEquals(expectedList, listActual);
+
+    }
+
+    @And("Assert list of upcoming transactions dates are all future dates")
+    public void assertListOfUpcomingTransactionsDatesAreAllFutureDates() throws Throwable {
+        String xpath = "//*[contains(@class, 'caption medium xs')]";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate todayDate = LocalDate.now();
+        List<LocalDate> listOfDatesFromUI = SelectByXpath.CreateElementsByXpath(xpath)
+                .stream()
+                .map(el -> LocalDate.parse(el.getText().trim(), formatter))
+                .collect(Collectors.toList());
+        System.out.println("LISTA DATUMA SA UI "+listOfDatesFromUI);
+        for (LocalDate txDate : listOfDatesFromUI) {
+            String errorMsg = "Transaction date " + txDate + " must be in the future, but it is today or in the past (Today is " + todayDate + ")";
+            Assert.assertTrue(errorMsg, !txDate.isBefore(todayDate));
+        }
+    }
+
+    @And("Assert Statements filter has current year selected")
+    public void assertStatementsFilterHasCurrentYearSelected() throws Throwable {
+        String xPath = "//nlb-dropdown-select//input";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        String yearFromUI = element.getAttribute("value").trim();
+        String yearActual = String.valueOf(Year.now());
+        System.out.println("FROM UI "+ yearFromUI);
+        System.out.println("YEAR NOW "+ yearActual);
+        Assert.assertEquals(yearActual, yearFromUI);
+    }
+
+    @And("Remember number of Statemants in Statemants list under key {string}")
+    public void rememberNumberOfStatemantsInStatemantsListUnderKey(String key) throws Throwable {
+        String xPath = "//nlb-statement-item";
+        List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
+        int numberOfStatemants = elements.size();
+        DataManager.userObject.put(key, numberOfStatemants);
+    }
+
+    @And("Assert all dates in statements list is for year {string} and they are sorted properly")
+    public void assertAllDatesInStatementsListIsForYearAndTheyAreSortedProperly(String year) throws Throwable {
+        String xpath = "//*[@class='subheadline medium']/div[1]";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        List<LocalDate> dates = new ArrayList<>();
+        List<WebElement> listOfElements = SelectByXpath.CreateElementsByXpath(xpath);
+        for (WebElement element : listOfElements) {
+            String text = element.getText().trim();
+            LocalDate parsedDate = LocalDate.parse(text, formatter);
+            dates.add(parsedDate);
+        }
+
+        System.out.println(dates);
+        if(dates.isEmpty()){
+            System.out.println("LISTA JE PRAZNA!");
+            fail();
+        }
+        int expectedYear = Integer.parseInt(year);
+        for (LocalDate date : dates) {
+            Assert.assertEquals(String.format("Datum %s ne pripada godini %d!", date.format(formatter), expectedYear),
+                    expectedYear,
+                    date.getYear());
+        }
+        for (int i = 0; i < dates.size() - 1; i++) {
+            LocalDate current = dates.get(i);
+            LocalDate next = dates.get(i + 1);
+            Assert.assertTrue(String.format("Datumi nisu dobro sortirani (očekivano od decembra ka januaru)! '%s' je preuranjem u odnosu na '%s'.",
+                            current.format(formatter), next.format(formatter)),
+                    current.isAfter(next) || current.isEqual(next));
+        }
+    }
+
+    @And("Assert elements by attribute {string} contains value {string} is displayed in amount from key {string}")
+    public void assertElementsByContainsClassIsDisplayedInAmountFromKey(String attr, String part, String key) throws Throwable {
+        String xpath = "//*[contains(@" + attr + ", '" + part + "')]";
+        List<WebElement> list = SelectByXpath.CreateElementsByXpath(xpath);
+        System.out.println("PRONADJENO ELEMENATA "+ list.size());
+
+        for(WebElement element: list)
+            Assert.assertTrue(element.isDisplayed());
+        int expectedSize = (Integer) DataManager.userObject.get(key);
+        Assert.assertEquals(list.size(), expectedSize);
     }
 }

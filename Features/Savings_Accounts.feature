@@ -212,3 +212,122 @@ Feature: Saving_Accounts
     Examples:
       | rowindex |
       |        1 |
+
+
+  @Saving_Accounts_Transactions_Download_Option_[WEB]
+  Scenario Outline: Saving_Accounts_Transactions_Download_Option_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+    And Assert element by class "button-bold"
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "savings_account_2_number"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Wait for "4" seconds
+
+    And Assert element by contains text from excel "<rowindex>" columnName "savings_account_2_number" is displayed
+    And Assert element by normalized text "Download transaction list"
+    And Assert element by contains class "icon-download"
+    And Assert element by tag "input" and type "search"
+
+    And Assert element with attribute "placeholder" contains value "Search..." is displayed
+    And Assert element by normalized text "Filters"
+    And Click on normalized text "Filters"
+
+    And Select transaction type "Incoming transactions" in Advanced filters
+    And Click on NLB button "Confirm"
+    And Wait for first transaction in Product details
+    And Assert there are only Incoming transactions in transactions list
+
+    Then Remember transactions "Incoming transactions"
+    And Click on normalized text "Download transaction list"
+    And Assert Download transactions options are "Products_Common_Transactions_Download_Excel_Action" and "Products_Common_Transactions_Download_CSV_Action"
+    And Scroll element by contains text "Products_Common_Transactions_Download_CSV_Action" into bottom view
+    And Click on element by containing text "Products_Common_Transactions_Download_Excel_Action"
+    And Assert document with name "Transactions.xlsx" is downloaded
+    And Assert xlsx values are correct
+
+    And Click on normalized text "Download transaction list"
+    And Assert Download transactions options are "Products_Common_Transactions_Download_Excel_Action" and "Products_Common_Transactions_Download_CSV_Action"
+    And Click on element by containing text "Products_Common_Transactions_Download_CSV_Action"
+    And Assert document with name "Transactions.csv" is downloaded
+    And Assert csv values are correct
+
+    Examples:
+      | rowindex |
+      |        1 |
+
+
+  @Savings_Accounts_Transactions_Filter_By_Date_Date_Picker_[WEB]
+  Scenario Outline: Savings_Accounts_Transactions_Filter_By_Date_Date_Picker_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Assert that products in my products have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "savings_account_2_number"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "savings_account_2_number"
+    And Assert element by contains text "Transactions"
+    And Click on element by containing text "Filters"
+
+    And Assert element by contains text "Last 7 days"
+    And Assert element by contains text "This month"
+    And Assert element by contains text "Last month"
+
+    And Click on button with tag "i" containing class "icon-calendar-today"
+    And Assert window behind Date filter popup is blurred
+    And Assert Select date title in Date filter
+    And Select date in From label to be "30.03.2026"
+    And Select date in To label to be "05.04.2026"
+    And Click on element by containing text "Confirm"
+    And Scroll element by contains text "end of the list" into view
+
+    Then Assert transaction dates are between "30.03.2026" and "05.04.2026"
+    And Scroll element by contains text "Clear filters" into view
+    And Click on element by containing text "Clear filters"
+
+    Examples:
+      | rowindex |
+      |        1 |
+
+
+  @Saving_Accounts_Accounts_Statemants_List_[WEB]
+  Scenario Outline: Saving_Accounts_Accounts_Statemants_List_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert transactions in my product have loaded
+
+    When Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Click on element by containing text from Excel "<rowindex>" columnName "savings_account_1_number"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "savings_account_1_name"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "savings_account_1_number"
+    And Assert tabs in Product details are displayed correctly for Savings Accounts
+    And Select "Statements" tab in Products details
+    And Assert "Statements" tab in Products details is selected
+    And Scroll to element by xPath "//a[contains(text(), 'Transactions')]" and scroll 1 more screen
+    And Wait for element by contains text "year"
+    And Assert either element with xPath "//nlb-selected-product-statements//nlb-empty-list//div[text() = 'There are no statements for the selected year.']/preceding-sibling::div/img[@alt='Empty list']" or element with xpath "(//nlb-statement-item)[1]" is displayed
+    And Assert Statements filter label is "Filter by year"
+    And Assert Statements filter has current year selected
+    And Select year "2021" in Statements filter and assert there are 11 options
+    And Remember number of Statemants in Statemants list under key "keyNumberOfTemplates"
+    And Assert all dates in statements list is for year "2021" and they are sorted properly
+    And Assert elements by attribute "class" contains value "subheadline medium" is displayed in amount from key "keyNumberOfTemplates"
+    And Assert elements by attribute "class" contains value "nlb-icon icon-statement" is displayed in amount from key "keyNumberOfTemplates"
+    And Assert elements by attribute "class" contains value "nlb-icon icon-download" is displayed in amount from key "keyNumberOfTemplates"
+
+    Then Click download on first statement in Statement list
+    And Assert document with name starting with "Izvod_" and has file type ".pdf" is downloaded
+
+    Examples:
+      | rowindex |
+      |        1 |

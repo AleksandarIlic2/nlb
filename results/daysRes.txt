@@ -1,5 +1,5 @@
 <TABLE id="table-3" class="table table-hover">
-<TR><TH>Date</TH><TH>2026-06-04</TH><TH>2026-06-05</TH><TH>2026-06-06</TH><TH>2026-06-09</TH><TH>2026-06-11</TH><TH>2026-06-12</TH><TH>2026-06-16</TH></TR>
-<TR><TD>Passed</TD><TD>0</TD><TD>5</TD><TD>8</TD><TD>0</TD><TD>2</TD><TD>4</TD><TD>1</TD></TR>
-<TR><TD>Fail</TD><TD>2</TD><TD>25</TD><TD>50</TD><TD>1</TD><TD>47</TD><TD>24</TD><TD>21</TD></TR>
+<TR><TH>Date</TH><TH>2026-07-15</TH><TH>2026-07-16</TH><TH>2026-07-17</TH><TH>2026-07-24</TH><TH>2026-07-25</TH><TH>2026-07-27</TH><TH>2026-07-28</TH></TR>
+<TR><TD>Passed</TD><TD>0</TD><TD>0</TD><TD>0</TD><TD>0</TD><TD>0</TD><TD>0</TD><TD>0</TD></TR>
+<TR><TD>Fail</TD><TD>47</TD><TD>0</TD><TD>0</TD><TD>0</TD><TD>0</TD><TD>0</TD><TD>0</TD></TR>
 </TABLE>

@@ -188,3 +188,115 @@ Feature: Payments_Archive
     Examples:
       | rowindex |
       |        1 |
+
+
+  @Payments_Payments_Archive_Payments_Details_[WEB]
+  Scenario Outline: Payments_Payments_Archive_Payments_Details_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+
+    When Click on tab "Payments" from main sidebar
+    And Wait for element by text "Past payments"
+    And Wait for first past payment
+    And Click on element by containing class "icon-chevron-down" with index "1"
+    And Wait for "2" seconds
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Wait for "2" seconds
+    And Click on first Executed past payment
+    And Wait for element by contains text "Confirmation"
+
+    And Assert element by contains text "Confirmation"
+    And Assert element by contains text "Repeat payment"
+    And Assert field "Recipient" in payment confirmation matches regex "^.+$"
+    And Assert field "Recipient address" in payment confirmation matches regex "(?s)^.+$"
+    And Assert field "Recipient account" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
+    And Assert field "Urgent payment" in payment confirmation matches regex "^(Yes|No)$"
+    And Assert field "Purpose code" in payment confirmation matches regex "^\d{3}$"
+    And Assert field "Purpose" in payment confirmation matches regex "^.+$"
+    And Assert field "Payment date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4},\s\d{2}:\d{2}$"
+    And Assert field "Execution date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert field "Order ID" in payment confirmation matches regex "^.{14}$"
+    And Assert label "Debtor name" in payment confirmation contains value from excel "<rowindex>" columnName "account_details_owner"
+    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert field "Debtor address" in payment confirmation matches regex "(?s)^.+$"
+    And Assert field "Fee" in payment confirmation matches regex "^\d{1,2},\d{2}\s*RSD$"
+    And Assert field "Payment status" in payment confirmation contains text "Executed"
+
+    And Click on element by containing class "icon-chevron-down" with index "1"
+    And Wait for "2" seconds
+    And Click on element by containing text from Excel "<rowindex>" columnName "auth_current_account_bban"
+    And Wait for "2" seconds
+    And Click on first Executed past payment
+    And Wait for element by contains text "Confirmation"
+
+    And Assert element by contains text "Confirmation"
+    And Assert element by contains text "Repeat payment"
+    And Assert field "Recipient" in payment confirmation matches regex "^.+$"
+    And Assert field "Recipient address" in payment confirmation matches regex "(?s)^.+$"
+    And Assert field "Recipient account" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
+    And Assert field "Urgent payment" in payment confirmation matches regex "^(Yes|No)$"
+    And Assert field "Purpose code" in payment confirmation matches regex "^\d{3}$"
+    And Assert field "Purpose" in payment confirmation matches regex "^.+$"
+    And Assert field "Payment date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4},\s\d{2}:\d{2}$"
+    And Assert field "Execution date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert field "Order ID" in payment confirmation matches regex "^.{14}$"
+    And Assert label "Debtor name" in payment confirmation contains value from excel "<rowindex>" columnName "auth_current_account_owner_name"
+    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "auth_current_account_bban"
+    And Assert field "Debtor address" in payment confirmation matches regex "(?s)^.+$"
+    And Assert field "Fee" in payment confirmation matches regex "^\d{1,2},\d{2}\s*RSD$"
+    And Assert field "Payment status" in payment confirmation contains text "Executed"
+
+    And Click on element by containing class "icon-chevron-down" with index "1"
+    And Wait for "2" seconds
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Wait for "2" seconds
+    And Click on first Executed past payment
+    And Wait for element by contains text "Confirmation"
+
+    And Assert element by contains text "Confirmation"
+    And Assert element by contains text "Repeat payment"
+    And Assert field "Recipient" in payment confirmation matches regex "^.+$"
+    And Assert field "Recipient address" in payment confirmation matches regex "(?s)^.+$"
+    And Assert field "Recipient account" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
+    And Assert field "Urgent payment" in payment confirmation matches regex "^(Yes|No)$"
+    And Assert field "Purpose code" in payment confirmation matches regex "^\d{3}$"
+    And Assert field "Purpose" in payment confirmation matches regex "^.+$"
+    And Assert field "Payment date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4},\s\d{2}:\d{2}$"
+    And Assert field "Execution date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert field "Order ID" in payment confirmation matches regex "^.{14}$"
+    And Assert label "Debtor name" in payment confirmation contains value from excel "<rowindex>" columnName "account_details_owner"
+    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_iban"
+    And Assert field "Debtor address" in payment confirmation matches regex "(?s)^.+$"
+    And Assert field "Fee" in payment confirmation matches regex "^\d{1,2},\d{2}\s*RSD$"
+    And Assert field "Payment status" in payment confirmation contains text "Executed"
+
+    Then Click on element by containing class "icon-chevron-down" with index "1"
+    And Wait for "2" seconds
+    And Click on element by containing text from Excel "<rowindex>" columnName "savings_account_1_number"
+    And Wait for "2" seconds
+    And Click on first Executed past payment
+    And Wait for element by contains text "Confirmation"
+
+    And Assert element by contains text "Confirmation"
+    And Assert element by contains text "Repeat payment"
+    And Assert field "Recipient" in payment confirmation matches regex "^.+$"
+    And Assert field "Recipient address" in payment confirmation matches regex "(?s)^.+$"
+    And Assert field "Recipient account" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
+    And Assert field "Urgent payment" in payment confirmation matches regex "^(Yes|No)$"
+    And Assert field "Purpose code" in payment confirmation matches regex "^\d{3}$"
+    And Assert field "Purpose" in payment confirmation matches regex "^.+$"
+    And Assert field "Payment date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4},\s\d{2}:\d{2}$"
+    And Assert field "Execution date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert field "Order ID" in payment confirmation matches regex "^.{14}$"
+    And Assert label "Debtor name" in payment confirmation contains value from excel "<rowindex>" columnName "account_details_owner"
+    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "savings_account_1_number"
+    And Assert field "Debtor address" in payment confirmation matches regex "(?s)^.+$"
+    And Assert field "Fee" in payment confirmation matches regex "^\d{1,2},\d{2}\s*RSD$"
+    And Assert field "Payment status" in payment confirmation contains text "Executed"
+
+    Examples:
+      | rowindex |
+      |        8 |

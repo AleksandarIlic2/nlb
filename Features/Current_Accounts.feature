@@ -77,7 +77,7 @@ Feature: Current_Accounts
 
     Examples:
       | rowindex |
-      |        2 |
+      |        8 |
 
 
   @Products_Current_Accounts-Cheques-Filter_[WEB]
@@ -116,7 +116,7 @@ Feature: Current_Accounts
 
     Examples:
       | rowindex |
-      |        2 |
+      |        8 |
 
 
   @Products_Current_Accounts-Cheques-Input_Fields-invalid_[WEB]
@@ -158,4 +158,4 @@ Feature: Current_Accounts
 
     Examples:
       | rowindex |
-      |        2 |
+      |        8 |

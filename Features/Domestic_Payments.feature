@@ -372,7 +372,6 @@ Feature: Domestic_Payments
       |        5 |
 
 
-    #Automatizovano na UAT-u. Nema ga u Excelu za TST
   @Payments-Domestic_Payments_[WEB]
   Scenario Outline: Payments-Domestic_Payments_[WEB]
 
@@ -397,7 +396,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Select from list or enter recipient data."
     And Assert element by contains src "CurrentAccount-Icon" is displayed
     And Assert element by contains class "subheadline bold" ends with "RSD"
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
     And Click on normalized text "Select from list"
     And Assert element by contains text "Select template"
     And Assert element by contains text "Select recipient"
@@ -448,7 +447,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Name"
 #    And Assert text under key "fullNameKey" is displayed
     And Assert element by contains text "Address"
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
 #    And Assert element by tag "dt" containing text "Name" with index "2"
@@ -464,16 +463,12 @@ Feature: Domestic_Payments
     And Assert element by contains text "Confirm"
     And Assert element by contains text "Back"
     And Click on element by containing text "Confirm"
+    And Try to assert that payment is "Success" and send command to Authorize method
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "3.00" and currency "RSD" with message "Success"
     And Assert element by contains text "Success"
     And Wait for element by contains text "Domestic payment"
-    And Click on tab "My Products" from main sidebar
-    And Wait for first product to load
-#    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "3" is correct
-#    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "3" is correct
-
-    #treba da ide u Past payments
-    And Click on tab "Payments" from main sidebar
     And Click on normalized text "Past payments"
+    And Wait for first past payment
     And Assert text under key "keyPurpose" is displayed
     And Click on tab "My NLB" from main sidebar
 #    And Wait for element by text "Pay or transfer"
@@ -481,6 +476,10 @@ Feature: Domestic_Payments
     And Wait for "2" seconds
     And Assert text under key "keyPurpose" is displayed
     And Assert text under key "keyName" is displayed
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "3" is correct
+    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "3" is correct
 
     Examples:
       | rowindex |

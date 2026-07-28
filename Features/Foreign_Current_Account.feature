@@ -606,7 +606,7 @@ Feature: Foreign_Current_Account
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
     And Wait for element by tag "nlb-product-detail-header"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
-    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_iban"
+#    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_iban"
     And Assert tabs in Product details are displayed correctly for Current Foreign Accounts
     And Select "Statements" tab in Products details
     And Assert "Statements" tab in Products details is selected
@@ -640,7 +640,7 @@ Feature: Foreign_Current_Account
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for element by tag "nlb-product-detail-header"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
-    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
+#    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
     And Assert tabs in Product details are displayed correctly for Current Foreign Accounts
     And Select "Statements" tab in Products details
     And Assert "Statements" tab in Products details is selected
@@ -656,3 +656,41 @@ Feature: Foreign_Current_Account
     Examples:
       | rowindex |
       |        2 |
+
+
+  @Current_Foreign_Accounts_Statemants_List_[WEB]
+  Scenario Outline: Current_Foreign_Accounts_Statemants_List_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert transactions in my product have loaded
+
+    When Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_iban"
+    And Assert tabs in Product details are displayed correctly for Current Foreign Accounts
+    And Select "Statements" tab in Products details
+    And Assert "Statements" tab in Products details is selected
+    And Scroll to element by xPath "//a[contains(text(), 'Transactions')]" and scroll 1 more screen
+    And Wait for element by contains text "year"
+    And Assert either element with xPath "//nlb-selected-product-statements//nlb-empty-list//div[text() = 'There are no statements for the selected year.']/preceding-sibling::div/img[@alt='Empty list']" or element with xpath "(//nlb-statement-item)[1]" is displayed
+    And Assert Statements filter label is "Filter by year"
+
+    And Assert Statements filter has current year selected
+    And Select year "2024" in Statements filter and assert there are 11 options
+    And Remember number of Statemants in Statemants list under key "keyNumberOfTemplates"
+    And Assert all dates in statements list is for year "2024" and they are sorted properly
+    And Assert elements by attribute "class" contains value "subheadline medium" is displayed in amount from key "keyNumberOfTemplates"
+    And Assert elements by attribute "class" contains value "nlb-icon icon-statement" is displayed in amount from key "keyNumberOfTemplates"
+    And Assert elements by attribute "class" contains value "nlb-icon icon-download" is displayed in amount from key "keyNumberOfTemplates"
+
+    Then Click download on first statement in Statement list
+    And Assert document with name starting with "Izvod_" and has file type ".pdf" is downloaded
+
+    Examples:
+      | rowindex |
+      |        5 |

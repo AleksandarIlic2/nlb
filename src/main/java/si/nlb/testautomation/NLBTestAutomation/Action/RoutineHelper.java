@@ -1452,10 +1452,10 @@ public class RoutineHelper {
     }
 
     public void checkIfAuthIsNeededAndCompletePaymentFor(String rowindex, String columnName, String amount, String currency, String notifMessage) throws Throwable {
-            String status = (String) DataManager.userObject.get("StatusOfPayment");
+        String status = (String) DataManager.userObject.get("StatusOfPayment");
             if(status.equals("NOK")){
-                String accountIban = DataManager.getDataFromHashDatamap(rowindex,columnName);
-                useMobileAppToCompletePayment(accountIban,amount,currency);
+                String accountBban = DataManager.getDataFromHashDatamap(rowindex,columnName);
+                useMobileAppToCompletePayment(accountBban,amount,currency);
                 String xPath = "//*[contains(text(),'" + notifMessage + "')]";
                 By el = By.xpath(xPath);
                 boolean notifExists = ActionApiHelpers.isElementDisplayedCustom(el,10,500);
@@ -1487,7 +1487,6 @@ public class RoutineHelper {
         By el = By.xpath(xPath);
         boolean notifExists = ActionApiHelpers.isElementDisplayedCustom(el,10,500);
         //boolean notifExists = ActionApiHelpers.existsElement(xPath);
-
 
         if(notifExists == true){
             System.out.println("Payment is successful");
@@ -2510,5 +2509,46 @@ public class RoutineHelper {
                 .trim();
 
         return actual;
+    }
+
+    public BigDecimal multiplyLocalizedNumbers(String firstValue, String secondValue) {
+        BigDecimal firstNumber = parseLocalizedBigDecimal(firstValue);
+        BigDecimal secondNumber = parseLocalizedBigDecimal(secondValue);
+
+        return firstNumber.multiply(secondNumber);
+    }
+
+    public BigDecimal parseLocalizedBigDecimal(String value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Prosleđena vrednost je null.");
+        }
+
+        String normalized = value
+                .replace("\u00A0", " ")
+                .trim()
+                .replaceAll("[^0-9,.-]", "");
+
+        if (normalized.isEmpty()) {
+            throw new IllegalArgumentException("Nije moguće parsirati broj iz vrednosti: " + value);
+        }
+
+        if (normalized.contains(",") && normalized.contains(".")) {
+            normalized = normalized.replace(".", "").replace(",", ".");
+        } else if (normalized.contains(",")) {
+            normalized = normalized.replace(",", ".");
+        }
+
+        return new BigDecimal(normalized);
+    }
+
+    public BigDecimal parseAmount(String amount) {
+        return new BigDecimal(
+                amount
+                        .replace("\u00A0", " ")
+                        .replaceAll("[^0-9,.-]", "")
+                        .replace(".", "")
+                        .replace(",", ".")
+                        .trim()
+        );
     }
 }

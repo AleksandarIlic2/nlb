@@ -1,9 +1,9 @@
 <TABLE id="table-2" class="table table-hover">
     <THead>
-        <TR><TH>Status</TH><TH>2026-06-16</TH></TR>
+        <TR><TH>Status</TH><TH>2026-07-28</TH></TR>
     </THead>
     <TBody>
-        <TR><TD>PASSED</TD><TD>1</TD></TR>
-        <TR><TD>FAIL</TD><TD>21</TD></TR>
+        <TR><TD>PASSED</TD><TD>0</TD></TR>
+        <TR><TD>FAIL</TD><TD>0</TD></TR>
     </TBody>
 </TABLE>

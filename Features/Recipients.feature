@@ -312,4 +312,4 @@ Feature: Recipients
 
     Examples:
       | rowindex |
-      |        1 |
+      |        5 |

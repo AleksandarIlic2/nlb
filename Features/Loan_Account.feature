@@ -346,7 +346,7 @@ Feature: Loan_Account
 
     Examples:
       | rowindex |
-      |        5 |
+      |        8 |
 
 
   @Loan_Accounts-Details-Account_Details_[WEB]
@@ -372,4 +372,4 @@ Feature: Loan_Account
 
     Examples:
       | rowindex |
-      |        5 |
+      |        8 |

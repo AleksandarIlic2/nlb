@@ -63,7 +63,11 @@ public class BaseMobile {
         return conf_env_data.get(index).get(columnName);
     }
 
-  public static void createDriver() throws IOException, InterruptedException {
+    public static void createDriver() throws IOException, InterruptedException {
+        createDriver(true);
+    }
+
+    public static void createDriver(boolean launchApp) throws IOException, InterruptedException {
 
         /*if(getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_NAME").equals("iOS")){
           System.out.println("iOS driver");
@@ -94,18 +98,18 @@ public class BaseMobile {
       }
 
          */
-      //if (getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_NAME").equals("Android")) {
-          System.out.println("Android driver");
-          testPlatform = "Android";
-          DesiredCapabilities capabilities = new DesiredCapabilities();
-          //String pkg = getDataFromFileConf(DataManager.getDataFromConfiguration("1", "mobDevicePackage"), "appPackage");
-          //String act = getDataFromFileConf(DataManager.mobDeviceActivity, "appActivity");
-          String pkg = DataManager.getDataFromConfiguration("1", "mobDevicePackage");
-          String act = DataManager.getDataFromConfiguration("1", "appActivity");
+        //if (getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_NAME").equals("Android")) {
+        System.out.println("Android driver");
+        testPlatform = "Android";
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        //String pkg = getDataFromFileConf(DataManager.getDataFromConfiguration("1", "mobDevicePackage"), "appPackage");
+        //String act = getDataFromFileConf(DataManager.mobDeviceActivity, "appActivity");
+        String pkg = DataManager.getDataFromConfiguration("1", "mobDevicePackage");
+        String act = DataManager.getDataFromConfiguration("1", "appActivity");
 
-          //if value is 1, we are using virtual android device and if not we are using physical device
-          if(DataManager.isDeviceVirtual.equals("1")){
-              //This is old way of starting app used while appium 1.x was installed
+        //if value is 1, we are using virtual android device and if not we are using physical device
+        if(DataManager.isDeviceVirtual.equals("1")){
+            //This is old way of starting app used while appium 1.x was installed
               /*capabilities.setCapability("udid", DataManager.mobDeviceUdid);//getDataFromFileConf(Hooks.rowinConfExcel, "UDID")); //Give Device ID of your mobile phone
               capabilities.setCapability("platformName", DataManager.mobDevicePlatformName);//, getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_NAME"));
               capabilities.setCapability("deviceName", DataManager.mobDeviceDeviceName);//, getDataFromFileConf(Hooks.rowinConfExcel, "DEVICE_NAME"));
@@ -118,49 +122,151 @@ public class BaseMobile {
               //capabilities.setCapability("appActivity", getDataFromFile(rowinConfExcel, "appActivity"));
               //capabilities.setCapability("app", DataManager.mobDeviceAPP);//, getDataFromFileConf(Hooks.rowinConfExcel, "APP"));*/
 
-              //This is new way of starting app used while appium 2.x is installed
-              // W3C / Appium 3: prefiks "appium:" za vendor-capabilities
-              capabilities.setCapability("platformName", DataManager.getDataFromConfiguration("1","mobDevicePlatformName"));
-              capabilities.setCapability("appium:deviceName", DataManager.getDataFromConfiguration("1","mobDeviceDeviceName"));
-              capabilities.setCapability("appium:udid", DataManager.getDataFromConfiguration("1","mobDeviceUdid"));
-              capabilities.setCapability("appium:platformVersion", DataManager.getDataFromConfiguration("1","mobDevicePlatformVersion"));
-              capabilities.setCapability("appium:avd", DataManager.getDataFromConfiguration("1","mobDeviceAVD"));
-              capabilities.setCapability("appium:automationName", "uiautomator2");
-          }
-          else {
-              capabilities.setCapability("udid", DataManager.mobDeviceUdidPhysical);//getDataFromFileConf(Hooks.rowinConfExcel, "UDID")); //Give Device ID of your mobile phone
-              capabilities.setCapability("platformName", DataManager.mobDevicePlatformName);//, getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_NAME"));
-              capabilities.setCapability("deviceName", DataManager.mobDeviceDeviceNamePhysical);//, getDataFromFileConf(Hooks.rowinConfExcel, "DEVICE_NAME"));
-              capabilities.setCapability("platformVersion", DataManager.mobDevicePlatformVersionPhysical);//, getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_VERSION"));
-              //capabilities.setCapability("appPackage", getDataFromFile(rowinConfExcel, "appPackage"));
-              capabilities.setCapability("appPackage",DataManager.getDataFromConfiguration("1", "mobDevicePackage"));
-              capabilities.setCapability("appActivity",DataManager.mobDeviceActivity);
-              capabilities.setCapability("automationName","UiAutomator2");
-              //capabilities.setCapability("appActivity", getDataFromFile(rowinConfExcel, "appActivity"));
-              //capabilities.setCapability("app", DataManager.mobDeviceAPP);//, getDataFromFileConf(Hooks.rowinConfExcel, "APP"));
-          }
-          // ne dozvoli da Appium auto-startuje app; mi kontrolisemo start/stop
-          capabilities.setCapability("appium:autoLaunch", false);
-          // ne brisemo podatke (ako zelis “clean slate” vidi donju varijantu)
-          capabilities.setCapability("appium:noReset", true);
-          // produzava W3C timeout za “idle” komande
-          capabilities.setCapability("appium:newCommandTimeout", 100_000);
-          // (opciono) gasi AUT pri quit()
-          capabilities.setCapability("appium:shouldTerminateApp", true);
+            //This is new way of starting app used while appium 2.x is installed
+            // W3C / Appium 3: prefiks "appium:" za vendor-capabilities
+            capabilities.setCapability("platformName", DataManager.getDataFromConfiguration("1","mobDevicePlatformName"));
+            capabilities.setCapability("appium:deviceName", DataManager.getDataFromConfiguration("1","mobDeviceDeviceName"));
+            capabilities.setCapability("appium:udid", DataManager.getDataFromConfiguration("1","mobDeviceUdid"));
+            capabilities.setCapability("appium:platformVersion", DataManager.getDataFromConfiguration("1","mobDevicePlatformVersion"));
+            capabilities.setCapability("appium:avd", DataManager.getDataFromConfiguration("1","mobDeviceAVD"));
+            capabilities.setCapability("appium:automationName", "uiautomator2");
+        }
+        else {
+            capabilities.setCapability("udid", DataManager.mobDeviceUdidPhysical);//getDataFromFileConf(Hooks.rowinConfExcel, "UDID")); //Give Device ID of your mobile phone
+            capabilities.setCapability("platformName", DataManager.mobDevicePlatformName);//, getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_NAME"));
+            capabilities.setCapability("deviceName", DataManager.mobDeviceDeviceNamePhysical);//, getDataFromFileConf(Hooks.rowinConfExcel, "DEVICE_NAME"));
+            capabilities.setCapability("platformVersion", DataManager.mobDevicePlatformVersionPhysical);//, getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_VERSION"));
+            //capabilities.setCapability("appPackage", getDataFromFile(rowinConfExcel, "appPackage"));
+            capabilities.setCapability("appPackage",DataManager.getDataFromConfiguration("1", "mobDevicePackage"));
+            capabilities.setCapability("appActivity",DataManager.mobDeviceActivity);
+            capabilities.setCapability("automationName","UiAutomator2");
+            //capabilities.setCapability("appActivity", getDataFromFile(rowinConfExcel, "appActivity"));
+            //capabilities.setCapability("app", DataManager.mobDeviceAPP);//, getDataFromFileConf(Hooks.rowinConfExcel, "APP"));
+        }
+        // ne dozvoli da Appium auto-startuje app; mi kontrolisemo start/stop
+        capabilities.setCapability("appium:autoLaunch", false);
+        // ne brisemo podatke (ako zelis “clean slate” vidi donju varijantu)
+        capabilities.setCapability("appium:noReset", true);
+        // produzava W3C timeout za “idle” komande
+        capabilities.setCapability("appium:newCommandTimeout", 100_000);
+        // (opciono) gasi AUT pri quit()
+        capabilities.setCapability("appium:shouldTerminateApp", true);
 
-          checkIsPhoneLock();
-          driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
-          waitVar = new WebDriverWait(driver, 60);
+        checkIsPhoneLock();
+        driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+        waitVar = new WebDriverWait(driver, 60);
 
-          // -- Forsiraj hladan start bez brisanja podataka --
-          Map<String, Object> term = new HashMap<>();
-          term.put("appId", pkg);
-          driver.executeScript("mobile: terminateApp", term);
+        // -- Forsiraj hladan start bez brisanja podataka --
+        if (launchApp) {
+            // Ugasi aplikaciju ako je već pokrenuta
+            Map<String, Object> term = new HashMap<>();
+            term.put("appId", pkg);
+            driver.executeScript("mobile: terminateApp", term);
 
-          // Opcija B: (često “čistije” na Androidu) direktno startuj glavnu Activity
-          ((StartsActivity) driver).startActivity(new Activity(pkg, act));
-      //}
-  }
+            // Pokreni glavnu Activity aplikacije
+            ((StartsActivity) driver).startActivity(new Activity(pkg, act));
+        }
+        //}
+    }
+
+//  public static void createDriver() throws IOException, InterruptedException {
+//
+//        /*if(getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_NAME").equals("iOS")){
+//          System.out.println("iOS driver");
+//          testPlatform = "iOS";
+//          testVer =getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_VERSION");
+//          final String URL_STRING = "http://127.0.0.1:4723/wd/hub";
+//          url = new URL(URL_STRING);
+//          final DesiredCapabilities capabilities = new DesiredCapabilities();
+//          capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, getDataFromFileConf(Hooks.rowinConfExcel, "DEVICE_NAME"));
+//          capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_NAME"));
+//          capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, testVer);
+//          capabilities.setCapability(MobileCapabilityType.UDID, getDataFromFileConf(Hooks.rowinConfExcel, "UDID"));
+//          capabilities.setCapability(MobileCapabilityType.APP, getDataFromFileConf(Hooks.rowinConfExcel, "APP"));
+//          capabilities.setCapability(MobileCapabilityType.NO_RESET, true);
+//          capabilities.setCapability("appium:shouldTerminateApp", true);
+//          capabilities.setCapability("appium:newCommandTimeout", 180);
+//          //capabilities.setCapability(MobileCapabilityType.FULL_RESET, true);
+//          capabilities.setCapability("bundleId", getDataFromFileConf(Hooks.rowinConfExcel, "BUNDLE_ID"));
+//          capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, getDataFromFileConf(Hooks.rowinConfExcel, "AUTOMATION_NAME"));
+//          capabilities.setCapability("useNewWDA", true);
+//          capabilities.setCapability("locationServicesEnabled", true);
+//          capabilities.setCapability("locationServicesAuthorized", true);
+//
+//
+//          driver = new IOSDriver<IOSElement>(url, capabilities);
+//          driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+//          waitVar = new WebDriverWait(driver, 60);
+//      }
+//
+//         */
+//      //if (getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_NAME").equals("Android")) {
+//          System.out.println("Android driver");
+//          testPlatform = "Android";
+//          DesiredCapabilities capabilities = new DesiredCapabilities();
+//          //String pkg = getDataFromFileConf(DataManager.getDataFromConfiguration("1", "mobDevicePackage"), "appPackage");
+//          //String act = getDataFromFileConf(DataManager.mobDeviceActivity, "appActivity");
+//          String pkg = DataManager.getDataFromConfiguration("1", "mobDevicePackage");
+//          String act = DataManager.getDataFromConfiguration("1", "appActivity");
+//
+//          //if value is 1, we are using virtual android device and if not we are using physical device
+//          if(DataManager.isDeviceVirtual.equals("1")){
+//              //This is old way of starting app used while appium 1.x was installed
+//              /*capabilities.setCapability("udid", DataManager.mobDeviceUdid);//getDataFromFileConf(Hooks.rowinConfExcel, "UDID")); //Give Device ID of your mobile phone
+//              capabilities.setCapability("platformName", DataManager.mobDevicePlatformName);//, getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_NAME"));
+//              capabilities.setCapability("deviceName", DataManager.mobDeviceDeviceName);//, getDataFromFileConf(Hooks.rowinConfExcel, "DEVICE_NAME"));
+//              capabilities.setCapability("platformVersion", DataManager.mobDevicePlatformVersion);//, getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_VERSION"));
+//              capabilities.setCapability("avd", DataManager.mobDeviceAVD);//, getDataFromFileConf(Hooks.rowinConfExcel, "AVD"));
+//              //capabilities.setCapability("appPackage", getDataFromFile(rowinConfExcel, "appPackage"));
+//              capabilities.setCapability("appPackage",DataManager.getDataFromConfiguration("1", "mobDevicePackage"));
+//              capabilities.setCapability("appActivity",DataManager.mobDeviceActivity);
+//              capabilities.setCapability("automationName","UiAutomator2");
+//              //capabilities.setCapability("appActivity", getDataFromFile(rowinConfExcel, "appActivity"));
+//              //capabilities.setCapability("app", DataManager.mobDeviceAPP);//, getDataFromFileConf(Hooks.rowinConfExcel, "APP"));*/
+//
+//              //This is new way of starting app used while appium 2.x is installed
+//              // W3C / Appium 3: prefiks "appium:" za vendor-capabilities
+//              capabilities.setCapability("platformName", DataManager.getDataFromConfiguration("1","mobDevicePlatformName"));
+//              capabilities.setCapability("appium:deviceName", DataManager.getDataFromConfiguration("1","mobDeviceDeviceName"));
+//              capabilities.setCapability("appium:udid", DataManager.getDataFromConfiguration("1","mobDeviceUdid"));
+//              capabilities.setCapability("appium:platformVersion", DataManager.getDataFromConfiguration("1","mobDevicePlatformVersion"));
+//              capabilities.setCapability("appium:avd", DataManager.getDataFromConfiguration("1","mobDeviceAVD"));
+//              capabilities.setCapability("appium:automationName", "uiautomator2");
+//          }
+//          else {
+//              capabilities.setCapability("udid", DataManager.mobDeviceUdidPhysical);//getDataFromFileConf(Hooks.rowinConfExcel, "UDID")); //Give Device ID of your mobile phone
+//              capabilities.setCapability("platformName", DataManager.mobDevicePlatformName);//, getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_NAME"));
+//              capabilities.setCapability("deviceName", DataManager.mobDeviceDeviceNamePhysical);//, getDataFromFileConf(Hooks.rowinConfExcel, "DEVICE_NAME"));
+//              capabilities.setCapability("platformVersion", DataManager.mobDevicePlatformVersionPhysical);//, getDataFromFileConf(Hooks.rowinConfExcel, "PLATFORM_VERSION"));
+//              //capabilities.setCapability("appPackage", getDataFromFile(rowinConfExcel, "appPackage"));
+//              capabilities.setCapability("appPackage",DataManager.getDataFromConfiguration("1", "mobDevicePackage"));
+//              capabilities.setCapability("appActivity",DataManager.mobDeviceActivity);
+//              capabilities.setCapability("automationName","UiAutomator2");
+//              //capabilities.setCapability("appActivity", getDataFromFile(rowinConfExcel, "appActivity"));
+//              //capabilities.setCapability("app", DataManager.mobDeviceAPP);//, getDataFromFileConf(Hooks.rowinConfExcel, "APP"));
+//          }
+//          // ne dozvoli da Appium auto-startuje app; mi kontrolisemo start/stop
+//          capabilities.setCapability("appium:autoLaunch", false);
+//          // ne brisemo podatke (ako zelis “clean slate” vidi donju varijantu)
+//          capabilities.setCapability("appium:noReset", true);
+//          // produzava W3C timeout za “idle” komande
+//          capabilities.setCapability("appium:newCommandTimeout", 100_000);
+//          // (opciono) gasi AUT pri quit()
+//          capabilities.setCapability("appium:shouldTerminateApp", true);
+//
+//          checkIsPhoneLock();
+//          driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+//          waitVar = new WebDriverWait(driver, 60);
+//
+//          // -- Forsiraj hladan start bez brisanja podataka --
+//          Map<String, Object> term = new HashMap<>();
+//          term.put("appId", pkg);
+//          driver.executeScript("mobile: terminateApp", term);
+//
+//          // Opcija B: (često “čistije” na Androidu) direktno startuj glavnu Activity
+//          ((StartsActivity) driver).startActivity(new Activity(pkg, act));
+//      //}
+//  }
 
     public static void checkIsPhoneLock() throws IOException, InterruptedException {
         if (devicePlatformName.equals("Android")) {
@@ -267,5 +373,11 @@ public class BaseMobile {
         driver.navigate().back();
     }
 
+    public static void terminateMobileApp() {
+        String packageName = DataManager.getDataFromConfiguration("1", "mobDevicePackage");
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.put("appId", packageName);
 
+        driver.executeScript("mobile: terminateApp", arguments);
+    }
 }

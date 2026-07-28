@@ -3,6 +3,8 @@ package si.nlb.testautomation.NLBTestAutomation.Action;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.nativekey.AndroidKey;
+import io.appium.java_client.android.nativekey.KeyEvent;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -324,7 +326,71 @@ public class MobileAction {
         DataManager.userObject.put("OTP", otpCode);
     }
 
-    public void completePayment(String accountIban, String amount, String currency) throws Throwable {
+    public void openNotificationPanelAndClickPaymentConfirmation() throws Throwable {
+        AndroidDriver<MobileElement> androidDriver = (AndroidDriver<MobileElement>) BaseMobile.driver;
+
+        // Prvi klik na Android Back
+        androidDriver.pressKey(new KeyEvent(AndroidKey.BACK));
+        WaitHelpers.waitForSeconds(1);
+
+        // Drugi klik na Android Back
+        androidDriver.pressKey(new KeyEvent(AndroidKey.BACK));
+        WaitHelpers.waitForSeconds(1);
+
+        androidDriver.openNotifications();
+
+        String xPathForPaymentConfirmation = "//*[@text='Confirm the payment from the online bank']";
+        By paymentConfirmation = SelectMobileByXpath.createByXpath(xPathForPaymentConfirmation);
+
+//        WaitHelpers.WaitForElement(paymentConfirmation);
+        clickElement(paymentConfirmation);
+    }
+
+    public void completePayment(String accountNumber, String amount, String currency) throws Throwable {
+        BaseMobile.createDriver(false);
+        openNotificationPanelAndClickPaymentConfirmation();
+
+        String xPathEnterPin = "//*[@text='Enter PIN']";
+        By elEnterPin = SelectMobileByXpath.createByXpath(xPathEnterPin);
+        Assert.assertTrue(isElementPresent(elEnterPin));
+
+        BaseMobile.driver.getKeyboard().sendKeys("2");
+        WaitHelpers.waitForSeconds(1);
+        BaseMobile.driver.getKeyboard().sendKeys("0");
+        WaitHelpers.waitForSeconds(1);
+        BaseMobile.driver.getKeyboard().sendKeys("2");
+        WaitHelpers.waitForSeconds(1);
+        BaseMobile.driver.getKeyboard().sendKeys("5");
+        WaitHelpers.waitForSeconds(1);
+        BaseMobile.driver.getKeyboard().sendKeys("2");
+        WaitHelpers.waitForSeconds(1);
+        BaseMobile.driver.getKeyboard().sendKeys("6");
+
+        //PROVERA ZA ACCOUNT NUMBER KADA SE LABELA NE BUDE ZVALA IBAN
+
+        WaitHelpers.waitForSeconds(3);
+//        String xPathAmount = "//*[@text='Amount:']/following-sibling::android.widget.TextView[1]";
+//        By actualAmount = SelectMobileByXpath.createByXpath(xPathAmount);
+//        MobileElement actualAmountElement = (MobileElement) BaseMobile.driver.findElement(actualAmount);
+//        Assert.assertTrue(actualAmountElement.getText().contains(amount));
+
+        String xPathCurrency = "//*[@text='Currency:']/following-sibling::android.widget.TextView[1]";
+        By actualCurrency = SelectMobileByXpath.createByXpath(xPathCurrency);
+        MobileElement actualCurrencyElement = (MobileElement) BaseMobile.driver.findElement(actualCurrency);
+        Assert.assertEquals(actualCurrencyElement.getText(), currency);
+
+        String xPathConfirm = "//*[@resource-id='nlb-button-primary']";
+        By confirmElement =  SelectMobileByXpath.createByXpath(xPathConfirm);
+        clickElement(confirmElement);
+
+        String xPathClose = "//*[@resource-id='transactions-web-close-popup-nlb-button']";
+        By closeElement =  SelectMobileByXpath.createByXpath(xPathClose);
+        clickElement(closeElement);
+
+        BaseMobile.teardown();
+    }
+
+    public void completePaymentt(String accountIban, String amount, String currency) throws Throwable {
         BaseMobile.createDriver();
         goToApp();
 
@@ -343,13 +409,17 @@ public class MobileAction {
         By elEnterPin = SelectMobileByXpath.createByXpath(xPathEnterPin);
         Assert.assertTrue(isElementPresent(elEnterPin));
 
-        BaseMobile.driver.getKeyboard().sendKeys("1");
-        WaitHelpers.waitForSeconds(3);
-        BaseMobile.driver.getKeyboard().sendKeys("3");
-        WaitHelpers.waitForSeconds(3);
-        BaseMobile.driver.getKeyboard().sendKeys("7");
-        WaitHelpers.waitForSeconds(3);
-        BaseMobile.driver.getKeyboard().sendKeys("9");
+        BaseMobile.driver.getKeyboard().sendKeys("2");
+        WaitHelpers.waitForSeconds(2);
+        BaseMobile.driver.getKeyboard().sendKeys("0");
+        WaitHelpers.waitForSeconds(2);
+        BaseMobile.driver.getKeyboard().sendKeys("2");
+        WaitHelpers.waitForSeconds(2);
+        BaseMobile.driver.getKeyboard().sendKeys("5");
+        WaitHelpers.waitForSeconds(2);
+        BaseMobile.driver.getKeyboard().sendKeys("2");
+        WaitHelpers.waitForSeconds(2);
+        BaseMobile.driver.getKeyboard().sendKeys("6");
 
         //String accountIbanWithNoSpaces = accountIban.replaceAll(" ","");
         /*String xPathForIban = "//*[@text='IBAN:']//following-sibling::*[@text='"+accountIbanWithNoSpaces+"']";
