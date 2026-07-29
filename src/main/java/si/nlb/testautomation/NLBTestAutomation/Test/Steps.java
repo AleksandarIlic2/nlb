@@ -3480,7 +3480,7 @@ public class Steps {
         String xPathIconMenu = "//*[contains(@class,'icon-menu')]";
         WebElement elementForIconMenu = SelectByXpath.CreateElementByXpath(xPathIconMenu);
         hp.ClickOnElement(elementForIconMenu);
-        String xPathForSLO = "//*[text()='Srpski']";
+        String xPathForSLO = "//*[text()='Jezik']";
         WebElement elementForSLO = SelectByXpath.CreateElementByXpath(xPathForSLO);
         hp.ClickOnElement(elementForSLO);
         String xPathForEnglish = "//*[text()=' English ']";
@@ -14686,5 +14686,200 @@ public class Steps {
             Assert.assertTrue(element.isDisplayed());
         int expectedSize = (Integer) DataManager.userObject.get(key);
         Assert.assertEquals(list.size(), expectedSize);
+    }
+
+    @And("Assert element with text {string} with following sibling has text under key {string}")
+    public void assertElementWithTextWithFollowingSiblingHasTextUnderKey(String contains, String key) throws Throwable {
+        String expectedText = DataManager.userObject.get(key).toString();
+        String xpath = "//*[normalize-space()='"+contains+"']/following-sibling::*[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualText = element.getText();
+        System.out.println(actualText);
+        Assert.assertTrue(actualText.contains(expectedText));
+    }
+
+    @And("Assert element by text {string} has following sibling {string} contains text from Excel {string} columnName {string}")
+    public void assertElementByTextHasFollowingSiblingContainsTextFromExcelColumnName(String text, String followingSiblingTag, String rowindex, String columnName) throws Throwable {
+        String followingSiblingText = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        List<WebElement> element = SelectByXpath.CreateElementByXpathTextFollowingSibling(text, followingSiblingTag);
+        String textActual = element.get(0).getAttribute("textContent");
+        System.out.println("EXPECTED "+followingSiblingText);
+        System.out.println("ACTUAL "+textActual);
+        Assert.assertTrue(textActual.contains(followingSiblingText));
+    }
+
+    @And("Assert element with text {string} with following sibling has text {string}")
+    public void assertElementWithTextWithFollowingSiblingHasText(String contains, String expectedText) throws Throwable {
+        String xpath = "//*[normalize-space()='"+contains+"']/following-sibling::*[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualText = element.getText();
+        System.out.println(actualText);
+        Assert.assertTrue(actualText.contains(expectedText));
+    }
+
+    @And("Assert first past or upcoming payment has purpose under key {string}")
+    public void assertFirstUpcomingPaymentHasPurposeUnderKey(String key) throws Throwable {
+        String expected = DataManager.userObject.get(key).toString();
+        String xPath = "(//h5)[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        assertEquals(element.getText(), expected);
+    }
+
+    @And("Assert first past payment has amount from key {string} in currency {string}")
+    public void assertFirstPastOrUpcomingPaymentHasAmountFromKeyInCurrency(String key, String currency) throws Throwable {
+        String xpath = "(//nlb-amount)[1]";
+        String expectedAmount = DataManager.userObject.get(key).toString();
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String textFromUI = element.getText().trim();
+        System.out.println("TEXT FROM UI "+ textFromUI);
+        if(!expectedAmount.contains(",")&&!expectedAmount.contains(".")){
+            expectedAmount = expectedAmount + ",00";
+        }
+        else if(expectedAmount.contains(".")&&!expectedAmount.contains(",")){
+            expectedAmount = expectedAmount.replace(".",",");
+        }
+        else{
+            System.out.println("nepodrzan format");
+        }
+        String finalAmount = currency + "\n" + expectedAmount;
+        System.out.println("Final amount "+ finalAmount);
+        Assert.assertEquals(finalAmount, textFromUI);
+    }
+
+    @And("Assert first past or upcoming payment has name from key {string}")
+    public void assertFirstPastOrUpcomingPaymentHasNameFromKey(String key) throws Throwable {
+        String textFromKey = DataManager.userObject.get(key).toString();
+        String xpath = "(//div[@class='caption xs:subheadline xs:medium tw-text-gray-400'])[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String textActual = element.getText();
+        System.out.println("ACTUAL "+textActual);
+        System.out.println("FROM KEY "+textFromKey);
+        Assert.assertTrue(textActual.contains(textFromKey));
+    }
+
+    @And("Assert first past or upcoming payment has today date")
+    public void assertFirstPastOrUpcomingPaymentHasTodayDate() throws Throwable {
+        String xpath = "(//div[@class='caption medium xs:subheadline tw-text-gray-400'])[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String textActual = element.getText();
+        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        Assert.assertEquals(textActual, today);
+    }
+
+    @And("Assert label {string} in payment confirmation has value under remembered key {string}")
+    public void assertLabelInPaymentConfirmationHasValueUnderRememberedKey(String label, String key) throws Throwable {
+        String expectedText = DataManager.userObject.get(key).toString();
+        String xpath = "(//*[text()='"+label+"'])[2]/following-sibling::div[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualText = element.getText();
+        System.out.println(actualText);
+        Assert.assertEquals(expectedText, actualText);
+    }
+
+    @And("Assert field {string} in payment confirmation has text from key {string}")
+    public void assertFieldInPaymentConfirmationHasTextFromKey(String label, String key) throws Throwable {
+        String xpath = "(//*[text()='"+label+"'])[2]/following-sibling::div[1]";
+        String expectedText = DataManager.userObject.get(key).toString();
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualText = element.getText();
+        System.out.println(actualText+ "ACTUAL TEXT");
+        System.out.println(expectedText+ "EXPECTED TEXT");
+        Assert.assertEquals(expectedText, actualText);
+    }
+
+    @And("Assert field {string} in payment confirmation has valid date displayed")
+    public void assertFieldPaymentDateInPaymentConfirmationHasValidDateAndTimeDisplayed(String field) throws Throwable {
+        String format = "dd.MM.yyyy";
+        LocalDateTime currentTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        String realDateTimeString = currentTime.format(formatter);
+        String dateXpath = "(//*[text()='"+field+"'])[2]/following-sibling::div[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(dateXpath);
+        String dateTimeFromUI = element.getText().trim();
+        Assert.assertTrue(dateTimeFromUI.contains(realDateTimeString));
+    }
+
+    @And("Assert field {string} in payment confirmation match regex {string}")
+    public void assertFieldInPaymentConfirmationMatchRegex(String field, String regex) throws Throwable {
+        String xpath = "(//*[text()='"+field+"'])[2]/following-sibling::div[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualText = element.getText();
+        String errorMsg = "Regex provera pala! Tekst sa ekrana: [" + actualText + "] ne odgovara regexu: [" + regex + "]";
+        Assert.assertTrue(errorMsg, actualText.matches(regex));
+    }
+
+    @And("Assert that text {string} has first following sibling that contains text {string}")
+    public void assertThatTextHasFirstFollowingSiblingThatContainsText(String elementText, String siblingText) throws Throwable {
+        String xPath = "(//*[text()='"+elementText+"']/following-sibling::*)[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        System.out.println(element.getText());
+        Assert.assertTrue(element.getText().contains(siblingText));
+    }
+
+    @And("Assert first upcoming payment has amount from key {string} in currency {string}")
+    public void assertFirstUpcomingPaymentHasAmountFromKeyInCurrency(String key, String currency) throws Throwable {
+        String xpath = "(//nlb-amount)[2]";
+        String expectedAmount = DataManager.userObject.get(key).toString();
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String textFromUI = element.getText().trim();
+        System.out.println("TEXT FROM UI "+ textFromUI);
+        if(!expectedAmount.contains(",")&&!expectedAmount.contains(".")){
+            expectedAmount = expectedAmount + ",00";
+        }
+        else if(expectedAmount.contains(".")&&!expectedAmount.contains(",")){
+            expectedAmount = expectedAmount.replace(".",",");
+        }
+        else{
+            System.out.println("nepodrzan format");
+        }
+        String finalAmount = currency + "\n" + expectedAmount;
+        System.out.println("Final amount "+ finalAmount);
+        Assert.assertEquals(finalAmount, textFromUI);
+    }
+
+    @And("Click on normalized text from key {string}" )
+    public void clickFromFromKey(String key) throws Throwable {
+        String keyText = DataManager.userObject.get(key).toString();
+        System.out.println(" NAME FOR CLICK "+ keyText);
+        String xpath = "//*[normalize-space(text())='"+keyText+"']";
+        WaitHelpers.waitForElement(By.xpath(xpath),5);
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        element.click();
+    }
+
+    @And("Select payment model {string} from dropdown")
+    public void selectPaymentModelFromDropdown(String model) throws Throwable {
+        String modelDropDownXpath = "(//input[@aria-haspopup='listbox'])[2]";
+        String modelItemXpath = "//li[contains(text(), '" + model + "')]";
+        WaitHelpers.waitForElement(By.xpath(modelDropDownXpath),3);
+        WebElement elementDropDown = SelectByXpath.CreateElementByXpath(modelDropDownXpath);
+        elementDropDown.click();
+        WaitHelpers.waitForElement(By.xpath(modelItemXpath),3);
+        WebElement elementItem = SelectByXpath.CreateElementByXpath(modelItemXpath);
+        elementItem.click();
+    }
+
+    @And("Select payment model {string} from dropdown and remember it under key {string}")
+    public void selectPaymentModelFromDropdownAndRememberItUnderKey(String model, String key) throws Throwable {
+        String modelDropDownXpath = "(//input[@aria-haspopup='listbox'])[2]";
+        String modelItemXpath = "//li[contains(text(), '" + model + "')]";
+        WaitHelpers.waitForElement(By.xpath(modelDropDownXpath),3);
+        WebElement elementDropDown = SelectByXpath.CreateElementByXpath(modelDropDownXpath);
+        elementDropDown.click();
+        WaitHelpers.waitForElement(By.xpath(modelItemXpath),3);
+        WebElement elementItem = SelectByXpath.CreateElementByXpath(modelItemXpath);
+        elementItem.click();
+        DataManager.userObject.put(key, model);
+    }
+
+    @And("Assert element with text {string} with following sibling contains text under key {string}")
+    public void assertElementContainsTextWithFollowingSiblingHasTextUnderKey(String contains, String key) throws Throwable {
+        String xpath = "//*[normalize-space()='"+contains+"']/following-sibling::*[1]";
+        String expectedText = DataManager.userObject.get(key).toString();
+        System.out.println(expectedText+ " EXPECTED TEXT");
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualText = element.getText();
+        System.out.println(actualText+ " ACTUAL TEXT");
+        Assert.assertTrue(actualText.contains(expectedText));
     }
 }

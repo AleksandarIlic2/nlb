@@ -991,6 +991,7 @@ Feature: Domestic_Payments
     Then Wait for element by contains text "Neispravan poziv na broj  za model 11"
     And Assert element by contains text "Error"
     And Assert element by contains class "alert-triangle" is displayed
+    And Assert element by contains text "OK"
 
     Examples:
       | rowindex |
@@ -1168,6 +1169,7 @@ Feature: Domestic_Payments
     Then Wait for element by contains text "Neispravan poziv na broj  za model 97"
     And Assert element by contains text "Error"
     And Assert element by contains class "alert-triangle" is displayed
+    And Assert element by contains text "OK"
 
     Examples:
       | rowindex |
@@ -1344,9 +1346,10 @@ Feature: Domestic_Payments
     And Assert element by contains text "Back"
     And Click on element by containing text "Confirm"
 
-    Then Wait for element by contains text "Neispravna šifra plaćanja za račun"
+    Then Wait for element by contains text " Neispravna šifra plaćanja za račun 840000071312184357 !"
     And Assert element by contains text "Error"
     And Assert element by contains class "alert-triangle" is displayed
+    And Assert element by contains text "OK"
 
     Examples:
       | rowindex |
@@ -1408,9 +1411,10 @@ Feature: Domestic_Payments
     And Assert element by contains text "Back"
     And Click on element by containing text "Confirm"
 
-    Then Wait for element by contains text "Neispravan poziv na broj za račun"
+    Then Wait for element by contains text " Neispravan poziv na broj za račun 840000071312184357 !"
     And Assert element by contains text "Error"
     And Assert element by contains class "alert-triangle" is displayed
+    And Assert element by contains text "OK"
 
     Examples:
       | rowindex |
@@ -1537,6 +1541,7 @@ Feature: Domestic_Payments
     Examples:
       | rowindex |
       |        5 |
+
 
   @Payments_Domestic_Payments_Budzetski_Non_Urgent_Payment_Model97_[WEB]
   Scenario Outline: Payments_Domestic_Payments_Budzetski_Non_Urgent_Payment_Model97_[WEB]
