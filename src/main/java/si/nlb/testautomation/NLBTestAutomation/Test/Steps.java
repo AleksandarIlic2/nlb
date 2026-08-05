@@ -14380,14 +14380,26 @@ public class Steps {
     @And("Assert amount in transaction details has value under key {string} in currency {string}")
     public void assertAmountInTransactionDetailsHasValueUnderKeyInCurrency(String key, String currency) throws Throwable {
         String xpath = "(//dd[@class='subheadline medium tw-text-gray-100 tw-break-words'])[4]";
-        String amountFromKey = DataManager.userObject.get(key).toString();
-        double amountValue = Double.parseDouble(amountFromKey);
-        String expectedText = String.format(Locale.GERMANY, "%.2f %s", amountValue, currency);
+        String expectedAmount = DataManager.userObject.get(key).toString();
+        //double amountValue = Double.parseDouble(amountFromKey);
+        if(!expectedAmount.contains(",")&&!expectedAmount.contains(".")){
+            expectedAmount = expectedAmount+ ",00";
+        }
+        else if(expectedAmount.contains(",")&& expectedAmount.split(",")[1].length()==2){
+            System.out.println("vrednost nije potrebno ispravljati");
+        }
+        else if(expectedAmount.contains(",")&& expectedAmount.split(",")[1].length()==1){
+            expectedAmount = expectedAmount+ "0";
+        }
+        else{
+            System.out.println("dobijena vrednost iz kljuca nije podrzana za parsiranje");
+        }
+        String expectedFinal = expectedAmount+" "+currency;
         WebElement element = SelectByXpath.CreateElementByXpath(xpath);
         String actualText = element.getText().replaceAll("\\s+", " ").trim();
         System.out.println(actualText + " ACTUAL");
-        System.out.println(expectedText + " EXPECTED");
-        Assert.assertEquals(expectedText, actualText);
+        System.out.println(expectedFinal + " EXPECTED");
+        Assert.assertEquals(expectedFinal, actualText);
     }
 
     @And("Save exchange value rate for {string} and remember it under key {string}")
@@ -14881,5 +14893,172 @@ public class Steps {
         String actualText = element.getText();
         System.out.println(actualText+ " ACTUAL TEXT");
         Assert.assertTrue(actualText.contains(expectedText));
+    }
+
+    @And("Remember text from element with attribute {string} containing value {string} and index {string} under key {string}")
+    public void rememberTextFromElementWithAttributeContainingValueAndIndexUnderKey(String attr, String value, String index, String key) throws Throwable {
+        String xpath = "(//*[contains(@"+attr+",'"+value+"')])["+index+"]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String text = element.getText();
+        System.out.println("TEXT from ui "+text);
+        DataManager.userObject.put(key, text);
+    }
+
+    @And("Remember account number in recipients list related to remembered name from key {string} under key {string}")
+    public void rememberAccountNumberInRecipientsListRelatedToRememberedNameFromKeyUnderKey(String keyName, String key) throws Throwable {
+        String name = DataManager.userObject.get(keyName).toString();
+        String xpath = "//*[normalize-space(text())='"+name+"']/following-sibling::div[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String accNumber = element.getText();
+        System.out.println("Founded number "+ accNumber);
+        DataManager.userObject.put(key, accNumber);
+    }
+
+    @And("Remember amount of first payment in recipient details under key {string}")
+    public void rememberAmountOfFirstPayementInRecipientDetailsUnderKey(String key) throws Throwable {
+        String xpath = "(//nlb-amount/div/div[2])[1]";
+        String amount = SelectByXpath.CreateElementByXpath(xpath).getText().trim();
+        System.out.println("Amount for saving "+ amount);
+        DataManager.userObject.put(key, amount);
+    }
+
+    @And("Assert element by contains class {string} contains value from key {string} is displayed")
+    public void assertElementByContainsClassContainsValueFromKey(String className, String key) throws Throwable {
+        String expectedValue = DataManager.userObject.get(key).toString();
+        String xpath = "//*[contains(@class,'" +className+ "') and contains(normalize-space(),'" +expectedValue+ "')]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        Assert.assertTrue(
+                "Element with class containing '" + className
+                        + "' and value '" + expectedValue + "' was not found.",
+                element.isDisplayed()
+        );
+    }
+
+    @And("Assert input field by text {string} has value under remembered key {string}")
+    public void assertInputFieldByTextHasValueUnderRememberedKey(String labelName, String key) throws Throwable {
+        String xPath = "//label[text()='" + labelName + "']/following-sibling::div//input";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        String expected = DataManager.userObject.get(key).toString().trim();
+        String actual = element.getAttribute("value").trim();
+        System.out.println(actual);
+        System.out.println(expected);
+        assertTrue(actual.contains(expected));
+    }
+
+    @And("Assert first past or upcoming payment has purpose from key {string}")
+    public void assertFirstPastOrUpcomingPaymentHasPurposeFromKey(String key) throws Throwable {
+        String textFromKey = DataManager.userObject.get(key).toString();
+        String xpath = "(//h5[@class='heading-5 medium tw-text-gray-100'])[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String textActual = element.getText();
+        System.out.println("ACTUAL "+textActual);
+        System.out.println("FROM KEY "+textFromKey);
+        Assert.assertTrue(textActual.contains(textFromKey));
+    }
+
+    @And("Compare available balance from Excel {string} columnName {string} has decreased for amount {string} from initial value {string}")
+    public void assertTheAvailableBalanceFromExcelColumnNameAvailableBalanceFromExcelHasDecreasedForAmountFromInitialValue(String rowindex, String columnName, String keyReducedAm, String keyInitialAm) throws Throwable {
+        String accountNum = DataManager.getDataFromHashDatamap(rowindex, columnName).toString();
+        System.out.println("ACC NUM "+accountNum);
+        String xpath = "(//nlb-product-card//*[contains(text(),'"+accountNum+"')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[1]";
+
+        String reducedAmountStr = DataManager.userObject.get(keyReducedAm).toString();
+
+        String initialAmountStr = DataManager.userObject.get(keyInitialAm).toString();
+        WebElement CurrentBalanceElement = SelectByXpath.CreateElementByXpath(xpath);
+        String currentAmountStr = CurrentBalanceElement.getText();
+
+        double reducedAmount = Double.parseDouble(reducedAmountStr.replace(".", "").replace(",", "."));
+        double initialAmount = Double.parseDouble(initialAmountStr.replace(".", "").replace(",", "."));
+        double currentAmount = Double.parseDouble(currentAmountStr.replace(".", "").replace(",", "."));
+
+        double expectedAmount = initialAmount - reducedAmount;
+        expectedAmount = BigDecimal.valueOf(expectedAmount)
+                .setScale(2, java.math.RoundingMode.HALF_UP)
+                .doubleValue();
+
+        System.out.println("==================================================");
+        System.out.println("   PROVERA STANJA NA RAČUNU: " + accountNum);
+        System.out.println("==================================================");
+        System.out.println(" Početno stanje (Initial): " + initialAmount);
+        System.out.println(" Iznos umanjenja (Reduced): " + reducedAmount);
+        System.out.println(" Očekivano stanje (Expected): " + expectedAmount);
+        System.out.println(" Trenutno stanje na UI (Actual): " + currentAmount);
+        System.out.println("==================================================");
+
+        Assert.assertEquals(expectedAmount, currentAmount, 0.0);
+    }
+
+    @And("Compare current balance from Excel {string} columnName {string} has decreased for amount {string} from initial value {string}")
+    public void assertTheCurrentBalanceFromExcelColumnNameHasDecreasedForAmountFromInitialValue(String rowindex, String columnName, String keyReducedAm, String keyInitialAm) throws Throwable {
+        String accountNum = DataManager.getDataFromHashDatamap(rowindex, columnName).toString();
+        String xpath = "(//nlb-product-card//*[contains(text(),'"+accountNum+"')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[2]";
+
+        String reducedAmountStr = DataManager.userObject.get(keyReducedAm).toString();
+        String initialAmountStr = DataManager.userObject.get(keyInitialAm).toString();
+        WebElement CurrentBalanceElement = SelectByXpath.CreateElementByXpath(xpath);
+        String currentAmountStr = CurrentBalanceElement.getText();
+
+        double reducedAmount = Double.parseDouble(reducedAmountStr.replace(".", "").replace(",", "."));
+        double initialAmount = Double.parseDouble(initialAmountStr.replace(".", "").replace(",", "."));
+        double currentAmount = Double.parseDouble(currentAmountStr.replace(".", "").replace(",", "."));
+
+        double expectedAmount = initialAmount - reducedAmount;
+        expectedAmount = BigDecimal.valueOf(expectedAmount)
+                .setScale(2, java.math.RoundingMode.HALF_UP)
+                .doubleValue();
+
+        System.out.println("==================================================");
+        System.out.println("   PROVERA STANJA NA RAČUNU: " + accountNum);
+        System.out.println("==================================================");
+        System.out.println(" Početno stanje (Initial): " + initialAmount);
+        System.out.println(" Iznos umanjenja (Reduced): " + reducedAmount);
+        System.out.println(" Očekivano stanje (Expected): " + expectedAmount);
+        System.out.println(" Trenutno stanje na UI (Actual): " + currentAmount);
+        System.out.println("==================================================");
+
+        Assert.assertEquals(expectedAmount, currentAmount, 0.0);
+    }
+
+    @And("Assert that first transaction has purpose from key {string}")
+    public void assertThatFirstTransactionHasPurposeFromKey(String key) throws Throwable {
+        String xpath = "(//*[@class='heading-5 medium tw-text-gray-100'])[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String expected = DataManager.userObject.get(key).toString().trim();
+        String actual = element.getText().trim();
+        System.out.println("actual "+actual+ " "+ " Expected "+ expected);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @And("Assert that first transaction has name from key {string}")
+    public void assertThatFirstTransactionHasNameFromKey(String key) throws Throwable {
+        String className = "caption medium tw-text-gray-400 xs:subheadline";
+        String xpath = "(//*[@class='"+className+"'])[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String expected = DataManager.userObject.get(key).toString().trim();
+        String actual = element.getText().trim();
+        System.out.println("actual "+actual+ " "+ " Expected "+ expected);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @And("Assert that first transaction in product screen has currency {string}")
+    public void assertThatFirstTransactionInProductScreenHasCurrency(String currencyExpected) throws Throwable {
+        //String xpath = "(//nlb-amount)[3]";
+        String xpath = "(//*[@class='tw-hidden xs:tw-block'])[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String textFromUI = element.getText().trim();
+        System.out.println("FROM UI "+textFromUI);
+        Assert.assertTrue(textFromUI.contains(currencyExpected));
+    }
+
+    @And("Assert element by text {string} has following sibling {string} that contains text from key {string}")
+    public void assertElementByTextHasFollowingSiblingThatContainsTextFromKey(String text, String followingSiblingTag, String key) throws Throwable {
+        String expectedValue = DataManager.userObject.get(key).toString();
+        String xPath = "(//*[normalize-space(text())='" + text + "']/following-sibling::" + followingSiblingTag + ")[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        String actualValue = element.getAttribute("textContent");
+        System.out.println(expectedValue);
+        System.out.println(actualValue);
+        assertTrue(actualValue.contains(expectedValue));
     }
 }
