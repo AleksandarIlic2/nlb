@@ -674,6 +674,7 @@ Feature: Domestic_Payments
     And Wait for "1" seconds
     And Refresh page
     And Wait for first past payment
+    And Wait for "10" seconds
 
     And Assert first past or upcoming payment has purpose under key "keyPurpose"
     And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
