@@ -363,9 +363,9 @@ Feature: Own_Account_Transfer
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
     And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "IT_001_Debtor_Balance"
-    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Creditor_Balance"
-
-    And Click on down arrow on first transaction do display details
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_3_bban" under key "IT_001_Creditor_Balance"
+    
+    #And Click on down arrow on first transaction do display details
     When Click on tab "Payments" from main sidebar
     And Assert element by contains text "Pay or transfer"
     And Assert account selector is displayed
@@ -377,7 +377,7 @@ Feature: Own_Account_Transfer
     And Assert element by tag "a" containing text "Past payments"
 
     And Click on element by text "Internal transfer"
-    And Wait for element by contains text "Internal transfer"
+    And Wait for element by contains text "Debtor"
     And Assert element by contains text "Internal transfer"
     And Assert element by text " Check data and choose “Next” "
 
@@ -391,14 +391,14 @@ Feature: Own_Account_Transfer
     And Assert element by contains text "Recipient"
     And Assert element by tag "nlb-account-selector" index "1"
     And Assert element by tag "span" containing text "RSD" with index "2"
-    And Assert element by text " Payment "
-    And Assert element by text " In order to continue all input fields must be filled. "
+    And Assert element by contains text "Payment details"
+    And Assert element by contains text "In order to continue all input fields must be filled."
     And Click on account selector with index "2"
-    And Click on element from Excel "<rowindex>" contains text columnName "current_account_2_bban"
+    And Click on element from Excel "<rowindex>" contains text columnName "current_account_3_bban"
 
     And Assert element by text "Payment amount "
     And Assert element by contains id "amount-input" is displayed
-    And Assert element by tag "input" contains aria label "RSD"
+    And Assert element by class "tw-pr-2 tw-pl-2 tw-m-auto body tw-text-gray-100" containing text "RSD"
     And Enter text "5" in field by contains id "amount-input"
     And Assert element by text "Purpose"
     And Assert element by text "INTERNAL TRANSFER"
@@ -417,7 +417,7 @@ Feature: Own_Account_Transfer
     And Assert element by contains text "Recipient"
 #    And Assert element by text from excel "<rowindex>" columnName "account_details_owner2" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_3_bban" is displayed
     And Assert element by contains text "Payment details"
     And Assert element by text "Purpose" has following sibling "dd" that contains text "INTERNAL TRANSFER"
     And Assert element by text "Value date"
@@ -433,7 +433,7 @@ Feature: Own_Account_Transfer
 
     Then Click on tab "My Products" from main sidebar
     And Compare if current amount balance from key "IT_001_Debtor_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "1" is correct
-    And Compare if current amount balance from key "IT_001_Creditor_Balance" in my products screen for account from Exlce "<rowindex>" columnName "current_account_2_bban" and added amount "1" is correct
+    And Compare if current amount balance from key "IT_001_Creditor_Balance" in my products screen for account from Exlce "<rowindex>" columnName "current_account_3_bban" and added amount "1" is correct
     And Click on tab "Payments" from main sidebar
     And Assert element by tag "div" containing text "Payments"
     And Click on element by containing text "Past payments"
@@ -445,13 +445,13 @@ Feature: Own_Account_Transfer
     And Assert that transaction amount in payment under name "INTERNAL TRANSFER" from txt file is "5,00"
     And Assert that transaction currency in payment under name "INTERNAL TRANSFER" from text file is "RSD"
     And Assert that transaction "Creditor account" in opened past payment is from Excel "<rowindex>" columnName "current_account_1_bban"
-    And Assert that transaction "Account number" in opened past payment is from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Assert that transaction "Account number" in opened past payment is from Excel "<rowindex>" columnName "current_account_3_bban"
     And Assert that transaction "Name" in opened past payment contains text from Excel "<rowindex>" columnName "account_details_owner"
     And Assert that transaction "Payment status" in opened past payment is "Executed"
 
     Examples:
       | rowindex |
-      |        2 |
+      |        5 |
 
 
   @Payments-Own_Account_Transfer-From_Current_Account_RSD_[WEB]-To_Savings_Account
@@ -637,12 +637,11 @@ Feature: Own_Account_Transfer
     And Assert element by tag "a" containing text "Upcoming payments"
     And Assert element by tag "a" containing text "Past payments"
 
-    And Click on element by text "Own account Transfer"
-    And Wait for element by text " Own account Transfer "
-    And Assert element by text " Own account Transfer "
+    And Click on element by text "Internal transfer"
+    And Wait for element by contains text "Debtor"
+    And Assert element by contains text "Internal transfer"
     And Assert element by text " Check data and choose “Next” "
-
-    And Assert element by text " Debtor "
+    
     And Assert element by xPath "//*[contains(@src, 'CurrentAccount-Icon')]" and index 0 is displayed
 #    And Assert element by contains class "accountItemDescription" have and index 0 have value from Excel "<rowindex>" columnName "current_account_1_bban"
     And Assert element by tag "span" containing text "RSD" with index "1"
