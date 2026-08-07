@@ -142,14 +142,14 @@ Feature: Payments_Archive
     And Click on element by containing text "Past payments"
     And Assert payments in past payments have loaded
 
-    Then Remember all transaction values from the Executed past payment
+    Then Remember all transaction values from executed past payment in map
     And Click on element by text "Confirmation"
     And Assert document with name starting with "Potvrda" and has file type ".pdf" is downloaded
-    And Assert that Executed past payment transaction values in PDF match remembered values
+    And Assert that Executed past payment transaction values in PDF match remembered values from remembered map
 
     Examples:
       | rowindex |
-      |        1 |
+      |        5 |
 
 
   @Payments_Payments_Archive-Payments_List_[WEB]

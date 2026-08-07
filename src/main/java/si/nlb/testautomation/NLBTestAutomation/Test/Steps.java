@@ -2332,6 +2332,7 @@ public class Steps {
         String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountIban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[1]";
         WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
         String stringForCurrentBalance = elementForCurrentBalance.getAttribute("innerText");
+        System.out.println(stringForCurrentBalance);
         DataManager.userObject.put(key, stringForCurrentBalance);
     }
 
@@ -13885,6 +13886,7 @@ public class Steps {
         element.click();
     }
 
+
     private static class AccountRow {
         String accountNumber;
         String currency;
@@ -15061,4 +15063,144 @@ public class Steps {
         System.out.println(actualValue);
         assertTrue(actualValue.contains(expectedValue));
     }
+
+    @And("Remember all transaction values from executed past payment in map")
+    public void rememberAllTransactionValuesFromExecutedPastPayment() throws Throwable {
+        String xPath = "(//*[contains(@class, 'secondaryLightestColor')]/ancestor::nlb-payment-item)[1]";
+        WebElement firstTransaction = SelectByXpath.CreateElementByXpath(xPath);
+        hp.ClickOnElement(firstTransaction, "Kliknuli smo na prvu transakciju");
+
+        WebDriver driver = Base.driver;
+
+        Map<String, String> transactionValues = new LinkedHashMap<>();
+
+        String rawAmount = driver.findElement(By.xpath(
+                "(//*[contains(@class, 'secondaryLightestColor')]/ancestor::nlb-payment-item)[1]/div/div/div[contains(@class, 'gap-1 tw-item')]"
+        )).getAttribute("innerText");
+
+        String cleanedAmount = rawAmount
+                .replace('\u00A0', ' ')
+                .replace("−", "")
+                .replace("\n", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
+
+        String[] parts = cleanedAmount.split(" ");
+        String pdfFormattedAmount = parts[1].replace(",", ".") + " " + parts[0];
+
+        transactionValues.put("Amount", pdfFormattedAmount);
+        System.out.println("Amount: " + transactionValues.get("Amount"));
+
+        transactionValues.put("Purpose", driver.findElement(By.xpath(
+                "(//*[contains(@class, 'secondaryLightestColor')])[1]/following-sibling::div/div[@class='tw-hidden xs:tw-block']"
+        )).getText().trim());
+        System.out.println("Purpose: " + transactionValues.get("Purpose"));
+
+        transactionValues.put("RecipientName", driver.findElement(By.xpath(
+                "(//*[contains(@class, 'secondaryLightestColor')])[1]/following-sibling::div/div[contains(@class, 'xs:subheadline xs:medium')]"
+        )).getText().trim());
+        System.out.println("RecipientName: " + transactionValues.get("RecipientName"));
+
+        transactionValues.put("ValueDate", driver.findElement(By.xpath(
+                "(//*[contains(@class, 'secondaryLightestColor')])[1]/following-sibling::div/div[contains(@class, 'xs:subheadline tw-text')]"
+        )).getText().trim());
+        System.out.println("Datum: " + transactionValues.get("ValueDate"));
+
+
+        transactionValues.put("DebtorName", driver.findElement(By.xpath("//div[@class='ng-star-inserted']/div[contains(text(), 'Name')]/following-sibling::div/div"
+
+        )).getText().trim());
+        System.out.println("Debtor: " + transactionValues.get("DebtorName"));
+
+        transactionValues.put("RecipientAccountNumber", driver.findElement(By.xpath(
+                "//div[contains(@class, 'tw-hidden xs:tw-block')]/div[text()='Recipient account number']/following-sibling::div"
+        )).getText().trim().replace("-", ""));
+        System.out.println("Recipient Account Number: " + transactionValues.get("RecipientAccountNumber"));
+
+//        transactionValues.put("Reference", driver.findElement(By.xpath(
+//                "//div[contains(@class, 'tw-hidden xs:tw-block')]/div[text()='Reference']/following-sibling::div"
+//        )).getText().trim());
+//        System.out.println("Reference: " + transactionValues.get("Reference"));
+
+        transactionValues.put("DebtorAccountNumber", driver.findElement(By.xpath(
+                "//*[@class='ng-star-inserted']/div[text()='Account number']/following-sibling::div"
+        )).getText().trim().replace("-", ""));
+        System.out.println("Debtor Account Number: " + transactionValues.get("DebtorAccountNumber"));
+
+
+        DataManager.userObject.put("TransactionValues", transactionValues);
+        System.out.println("*****************Map With Values********************");
+        System.out.println(transactionValues);
+    }
+
+    @And("Assert that Executed past payment transaction values in PDF match remembered values from remembered map")
+    public void assertThatExecutedPastPaymentTransactionValuesInPDFMatchRememberedValuesFromRememberedMap() throws IOException {
+        Map<String, String> expected = (Map<String, String>) DataManager.userObject.get("TransactionValues");
+
+        Path downloads = Paths.get(System.getProperty("user.home"), "Downloads");
+        Optional<Path> latestPdf = Files.list(downloads)
+                .filter(p -> p.toString().endsWith(".pdf"))
+                .filter(p -> !p.toString().endsWith(".crdownload"))
+                .max(Comparator.comparingLong(p -> p.toFile().lastModified()));
+
+        if (!latestPdf.isPresent()) {
+            throw new FileNotFoundException("Nijedan PDF nije pronađen u Downloads folderu.");
+        }
+
+        PDDocument document = PDDocument.load(latestPdf.get().toFile());
+        PDFTextStripper stripper = new PDFTextStripper();
+        String pdfTextRaw = stripper.getText(document);
+        document.close();
+
+        String pdfText = pdfTextRaw.replaceAll("\\s+", " ").trim();
+        System.out.println("PDF sadrži:\n" + pdfText + "\n");
+
+        System.out.println("PDF Purpose index: " + pdfText.indexOf("TRANSACTIONS BY ORDER OF CITIZENS"));
+        System.out.println("Expected Purpose raw: [" + expected.get("Purpose") + "]");
+        System.out.println("Expected Purpose normalized: [" + normalizeText(expected.get("Purpose")) + "]");
+        System.out.println("PDF normalized: [" + normalizeText(pdfTextRaw) + "]");
+        System.out.println(pdfText.contains(expected.get("Purpose")));
+
+        assertPdfContainsValue(pdfText, expected.get("Amount"), "Amount");
+        assertPdfContainsValue(pdfText, expected.get("Purpose"), "Purpose");
+        //assertPdfContainsValue(pdfText, expected.get("Reference"), "Reference");
+        assertPdfContainsValue(pdfText, expected.get("ValueDate"), "ValueDate");
+
+        assertPdfContainsValue(pdfText, expected.get("DebtorName"), "DebtorName");
+        assertPdfContainsValue(pdfText, expected.get("RecipientName"), "RecipientName");
+        assertPdfContainsValue(pdfText, normalizeIban(expected.get("RecipientAccountNumber")), "RecipientAccountNumber");
+        assertPdfContainsValue(pdfText, normalizeIban(expected.get("DebtorAccountNumber")), "DebtorAccountNumber");
+
+        System.out.println("Sve vrednosti su pronađene u PDF fajlu.");
+
+        try {
+            Files.deleteIfExists(latestPdf.get());
+            System.out.println("Fajl obrisan: " + latestPdf.get().getFileName());
+        } catch (IOException e) {
+            System.err.println("Nije moguće obrisati fajl: " + e.getMessage());
+        }
+    }
+
+    @And("Assert element by text {string} and index {string} has first following sibling that contains text from key {string}")
+    public void assertElementByTextAndIndexHasFirstFollowingSiblingThatContainsTextFromKey(String text, String index, String key) throws Throwable {
+        String xpath = "(//*[text()='"+text+"'])["+index+"]/following-sibling::*[1]";
+        String followingSiblingText = DataManager.userObject.get(key).toString();
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String textFromUI = element.getText().trim();
+        Assert.assertTrue(textFromUI.contains(followingSiblingText));
+    }
+
+    @And("Assert element by text {string} and index {string} has first following sibling that contains text from Excel {string} columnName {string}")
+    public void assertElementByTextAndIndexHasFirstFollowingSiblingThatContainsTextFromExcelColumnName(String text, String index, String rowindex, String columnName) throws Throwable {
+        String followingSiblingText = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        System.out.println("Text from excel "+ followingSiblingText);
+        String xpath = "(//*[text()='"+text+"'])["+index+"]/following-sibling::*[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String textFromUI = element.getText().trim();
+        System.out.println("text from UI "+ textFromUI);
+        Assert.assertTrue(textFromUI.contains(followingSiblingText));
+    }
+
+
+
 }

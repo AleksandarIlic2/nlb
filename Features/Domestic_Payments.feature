@@ -383,8 +383,8 @@ Feature: Domestic_Payments
     And Remember full name of user from dashboard under key "fullNameKey"
     And Click on tab "My Products" from main sidebar
     And Wait for first product to load
-    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Available_Balance"
-    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Current_Balance"
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "IT_001_Debtor_Current_Balance"
 
     When Click on tab "Payments" from main sidebar
     And Wait for element by text "Past payments"
@@ -468,6 +468,8 @@ Feature: Domestic_Payments
     And Assert element by contains text "Success"
     And Wait for element by contains text "Domestic payment"
     And Click on normalized text "Past payments"
+    And Wait for "1" seconds
+    And Refresh page
     And Wait for first past payment
     And Assert text under key "keyPurpose" is displayed
     And Click on tab "My NLB" from main sidebar
@@ -478,8 +480,8 @@ Feature: Domestic_Payments
     And Assert text under key "keyName" is displayed
     And Click on tab "My Products" from main sidebar
     And Wait for first product to load
-    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "3" is correct
-    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "3" is correct
+    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "3" is correct
+    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "3" is correct
 
     Examples:
       | rowindex |
@@ -649,20 +651,22 @@ Feature: Domestic_Payments
      #PAYMENT REVIEW
     And Wait for element by contains text "Payment amount"
     And Assert payment amount under key is "keyPaymentAmount" is displayed
-    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
-#    And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
-#    And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
 
-    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert element by text "Name" and index "1" has first following sibling that contains text from key "keyDebtorFullName"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Account number" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+
+    And Assert element by text "Name" and index "2" has first following sibling that contains text from key "keyRecipientName"
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
-    And Assert element by text "Account number" has first following sibling that contains text from key "keyRecipientAccountNumber"
+    And Assert element by text "Account number" and index "2" has first following sibling that contains text from key "keyRecipientAccountNumber"
+
     And Assert element with text "Purpose" with following sibling has text under key "keyPurpose"
     And Assert element with text "Purpose code" with following sibling has text "289"
     And Assert value date is todays date and in valid date format in Payment review
 
-#    And Assert element by contains text "Urgent payment"
-#    And Assert element by contains text "Payments_Wizard_Domestic"
+    And Assert element by contains text "Urgent payment"
+    And Assert element by contains text "Payments_Wizard_Domestic"
     And Assert element by contains text "Confirm"
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
@@ -685,20 +689,20 @@ Feature: Domestic_Payments
     And Assert label "Recipient" in payment confirmation has value under remembered key "keyRecipientName"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
-    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert field "Purpose code" in payment confirmation has text "289"
     And Assert field "Purpose" in payment confirmation has text from key "keyPurpose"
     And Assert field "Payment date" in payment confirmation has valid date displayed
     And Assert field "Execution date" in payment confirmation has valid date displayed
-    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
 
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
-#    And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
-#    And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+#    And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
+#    And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Executed"
     And Assert field "Fee" in payment confirmation contains text "0,00"
     And Assert field "Fee" in payment confirmation contains text "RSD"
-    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -764,15 +768,15 @@ Feature: Domestic_Payments
     And Assert element by contains text "Recipient"
     And Assert element by contains text "Payment details"
 
-    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
-#    And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
-#    And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert element by text "Name" and index "1" has first following sibling that contains text from key "keyDebtorFullName"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Account number" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_1_bban"
 
-    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert element by text "Name" and index "2" has first following sibling that contains text from key "keyRecipientName"
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
+    And Assert element by text "Account number" and index "2" has first following sibling that contains text from key "keyRecipientAccountNumber"
 
-    And Assert element by text "Account number" has first following sibling that contains text from key "keyRecipientAccountNumber"
     And Assert element with text "Purpose" with following sibling has text under key "keyPurpose"
     And Assert element with text "Purpose code" with following sibling has text "289"
     And Assert value date is todays date and in valid date format in Payment review
@@ -798,16 +802,16 @@ Feature: Domestic_Payments
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyRecipientName"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
-    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert field "Purpose code" in payment confirmation has text "289"
     #And Assert label "Debtor name" in payment confirmation contains value from excel "<rowindex>" columnName "username"
-    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
 
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
 #    And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
 #    And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Pending"
-    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -877,14 +881,15 @@ Feature: Domestic_Payments
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Payment details"
 
-    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
-    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
-    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert element by text "Name" and index "1" has first following sibling that contains text from key "keyDebtorFullName"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Account number" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_1_bban"
 
-    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert element by text "Name" and index "2" has first following sibling that contains text from key "keyRecipientName"
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
-    And Assert element with text "Account number" with following sibling has text under key "keyRecipientAccountNumber"
+    And Assert element by text "Account number" and index "2" has first following sibling that contains text from key "keyRecipientAccountNumber"
+
     And Assert element with text "Purpose" with following sibling has text under key "keyPurpose"
     And Assert element with text "Purpose code" with following sibling has text "289"
     And Assert value date is todays date and in valid date format in Payment review
@@ -910,20 +915,21 @@ Feature: Domestic_Payments
     And Assert label "Recipient" in payment confirmation has value under remembered key "keyRecipientName"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
-    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert field "Urgent" in payment confirmation has text "Yes"
     And Assert field "Purpose code" in payment confirmation has text "289"
     And Assert field "Purpose" in payment confirmation has text from key "keyPurpose"
     And Assert field "Payment date" in payment confirmation has valid date displayed
     And Assert field "Execution date" in payment confirmation has valid date displayed
-    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+    And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
 
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
-#    And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
-#    And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+#    And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
+#    And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Executed"
-    And Assert field "Fee" in payment confirmation contains text "0,00"
-    And Assert field "Fee" in payment confirmation contains text "RSD"
-    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+    And Assert element by text "Fee" has following sibling "div" that contains text "0,00 RSD"
+    And Assert field "Payment status" in payment confirmation contains text "Executed"
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -1057,15 +1063,15 @@ Feature: Domestic_Payments
     And Assert element by contains text "Recipient"
     And Assert element by contains text "Payment details"
 
-    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
-#    And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
-#    And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert element by text "Name" and index "1" has first following sibling that contains text from key "keyDebtorFullName"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Account number" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_1_bban"
 
-    #And Assert element by text "Debtor account" has following sibling "dd" with text from Excel "<rowindex>" columnName "current_account_1_bban"
-    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert element by text "Name" and index "2" has first following sibling that contains text from key "keyRecipientName"
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
-    And Assert element with text "Account number" with following sibling contains text under key "keyRecipientAccountNumber"
+    And Assert element by text "Account number" and index "2" has first following sibling that contains text from key "keyRecipientAccountNumber"
+
     And Assert element with text "Purpose" with following sibling contains text under key "keyPurpose"
     And Assert element with text "Purpose code" with following sibling has text "289"
     And Assert value date is todays date and in valid date format in Payment review
@@ -1093,17 +1099,18 @@ Feature: Domestic_Payments
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyRecipientName"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
-    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert field "Purpose code" in payment confirmation has text "289"
+    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
     And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
     And Assert label "Model" in payment confirmation contains value under remembered key "keyPaymentModel"
 
-    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
-    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
-    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Pending"
-    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -1235,14 +1242,15 @@ Feature: Domestic_Payments
     And Assert element by contains text "Recipient"
     And Assert element by contains text "Payment details"
 
-    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
-    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
-    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert element by text "Name" and index "1" has first following sibling that contains text from key "keyDebtorFullName"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Account number" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_1_bban"
 
-    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert element by text "Name" and index "2" has first following sibling that contains text from key "keyRecipientName"
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
-    And Assert element with text "Account number" with following sibling contains text under key "keyRecipientAccountNumber"
+    And Assert element by text "Account number" and index "2" has first following sibling that contains text from key "keyRecipientAccountNumber"
+
     And Assert element with text "Purpose" with following sibling contains text under key "keyPurpose"
     And Assert element with text "Purpose code" with following sibling has text "289"
     And Assert value date is todays date and in valid date format in Payment review
@@ -1269,17 +1277,18 @@ Feature: Domestic_Payments
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyRecipientName"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
-    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert field "Purpose code" in payment confirmation has text "289"
+    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
     And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
     And Assert label "Model" in payment confirmation contains value under remembered key "keyPaymentModel"
-    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
 
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
     #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Pending"
-    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -1482,14 +1491,15 @@ Feature: Domestic_Payments
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Payment details"
 
-    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
-    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
-    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert element by text "Name" and index "1" has first following sibling that contains text from key "keyDebtorFullName"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Account number" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_1_bban"
 
-    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert element by text "Name" and index "2" has first following sibling that contains text from key "keyRecipientName"
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
-    And Assert element with text "Account number" with following sibling has text under key "keyRecipientAccountNumber"
+    And Assert element by text "Account number" and index "2" has first following sibling that contains text from key "keyRecipientAccountNumber"
+
     And Assert element with text "Purpose" with following sibling has text under key "keyPurpose"
     And Assert element with text "Purpose code" with following sibling has text "253"
     And Assert value date is todays date and in valid date format in Payment review
@@ -1505,7 +1515,7 @@ Feature: Domestic_Payments
 
     And Wait for element by contains text "Domestic payment"
     And Assert Past payments tab is selected in Payments
-    And Wait for "1" seconds
+    And Wait for "2" seconds
     And Refresh page
     And Wait for first past payment
 
@@ -1518,21 +1528,23 @@ Feature: Domestic_Payments
     And Assert label "Recipient" in payment confirmation has value under remembered key "keyRecipientName"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
-    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert label "Model" in payment confirmation contains value under remembered key "keyPaymentModel"
     And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
+    And Assert field "Urgent" in payment confirmation has text "Yes"
     And Assert field "Purpose code" in payment confirmation has text "253"
     And Assert field "Payment date" in payment confirmation has valid date displayed
     And Assert field "Execution date" in payment confirmation has valid date displayed
-    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
 
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
-    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
-    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Executed"
     And Assert field "Fee" in payment confirmation contains text "0,00"
     And Assert field "Fee" in payment confirmation contains text "RSD"
-    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -1604,14 +1616,15 @@ Feature: Domestic_Payments
     And Assert element by contains text "Debtor"
     And Assert element by contains text "Recipient"
     And Assert element by contains text "Payment details"
-    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
-    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
-    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert element by text "Name" and index "1" has first following sibling that contains text from key "keyDebtorFullName"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Account number" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_1_bban"
 
-    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert element by text "Name" and index "2" has first following sibling that contains text from key "keyRecipientName"
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
-    And Assert element with text "Account number" with following sibling contains text under key "keyRecipientAccountNumber"
+    And Assert element by text "Account number" and index "2" has first following sibling that contains text from key "keyRecipientAccountNumber"
+
     And Assert element with text "Purpose" with following sibling contains text under key "keyPurpose"
     And Assert element with text "Purpose code" with following sibling has text "253"
     And Assert value date is todays date and in valid date format in Payment review
@@ -1638,16 +1651,17 @@ Feature: Domestic_Payments
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyRecipientName"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
-    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert field "Purpose code" in payment confirmation has text "253"
+    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
     And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
     And Assert label "Model" in payment confirmation contains value under remembered key "keyPaymentModel"
-    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
-    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
-    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Pending"
-    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -1714,14 +1728,15 @@ Feature: Domestic_Payments
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Payment details"
 
-    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
-    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
-    #And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert element by text "Name" and index "1" has first following sibling that contains text from key "keyDebtorFullName"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Account number" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_1_bban"
 
-    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert element by text "Name" and index "2" has first following sibling that contains text from key "keyRecipientName"
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
-    And Assert element with text "Account number" with following sibling has text under key "keyRecipientAccountNumber"
+    And Assert element by text "Account number" and index "2" has first following sibling that contains text from key "keyRecipientAccountNumber"
+
     And Assert element with text "Purpose" with following sibling has text under key "keyPurpose"
     And Assert element with text "Purpose code" with following sibling has text "289"
     And Assert value date is todays date and in valid date format in Payment review
@@ -1748,21 +1763,22 @@ Feature: Domestic_Payments
     And Assert label "Recipient" in payment confirmation has value under remembered key "keyRecipientName"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
-    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert field "Purpose code" in payment confirmation has text "289"
     And Assert label "Model" in payment confirmation contains value under remembered key "keyPaymentModel"
     And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
     And Assert field "Payment date" in payment confirmation has valid date displayed
     And Assert field "Execution date" in payment confirmation has valid date displayed
-    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
 
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
-    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
-    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Executed"
     And Assert field "Fee" in payment confirmation contains text "0,00"
     And Assert field "Fee" in payment confirmation contains text "RSD"
-    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -1829,14 +1845,15 @@ Feature: Domestic_Payments
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Payment details"
 
-    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
-#    And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
-#    And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert element by text "Name" and index "1" has first following sibling that contains text from key "keyDebtorFullName"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Account number" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_1_bban"
 
-    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert element by text "Name" and index "2" has first following sibling that contains text from key "keyRecipientName"
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
-    And Assert element with text "Account number" with following sibling has text under key "keyRecipientAccountNumber"
+    And Assert element by text "Account number" and index "2" has first following sibling that contains text from key "keyRecipientAccountNumber"
+
     And Assert element with text "Purpose" with following sibling has text under key "keyPurpose"
     And Assert element with text "Purpose code" with following sibling has text "289"
     And Assert value date is todays date and in valid date format in Payment review
@@ -1863,21 +1880,22 @@ Feature: Domestic_Payments
     And Assert label "Recipient" in payment confirmation has value under remembered key "keyRecipientName"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
-    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert field "Purpose code" in payment confirmation has text "289"
     And Assert label "Model" in payment confirmation contains value under remembered key "keyPaymentModel"
     And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
     And Assert field "Payment date" in payment confirmation has valid date displayed
     And Assert field "Execution date" in payment confirmation has valid date displayed
+    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
     And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
 
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
-    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
-    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Executed"
     And Assert field "Fee" in payment confirmation contains text "0,00"
     And Assert field "Fee" in payment confirmation contains text "RSD"
-    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -1947,15 +1965,15 @@ Feature: Domestic_Payments
     And Assert element by contains text "Recipient"
     And Assert element by contains text "Payment details"
 
-    And Assert element with text "Debtor name" with following sibling has text under key "keyDebtorFullName"
-#    And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
-#    And Assert element by text "Debtor address" has following sibling "dd" contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert element by text "Debtor account" has following sibling "dd" contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert element by text "Name" and index "1" has first following sibling that contains text from key "keyDebtorFullName"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert element by text "Account number" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_1_bban"
 
-    #And Assert element by text "Debtor account" has following sibling "dd" with text from Excel "<rowindex>" columnName "current_account_1_bban"
-    And Assert element with text "Name" with following sibling has text under key "keyRecipientName"
+    And Assert element by text "Name" and index "2" has first following sibling that contains text from key "keyRecipientName"
     And Assert address is displayed from remembered keys "keyStreet" and "keyCity"
-    And Assert element with text "Account number" with following sibling contains text under key "keyRecipientAccountNumber"
+    And Assert element by text "Account number" and index "2" has first following sibling that contains text from key "keyRecipientAccountNumber"
+
     And Assert element with text "Purpose" with following sibling contains text under key "keyPurpose"
     And Assert element with text "Purpose code" with following sibling has text "289"
     And Assert value date is todays date and in valid date format in Payment review
@@ -1981,16 +1999,17 @@ Feature: Domestic_Payments
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyRecipientName"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
-    And Assert label "Recipient account" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert field "Purpose code" in payment confirmation has text "289"
+    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
     And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
 
-    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
-    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
-    #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
+    And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
+    #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Pending"
-    And Assert field "Order ID" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
