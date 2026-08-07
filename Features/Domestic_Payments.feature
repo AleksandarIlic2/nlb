@@ -14,7 +14,7 @@ Feature: Domestic_Payments
     And Assert element by class "icon-calendar-today"
 
     When Click on element by xpath "//nlb-account-selector"
-    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Enter text "205-9001001539786-67" in "Account number" input field and remember under key "accountNumberKey"
     And Enter text "NBA" in "Name" input field and remember under key "nameKey"
     And Enter text "Zarkovo 32" in "street" input field and remember under key "streetKey"
@@ -40,7 +40,7 @@ Feature: Domestic_Payments
     Then Assert element by contains text "Debtor"
 #    And Assert element by contains text from excel "<rowindex>" columnName "account_details_owner" is displayed
 #    //And Assert text under key "fullNameKey" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
     And Assert element by contains text "Recipient"
 #    And Assert "Name" element under key "nameKey" with index "2" is displayed
     And Assert text under key "nameKey" is displayed
@@ -48,7 +48,7 @@ Feature: Domestic_Payments
     And Assert contains text under key "streetKey" is displayed
 #    And Assert contains text under key "cityKey" is displayed
 #    And Assert "Account number" element under key "accountNumberKey" with index "2" is displayed
-    And Assert element by text "Account number" has first following sibling under key "accountNumberKey"
+    And Assert element by text "Account number" and index "2" has first following sibling that contains text from key "accountNumberKey"
 
     And Assert element by contains text "Payment"
     And Assert element by contains text "Purpose"
@@ -59,7 +59,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Confirm"
     And Click on element by containing text "Back"
     And Wait for element by contains text "Domestic payment"
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
     And Click on Recipient account selector in Domestic payment
     And Assert input field by contains text "Account number" has value under remembered key "accountNumberKey"
     And Assert input field by contains text "Name" has value under remembered key "nameKey"
@@ -86,8 +86,8 @@ Feature: Domestic_Payments
     And Remember full name of user from dashboard under key "fullNameKey"
     And Click on tab "My Products" from main sidebar
     And Wait for first product to load
-    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Available_Balance"
-    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Current_Balance"
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "IT_001_Debtor_Current_Balance"
 
     When Click on element by containing text "Payments"
     And Wait for element by text "Past payments"
@@ -98,7 +98,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Debtor"
     And Assert element by xPath "//nlb-account-selector"
     And Assert element by contains src "CurrentAccount-Icon" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
     And Assert element by contains text "Recipient"
     And Assert element by contains text "Select from list or enter recipient data."
     And Assert element by contains text "Select from list"
@@ -141,7 +141,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Name"
 #    //And Assert text under key "fullNameKey" is displayed
     And Assert element by contains text "Address"
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
 #    And Assert element by tag "dt" containing text "Name" with index "2"
@@ -166,8 +166,8 @@ Feature: Domestic_Payments
     And Assert element by contains text "Success"
     And Wait for element by contains text "Domestic payment"
     And Click on tab "My Products" from main sidebar
-    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "5" is correct
-    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "5" is correct
+    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "5" is correct
+    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "5" is correct
 
     And Click on tab "Recipients" from main sidebar
     And Assert element by text "Recipients" index "1" is displayed
@@ -195,8 +195,8 @@ Feature: Domestic_Payments
     And Remember full name of user from dashboard under key "fullNameKey"
     And Click on tab "My Products" from main sidebar
     And Wait for first product to load
-    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Available_Balance"
-    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Current_Balance"
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "IT_001_Debtor_Current_Balance"
 
     When Click on element by containing text "Payments"
     And Wait for element by text "Past payments"
@@ -207,7 +207,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Recipient"
     And Assert element by contains text "Select from list or enter recipient data."
     And Assert element by contains src "CurrentAccount-Icon" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
     And Click on normalized text "Select from list"
     And Assert element by contains text "Select template"
     #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
@@ -257,7 +257,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Name"
 #    And Assert text under key "fullNameKey" is displayed
     And Assert element by contains text "Address"
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
 #    And Assert element by tag "dt" containing text "Name" with index "2"
@@ -282,8 +282,8 @@ Feature: Domestic_Payments
     And Assert element by contains text "Success"
     And Wait for element by contains text "Domestic payment"
     And Click on tab "My Products" from main sidebar
-    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "2" is correct
-    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "2" is correct
+    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "2" is correct
+    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "2" is correct
 
     And Click on tab "Recipients" from main sidebar
     And Assert element by text "Recipients" index "1" is displayed
@@ -339,7 +339,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Debtor"
 #    And Assert element by contains text from excel "<rowindex>" columnName "account_details_owner" is displayed
 #    And Assert text under key "fullNameKey" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
     And Assert element by contains text "Recipient"
     And Assert text under key "nameKey" is displayed
 #    And Assert "Account number" element under key "accountNumberKey" with index "2" is displayed
@@ -363,9 +363,10 @@ Feature: Domestic_Payments
     And Assert text under key "nameKey" is displayed
 #    And Assert element by contains text from excel "<rowindex>" columnName "account_details_owner" is displayed
 #    And Assert text under key "fullNameKey" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
     And Assert text under key "accountNumberKey" is displayed
-    And Assert recipient address contains values from keys "streetKey" and "cityKey"
+    And Assert label "Recipient address" in payment confirmation contains value under remembered key "streetKey"
+    And Assert label "Recipient address" in payment confirmation contains value under remembered key "cityKey"
 
     Examples:
       | rowindex |
@@ -500,8 +501,8 @@ Feature: Domestic_Payments
     And Remember full name of user from dashboard under key "fullNameKey"
     And Click on tab "My Products" from main sidebar
     And Wait for first product to load
-    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Available_Balance"
-    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_2_bban" under key "IT_001_Debtor_Current_Balance"
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "IT_001_Debtor_Current_Balance"
 
     When Click on tab "Payments" from main sidebar
     And Wait for element by text "Past payments"
@@ -513,7 +514,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Select from list or enter recipient data."
     And Assert element by contains src "CurrentAccount-Icon" is displayed
     And Assert element by contains class "subheadline bold" ends with "RSD"
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
     And Click on normalized text "Select from list"
     And Assert element by contains text "Select template"
     And Assert element by contains text "Select recipient"
@@ -564,7 +565,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Name"
 #    And Assert text under key "fullNameKey" is displayed
     And Assert element by contains text "Address"
-    And Assert element by contains text from excel "<rowindex>" columnName "current_account_2_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
 
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
     And Assert text under key "keyName" is displayed
@@ -584,8 +585,8 @@ Feature: Domestic_Payments
     And Wait for element by contains text "Domestic payment"
     And Click on tab "My Products" from main sidebar
     And Wait for first product to load
-    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "4" is correct
-    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "4" is correct
+    And Compare if available amount balance from key "IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "4" is correct
+    And Compare if current amount balance from key "IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "4" is correct
 
     #treba da ide u Past payments
     And Click on tab "Payments" from main sidebar
