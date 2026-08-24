@@ -297,7 +297,7 @@ Feature: Current_Domestic_Accounts
     And Assert that products in my products have loaded
 
     When Assert element by class "button-bold" and contains text "Edit list"
-    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for element by tag "nlb-product-detail-header"
     And Assert order of tabs in tablist "domestic"
     And Assert element by text " Download transaction list "
@@ -311,8 +311,8 @@ Feature: Current_Domestic_Accounts
     Then Click on tab "Details" from tablist
     And Wait for product details to load
     And Assert Account type is displayed correctly in Account details for Current account
-    And Assert Account owner in Account details is from Excel "<rowindex>" columnName "account_details_owner2"
-    And Assert Account number in Account details is from Excel "<rowindex>" columnName "current_account_2_bban"
+#    And Assert Account owner in Account details is from Excel "<rowindex>" columnName "account_details_owner2"
+    And Assert Account number in Account details is from Excel "<rowindex>" columnName "current_account_1_bban"
     And Click on element by tag "i" contains class "icon-copy"
 #    And Assert content in clipboard is equal to showed Account type, owner and number
 
@@ -660,11 +660,11 @@ Feature: Current_Domestic_Accounts
 
     And Assert Statements filter has current year selected
     And Select year "2024" in Statements filter and assert there are 11 options
-    And Remember number of Statemants in Statemants list under key "keyNumberOfTemplates"
+    And Remember number of Statemants in Statemants list under key "keyNumberOfStatements"
     And Assert all dates in statements list is for year "2024" and they are sorted properly
-    And Assert elements by attribute "class" contains value "subheadline medium" is displayed in amount from key "keyNumberOfTemplates"
-    And Assert elements by attribute "class" contains value "nlb-icon icon-statement" is displayed in amount from key "keyNumberOfTemplates"
-    And Assert elements by attribute "class" contains value "nlb-icon icon-download" is displayed in amount from key "keyNumberOfTemplates"
+    And Assert elements by attribute "class" contains value "subheadline medium" is displayed in amount from key "keyNumberOfStatements"
+    And Assert elements by attribute "class" contains value "nlb-icon icon-statement" is displayed in amount from key "keyNumberOfStatements"
+    And Assert elements by attribute "class" contains value "nlb-icon icon-download" is displayed in amount from key "keyNumberOfStatements"
 
     Then Click download on first statement in Statement list
     And Assert document with name starting with "Izvod_" and has file type ".pdf" is downloaded

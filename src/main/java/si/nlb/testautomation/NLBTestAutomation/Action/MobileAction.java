@@ -216,7 +216,6 @@ public class MobileAction {
     }
 
     public void getMobileOTP(String pin) throws Throwable {
-
         //if(DataManager.isDeviceVirtual.equals("1")){
             goToApp();
             String currentEnv = DataManager.getDataFromHashDatamap("1","currentEnv");
@@ -339,7 +338,7 @@ public class MobileAction {
 
         androidDriver.openNotifications();
 
-        String xPathForPaymentConfirmation = "//*[@text='Confirm the payment from the online bank']";
+        String xPathForPaymentConfirmation = "//*[@text='Security confirmation']";
         By paymentConfirmation = SelectMobileByXpath.createByXpath(xPathForPaymentConfirmation);
 
 //        WaitHelpers.WaitForElement(paymentConfirmation);

@@ -382,7 +382,8 @@ Feature: Recipients
     And Assert element by contains text "Cancel"
     And Assert element by contains text "Back"
     And Click on button with type "submit"
-    And Wait for element by contains text "Success"
+    And Try to assert that payment is "Success" and send command to Authorize method
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "3.00" and currency "RSD" with message "Success"
 
     And Click on tab "Payments" from main sidebar
     And Wait for first past payment

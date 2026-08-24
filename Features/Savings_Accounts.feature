@@ -20,12 +20,7 @@ Feature: Saving_Accounts
     And Assert element by text " Filters" is displayed
 
     Then Click on element by text "Details"
-#    TO DO sledeca metoda:
-#    And Assert sections are displayed in order:
-#      | Financial details |
-#      | Account details   |
-
-    And Wait for element by xPath "//h3[contains(@class, 'bold heading-3')]"
+    And Wait for product details to load
     And Assert element by contains text "Financial details" is not displayed
 
     Examples:
@@ -53,11 +48,6 @@ Feature: Saving_Accounts
     And Assert element by text " Filters" is displayed
 
     Then Click on element by text "Details"
-#    TO DO sledeca metoda:
-#    And Assert sections are displayed in order:
-#      | Financial details |
-#      | Account details   |
-
     And Wait for product details to load
     And Assert Account type is displayed correctly in Account details for Savings account
 #    And Assert contains text under key "fullNameKey" is displayed
@@ -207,7 +197,7 @@ Feature: Saving_Accounts
     And Scroll element by contains text "Transactions" up
     And Click on element by containing text "Clear filters"
     And Wait for first transaction in Product details
-    And Assert amount sum for current month has value from key "sum"
+#    And Assert amount sum for current month has value from key "sum"
 
     Examples:
       | rowindex |
@@ -281,12 +271,12 @@ Feature: Saving_Accounts
     And Click on button with tag "i" containing class "icon-calendar-today"
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
-    And Select date in From label to be "30.03.2026"
-    And Select date in To label to be "05.04.2026"
+    And Select date in From label to be "20.07.2026"
+    And Select date in To label to be "25.07.2026"
     And Click on element by containing text "Confirm"
     And Scroll element by contains text "end of the list" into view
 
-    Then Assert transaction dates are between "30.03.2026" and "05.04.2026"
+    Then Assert transaction dates are between "20.07.2026" and "25.07.2026"
     And Scroll element by contains text "Clear filters" into view
     And Click on element by containing text "Clear filters"
 

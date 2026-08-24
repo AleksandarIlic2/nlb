@@ -22,6 +22,10 @@ Feature: Product_Summary
     And Click on tab "My NLB" from main sidebar
     And Wait for element by text "Shortcuts"
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_iban" is displayed
+    And Click on tab "Payments" from main sidebar
+    And Wait for element by contains text "Domestic payment"
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_iban" is displayed
+
     And Click on tab "My Products" from main sidebar
     And Wait for element by class "button-bold"
     And Assert element by class "button-bold"
@@ -32,6 +36,14 @@ Feature: Product_Summary
     And Wait for element by contains text "Your favorite account will be listed on top of the list."
     And Click on element by xpath "(//nlb-radio-button)[1]"
     And Click on element by containing text "Apply"
+    And Click on tab "My Products" from main sidebar
+    And Assert that first product shown on my products page is from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Click on tab "My NLB" from main sidebar
+    And Wait for element by text "Shortcuts"
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
+    And Click on tab "Payments" from main sidebar
+    And Wait for element by contains text "Domestic payment"
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
 
   Examples:
   | rowindex |
@@ -46,7 +58,7 @@ Feature: Product_Summary
     And Wait for element by text "Pay or transfer"
 
     When Click on tab "My Products" from main sidebar
-    And Wait for element by text "Edit list"
+    And Wait for first product to load
 
     Then Accounts are displayed in the following order:
       | Current accounts  |

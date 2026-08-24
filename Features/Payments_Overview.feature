@@ -34,7 +34,7 @@ Feature: Payments_Overview
 
     When Click on tab "Payments" from main sidebar
     And Wait for element by text "Domestic payment"
-#    And Assert option buttons in Payments
+    And Assert option buttons in Payments
     And Assert tag "nlb-account-selector" is displayed
     And Assert Upcoming payments and Past payments tabs is displayed
     And Assert Past payments tab is selected in Payments

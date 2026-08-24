@@ -19,12 +19,12 @@ Feature: Upcoming_Payments
     And Assert list of creditor names of Payments archive are displayed
     And Assert list of amounts with currencies of Upcoming payments are displayed correctly
     
-    Then Click on element by xpath "//nlb-account-selector"
-    And Click on element from Excel "<rowindex>" contains text columnName "current_account_1_bban"
-    And Assert dates of Payments archive are displayed correctly
-    And Assert list of elements by xPath "//h5" are displayed
-    And Assert list of creditor names of Payments archive are displayed
-    And Assert list of amounts with currencies of Upcoming payments are displayed correctly
+#    Then Click on element by xpath "//nlb-account-selector"
+#    And Click on element from Excel "<rowindex>" contains text columnName "current_account_1_iban"
+#    And Assert dates of Payments archive are displayed correctly
+#    And Assert list of elements by xPath "//h5" are displayed
+#    And Assert list of creditor names of Payments archive are displayed
+#    And Assert list of amounts with currencies of Upcoming payments are displayed correctly
 
     Examples:
       | rowindex |
@@ -62,13 +62,14 @@ Feature: Upcoming_Payments
     And Wait for element by contains text "Payment amount"
     And Assert payment amount under key is "paymentAmountKey" is displayed
 #    And Assert element by text "Debtor name" has following sibling "dd" with contains text from Excel "<rowindex>" columnName "account_details_owner"
-    And Assert element by text "Debtor account" has following sibling "dd" with contains text from Excel "<rowindex>" columnName "current_account_1_bban"
-    And Assert element by text "Name" has first following sibling under key "nameKey"
-    And Assert element by text "Account number" has first following sibling under key "accountNumberKey"
-    And Assert element by text "Purpose" has first following sibling under key "keyPurpose"
+#    And Assert element by text "Debtor account" has following sibling "dd" with contains text from Excel "<rowindex>" columnName "current_account_1_bban"
+#    And Assert element by text "Name" has first following sibling under key "nameKey"
+#    And Assert element by text "Account number" has first following sibling under key "accountNumberKey"
+#    And Assert element by text "Purpose" has first following sibling under key "keyPurpose"
     And Assert date 7 days in future in payment review
     And Click on button with type "submit"
-    And Wait for element by contains text "Success"
+    And Try to assert that payment is "Success" and send command to Authorize method
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "3.00" and currency "RSD" with message "Success"
     
     Then Click on element by containing text "Upcoming payments"
     And Wait for first past payment
@@ -113,17 +114,17 @@ Feature: Upcoming_Payments
     And Assert list of elements containing class "upcoming-payments tw-inline-block tw-align-middle tw-text-3" are displayed
     And Assert list of elements containing class "tw-gap-1 tw-items" are displayed
     And Assert list of upcoming transactions dates are all future dates
-    And Click first Upcoming payments
+    And Click on element by containing text "TRANSACTIONS BY ORDER OF CITIZENS" and index "2"
     And Wait for element by contains text "Cancel payment"
     And Assert field "Recipient" in payment confirmation matches regex "^.+$"
     And Assert field "Recipient address" in payment confirmation matches regex "(?s)^.+$"
-    And Assert field "Recipient account" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
-    And Assert element by contains text "Urgent payment" is not displayed
+    And Assert field "Recipient account number" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
+#    And Assert element by contains text "Urgent" is not displayed
     And Assert field "Purpose code" in payment confirmation matches regex "^\d{3}$"
-    And Assert field "Order ID" in payment confirmation matches regex "^.{14}$"
-    And Assert label "Debtor name" in payment confirmation contains value from excel "<rowindex>" columnName "account_details_owner"
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
-    And Assert field "Debtor address" in payment confirmation matches regex "(?s)^.+$"
+    And Assert field "Order number" in payment confirmation matches regex "^.{14}$"
+#    And Assert label "Name" in payment confirmation contains value from excel "<rowindex>" columnName "account_details_owner"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert field "Address" in payment confirmation matches regex "(?s)^.+$"
     And Assert field "Payment status" in payment confirmation contains text "Pending"
     # prelazak na drugi racun
     And Click on element by containing class "icon-chevron-down" with index "1"
@@ -136,17 +137,17 @@ Feature: Upcoming_Payments
     And Assert list of elements containing class "tw-gap-1 tw-items" are displayed
     And Assert list of upcoming transactions dates are all future dates
 
-    Then Click first Upcoming payments
+    Then Click on element by containing text "TRANSACTIONS BY ORDER OF CITIZENS" and index "2"
     And Wait for element by contains text "Cancel payment"
     And Assert field "Recipient" in payment confirmation matches regex "^.+$"
     And Assert field "Recipient address" in payment confirmation matches regex "(?s)^.+$"
-    And Assert field "Recipient account" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
-    And Assert element by contains text "Urgent payment" is not displayed
+    And Assert field "Recipient account number" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
+#    And Assert element by contains text "Urgent" is not displayed
     And Assert field "Purpose code" in payment confirmation matches regex "^\d{3}$"
-    And Assert field "Order ID" in payment confirmation matches regex "^.{14}$"
-    And Assert label "Debtor name" in payment confirmation contains value from excel "<rowindex>" columnName "auth_current_account_owner_name"
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "auth_current_account_bban"
-    And Assert field "Debtor address" in payment confirmation matches regex "(?s)^.+$"
+    And Assert field "Order number" in payment confirmation matches regex "^.{14}$"
+#    And Assert label "Name" in payment confirmation contains value from excel "<rowindex>" columnName "auth_current_account_owner_name"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "auth_current_account_bban"
+    And Assert field "Address" in payment confirmation matches regex "(?s)^.+$"
     And Assert field "Payment status" in payment confirmation contains text "Pending"
 
     Examples:

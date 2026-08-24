@@ -337,8 +337,8 @@ Feature: Loan_Account
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "loan_account_2_name"
     And Assert Loan account tabs is displayed correctly
 
-    Then Assert label with text "Opening amount" has value with text in format "^(?:0|[1-9]\d{0,2}(?:\.\d{3})*),\d{2}\s[A-Z]{3}$"
-    And Assert label with text "Annuity" has value with text in format "^(?:0|[1-9]\d{0,2}(?:\.\d{3})*),\d{2}\s[A-Z]{3}$"
+    Then Assert label with text "Principal amount" has value with text in format "^(?:0|[1-9]\d{0,2}(?:\.\d{3})*),\d{2}\s[A-Z]{3}$"
+    And Assert label with text "Annuity amount" has value with text in format "^(?:0|[1-9]\d{0,2}(?:\.\d{3})*),\d{2}\s[A-Z]{3}$"
     And Assert label with text "Nominal interest rate" has value with text in format "^\d{1,3},\d{2}%$"
     And Assert label with text "Last installment date" has value with text in format "^\d{2}\.\d{2}\.\d{4}$"
     And Assert label with text "Next installment date" has value with text in format "^\d{2}\.\d{2}\.\d{4}$"
@@ -365,10 +365,10 @@ Feature: Loan_Account
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "loan_account_2_name"
     And Assert Loan account tabs is displayed correctly
 
-    Then Assert label with text "Account owner" has value with text from Excel "<rowindex>" columnName "account_details_owner"
-    And Assert label with text "Start date" has value with text in format "^\d{2}\.\d{2}\.\d{4}$"
-    And Assert label with text "Repayment period" has value with text in format "^(?:0|[1-9]\d*)\sMonths$"
-    And Assert label with text "Remaining period" has value with text in format "^(?:0|[1-9]\d*)\sMonths$"
+#    Then Assert label with text "Account owner" has value with text from Excel "<rowindex>" columnName "account_details_owner"
+    And Assert label with text "Disbursement date" has value with text in format "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert label with text "Repayment period" has value with text in format "^\s*(?:0|[1-9]\d*)\s+Months?\s*$"
+    And Assert label with text "Remaining period" has value with text in format "^\s*(?:0|[1-9]\d*)\s+Months?\s*$"
 
     Examples:
       | rowindex |

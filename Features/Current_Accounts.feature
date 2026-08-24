@@ -66,13 +66,13 @@ Feature: Current_Accounts
 #      And Click on element by xpath "(//*[text()=' Edit '])[1]"
       And Click on Edit button for first Cheque
       And Click on button with tag "i" containing class "icon-calendar-today"
-      And Select date in Realization date label to be "17.12.2025"
+      And Select date in Realization date label to be "17.07.2026"
       And Enter text "5000" in field by xPath "//nlb-input-amount-currency/div/div/input"
       And Enter text "Kupovina" in field by xPath "(//nlb-input-text/div/div/div/div/input)[2]"
       And Click on element by containing text "Confirm"
 
       And Assert element by contains text "5.000,00 RSD"
-      And Assert element by contains text "17.12.2025"
+      And Assert element by contains text "17.07.2026"
       And Assert element by contains text "Kupovina"
 
     Examples:

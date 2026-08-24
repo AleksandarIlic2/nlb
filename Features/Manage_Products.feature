@@ -164,7 +164,7 @@ Feature: Manage_Products
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Wait for element by text "Pay or transfer"
 
-    When Click on tab "My products" from main sidebar
+    When Click on tab "My Products" from main sidebar
     And Wait for element by text "Edit list"
     And Assert element by class "button-bold" containing text "Edit list"
     And Click on element by text "Edit list"
@@ -176,7 +176,9 @@ Feature: Manage_Products
 
     #PROMENA IMENA KARTICA
     And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into "First credit card"
+    And Wait for "7" seconds
     And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" into "Second credit card"
+    And Wait for "7" seconds
 
     #PROMENA IMENA STEDNJE
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" into "First savings account"
@@ -184,8 +186,11 @@ Feature: Manage_Products
 
     #PROMENA OROCENE STEDNJE
     And Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" into "First term deposits"
+
+    #PROMENA KREDITA
+    And Change name of product from excel "<rowindex>" columnName "loan_account_1_number" into "First loan"
     #Then Change name of the first product "Foreign currency payment accounts2"
-    And Click on tab "My products" from main sidebar
+    And Click on tab "My Products" from main sidebar
     And Assert element by contains text "First current account"
     And Assert element by contains text "Second current account"
     And Assert element by contains text "First credit card"
@@ -193,18 +198,22 @@ Feature: Manage_Products
     And Assert element by contains text "First savings account"
     And Assert element by contains text "Second savings account"
     And Assert element by contains text "First term deposits"
+    And Assert element by contains text "First loan"
     And Click on element by text "Edit list"
     And Wait for element by class "icon-eye"
 
-    #Then Change name of the first product "Foreign currency payment accounts"
+#    Then Change name of the first product "Foreign currency payment accounts"
     And Change name of product from excel "<rowindex>" columnName "current_account_2_bban" to previous one
     And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" to previous one
     And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" to previous one
+    And Wait for "7" seconds
     And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" to previous one
+    And Wait for "7" seconds
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" to previous one
     And Change name of product from excel "<rowindex>" columnName "savings_account_2_number" to previous one
     And Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" to previous one
-    #TODO: Dodati korak za payments
+    And Change name of product from excel "<rowindex>" columnName "loan_account_1_number" to previous one
+
     Examples:
       | rowindex |
       |        1 |

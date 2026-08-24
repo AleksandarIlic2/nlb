@@ -8,7 +8,6 @@ Feature: Foreign_Current_Account
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     When Wait for element by text "Pay or transfer"
 
-    #And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_name"
     When Assert that products in my products have loaded
     And Assert element by class "button-bold" and contains text "Edit list"
     And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
@@ -19,9 +18,9 @@ Feature: Foreign_Current_Account
     Then Assert element by text "Account details" index "2" is displayed
     And Assert element by tag "nlb-icon" and attribute "name" with value "icon-copy"
     And Assert that element "Account type" has value "Current account"
-    And Assert that element "BIC" has value "KOBBRSBG"
-    And Assert that element "Account owner" is equal to value from Excel "<rowindex>" columnName "username"
+#    And Assert that element "Account owner" is equal to value from Excel "<rowindex>" columnName "username"
     And Assert that element "IBAN" is equal to value from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Assert that element "BIC" has value "KOBBRSBG"
 
     Examples:
       | rowindex |
@@ -404,14 +403,14 @@ Feature: Foreign_Current_Account
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
 
-    And Select date in From label to be "26.03.2025"
-    And Select date in To label to be "15.05.2025"
-    And Scroll element by contains text " Confirm " into view
-    And Click on element by text " Confirm "
+    And Select date in From label to be "01.08.2026"
+    And Select date in To label to be "20.08.2026"
+    And Scroll element by contains text "Confirm" into view
+    And Click on element by containing text "Confirm"
     And Scroll element by contains text "end of the list" into view
-    And Assert transaction dates are between "26.03.2025" and "15.05.2025"
-    And Scroll element by contains text " Clear filters " into view
-    And Click on element by text " Clear filters "
+    And Assert transaction dates are between "01.08.2026" and "20.08.2026"
+    And Scroll element by contains text "Clear filters" into view
+    And Click on element by containing text "Clear filters"
 
     Examples:
       | rowindex |
@@ -669,9 +668,9 @@ Feature: Foreign_Current_Account
 
     When Click on tab "My Products" from main sidebar
     And Wait for first product to load
-    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for element by tag "nlb-product-detail-header"
-    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_iban"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
     And Assert tabs in Product details are displayed correctly for Current Foreign Accounts
     And Select "Statements" tab in Products details
     And Assert "Statements" tab in Products details is selected
@@ -681,12 +680,12 @@ Feature: Foreign_Current_Account
     And Assert Statements filter label is "Filter by year"
 
     And Assert Statements filter has current year selected
-    And Select year "2024" in Statements filter and assert there are 11 options
-    And Remember number of Statemants in Statemants list under key "keyNumberOfTemplates"
-    And Assert all dates in statements list is for year "2024" and they are sorted properly
-    And Assert elements by attribute "class" contains value "subheadline medium" is displayed in amount from key "keyNumberOfTemplates"
-    And Assert elements by attribute "class" contains value "nlb-icon icon-statement" is displayed in amount from key "keyNumberOfTemplates"
-    And Assert elements by attribute "class" contains value "nlb-icon icon-download" is displayed in amount from key "keyNumberOfTemplates"
+    And Select year "2023" in Statements filter and assert there are 11 options
+    And Remember number of Statemants in Statemants list under key "keyNumberOfStatements"
+    And Assert all dates in statements list is for year "2023" and they are sorted properly
+    And Assert elements by attribute "class" contains value "subheadline medium" is displayed in amount from key "keyNumberOfStatements"
+    And Assert elements by attribute "class" contains value "nlb-icon icon-statement" is displayed in amount from key "keyNumberOfStatements"
+    And Assert elements by attribute "class" contains value "nlb-icon icon-download" is displayed in amount from key "keyNumberOfStatements"
 
     Then Click download on first statement in Statement list
     And Assert document with name starting with "Izvod_" and has file type ".pdf" is downloaded

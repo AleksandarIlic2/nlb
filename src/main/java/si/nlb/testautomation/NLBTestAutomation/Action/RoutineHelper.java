@@ -1794,6 +1794,84 @@ public class RoutineHelper {
         }
     }
 
+//    public void loginToThePageUsingUserFromExcelColumnName(String username, String isMocked, String pin, String env) throws Throwable {
+//        if (isMocked.equals("0")){
+//            //Handleovanje slidera
+//            if (env.equals("tst")){
+//                WebElement elementForSlider = SelectByXpath.CreateElementByXPathTagContainsClass("div", "slider");
+//                hp.ClickOnElement(elementForSlider);
+//            }
+//
+//            //Unos username iz excela
+//            /*String xPathForUsername = "//label[text()='Username']//following-sibling::div//input";
+//            WebElement elementForUsername = SelectByXpath.CreateElementByXpath(xPathForUsername);
+//            hp.EnterTextToElement(elementForUsername,username);*/
+//            WebElement elementForUsername = SelectByXpath.CreateElementByXpath("(//*[contains(@id, 'text-input')])[1]");
+//            hp.EnterTextToElement(elementForUsername,username);
+//            //Unos otp iz aplikacije
+//            /*String xPathForOTP = "//label[text()='One-time password']//following-sibling::div//input";
+//            WebElement elementForOTP = SelectByXpath.CreateElementByXpath(xPathForOTP);
+//            ma.getMobileOTP(pin);
+//            String text = DataManager.userObject.get("OTP").toString();
+//            hp.EnterTextToElement(elementForOTP,text);*/
+//            WebElement elementForOTP = SelectByXpath.CreateElementByXpath("(//*[contains(@id, 'text-input')])[2]");
+//            ma.getMobileOTP(pin);
+//            String text = DataManager.userObject.get("OTP").toString();
+//            hp.EnterTextToElement(elementForOTP,text);
+//            //Klik na login dugme
+//            WebElement elementForLoginButton = SelectByText.CreateElementByXpathContainingText("Login to NLB Klik");
+//            hp.ClickOnElement(elementForLoginButton);
+//
+//            //Change language cause why not :)
+////            String xPathWaiter = "//*[text()='Plačilo ali prenos']";
+////            By elForWaiter = SelectByXpath.CreateByElementByXpath(xPathWaiter);
+////            WaitHelpers.WaitForElement(elForWaiter);
+////            String xPathForProfileButton = "//*[@aria-label='Uporabniški profil']";
+////            WebElement elementForProfileButton = SelectByXpath.CreateElementByXpath(xPathForProfileButton);
+////            hp.ClickOnElement(elementForProfileButton);
+////            String xPathForEnglishLanguage = "//*[text()=' English ']";
+////            WebElement elementForEnglishLanguage = SelectByXpath.CreateElementByXpath(xPathForEnglishLanguage);
+////            hp.ClickOnElement(elementForEnglishLanguage);
+////            String xPathForOkButton = "//*[text()='V redu']";
+////            WebElement elementForOkButton = SelectByXpath.CreateElementByXpath(xPathForOkButton);
+////            hp.ClickOnElement(elementForOkButton);
+//
+//        } else {
+//            //Selekcija user-a iz dropdown liste
+////            String xPathList = "//label[text()='Username ']/following-sibling::div";
+////            WebElement listElement = SelectByXpath.CreateElementByXpath(xPathList);
+////            hp.ClickOnElement(listElement);
+////            String xPathUser = "//li[contains(@class, 'dropdown-select-item') and contains(text(), '" + username + "')]";
+////            WebElement userElement = SelectByXpath.CreateElementByXpath(xPathUser);
+////            hp.ClickOnElement(userElement);
+////
+////            //Klik na login dugme
+////            //WebElement elementForLoginButton = SelectByText.CreateElementByXpathContainingText("Login to NLB Klik"); Ovo je bilo pre
+////            WebElement elementForLoginButton = SelectByText.CreateElementByXpathContainingText("Login");
+////            hp.ClickOnElement(elementForLoginButton);
+//
+//            WebElement elementForSlider = SelectByXpath.CreateElementByXpath("//*[contains(@class, 'slider')]");
+//            elementForSlider.click();
+//
+//            WebElement elementForUsername = SelectByXpath.CreateElementByXpath("(//*[contains(@id, 'text-input')])[1]");
+//            hp.EnterTextToElement(elementForUsername,username);
+//            //Unos otp iz aplikacije
+//            /*String xPathForOTP = "//label[text()='One-time password']//following-sibling::div//input";
+//            WebElement elementForOTP = SelectByXpath.CreateElementByXpath(xPathForOTP);
+//            ma.getMobileOTP(pin);
+//            String text = DataManager.userObject.get("OTP").toString();
+//            hp.EnterTextToElement(elementForOTP,text);*/
+//            WebElement elementForOTP = SelectByXpath.CreateElementByXpath("(//*[contains(@id, 'text-input')])[2]");
+//            ma.getMobileOTP(pin);
+//            String text = DataManager.userObject.get("OTP").toString();
+//            hp.EnterTextToElement(elementForOTP,text);
+//            //Klik na login dugme
+//            WebElement elementForLoginButton = SelectByText.CreateElementByXpathContainingText("Login to NLB Klik");
+//            hp.ClickOnElement(elementForLoginButton);
+//        }
+//    }
+
+
     public void loginToThePageUsingUserFromExcelColumnName(String username, String isMocked, String pin, String env) throws Throwable {
         if (isMocked.equals("0")){
             //Handleovanje slidera
@@ -1802,18 +1880,9 @@ public class RoutineHelper {
                 hp.ClickOnElement(elementForSlider);
             }
 
-            //Unos username iz excela
-            /*String xPathForUsername = "//label[text()='Username']//following-sibling::div//input";
-            WebElement elementForUsername = SelectByXpath.CreateElementByXpath(xPathForUsername);
-            hp.EnterTextToElement(elementForUsername,username);*/
             WebElement elementForUsername = SelectByXpath.CreateElementByXpath("(//*[contains(@id, 'text-input')])[1]");
             hp.EnterTextToElement(elementForUsername,username);
-            //Unos otp iz aplikacije
-            /*String xPathForOTP = "//label[text()='One-time password']//following-sibling::div//input";
-            WebElement elementForOTP = SelectByXpath.CreateElementByXpath(xPathForOTP);
-            ma.getMobileOTP(pin);
-            String text = DataManager.userObject.get("OTP").toString();
-            hp.EnterTextToElement(elementForOTP,text);*/
+
             WebElement elementForOTP = SelectByXpath.CreateElementByXpath("(//*[contains(@id, 'text-input')])[2]");
             ma.getMobileOTP(pin);
             String text = DataManager.userObject.get("OTP").toString();
@@ -1821,33 +1890,19 @@ public class RoutineHelper {
             //Klik na login dugme
             WebElement elementForLoginButton = SelectByText.CreateElementByXpathContainingText("Login to NLB Klik");
             hp.ClickOnElement(elementForLoginButton);
-
-            //Change language cause why not :)
-//            String xPathWaiter = "//*[text()='Plačilo ali prenos']";
-//            By elForWaiter = SelectByXpath.CreateByElementByXpath(xPathWaiter);
-//            WaitHelpers.WaitForElement(elForWaiter);
-//            String xPathForProfileButton = "//*[@aria-label='Uporabniški profil']";
-//            WebElement elementForProfileButton = SelectByXpath.CreateElementByXpath(xPathForProfileButton);
-//            hp.ClickOnElement(elementForProfileButton);
-//            String xPathForEnglishLanguage = "//*[text()=' English ']";
-//            WebElement elementForEnglishLanguage = SelectByXpath.CreateElementByXpath(xPathForEnglishLanguage);
-//            hp.ClickOnElement(elementForEnglishLanguage);
-//            String xPathForOkButton = "//*[text()='V redu']";
-//            WebElement elementForOkButton = SelectByXpath.CreateElementByXpath(xPathForOkButton);
-//            hp.ClickOnElement(elementForOkButton);
-
         } else {
-            //Selekcija user-a iz dropdown liste
-            String xPathList = "//label[text()='Username ']/following-sibling::div";
-            WebElement listElement = SelectByXpath.CreateElementByXpath(xPathList);
-            hp.ClickOnElement(listElement);
-            String xPathUser = "//li[contains(@class, 'dropdown-select-item') and contains(text(), '" + username + "')]";
-            WebElement userElement = SelectByXpath.CreateElementByXpath(xPathUser);
-            hp.ClickOnElement(userElement);
+            WebElement elementForSlider = SelectByXpath.CreateElementByXpath("//*[contains(@class, 'slider')]");
+            elementForSlider.click();
 
+            WebElement elementForUsername = SelectByXpath.CreateElementByXpath("(//*[contains(@id, 'text-input')])[1]");
+            hp.EnterTextToElement(elementForUsername,username);
+
+            WebElement elementForOTP = SelectByXpath.CreateElementByXpath("(//*[contains(@id, 'text-input')])[2]");
+            ma.getMobileOTP(pin);
+            String text = DataManager.userObject.get("OTP").toString();
+            hp.EnterTextToElement(elementForOTP,text);
             //Klik na login dugme
-            //WebElement elementForLoginButton = SelectByText.CreateElementByXpathContainingText("Login to NLB Klik"); Ovo je bilo pre
-            WebElement elementForLoginButton = SelectByText.CreateElementByXpathContainingText("Login");
+            WebElement elementForLoginButton = SelectByText.CreateElementByXpathContainingText("Login to NLB Klik");
             hp.ClickOnElement(elementForLoginButton);
         }
     }

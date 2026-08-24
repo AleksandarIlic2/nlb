@@ -927,8 +927,9 @@ public class Steps {
 
     @And("Scroll till you find element under key {string} from txt file and click")
     public void scrollTillYouFindElementUnderKeyFromTxtFileAndClick(String key) throws Throwable {
-        String text = Utilities.getDataFromTxtFileUnderKey(key);
-        System.out.println("DATAA" + text);
+//        String text = Utilities.getDataFromTxtFileUnderKey(key);
+        String text = DataManager.userObject.get(key).toString();
+        System.out.println("DATA" + text);
         //rh.scrollToBottomFindTextAndClick(text);
         rh.scrollXtimesFindTextAndClick(3, text);
         WaitHelpers.waitForSeconds(3);//Zato sto moze da se desi stale element a nemam trenutno pametnije resenje
@@ -3018,8 +3019,9 @@ public class Steps {
     @And("Assert that payment under key {string} from txt file has date {int} days in future")
     public void assertThatPaymentUnderKeyFromTxtFileHasDateDaysInFuture(String key, int daysInFuture) throws Throwable {
         String expectedDate = ActionApiHelpers.getTodayDatePlusXDaysInFormat(daysInFuture, "dd.MM.YYYY");
-        String purpose = Utilities.getDataFromTxtFileUnderKey(key);
-        String xPathForPaymentDate = "//div[contains(text(),'" + purpose + "')]//ancestor::nlb-payment-item//h5[contains(text(),'" + expectedDate + "')]";
+//        String purpose = Utilities.getDataFromTxtFileUnderKey(key);
+        String purpose = DataManager.userObject.get(key).toString();
+        String xPathForPaymentDate = "//h5[contains(text(),'" + purpose + "')]//ancestor::nlb-payment-item//div[contains(text(),'" + expectedDate + "')]";
         By elWait = SelectByXpath.CreateByElementByXpath(xPathForPaymentDate);
         WaitHelpers.WaitForElement(elWait);
         WebElement elementForPaymentDate = SelectByXpath.CreateElementBy(elWait);
@@ -12779,11 +12781,7 @@ public class Steps {
     @And("Assert label with text {string} has value with text in format {string}")
     public void assertLabelWithTextHasValueWithTextInFormat(String labelText, String regex) {
         String actual = rh.getValueForLabel(labelText);
-
-        Assert.assertTrue(
-                "Vrednost za labelu [" + labelText + "] nije u dobrom formatu. Actual=[" + actual + "] Regex=[" + regex + "]",
-                actual.matches(regex)
-        );
+        Assert.assertTrue("Vrednost za labelu [" + labelText + "] nije u dobrom formatu. Actual=[" + actual + "] Regex=[" + regex + "]", actual.matches(regex));
     }
 
     @And("Assert label with text {string} has value with text under remembered key {string}")
@@ -13381,7 +13379,7 @@ public class Steps {
     public void assertOptionButtonsInPayments() throws Throwable {
         String xPath = "//button/div/following-sibling::div";
         List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
-        assertEquals(5, elements.size());
+        assertEquals(6, elements.size());
 
         for (int i = 0; i < elements.size(); i++) {
             switch (i) {
@@ -13394,14 +13392,14 @@ public class Steps {
                 case 2:
                     Assert.assertEquals("Internal transfer", elements.get(i).getText());
                     break;
-//                case 3:
-//                    Assert.assertEquals("Foreign payment", elements.get(i).getText());
-//                    break;
                 case 3:
                     Assert.assertEquals("Currency exchange", elements.get(i).getText());
                     break;
                 case 4:
                     Assert.assertEquals("Templates", elements.get(i).getText());
+                    break;
+                case 5:
+                    Assert.assertEquals("Prepaid Mobile Top-up", elements.get(i).getText());
                     break;
             }
         }
@@ -13434,88 +13432,50 @@ public class Steps {
 
     @And("Assert accounts are sorted by account number priority and currency priority")
     public void assertAccountsAreSortedByAccountNumberPriorityAndCurrencyPriority() throws Throwable {
-        String accountXPath = "//*[contains(@class, 'accountItemDescription')]";
-        String amountXPath = "//*[contains(@class, 'subheadline bold')]";
+        String accountNumberXPath = "//*[contains(@class, 'accountItemDescription')]";
+        String accountNameXPath = "//h2[contains(@class, 'heading-5')]";
 
-        List<WebElement> accountElements = SelectByXpath.CreateElementsByXpath(accountXPath);
-        List<WebElement> amountElements = SelectByXpath.CreateElementsByXpath(amountXPath);
-
-        Assert.assertTrue("Nema dovoljno account elemenata za proveru.", accountElements != null && accountElements.size() > 1);
-        Assert.assertTrue("Nema dovoljno amount elemenata za proveru.", amountElements != null && amountElements.size() > 1);
+        List<WebElement> accountNumberElements = driver.findElements(By.xpath(accountNumberXPath));
+        List<WebElement> accountNameElements = driver.findElements(By.xpath(accountNameXPath));
 
         // Preskacemo prvi element iz obe liste
-        List<WebElement> filteredAccountElements = accountElements.subList(1, accountElements.size());
-        List<WebElement> filteredAmountElements = amountElements.subList(1, amountElements.size());
+        List<WebElement> accountNumbers = accountNumberElements.subList(1, accountNumberElements.size());
+        List<WebElement> accountNames = accountNameElements.subList(1, accountNameElements.size());
+        Assert.assertEquals("Broj account number i account name elemenata nije isti.", accountNumbers.size(), accountNames.size());
 
-        Assert.assertEquals(
-                "Broj računa i broj iznosa/valuta nisu poravnati. Accounts=" + filteredAccountElements.size()
-                        + ", Amounts=" + filteredAmountElements.size(),
-                filteredAccountElements.size(),
-                filteredAmountElements.size()
-        );
+        int previousPriority = 0;
+        for (int i = 0; i < accountNumbers.size(); i++) {
+            String accountNumber = accountNumbers.get(i).getText().trim();
+            String accountName = accountNames.get(i).getText().trim();
+            int priority;
+            // 1. Vlasnicki dinarski tekuci
+            if (accountNumber.startsWith("205-") && accountName.equals("Tekući račun")) {
+                priority = 1;
+                // 2. Vlasnicki devizni tekuci
+            } else if (accountNumber.startsWith("RS35") && accountName.equals("Devizni platni račun")) {
+                priority = 2;
+                // 3. Ovlasceni dinarski
+            } else if (accountNumber.startsWith("205-") && accountName.startsWith("Tekući račun ") && !accountName.equals("Tekući račun")) {
+                priority = 3;
+                // 4. Ovlasceni devizni
+            } else if (accountNumber.startsWith("RS35") && accountName.startsWith("Devizni platni račun ") && !accountName.equals("Devizni platni račun")) {
+                priority = 4;
+                // 5. Vlasnicki stedni
+            } else if (accountNumber.startsWith("90") && accountName.equals("A vista depozitni račun")) {
+                priority = 5;
+                // 6. Ovlasceni stedni
+            } else if (accountNumber.startsWith("90") && accountName.startsWith("A vista depozitni račun ") && !accountName.equals("A vista depozitni račun")) {
+                priority = 6;
 
-        List<AccountRow> actualList = new ArrayList<>();
+            } else {
+                Assert.fail("Nepoznata vrsta računa: " + accountNumber + " | " + accountName);
+                return;
+            }
+            System.out.println("Position: " + i + " | Account: " + accountNumber + " | Name: " + accountName + " | Priority: " + priority);
 
-        for (int i = 0; i < filteredAccountElements.size(); i++) {
-            String accountNumber = safeText(filteredAccountElements.get(i));
-            String amountText = safeText(filteredAmountElements.get(i));
-            String currency = extractCurrency(amountText);
-
-            actualList.add(new AccountRow(accountNumber, currency));
+            Assert.assertTrue("Pogrešan redosled računa. " + accountNumber + " | " + accountName + " ima priority " + priority + ", a prethodni priority je " + previousPriority, priority >= previousPriority);
+            previousPriority = priority;
         }
-
-        List<AccountRow> expectedList = new ArrayList<>(actualList);
-        expectedList.sort(accountComparator());
-
-        for (int i = 0; i < actualList.size(); i++) {
-            AccountRow actual = actualList.get(i);
-            AccountRow expected = expectedList.get(i);
-
-            Assert.assertEquals(
-                    "Pogrešan redosled na poziciji " + i
-                            + ". Očekivano: [" + expected.accountNumber + " | " + expected.currency + "]"
-                            + ", a prikazano: [" + actual.accountNumber + " | " + actual.currency + "]",
-                    expected,
-                    actual
-            );
-        }
-    }
-
-    private Comparator<AccountRow> accountComparator() {
-        return Comparator
-                .comparingInt((AccountRow row) -> getAccountPriority(row.accountNumber))
-                .thenComparingInt(row -> getCurrencyPriority(row.currency));
-    }
-
-    private int getAccountPriority(String accountNumber) {
-        String acc = normalize(accountNumber);
-
-        if (acc.startsWith("205-900")) {
-            return 1;
-        }
-        if (acc.startsWith("RS35 2059")) {
-            return 2;
-        }
-        if (acc.startsWith("901")) {
-            return 3;
-        }
-        return 4;
-    }
-
-    private int getCurrencyPriority(String currency) {
-        return "RSD".equalsIgnoreCase(currency) ? 1 : 2;
-    }
-
-    private String extractCurrency(String amountText) {
-        String text = normalize(amountText);
-
-        Matcher matcher = Pattern.compile("\\b([A-Z]{3})\\b").matcher(text);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-
-        Assert.fail("Nije moguće izvući valutu iz teksta: [" + amountText + "]");
-        return "";
     }
 
     @And("Assert Credit cards icons is displayed")
@@ -13647,10 +13607,25 @@ public class Steps {
     }
 
     @And("Assert list of creditor names of Payments archive are displayed")
-    public void assertListOfCreditorNamesOfUpcomingPaymentsAreDisplayed() throws Throwable {
-        WebElement element = SelectByXpath.CreateElementByXpath("//div[contains(@class, 'xs:subheadline xs:medium')]");
-        assertTrue(element.isDisplayed());
-        assertTrue(element.getText().matches("^.+$"));
+    public void assertListOfCreditorNamesOfPaymentsArchiveAreDisplayed() throws Throwable {
+        List<WebElement> transactions = driver.findElements(By.xpath("//nlb-payment-item"));
+        String xPath = "//nlb-payment-item";
+//        List<WebElement> transactions = SelectByXpath.CreateElementsByXpath(xPath);
+        assertFalse("There are no transactions in Payments archive.", transactions.isEmpty());
+        for (WebElement transaction : transactions) {
+            List<WebElement> creditorNameElements = transaction.findElements(
+                    By.xpath(".//div[contains(@class, 'xs:subheadline xs:medium')]"));
+//            List<WebElement> creditorNameElements = SelectByXpath.CreateElementsByXpath(".//div[contains(@class, 'xs:subheadline xs:medium')]");
+
+            boolean creditorNameDisplayed = false;
+            if (!creditorNameElements.isEmpty()) {
+                String creditorName = creditorNameElements.get(0).getText().replace('\u00A0', ' ').trim();
+                creditorNameDisplayed = creditorNameElements.get(0).isDisplayed() && !creditorName.isEmpty();
+            }
+            boolean isCurrencyExchange = !transaction.findElements(By.xpath(".//h5[contains(text(), 'Kupo-prodaja deviza')]")).isEmpty();
+
+            assertTrue("Creditor name is missing, but payment purpose is not 'Kupo-prodaja deviza'.", creditorNameDisplayed || isCurrencyExchange);
+        }
     }
 
     @And("Assert list of amounts with currencies of Upcoming payments are displayed correctly")
@@ -13886,6 +13861,25 @@ public class Steps {
         element.click();
     }
 
+
+    @And("Assert label for total Templates number has same number of Templates as number from key {string}")
+    public void assertLabelForTotalTemplatesNumberHasSameNumberOfTemplatesAsNumberFromKey(String key) throws Throwable {
+        String expected = DataManager.userObject.get(key).toString().trim();
+        String xPath = "//*[contains(text(), 'Total number of saved templates') and not(contains(@class, 'tw-sr-only'))]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+
+        String actual = element.getText().replaceAll("\\D+", "");
+        Assert.assertEquals("Total number of saved templates is not correct.", expected, actual);
+    }
+
+    @And("Assert field with contains text {string} in payment confirmation matches regex {string}")
+    public void assertFieldWithContainsTextInPaymentConfirmationMatchesRegex(String field, String regex) throws Throwable {
+        String xPath = "(//*[contains(text(), '" + field + "')])[2]/following-sibling::div[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        String actualText = element.getText().trim();
+
+        Assert.assertTrue("Tekst [" + actualText + "] ne odgovara regex-u [" + regex + "]", actualText.matches(regex));
+    }
 
     private static class AccountRow {
         String accountNumber;
