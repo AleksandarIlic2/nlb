@@ -1693,6 +1693,10 @@ Feature: Domestic_Payments
     And Wait for element by text "Past payments"
     And Click on normalized text "Domestic payment"
     And Wait for element by contains text "Select from list"
+
+    And Click on tag "nlb-account-selector"
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+
     And Assert element by contains text "Domestic payment"
     And Assert element by contains text "Recipient"
     And Assert element by contains src "CurrentAccount-Icon" is displayed
@@ -1725,7 +1729,8 @@ Feature: Domestic_Payments
       #PAYMENT REVIEW
     And Wait for element by contains text "Payment amount"
     And Assert payment amount under key is "keyPaymentAmount" is displayed
-    And Assert element with text "Fee" with following sibling has text "0,00 RSD"
+    #And Assert element with text "Fee" with following sibling has text "0,00 RSD"
+    And Assert element by text "Fee" has following sibling "span" contains text from Excel "<rowindex>" columnName "fee_RSD_Clean"
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Recipient"
     And Assert element by class "bold heading-5 ng-star-inserted" containing text "Payment details"
 
@@ -1749,6 +1754,13 @@ Feature: Domestic_Payments
     And Assert element by contains text "Cancel"
     And Click on element by containing text "Confirm"
     And Assert element by contains text "Success"
+
+    #TODO
+
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "2.00" and currency "RSD" with message "Success"
+
+    #TODO
+
 
     And Wait for element by contains text "Domestic payment"
     And Assert Past payments tab is selected in Payments
@@ -2010,7 +2022,6 @@ Feature: Domestic_Payments
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Pending"
-
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load

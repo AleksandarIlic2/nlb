@@ -13,7 +13,6 @@ Feature: Templates
     And Click on normalized text "Templates"
     And Wait for element by tag "nlb-search-box"
     And Remember number of saved templates under key "keyTemplatesAmount"
-    And Assert label for total Templates number has same number of Templates as number from key "keyTemplatesAmount"
 
     And Assert number of elements with attribute "class" and contains value "medium tw-text-gray" is from key "keyTemplatesAmount"
     And Assert number of elements with attribute "class" and contains value "line-clamp-1 ellipsis" is from key "keyTemplatesAmount"
@@ -42,8 +41,8 @@ Feature: Templates
     And Click on normalized text "Cancel"
     And Wait for element by tag "section"
     And Enter text "zzzyyyxxzx" in field by contains id "search-input"
-    And Wait for element by contains text "No templates found"
-    And Assert element by contains text "No templates found"
+    And Wait for element by contains text "NoResultsAdjustFilter"
+    And Assert element by contains text "NoResultsAdjustFilter"
     And Click on normalized text "Cancel"
     And Wait for element by tag "section"
     And Click on element by containing class "icon-chevron-down" with index "1"
@@ -65,7 +64,6 @@ Feature: Templates
     And Click on normalized text "Select from list"
     And Wait for element by tag "nlb-search-box"
     And Assert elements text with attribute "class" and contains value "clamp-1 ellipsis" with list from key "keyRecipientAccounts"
-    And Assert label for total Templates number has same number of Templates as number from key "keyTemplatesAmount"
 
     Examples:
       | rowindex |

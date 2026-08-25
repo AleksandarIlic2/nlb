@@ -1,5 +1,40 @@
 Feature: Credit_Cards
 
+  @Credit_Cards_Details_Card_Details_[WEB]
+  Scenario Outline: Credit_Cards_Details_Card_Details_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+
+    When Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Click on element from Excel "<rowindex>" contains text columnName "credit_card_1_number"
+    And Wait for element by contains text "Details"
+    And Assert element with attribute "src" contains value "CreditCard-Icon" is displayed
+    And Assert element by contains text "Available balance"
+    And Assert element contains class "flex tw-items-center ng" match regex "^\d{1,3}(\.\d{3})*,\d{2}\s*[A-Z]{3}$"
+    And Assert element by text from excel "<rowindex>" columnName "credit_card_1_number" is displayed
+    And Assert element by contains text "Transactions" has attribute "class" contains value "callout bold"
+    And Assert element with attribute "placeholder" contains value "Search..." is displayed
+    And Assert element by contains text "Filters"
+    And Assert element by contains class "chevron-down tw-inline" is displayed
+    And Assert element by contains text "Download transaction list"
+
+    Then Click on element by containing text "Details"
+    And Wait for element by contains text "Financial details"
+    And Assert element by class "bold heading-3 tw-hidden tw-text-gray-400 xs:tw-block ng-star-inserted" and index "1" has attribute "textContent" with value "Financial details"
+    And Assert element by class "bold heading-3 tw-hidden tw-text-gray-400 xs:tw-block ng-star-inserted" and index "2" has attribute "textContent" with value "Account details"
+    And Assert element by contains text "Account owner"
+    And Assert element by contains text "Account number"
+    And Assert element contains text "Account owner" with following tag "dd" index "1" match regex "^[\p{L}\s]+$"
+    And Assert element contains text "Account number" with following tag "dd" index "1" match regex "^\d{13}$"
+
+    Examples:
+      | rowindex |
+      |        7 |
+
   @Credit_Cards-Header_Display_[WEB]
   Scenario Outline: Credit_Cards-Header_Display_[WEB]
 

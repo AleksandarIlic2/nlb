@@ -380,41 +380,42 @@ Feature: Product_Summary
       |        1 |
 
 
-#  @Product_Summary-Hide/Show_Product_on_Product_List_[WEB]_Credit_Cards
-#  Scenario Outline: Product_Summary-Hide/Show_Product_on_Product_List_[WEB]_Credit_Cards
-#
-#    Given Open Login page
-#    And Change language to English
-#    And Login to the page using user from Excel "<rowindex>" columnName "username"
-#    And Wait for element by text "Pay or transfer"
-#
-#    When Assert that products in my products have loaded
-#    And Assert element by class "button-bold"
-#    And Click on element by class "button-bold"
-#    And Wait for element by class "icon-eye"
-#
-#    And Hide product with iban from excel "<rowindex>" columnName "credit_card_2_number"
-#
-##    And Click on tab "My products" from main sidebar
-##    And Wait for element by text "Edit list"
-#    Then Assert that products in my products have loaded
-#    And Assert element from excel "<rowindex>" columnName "credit_card_2_number" is not displayed
-#    And Click on element by text "Payments"
-#    And Click on element by containing class "icon-chevron-down" with index "1"
-#    And Assert element from excel "<rowindex>" columnName "credit_card_2_number" is not displayed
-#    And Assert that products in my products have loaded
-#    And Click on element by class "button-bold"
-#    And Wait for element by class "icon-eye"
-#    And Unhide product with iban from excel "<rowindex>" columnName "credit_card_2_number"
-#    And Assert that products in my products have loaded
-##    And Wait for element by text "Edit list"
-#    And Assert that products in my products have loaded
-#    And Scroll to account from excel "<rowindex>" columnName "credit_card_2_number" in my products page
-#    And Assert element by contains text from excel "<rowindex>" columnName "credit_card_2_name" is displayed
-#
-#    Examples:
-#      | rowindex |
-#      |        1 |
+  @Product_Summary-Hide/Show_Product_on_Product_List_[WEB]_Credit_Cards
+  Scenario Outline: Product_Summary-Hide/Show_Product_on_Product_List_[WEB]_Credit_Cards
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+
+    When Assert that products in my products have loaded
+    And Assert element by class "button-bold"
+    And Click on element by class "button-bold"
+    And Wait for element by class "icon-eye"
+
+    And Hide product with iban from excel "<rowindex>" columnName "credit_card_1_number"
+
+#    And Click on tab "My products" from main sidebar
+#    And Wait for element by text "Edit list"
+    Then Assert that products in my products have loaded
+    And Assert element from excel "<rowindex>" columnName "credit_card_1_number" is not displayed
+    And Click on element by text "Payments"
+    And Click on element by containing class "icon-chevron-down" with index "1"
+    And Assert element from excel "<rowindex>" columnName "credit_card_1_number" is not displayed
+    And Assert that products in my products have loaded
+    And Click on element by class "button-bold"
+    And Wait for element by class "icon-eye"
+    And Unhide product with iban from excel "<rowindex>" columnName "credit_card_1_number"
+    And Wait for "5" seconds
+    And Refresh page
+    And Assert that products in my products have loaded
+#    And Wait for element by text "Edit list"
+    And Scroll to account from excel "<rowindex>" columnName "credit_card_1_number" in my products page
+    And Assert element by contains text from excel "<rowindex>" columnName "credit_card_1_name" is displayed
+
+    Examples:
+      | rowindex |
+      |        1 |
 #
 #
 #  @Product_Summary-Credit_Card_List_[WEB]

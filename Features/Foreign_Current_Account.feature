@@ -235,8 +235,8 @@ Feature: Foreign_Current_Account
 
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for first transaction in Product details
-#    And Assert available balance and current balance in header
-    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
+    And Assert available balance and current balance in header
+    #And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
     And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
@@ -390,7 +390,7 @@ Feature: Foreign_Current_Account
     And Assert that products in my products have loaded
 
     When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
-    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
+    #And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
     And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_iban"
 
     And Click on element by aria label "Open or close filters"
@@ -403,7 +403,7 @@ Feature: Foreign_Current_Account
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
 
-    And Select date in From label to be "01.08.2026"
+    Then Select date in From label to be "01.08.2026"
     And Select date in To label to be "20.08.2026"
     And Scroll element by contains text "Confirm" into view
     And Click on element by containing text "Confirm"

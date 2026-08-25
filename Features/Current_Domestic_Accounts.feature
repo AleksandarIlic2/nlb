@@ -127,7 +127,7 @@ Feature: Current_Domestic_Accounts
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for element by tag "nlb-product-detail-header"
     #Then Assert Product name in Product details is from Excel "<rowindex>" columnName "personal_account_name3"
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
@@ -149,22 +149,38 @@ Feature: Current_Domestic_Accounts
     And Assert element by contains text "Last 7 days"
     And Assert element by contains text "This month"
     And Assert element by contains text "Last month"
+    And Remember text from element with attribute "class" containing value "w-items-center tw-text-gray-400 xs:subhead" and index "1" under key "keyDateOfFirstTransaction"
 
     And Click on element by containing text "Last 7 days"
     And Assert from to dates are in last 7 days
     And Click on element by containing text "Confirm"
+    And Wait for "1" seconds
+    And Wait for first transaction in Product details
+    And Assert transactions dates are from last seven days
 
     And Click on element by containing text "This month"
     And Assert date range in Date filter are in "current month"
-    And Click on element by text " Confirm "
+    And Click on element by containing text "Confirm"
+    And Wait for "1" seconds
+    And Wait for first transaction in Product details
+    And Assert transactions dates are from current month
 
-    And Click on element by containing text "Last month"
+    Then Click on element by containing text "Last month"
     And Assert date range in Date filter are in "previous month"
     And Click on element by containing text "Confirm"
+    And Wait for "1" seconds
+    And Wait for first transaction in Product details
+    And Assert transactions dates are from previous month
+    
+    And Click on element by containing text "Clear filters"
+    And Wait for "1" seconds
+    And Wait for first transaction in Product details
+    And Assert text under key "keyDateOfFirstTransaction" is displayed
 
     Examples:
       | rowindex |
       |        1 |
+
 
   @Current_Domestic_Accounts-Multiple-Filter_Invalid_[WEB]
   Scenario Outline: Current_Domestic_Accounts-Multiple-Filter_Invalid_[WEB]
