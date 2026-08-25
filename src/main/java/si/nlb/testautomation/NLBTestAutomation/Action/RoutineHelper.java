@@ -1452,17 +1452,22 @@ public class RoutineHelper {
     }
 
     public void checkIfAuthIsNeededAndCompletePaymentFor(String rowindex, String columnName, String amount, String currency, String notifMessage) throws Throwable {
-        String status = (String) DataManager.userObject.get("StatusOfPayment");
-            if(status.equals("NOK")){
-                String accountBban = DataManager.getDataFromHashDatamap(rowindex,columnName);
-                useMobileAppToCompletePayment(accountBban,amount,currency);
-                String xPath = "//*[contains(text(),'" + notifMessage + "')]";
-                By el = By.xpath(xPath);
-                boolean notifExists = ActionApiHelpers.isElementDisplayedCustom(el,10,500);
-                //Assert.assertTrue(notifExists);
-            } else {
-                System.out.println("This method was not needed.");
-            }
+//        String status = (String) DataManager.userObject.get("StatusOfPayment");
+//            if(status.equals("NOK")){
+//                String accountBban = DataManager.getDataFromHashDatamap(rowindex,columnName);
+//                useMobileAppToCompletePayment(accountBban,amount,currency);
+//                String xPath = "//*[contains(text(),'" + notifMessage + "')]";
+//                By el = By.xpath(xPath);
+//                boolean notifExists = ActionApiHelpers.isElementDisplayedCustom(el,10,500);
+//                //Assert.assertTrue(notifExists);
+//            } else {
+//                System.out.println("This method was not needed.");
+//            }
+        String accountBban = DataManager.getDataFromHashDatamap(rowindex,columnName);
+        useMobileAppToCompletePayment(accountBban,amount,currency);
+        String xPath = "//*[contains(text(),'" + notifMessage + "')]";
+        By el = By.xpath(xPath);
+        boolean notifExists = ActionApiHelpers.isElementDisplayedCustom(el,10,500);
     }
 
     public void tryToAssertThatPaymentIsCompleteAndSendCommandToOTPMethod(String className) throws Throwable {

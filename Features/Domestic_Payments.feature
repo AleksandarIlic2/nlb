@@ -464,7 +464,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Confirm"
     And Assert element by contains text "Back"
     And Click on element by containing text "Confirm"
-    And Try to assert that payment is "Success" and send command to Authorize method
+#    And Try to assert that payment is "Success" and send command to Authorize method
     And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "3.00" and currency "RSD" with message "Success"
     And Assert element by contains text "Success"
     And Wait for element by contains text "Domestic payment"
@@ -672,6 +672,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
     And Click on element by containing text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "1.00" and currency "RSD" with message "Success"
     And Assert element by contains text "Success"
 
     And Wait for element by contains text "Domestic payment"
@@ -679,7 +680,6 @@ Feature: Domestic_Payments
     And Wait for "1" seconds
     And Refresh page
     And Wait for first past payment
-    And Wait for "10" seconds
 
     And Assert first past or upcoming payment has purpose under key "keyPurpose"
     And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
@@ -786,6 +786,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
     And Click on element by containing text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "6.00" and currency "RSD" with message "Success"
     And Assert element by contains text "Success"
 
     And Wait for element by contains text "Domestic payment"
@@ -813,8 +814,11 @@ Feature: Domestic_Payments
 #    And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Pending"
     And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+    And Wait for "60" seconds
 
     Then Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Refresh page
     And Wait for first product to load
     And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
     And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
@@ -1056,10 +1060,9 @@ Feature: Domestic_Payments
     And Assert element by contains text "Back"
     And Click on element by containing text "Confirm"
 
-      ### PAYMENT REVIEW UI ###
     And Wait for element by contains text "Payment amount"
     And Assert payment amount under key is "keyPaymentAmount" is displayed
-    And Assert element with text "Fee" with following sibling has text "0,00 RSD"
+    And Assert element with text "Fee" with following sibling has text "15,00 RSD"
     And Assert element by contains text "Debtor"
     And Assert element by contains text "Recipient"
     And Assert element by contains text "Payment details"
@@ -1082,6 +1085,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
     And Click on element by containing text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "2.00" and currency "RSD" with message "Success"
     And Assert element by contains text "Success"
 
     And Wait for element by contains text "Domestic payment"
@@ -1111,7 +1115,11 @@ Feature: Domestic_Payments
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Pending"
-
+    And Wait for "45" seconds
+    And Refresh page
+    And Wait for "5" seconds
+    And Wait for first past payment
+    And Assert first past or upcoming payment has purpose from key "keyPurpose"
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -1235,10 +1243,9 @@ Feature: Domestic_Payments
     And Assert element by contains text "Back"
     And Click on element by containing text "Confirm"
 
-      ### PAYMENT REVIEW UI ###
     And Wait for element by contains text "Payment amount"
     And Assert payment amount under key is "keyPaymentAmount" is displayed
-    And Assert element with text "Fee" with following sibling has text "0,00 RSD"
+    And Assert element with text "Fee" with following sibling has text "15,00 RSD"
     And Assert element by contains text "Debtor"
     And Assert element by contains text "Recipient"
     And Assert element by contains text "Payment details"
@@ -1261,6 +1268,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
     And Click on element by containing text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "5.00" and currency "RSD" with message "Success"
     And Assert element by contains text "Success"
 
     And Wait for element by contains text "Domestic payment"
@@ -1289,7 +1297,11 @@ Feature: Domestic_Payments
     #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Pending"
-
+    And Wait for "45" seconds
+    And Refresh page
+    And Wait for "5" seconds
+    And Wait for first past payment
+    And Assert first past or upcoming payment has purpose from key "keyPurpose"
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -1613,7 +1625,7 @@ Feature: Domestic_Payments
     ### PAYMENT REVIEW UI ###
     And Wait for element by contains text "Payment amount"
     And Assert payment amount under key is "keyPaymentAmount" is displayed
-    And Assert element with text "Fee" with following sibling has text "0,00 RSD"
+    And Assert element with text "Fee" with following sibling has text "15,00 RSD"
     And Assert element by contains text "Debtor"
     And Assert element by contains text "Recipient"
     And Assert element by contains text "Payment details"
@@ -1635,6 +1647,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
     And Click on element by containing text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "2.00" and currency "RSD" with message "Success"
     And Assert element by contains text "Success"
 
     And Wait for element by contains text "Domestic payment"
@@ -1662,7 +1675,11 @@ Feature: Domestic_Payments
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Pending"
-
+    And Wait for "45" seconds
+    And Refresh page
+    And Wait for "5" seconds
+    And Wait for first past payment
+    And Assert first past or upcoming payment has purpose from key "keyPurpose"
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -1909,7 +1926,6 @@ Feature: Domestic_Payments
     And Assert field "Fee" in payment confirmation contains text "0,00"
     And Assert field "Fee" in payment confirmation contains text "RSD"
 
-
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
     And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "1" is correct
@@ -1970,10 +1986,9 @@ Feature: Domestic_Payments
     And Assert element by contains text "Back"
     And Click on element by containing text "Confirm"
 
-      ### PAYMENT REVIEW UI ###
     And Wait for element by contains text "Payment amount"
     And Assert payment amount under key is "keyPaymentAmount" is displayed
-    And Assert element with text "Fee" with following sibling has text "0,00 RSD"
+    And Assert element with text "Fee" with following sibling has text "15,00 RSD"
     And Assert element by contains text "Debtor"
     And Assert element by contains text "Recipient"
     And Assert element by contains text "Payment details"
@@ -1995,6 +2010,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
     And Click on element by containing text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "2.00" and currency "RSD" with message "Success"
     And Assert element by contains text "Success"
 
     And Wait for element by contains text "Domestic payment"
@@ -2022,7 +2038,11 @@ Feature: Domestic_Payments
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Pending"
-
+    And Wait for "45" seconds
+    And Refresh page
+    And Wait for "5" seconds
+    And Wait for first past payment
+    And Assert first past or upcoming payment has purpose from key "keyPurpose"
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
     And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct

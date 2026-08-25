@@ -132,9 +132,13 @@ Feature: Currency_Exchange
     And Assert element by normalized text "Cancel"
     And Assert element by normalized text "Back"
     And Click on element by tag "button" and descendant tag "div" contains text "Exchange"
-    And Try to assert that payment is "Success" and send command to Authorize method
-    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount from key "keyReducedAmount" and currency "RSD" with message "Success"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount from key "keyReducedAmount" and currency "EUR" with message "Success"
     And Assert element by contains text "Currency exchange done"
+    And Click on account selector with index "1"
+    And Click on element from Excel "<rowindex>" contains text columnName "current_account_1_bban"
+    And Wait for first past payment
+    And Assert first past payment has amount from key "keyPaymentAmount" in currency "EUR"
+    And Assert latest past payment has purpose "Kupo-prodaja deviza"
     And Click on tab "Payments" from main sidebar
     And Wait for first past payment
     And Refresh page
@@ -218,7 +222,7 @@ Feature: Currency_Exchange
     And Click on account selector with index "2"
     And Click on element from Excel "<rowindex>" contains text columnName "current_account_1_bban"
     And Assert today date in currency exchange
-    And Enter text "1" in "Payment amount" input field and remember under key "keyPaymentAmount"
+    And Enter text "3" in "Payment amount" input field and remember under key "keyPaymentAmount"
     And Click on normalized text "Exchange"
 
     And Wait for element by tag "button" and normalized text "Cancel"
@@ -236,9 +240,13 @@ Feature: Currency_Exchange
     And Assert element by normalized text "Cancel"
     And Assert element by normalized text "Back"
     And Click on element by tag "button" and descendant tag "div" contains text "Exchange"
-    And Try to assert that payment is "Success" and send command to Authorize method
-    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount from key "keyReducedAmount" and currency "RSD" with message "Success"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_2_iban" amount from key "keyReducedAmount" and currency "RSD" with message "Success"
     And Assert element by contains text "Currency exchange done"
+    And Click on account selector with index "1"
+    And Click on element from Excel "<rowindex>" contains text columnName "current_account_2_iban"
+    And Wait for first past payment
+    And Assert first past payment has amount from key "keyPaymentAmount" in currency "EUR"
+    And Assert latest past payment has purpose "Kupo-prodaja deviza"
     And Click on tab "Payments" from main sidebar
     And Wait for first past payment
     And Click on tab "My Products" from main sidebar

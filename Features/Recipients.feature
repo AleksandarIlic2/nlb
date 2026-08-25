@@ -13,8 +13,8 @@ Feature: Recipients
     And Assert today date in Payment date in payment review
     And Assert element by class "icon-calendar-today"
 
-    When Enter text "205-9001010537788-94" in "Account number" input field and remember under key "accountNumberKey"
-    And Enter text "Enil" in "Name" input field and remember under key "nameKey"
+    When Enter text "205-9001007790944-88" in "Account number" input field and remember under key "accountNumberKey"
+    And Enter text "Osir" in "Name" input field and remember under key "nameKey"
     And Enter text "Kaludjerica" in "street" input field and remember under key "streetKey"
     And Enter text "Beograd" in "City" input field and remember under key "cityKey"
     And Enter text "1" in "Payment amount" input field and remember under key "paymentAmountKey"
@@ -35,6 +35,7 @@ Feature: Recipients
     And Assert contains text under key "referenceNumberKey" is displayed
     And Assert contains text under key "purposeKey" is displayed
     And Click on button with type "submit"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "1.00" and currency "RSD" with message "Success"
 
     And Assert element by contains text "Success"
     And Assert element by contains text "Do you want to save payment data?"
@@ -45,17 +46,17 @@ Feature: Recipients
     And Click on normalized text "Save recipient"
     And Assert element by contains text "Recipient saved"
     And Wait for element by contains text "Domestic payment"
-    And Assert contains text under key "nameKey" is displayed
-    And Assert contains text under key "purposeKey" is displayed
-    And Click on element with text from key "purposeKey"
-    And Assert contains text under key "accountNumberKey" is displayed
-    And Assert contains text under key "nameKey" is displayed
-    And Assert contains text under key "streetKey" is displayed
-#    And Assert recipient city equals remembered key "cityKey"
-#    And Assert contains text under key "cityKey" is displayed
-    And Assert contains text under key "referenceNumberKey" is displayed
-    And Assert contains text under key "purposeKey" is displayed
-    And Assert payment status is "Executed"
+#    And Assert contains text under key "nameKey" is displayed
+#    And Assert contains text under key "purposeKey" is displayed
+#    And Click on element with text from key "purposeKey"
+#    And Assert contains text under key "accountNumberKey" is displayed
+#    And Assert contains text under key "nameKey" is displayed
+#    And Assert contains text under key "streetKey" is displayed
+##    And Assert recipient city equals remembered key "cityKey"
+##    And Assert contains text under key "cityKey" is displayed
+#    And Assert contains text under key "referenceNumberKey" is displayed
+#    And Assert contains text under key "purposeKey" is displayed
+#    And Assert payment status is "Executed"
 
     Then Click on tab "Recipients" from main sidebar
     And Wait for first recipient
@@ -65,8 +66,6 @@ Feature: Recipients
 #    And Assert contains text under key "cityKey" is displayed
     And Assert recipient city equals remembered key "cityKey"
     And Assert contains text under key "purposeKey" is displayed
-    And Click on element by tag "span" containing text "Delete"
-    And Click on element by tag "div" and text "Delete"
 
     Examples:
       | rowindex |

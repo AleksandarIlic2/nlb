@@ -1002,9 +1002,8 @@ Feature: Own_Account_Transfer
       |        4 |
 
 
-    #Ovo je varijacija sa Tekuceg racuna. Treba da se odradi sa Aviste na Loan kad budem imao Aviste
-  @Payments_Own_Account_Transfer_To_Loan_[WEB]
-  Scenario Outline: Payments_Own_Account_Transfer_To_Loan_[WEB]
+  @Payments_Own_Account_Transfer_To_Loan_[WEB]-From_Current_Domestic_Account
+  Scenario Outline: Payments_Own_Account_Transfer_To_Loan_[WEB]-From_Current_Domestic_Account
 
     Given Open Login page
     And Change language to English
@@ -1064,6 +1063,7 @@ Feature: Own_Account_Transfer
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
     And Click on normalized text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "3.00" and currency "RSD" with message "Success"
     And Wait for element by text "Success"
     And Assert element by contains text "Success"
 
@@ -1092,9 +1092,119 @@ Feature: Own_Account_Transfer
 
     Then Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "3" is correct
     And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "3" is correct
-    And Compare if available amount balance from key "key_IT_001_Loan_Balance" in my products screen for account from Excel "<rowindex>" columnName "loan_account_1_number" and added amount "3" is correct
+    And Compare if available amount balance from key "key_IT_001_Loan_Balance" in my products screen for account from Excel "<rowindex>" columnName "loan_account_1_number" and added amount "0" is correct
 
     And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Wait for first transaction in Product details
+    And Assert that transaction date for first transaction in product screen is today date
+    And Assert that amount for first transaction in product screen is from key "keyPaymentAmount"
+    And Assert that purpose for first transaction in product screen is "INTERNAL TRANSFER"
+
+    And Assert that first transaction is "outgoing"
+    And Click on down arrow on first transaction do display details
+    And Assert element by text "Account number" has following sibling "dd" with text from Excel "<rowindex>" columnName "loan_account_1_number"
+    And Assert element by text "Amount" has following sibling "dd" with regex "\d+,\d{2}\s*RSD"
+    And Assert amount in transaction details has value under key "keyPaymentAmount" in currency "RSD"
+    And Assert element by text "Products_Common_TransactionDetails_BookingDate" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
+    And Assert element by text "Value date" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
+    And Assert element by text "Transaction ID" has following sibling "dd" with regex "^.{14}$"
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+
+  @Payments_Own_Account_Transfer_To_Loan_[WEB]-From_Savings_Account
+  Scenario Outline: Payments_Own_Account_Transfer_To_Loan_[WEB]-From_Savings_Account
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+    And Click on element by aria label "User profile"
+    And Remember full name of user from dashboard under key "keyDebtorFullName"
+
+    When Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Remember current balance for account from Excel "<rowindex>" columnName "savings_account_1_number" under key "key_IT_001_Debtor_Current_Balance"
+    And Remember available balance for account from Excel "<rowindex>" columnName "loan_account_1_number" under key "key_IT_001_Loan_Balance"
+
+    And Click on tab "Payments" from main sidebar
+    And Wait for element by text "Domestic payment"
+    And Click on normalized text "Internal transfer"
+    And Wait for element by contains text "Debtor"
+
+    And Click on account selector with index "1"
+    And Click on element from Excel "<rowindex>" contains text columnName "savings_account_1_number"
+    And Click on account selector with index "2"
+    And Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
+
+    And Enter text "3" in "Payment amount" input field and remember under key "keyPaymentAmount"
+    And Assert element by tag "span" containing text "RSD" with index "2"
+    And Assert element with attribute "src" contains value "RSD" is displayed
+    And Assert element by text "Purpose" has following sibling "div" that contains text "INTERNAL TRANSFER"
+    And Assert payment date is todays date and in valid date format in Own account transfer
+
+    And Assert element by contains text "Next"
+    And Assert element by contains text "Back"
+    And Assert element by contains text "Cancel"
+    And Click on normalized text "Next"
+
+    And Wait for element by contains text "Fee"
+    And Assert payment amount under key is "keyPaymentAmount" is displayed
+    And Assert element by text "Fee" has following sibling "span" that contains text "0,00 RSD"
+
+    And Assert element by normalized text "Debtor"
+    And Assert element by text "Name" and index "1" has first following sibling that contains text from key "keyDebtorFullName"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_address_for_payment_review"
+    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_city_short"
+    And Assert element by text "Account number" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "savings_account_1_number"
+
+    And Assert element by normalized text "Recipient"
+    And Assert element by text "Name" and index "2" has first following sibling that contains text from key "keyDebtorFullName"
+    #And Assert element by text "Address" and index "2" has first following sibling that contains text from Excel "<rowindex>" columnName "user_address_for_payment_review"
+    #And Assert element by text "Address" and index "2" has first following sibling that contains text from Excel "<rowindex>" columnName "user_city_short"
+    And Assert element by text "Account number" and index "2" has first following sibling that contains text from Excel "<rowindex>" columnName "loan_account_1_number"
+
+    And Assert element by normalized text "Payment details"
+    And Assert element by text "Purpose" has following sibling "dd" that contains text "INTERNAL TRANSFER"
+    And Assert value date is todays date and in valid date format in Payment review
+
+    And Assert element by contains text "Confirm"
+    And Assert element by contains text "Back"
+    And Assert element by contains text "Cancel"
+    And Click on normalized text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "savings_account_1_number" amount "3.00" and currency "RSD" with message "Success"
+    And Wait for element by text "Success"
+    And Assert element by contains text "Success"
+
+    And Wait for "2" seconds
+    And Refresh page
+    And Wait for first past payment
+
+    And Assert latest past payment has purpose "INTERNAL TRANSFER"
+    And Assert last payment in past payments has value from remembered key "keyPaymentAmount"
+    And Click on first Executed past payment
+    And Assert label "Recipient" in payment confirmation contains value under remembered key "keyDebtorFullName"
+    And Assert label "Recipient account number" in payment confirmation contains value from excel "<rowindex>" columnName "loan_account_1_number"
+    And Assert field "Purpose code" in payment confirmation has text "N"
+    And Assert field "Purpose" in payment confirmation has text "INTERNAL TRANSFER"
+    And Assert field "Payment date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4},\s\d{2}:\d{2}$"
+
+    And Assert field "Execution date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert label "Name" in payment confirmation contains value under remembered key "keyDebtorFullName"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "savings_account_1_number"
+    And Assert field "Fee" in payment confirmation contains text "0,00"
+    And Assert field "Fee" in payment confirmation contains text "RSD"
+    And Assert field "Payment status" in payment confirmation has text "Executed"
+
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+
+    And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "savings_account_1_number" and reduced amount "3" is correct
+    And Compare if available amount balance from key "key_IT_001_Loan_Balance" in my products screen for account from Excel "<rowindex>" columnName "loan_account_1_number" and added amount "0" is correct
+
+    And Click on element by containing text from Excel "<rowindex>" columnName "savings_account_1_number"
     And Wait for first transaction in Product details
     And Assert that transaction date for first transaction in product screen is today date
     And Assert that amount for first transaction in product screen is from key "keyPaymentAmount"
@@ -1128,8 +1238,8 @@ Feature: Own_Account_Transfer
     And Wait for first product to load
     And Remember available balance for account from Excel "<rowindex>" columnName "current_account_2_iban" under key "key_IT_001_Debtor_Available_Balance"
     And Remember current balance for account from Excel "<rowindex>" columnName "current_account_2_iban" under key "key_IT_001_Debtor_Current_Balance"
-    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_3_iban" under key "key_IT_001_Recipient_Available_Balance"
-    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_3_iban" under key "key_IT_001_Recipient_Current_Balance"
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_iban" under key "key_IT_001_Recipient_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_iban" under key "key_IT_001_Recipient_Current_Balance"
 
     And Click on tab "Payments" from main sidebar
     And Wait for element by text "Domestic payment"
@@ -1139,7 +1249,7 @@ Feature: Own_Account_Transfer
     And Click on account selector with index "1"
     And Click on element from Excel "<rowindex>" contains text columnName "current_account_2_iban"
     And Click on account selector with index "2"
-    And Click on element from Excel "<rowindex>" contains text columnName "current_account_3_iban"
+    And Click on element from Excel "<rowindex>" contains text columnName "current_account_1_iban"
 
     And Enter text "2" in "Payment amount" input field and remember under key "keyPaymentAmount"
     And Assert element by tag "span" containing text "EUR" with index "2"
@@ -1168,7 +1278,7 @@ Feature: Own_Account_Transfer
     And Assert element by text "Name" and index "2" has first following sibling that contains text from key "keyDebtorFullName"
     #And Assert element by text "Address" and index "2" has first following sibling that contains text from Excel "<rowindex>" columnName "user_address_for_payment_review"
     #And Assert element by text "Address" and index "2" has first following sibling that contains text from Excel "<rowindex>" columnName "user_city_short"
-    And Assert element by text "Account number" and index "2" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_3_iban"
+    And Assert element by text "Account number" and index "2" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_1_iban"
 
     And Assert element by normalized text "Payment details"
     And Assert element by text "Purpose" has following sibling "dd" that contains text "INTERNAL TRANSFER"
@@ -1178,6 +1288,7 @@ Feature: Own_Account_Transfer
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
     And Click on normalized text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_2_iban" amount from key "keyReducedAmount" and currency "EUR" with message "Success"
     And Wait for element by text "Success"
     And Assert element by contains text "Success"
     And Click on account selector with index "1"
@@ -1191,7 +1302,7 @@ Feature: Own_Account_Transfer
     And Assert last payment in past payments has value from remembered key "keyPaymentAmount"
     And Click on first Executed past payment
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyDebtorFullName"
-#    And Assert label "Recipient account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_3_iban"
+#    And Assert label "Recipient account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_iban"
     And Assert field "Purpose code" in payment confirmation has text "N"
     And Assert field "Purpose" in payment confirmation has text "INTERNAL TRANSFER"
     And Assert field "Payment date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4},\s\d{2}:\d{2}$"
@@ -1208,8 +1319,8 @@ Feature: Own_Account_Transfer
 
     Then Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_iban" and reduced amount "2" is correct
     And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_iban" and reduced amount "2" is correct
-    And Compare if current amount balance from key "key_IT_001_Recipient_Current_Balance" in my products screen for account from Exlce "<rowindex>" columnName "current_account_3_iban" and added amount "2" is correct
-    And Compare if available amount balance from key "key_IT_001_Recipient_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_3_iban" and added amount "2" is correct
+    And Compare if current amount balance from key "key_IT_001_Recipient_Current_Balance" in my products screen for account from Exlce "<rowindex>" columnName "current_account_1_iban" and added amount "2" is correct
+    And Compare if available amount balance from key "key_IT_001_Recipient_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_iban" and added amount "2" is correct
 
     And Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
     And Wait for first transaction in Product details
@@ -1229,7 +1340,7 @@ Feature: Own_Account_Transfer
     And Click on tab "My Products" from main sidebar
     And Wait for first product to load
 
-    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_3_iban"
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for first transaction in Product details
     And Assert that transaction date for first transaction in product screen is today date
     And Assert that amount for first transaction in product screen is from key "keyPaymentAmount"

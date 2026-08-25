@@ -13889,6 +13889,13 @@ public class Steps {
 
 
 
+    @And("Assert first past or upcoming payment has purpose {string}")
+    public void assertFirstPastOrUpcomingPaymentHasPurpose(String text) throws Throwable {
+        String xPath = "//h5";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        assertTrue(element.getText().contains(text));
+    }
+
     private static class AccountRow {
         String accountNumber;
         String currency;
