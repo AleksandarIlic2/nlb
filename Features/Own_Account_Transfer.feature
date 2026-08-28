@@ -802,6 +802,109 @@ Feature: Own_Account_Transfer
       | rowindex |
       |        5 |
 
+    # TODO test nije pustan , i nije dodat u execute fajl, takodje test treba prilagoditi za TST/UAT realnog korisnika
+    # TODO i uraditi po upustsvima sa teamsa-a
+  @Payments-Own_Account_Transfer-From_Current_Account_RSD_To_Current_Authorized_Account_RSD_[WEB]
+  Scenario Outline: Payments-Own_Account_Transfer-From_Current_Account_RSD_To_Current_Account_RSD_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "IT_001_Debtor_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "auth_personal_account_number" under key "IT_001_Creditor_Balance"
+
+    When Click on tab "Payments" from main sidebar
+    And Assert element by contains text "Pay or transfer"
+    And Assert account selector is displayed
+    And Assert element by tag "div" containing text "Domestic payment"
+    And Assert element by tag "div" containing text "Internal transfer"
+#    And Assert element by tag "div" containing text "Foreign payment"
+    And Assert element by tag "div" containing text "Currency exchange"
+    And Assert element by tag "a" containing text "Upcoming payments"
+    And Assert element by tag "a" containing text "Past payments"
+
+    And Click on element by text "Internal transfer"
+    And Wait for element by contains text "Debtor"
+    And Assert element by contains text "Internal transfer"
+    And Assert element by text " Check data and choose “Next” "
+
+    And Assert element by text " Debtor "
+    And Assert element by xPath "//*[contains(@src, 'CurrentAccount-Icon')]" and index 0 is displayed
+#    And Assert element by contains class "accountItemDescription" have and index 0 have value from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert element by tag "span" containing text "RSD" with index "1"
+    And Click on account selector with index "1"
+    And Click on element from Excel "<rowindex>" contains text columnName "current_account_1_bban"
+
+    And Assert element by contains text "Recipient"
+    And Assert element by tag "nlb-account-selector" index "1"
+    And Assert element by tag "span" containing text "RSD" with index "2"
+    And Assert element by contains text "Payment details"
+    And Assert element by text " In order to continue all input fields must be filled. "
+    And Click on account selector with index "2"
+    And Click on element from Excel "<rowindex>" contains text columnName "auth_personal_account_number"
+
+    And Assert element by text "Payment amount "
+    And Assert element by contains id "amount-input" is displayed
+    And Assert element by contains class "auto body tw-text-gray-100" containing text "RSD"
+    #And Assert element by tag "input" contains aria label "RSD"
+    And Enter text "5" in field by contains id "amount-input"
+    And Assert element by text "Purpose"
+    And Assert element by text "INTERNAL TRANSFER"
+    And Assert element by text "Payment date"
+    And Assert payment date is todays date and in valid date format in Own account transfer
+    And Assert element by text "Cancel"
+    And Assert element by text "Back"
+    And Assert element by text " Next "
+
+#    And Click on element by text " Next "
+    And Click on button with type "submit"
+    And Wait for element by text "Payment amount"
+    And Assert Payment Amount in payment review is "5,00 RSD"
+    And Assert "Fee" in payment review is "0,00 RSD"
+    And Assert element by text "Debtor"
+    And Assert element by contains text "Recipient"
+#    And Assert element by text from excel "<rowindex>" columnName "account_details_owner2" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "auth_personal_account_number" is displayed
+    And Assert element by contains text "Payment details"
+    And Assert element by text "Purpose" has following sibling "dd" that contains text "INTERNAL TRANSFER"
+    And Assert element by text "Value date"
+    And Assert element by text "Value date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
+#    And Assert element by text "Value date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert element by text "Cancel"
+    And Assert element by text "Back"
+    And Click on button with descendant tag "div" contains text "Confirm"
+
+    #TODO mobilna konfirmacija ubaciti
+    And Assert element by text "Success"
+    And Assert element by contains class "nlb-icon icon-close"
+    And Assert element by tag "div" containing text "Domestic payment"
+    And Wait for "5" seconds
+
+    Then Click on tab "My Products" from main sidebar
+    And Compare if current amount balance from key "IT_001_Debtor_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "5" is correct
+    And Compare if current amount balance from key "IT_001_Creditor_Balance" in my products screen for account from Exlce "<rowindex>" columnName "auth_personal_account_number" and added amount "5" is correct
+    And Click on tab "Payments" from main sidebar
+    And Assert element by tag "div" containing text "Payments"
+    And Click on element by containing text "Past payments"
+    And Assert payments in past payments have loaded
+    And Click on element by text "INTERNAL TRANSFER" index "2"
+    And Assert that payment under name "INTERNAL TRANSFER" from txt file has today date
+    And Wait for "2" seconds
+#    And Assert that transaction amount in payment under key "INTERNAL TRANSFER" from txt file is "5,00"
+    And Assert that transaction amount in payment under name "INTERNAL TRANSFER" from txt file is "5,00"
+    And Assert that transaction currency in payment under name "INTERNAL TRANSFER" from text file is "RSD"
+    And Assert that transaction "Account number" in opened past payment is from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert that transaction "Recipient account number" in opened past payment is from Excel "<rowindex>" columnName "current_account_3_bban"
+    And Assert that transaction "Name" in opened past payment contains text from Excel "<rowindex>" columnName "account_details_owner"
+    And Assert that transaction "Payment status" in opened past payment is "Executed"
+
+    Examples:
+      | rowindex |
+      |        5 |
+
 
   @Payments-Own_Account_Transfer-To_Card_[WEB]-From_Current_Domestic_Account
   Scenario Outline: Payments-Own_Account_Transfer-To_Card_[WEB]-From_Current_Domestic_Account

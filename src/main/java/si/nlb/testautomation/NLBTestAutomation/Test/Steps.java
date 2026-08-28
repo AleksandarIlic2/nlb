@@ -4548,7 +4548,9 @@ public class Steps {
     public void rememberCurrentAndAvailableBalancesForAccountFromExcelColumnNameUnderKeysAndAndAssertCurrency(String rowindex, String columnName, String curr, String avai, String currency) throws Throwable {
         String iban = DataManager.getDataFromHashDatamap(rowindex, columnName);
         //current balance
-        String xPath1 = "//div[contains(text(),'" + iban + "')]//ancestor::div[3]/div[2]//nlb-heading-text[2]//nlb-amount//span[1]";
+        //String xPath1 = "//div[contains(text(),'" + iban + "')]//ancestor::div[3]/div[2]//nlb-heading-text[2]//nlb-amount//span[1]";
+        String xPath1 = "//div[contains(text(),'" + iban + "')]//ancestor::div[3]/div[2]//nlb-heading-text[4]//nlb-amount//span[1]";
+
         WebElement element1 = SelectByXpath.CreateElementByXpath(xPath1);
         DataManager.userObject.put(curr, element1.getAttribute("innerText"));
         //current balance currency
@@ -4556,7 +4558,8 @@ public class Steps {
         WebElement element2 = SelectByXpath.CreateElementByXpath(xPath2);
         assertEquals(currency, element2.getAttribute("innerText"));
         //available balance
-        String xPath3 = "//div[contains(text(),'" + iban + "')]//ancestor::div[3]/div[2]//nlb-heading-text[4]//nlb-amount//span[1]";
+        //String xPath3 = "//div[contains(text(),'" + iban + "')]//ancestor::div[3]/div[2]//nlb-heading-text[4]//nlb-amount//span[1]";
+        String xPath3 = "//div[contains(text(),'" + iban + "')]//ancestor::div[3]/div[2]//nlb-heading-text[2]//nlb-amount//span[1]";
         WebElement element3 = SelectByXpath.CreateElementByXpath(xPath3);
         DataManager.userObject.put(avai, element3.getAttribute("innerText"));
         //current balance currency
@@ -8327,11 +8330,12 @@ public class Steps {
         String currentBalance = (String) DataManager.userObject.get(key1);
         String availableBalance = (String) DataManager.userObject.get(key2);
         String xPathForCurrentBalance = "//swiper-slide[contains(@class,'swiper-slide-active')]/nlb-dashboard-product-card//*[contains(text(),'Current balance')]/following-sibling::*//*[contains(text(),'" + currentBalance + "')]";
+        System.out.println(xPathForCurrentBalance);
         WebElement element = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
         assertTrue(element.isDisplayed());
 
-        String xPathForAvailableBalance = "//swiper-slide[contains(@class,'swiper-slide-active')]/nlb-dashboard-product-card//*[contains(text(),'Current balance')]/following-sibling::*//*[contains(text(),'" + availableBalance + "')]";
-        WebElement element2 = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
+        String xPathForAvailableBalance = "//swiper-slide[contains(@class,'swiper-slide-active')]/nlb-dashboard-product-card//*[contains(text(),'Available balance')]/following-sibling::*//*[contains(text(),'" + availableBalance + "')]";
+        WebElement element2 = SelectByXpath.CreateElementByXpath(xPathForAvailableBalance);
         assertTrue(element2.isDisplayed());
     }
 
@@ -8463,6 +8467,8 @@ public class Steps {
             purposes.add(purposeElements.get(i).getAttribute("innerText"));
         }
         List<String> expectedPurpose = (List<String>) DataManager.userObject.get(key);
+        System.out.println("EXPECTED PURPOSES "+ expectedPurpose);
+        System.out.println("ACTUAL "+ purposes);
         assertEquals(expectedPurpose, purposes);
     }
 
@@ -13896,6 +13902,7 @@ public class Steps {
         assertTrue(element.getText().contains(text));
     }
 
+
     private static class AccountRow {
         String accountNumber;
         String currency;
@@ -14569,12 +14576,13 @@ public class Steps {
         List<String> listFromUI = SelectByXpath.CreateElementsByXpath(xPath)
                 .stream()
                 .map(el->el.getText().trim())
+                .filter(text -> text.matches("^[A-Za-z]{3,}.*"))
                 .collect(Collectors.toList());
         Random random = new Random();
         String randomElement = listFromUI.get(random.nextInt(listFromUI.size()));
-        String prefix = randomElement.length() <= 2 ? randomElement : randomElement.substring(0, 2);
+        String prefix = randomElement.length() <= 2 ? randomElement : randomElement.substring(0, 3);
         System.out.println("SAVING PREFIX FOR NAME OF TEMPLATE: "+prefix);
-        DataManager.userObject.put(key,prefix);
+        DataManager.userObject.put(key,prefix.toLowerCase());
     }
 
     @And("Remember part of random template account number and remember it under key {string}")
@@ -14606,7 +14614,7 @@ public class Steps {
         String xpath = "//*[contains(@" + attr + ", '" + value + "')]";
         List<String> listFromUI = SelectByXpath.CreateElementsByXpath(xpath)
                 .stream()
-                .map(el->el.getText().trim())
+                .map(el->el.getText().trim().toLowerCase())
                 .collect(Collectors.toList());
         System.out.println("LIST FROM UI "+listFromUI);
         if (listFromUI.isEmpty()) {
@@ -14614,7 +14622,7 @@ public class Steps {
         }
         String prefix = DataManager.userObject.get(key).toString();
         for(String textFromTemplate: listFromUI){
-            Assert.assertTrue(textFromTemplate.contains(prefix));
+            Assert.assertTrue(textFromTemplate.toLowerCase().contains(prefix.toLowerCase()));
         }
     }
 
@@ -15286,6 +15294,31 @@ public class Steps {
                     YearMonth.from(date), previousMonth);
         }
     }
+
+    @And("Assert template amount indicator in templates displays value from key {string}")
+    public void assertTemplateAmountIndicatorDisplaysValueFromKey(String key) throws Throwable {
+        String expectedValue = DataManager.userObject.get(key).toString();
+        String xpath = "//*[@class = 'body tw-text-gray-400']";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualText = element.getText().trim();
+        System.out.println("full text UI "+ actualText);
+        System.out.println("text from key "+ expectedValue);
+        String actualValue = actualText.replaceAll("[^0-9]", "");
+        Assert.assertEquals(actualValue, expectedValue);
+    }
+
+    @And("Assert template amount indicator in domestic payments displays value from key {string}")
+    public void assertTemplateAmountIndicatorInDomesticPaymentsDisplaysValueFromKey(String key) throws Throwable {
+        String expectedValue = DataManager.userObject.get(key).toString();
+        String xpath = "//*[@class='tw-text-gray-500 tw-text-sm ng-star-inserted']";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualText = element.getText().trim();
+        System.out.println("full text UI "+ actualText);
+        System.out.println("text from key "+ expectedValue);
+        String actualValue = actualText.replaceAll("[^0-9]", "");
+        Assert.assertEquals(actualValue, expectedValue);
+    }
+
 
 
 

@@ -25,6 +25,7 @@ Feature: Templates
     And Assert list of elements text with attribute "class" and contains value "callout bold" are sorted by alphabetical order
     And Assert list of elements text with attribute "class" and contains value "medium tw-text-gray" are sorted by alphabetical order
 
+    And Assert template amount indicator in templates displays value from key "keyTemplatesAmount"
     And Remember prefix of random template name and remember it under key "keySearchNamePrefix"
     And Remember part of random template account number and remember it under key "keyAccountNumberPrefix"
     And Enter text "A" in field by contains id "search-input"
@@ -32,17 +33,18 @@ Feature: Templates
     And Assert number of elements with attribute "class" and contains value "medium tw-text-gray" is from key "keyTemplatesAmount"
     And Enter text from key "keySearchNamePrefix" in field by contains id "search-input"
     And Wait for "1" seconds
+    And Wait for element by tag "nlb-template-item"
     And Assert elements with attribute "class" and contains value "medium tw-text-gray" contains text from key "keySearchNamePrefix"
     And Click on normalized text "Cancel"
     And Wait for element by tag "section"
     And Enter text from key "keyAccountNumberPrefix" in field by contains id "search-input"
     And Wait for "1" seconds
+    And Wait for element by tag "nlb-template-item"
     And Assert elements with attribute "class" and contains value "line-clamp-1 ellipsis" contains text from key "keyAccountNumberPrefix"
     And Click on normalized text "Cancel"
     And Wait for element by tag "section"
     And Enter text "zzzyyyxxzx" in field by contains id "search-input"
-    And Wait for element by contains text "NoResultsAdjustFilter"
-    And Assert element by contains text "NoResultsAdjustFilter"
+    And Wait for element by contains text "No templates found"
     And Click on normalized text "Cancel"
     And Wait for element by tag "section"
     And Click on element by containing class "icon-chevron-down" with index "1"
@@ -63,6 +65,7 @@ Feature: Templates
     And Wait for element by contains text "Select from list"
     And Click on normalized text "Select from list"
     And Wait for element by tag "nlb-search-box"
+    And Assert template amount indicator in domestic payments displays value from key "keyTemplatesAmount"
     And Assert elements text with attribute "class" and contains value "clamp-1 ellipsis" with list from key "keyRecipientAccounts"
 
     Examples:
