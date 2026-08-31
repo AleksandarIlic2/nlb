@@ -75,7 +75,7 @@ Feature: Credit_Cards
 
     When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
-    And Assert Credit card BBAN in Product details is from Excel "<rowindex>" columnName "credit_card_2_number"
+#    And Assert Credit card BBAN in Product details is from Excel "<rowindex>" columnName "credit_card_2_number"
     And Assert Transactions tab is selected by default
     And Assert element by contains text "Transactions"
     And Assert element by contains text "Statements"

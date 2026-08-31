@@ -182,7 +182,6 @@ Feature: Currency_Exchange
     And Assert that purpose for first transaction in product screen is for currency exchange
     And Assert that currency for first transaction in product screen is "EUR"
     And Assert that amount for first transaction in product screen is from key "keyPaymentAmount"
-    And Assert element by text "Amount" has following sibling "dd" that contains text "EUR"
     And Assert element by text "Amount" has following sibling "dd" with regex "\d{1,3},\d{2}\sEUR"
 #    And Assert element by text "Amount" has first following sibling that contains text from key "keyPaymentAmount"
     #And Assert element by text "Account number" has following sibling "dd" with text from Excel "<rowindex>" columnName "current_account_1_bban"

@@ -1,6 +1,7 @@
 package si.nlb.testautomation.NLBTestAutomation.Action;
 
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import si.nlb.testautomation.NLBTestAutomation.Core.Base;
 import si.nlb.testautomation.NLBTestAutomation.Data.DataManager;
 import si.nlb.testautomation.NLBTestAutomation.Helpers.Utilities;
@@ -2610,5 +2611,138 @@ public class RoutineHelper {
                         .replace(",", ".")
                         .trim()
         );
+    }
+
+    public static YearMonth getYearMonthFromSerbianDateLabel(String dateLabel) {
+        String normalizedLabel = dateLabel
+                .toLowerCase()
+                .replace(".", "")
+                .trim();
+
+        String[] parts = normalizedLabel.split("\\s+");
+
+        if (parts.length != 3) {
+            throw new IllegalArgumentException(
+                    "Element nije datum: " + dateLabel
+            );
+        }
+
+        int day = Integer.parseInt(parts[0]);
+        int month = getSerbianMonthNumber(parts[1]);
+        int year = Integer.parseInt(parts[2]);
+
+        LocalDate date = LocalDate.of(year, month, day);
+
+        return YearMonth.from(date);
+    }
+
+    private static int getSerbianMonthNumber(String month) {
+        switch (month.toLowerCase()) {
+            case "januar":
+            case "јануар":
+                return 1;
+
+            case "februar":
+            case "фебруар":
+                return 2;
+
+            case "mart":
+            case "март":
+                return 3;
+
+            case "april":
+            case "април":
+                return 4;
+
+            case "maj":
+            case "мај":
+                return 5;
+
+            case "jun":
+            case "јун":
+                return 6;
+
+            case "jul":
+            case "јул":
+                return 7;
+
+            case "avgust":
+            case "август":
+                return 8;
+
+            case "septembar":
+            case "септембар":
+                return 9;
+
+            case "oktobar":
+            case "октобар":
+                return 10;
+
+            case "novembar":
+            case "новембар":
+                return 11;
+
+            case "decembar":
+            case "децембар":
+                return 12;
+
+            default:
+                throw new IllegalArgumentException(
+                        "Nepoznat naziv meseca: " + month
+                );
+        }
+    }
+
+//    private static int getSerbianMonthNumber(String month) {
+//        switch (month.toLowerCase()) {
+//            case "januar":    return 1;
+//            case "februar":   return 2;
+//            case "mart":      return 3;
+//            case "april":     return 4;
+//            case "maj":       return 5;
+//            case "jun":       return 6;
+//            case "jul":       return 7;
+//            case "avgust":    return 8;
+//            case "septembar": return 9;
+//            case "oktobar":   return 10;
+//            case "novembar":  return 11;
+//            case "decembar":  return 12;
+//            default:
+//                throw new IllegalArgumentException(
+//                        "Nepoznat srpski naziv meseca: " + month
+//                );
+//        }
+//    }
+
+    public static YearMonth getDisplayedCalendarMonth(WebDriver driver) {
+        List<WebElement> calendarDates = driver.findElements(By.xpath("//div[@aria-label]"));
+        Map<YearMonth, Integer> displayedMonths = new HashMap<>();
+
+        for (WebElement calendarDate : calendarDates) {
+            if (!calendarDate.isDisplayed()) {
+                continue;
+            }
+
+            String ariaLabel = calendarDate.getAttribute("aria-label");
+
+            try {
+                YearMonth yearMonth =
+                        getYearMonthFromSerbianDateLabel(ariaLabel);
+
+                displayedMonths.merge(yearMonth, 1, Integer::sum);
+            } catch (Exception ignored) {
+                // Element nije datum, na primer Previous month ili Next month
+            }
+        }
+
+        return displayedMonths.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Nije moguće odrediti trenutno prikazani mesec."
+                        )
+                );
     }
 }

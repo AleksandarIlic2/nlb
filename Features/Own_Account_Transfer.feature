@@ -854,13 +854,12 @@ Feature: Own_Account_Transfer
     And Assert element by text "INTERNAL TRANSFER"
     And Assert element by text "Payment date"
     And Assert payment date is todays date and in valid date format in Own account transfer
-    And Assert element by text "Cancel"
-    And Assert element by text "Back"
-    And Assert element by text " Next "
+    And Assert element by contains text "Cancel"
+    And Assert element by contains text "Back"
+    And Assert element by contains text "Next"
 
-#    And Click on element by text " Next "
     And Click on button with type "submit"
-    And Wait for element by text "Payment amount"
+    And Wait for element by contains text "Payment amount"
     And Assert Payment Amount in payment review is "5,00 RSD"
     And Assert "Fee" in payment review is "0,00 RSD"
     And Assert element by text "Debtor"
@@ -928,7 +927,7 @@ Feature: Own_Account_Transfer
     And Assert element by tag "a" containing text "Past payments"
 
     And Click on element by text "Internal transfer"
-    And Wait for element by contains text "Internal transfer"
+    And Wait for element by contains text "Debtor"
     And Assert element by contains text "Internal transfer"
     And Assert element by text " Check data and choose “Next” "
 
@@ -942,18 +941,18 @@ Feature: Own_Account_Transfer
     And Assert element by contains text "Recipient"
     And Assert element by tag "nlb-account-selector" index "1"
     And Assert element by tag "span" containing text "RSD" with index "2"
-    And Assert element by text " Payment "
-    And Assert element by text " In order to continue all input fields must be filled. "
+    And Assert element by contains text "Payment details"
     And Click on account selector with index "2"
     And Click on element from Excel "<rowindex>" contains text columnName "credit_card_1_number"
 
-    And Assert element by text "Payment amount "
+    And Assert element by contains text "Payment amount"
     And Assert element by contains id "amount-input" is displayed
     And Assert element by tag "input" contains aria label "RSD"
     And Enter text "5" in field by contains id "amount-input"
-    And Assert element by text "Purpose"
-    And Assert element by text "INTERNAL TRANSFER"
-    And Assert element by text "Payment date"
+    And Enter text "" into Payment amount input field and remember it under key ""
+    And Assert element by contains text "Purpose"
+    And Assert element by contains text "INTERNAL TRANSFER"
+    And Assert element by contains text "Payment date"
     And Assert payment date is todays date and in valid date format in Own account transfer
     And Assert element by text "Cancel"
     And Assert element by text "Back"

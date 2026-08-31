@@ -45,6 +45,7 @@ import java.text.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
@@ -10930,34 +10931,44 @@ public class Steps {
     public void selectDateInRealizationDateLabelToBe(String dateString) {
         WebDriver driver = Base.driver;
 
-        // Očekujemo format npr. "10.07.2024"
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
         LocalDate targetDate = LocalDate.parse(dateString, formatter);
+        YearMonth targetMonth = YearMonth.from(targetDate);
 
-        String dan = String.valueOf(targetDate.getDayOfMonth());
-        String mesec = getSrpskiNazivMeseca(targetDate.getMonth());
-        int godina = targetDate.getYear();
+        YearMonth displayedMonth =
+                RoutineHelper.getDisplayedCalendarMonth(driver);
 
-        String fullTarget = dan + ". " + mesec + " " + godina;
-        // npr. "10. jul 2024"
+        long monthDifference =
+                ChronoUnit.MONTHS.between(displayedMonth, targetMonth);
 
-        String dayXPath = "//div[contains(@aria-label, '" + fullTarget + "')]";
-        String prevMonthButtonXPath = "//*[contains(@aria-label, 'Previous month')]";
+        System.out.println("Prikazani mesec: " + displayedMonth);
+        System.out.println("Ciljni mesec: " + targetMonth);
+        System.out.println("Razlika u mesecima: " + monthDifference);
 
-        // Klikćemo nazad po mesecima dok ne nađemo zadati datum
-        for (int i = 0; i < 12; i++) {
-            List<WebElement> dates = driver.findElements(By.xpath(dayXPath));
+        String navigationButtonXPath = monthDifference > 0
+                ? "//*[contains(@aria-label, 'Next month')]"
+                : "//*[contains(@aria-label, 'Previous month')]";
 
-            if (!dates.isEmpty()) {
-                dates.get(0).click();
-                System.out.println("Kliknut je datum (from): " + fullTarget);
-                return;
-            } else {
-                waitForElementToBeClickable(prevMonthButtonXPath, 1);
-                driver.findElement(By.xpath(prevMonthButtonXPath)).click();
-            }
+        for (int i = 0; i < Math.abs(monthDifference); i++) {
+            waitForElementToBeClickable(navigationButtonXPath, 2);
+            driver.findElement(By.xpath(navigationButtonXPath)).click();
         }
-        throw new RuntimeException("Datum " + fullTarget + " nije pronađen u kalendaru.");
+
+        String fullTarget = targetDate.getDayOfMonth()
+                + ". "
+                + getSrpskiNazivMeseca(targetDate.getMonth())
+                + " "
+                + targetDate.getYear();
+
+        String dayXPath =
+                "//div[contains(@aria-label, '" + fullTarget + "')]";
+
+        waitForElementToBeClickable(dayXPath, 2);
+        driver.findElement(By.xpath(dayXPath)).click();
+
+        System.out.println("Kliknut je datum: " + fullTarget);
     }
 
     @And("Enter text {string} in field by xPath {string}")
