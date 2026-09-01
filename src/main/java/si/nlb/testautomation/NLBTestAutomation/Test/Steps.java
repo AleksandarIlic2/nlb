@@ -13914,6 +13914,8 @@ public class Steps {
     }
 
 
+
+
     private static class AccountRow {
         String accountNumber;
         String currency;
@@ -14781,7 +14783,7 @@ public class Steps {
             expectedAmount = expectedAmount.replace(".",",");
         }
         else{
-            System.out.println("nepodrzan format");
+            System.out.println("else grana");
         }
         String finalAmount = currency + "\n" + expectedAmount;
         System.out.println("Final amount "+ finalAmount);
@@ -15330,7 +15332,193 @@ public class Steps {
         Assert.assertEquals(actualValue, expectedValue);
     }
 
+    @And("Remember attribute {string} from element with attribute {string} containing value {string} on index {string} under key {string}")
+    public void rememberAttributeFromElementWithAttributeContainingValueOnIndexUnderKey(String attrToSave, String attr, String value, String index, String key) throws Throwable {
+        String xpath = "(//*[contains(@"+attr+",'"+value+"')])["+index+"]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String text = element.getAttribute(attrToSave);
+        System.out.println("TEXT from ui "+text);
+        DataManager.userObject.put(key, text);
+    }
+
+    @And("Assert that fee in payment review has value from Excel {string} columnName {string}")
+    public void assertThatFeeInPaymentReviewHasValueFromExcelExcelColumnName(String rowindex, String columnName) throws Throwable {
+        String xpath = "//*[normalize-space()='Fee']/following-sibling::*[1]";
+        String expectedFee = DataManager.getDataFromHashDatamap(rowindex, columnName).toString();
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualText = element.getText();
+        System.out.println(actualText);
+        System.out.println(expectedFee);
+        Assert.assertEquals(actualText, expectedFee);
+    }
+
+    @And("Assert that fee in payment details has value from Excel {string} columnName {string}")
+    public void assertThatFeeInPaymentDetailsHasValueFromExcelColumnName(String rowindex, String columnName) throws Throwable {
+        //String xPath = "(//*[normalize-space(text())='Fee']/following-sibling::div)[1]";
+        String xPath = "(//*[text()='Fee'])[2]/following-sibling::div[1]";
+        String expectedFee = DataManager.getDataFromHashDatamap(rowindex, columnName).toString();
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        String actualText = element.getText();
+        System.out.println("ACTUAL "+ actualText);
+        System.out.println("EXPECTED "+expectedFee);
+        Assert.assertEquals(actualText, expectedFee);
+    }
+
+    @And("Compare if available amount balance from key {string} in my products screen for account from Excel {string} columnName {string} is reduced for amount from key {string} and fee from Excel {string} columnName {string}")
+        public void compareIfAvailableAmountBalanceFromKeyInMyProductsScreenForAccountFromExcelColumnNameIsReducedForAmountFromKeyAndFeeFromExcelColumnName(
+                String keyOldBalance,
+                String rowindex,
+                String columnName,
+                String keyPaymentAmount,
+                String rowindex2,
+                String columnName2) throws Throwable {
+
+        String stringForAccountBban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+
+        String xPathForCurrentBalance =
+                "(//nlb-product-card//*[contains(text(),'" + stringForAccountBban +
+                        "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[1]";
+
+        WebElement elementForCurrentBalance =
+                SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
 
 
+        String actualAmountString = elementForCurrentBalance
+                .getAttribute("textContent")
+                .trim();
+
+        String oldBalanceString = DataManager.userObject
+                .get(keyOldBalance)
+                .toString()
+                .trim();
+
+        String paymentAmountString = DataManager.userObject
+                .get(keyPaymentAmount)
+                .toString()
+                .trim();
+
+        String feeAmountString = DataManager
+                .getDataFromHashDatamap(rowindex2, columnName2)
+                .toString()
+                .trim()
+                .replaceAll("\\s+", "")
+                .replaceAll("[^0-9,.-]", "");
+
+
+        System.out.println("========================================");
+        System.out.println("Account BBAN       : " + stringForAccountBban);
+        System.out.println("Old Balance        : " + oldBalanceString);
+        System.out.println("Payment Amount     : " + paymentAmountString);
+        System.out.println("Fee Amount         : " + feeAmountString);
+        System.out.println("Actual Balance     : " + actualAmountString);
+        System.out.println("========================================");
+
+        // Convert values to BigDecimal
+        BigDecimal oldBalance = new BigDecimal(
+                oldBalanceString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal paymentAmount = new BigDecimal(
+                paymentAmountString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal feeAmount = new BigDecimal(
+                feeAmountString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal actualAmount = new BigDecimal(
+                actualAmountString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal expectedAmount = oldBalance
+                .subtract(paymentAmount)
+                .subtract(feeAmount);
+
+        System.out.println("------------- BigDecimal values -------------");
+        System.out.println("Old Balance        : " + oldBalance);
+        System.out.println("Payment Amount     : " + paymentAmount);
+        System.out.println("Fee Amount         : " + feeAmount);
+        System.out.println("Expected Balance   : " + expectedAmount);
+        System.out.println("Actual Balance     : " + actualAmount);
+        System.out.println("---------------------------------------------");
+
+        assertEquals(0, actualAmount.compareTo(expectedAmount));
+    }
+
+    @And("Compare if current amount balance from key {string} in my products screen for account from Excel {string} columnName {string} is reduced for amount from key {string} and fee from Excel {string} columnName {string}")
+    public void compareIfCurrentAmountBalanceFromKeyInMyProductsScreenForAccountFromExcelColumnNameIsReducedForAmountFromKeyAndFeeFromExcelColumnName(String keyOldBalance, String rowindex, String columnName, String keyPaymentAmount, String rowindex2, String columnName2) throws Throwable {
+        String stringForAccountBban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+
+        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountBban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[2]";
+
+        WebElement elementForCurrentBalance =
+                SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
+
+
+        String actualAmountString = elementForCurrentBalance
+                .getAttribute("textContent")
+                .trim();
+
+        String oldBalanceString = DataManager.userObject
+                .get(keyOldBalance)
+                .toString()
+                .trim();
+
+        String paymentAmountString = DataManager.userObject
+                .get(keyPaymentAmount)
+                .toString()
+                .trim();
+
+        String feeAmountString = DataManager
+                .getDataFromHashDatamap(rowindex2, columnName2)
+                .toString()
+                .trim()
+                .replaceAll("\\s+", "")
+                .replaceAll("[^0-9,.-]", "");
+
+
+        System.out.println("========================================");
+        System.out.println("Account BBAN       : " + stringForAccountBban);
+        System.out.println("Old Balance        : " + oldBalanceString);
+        System.out.println("Payment Amount     : " + paymentAmountString);
+        System.out.println("Fee Amount         : " + feeAmountString);
+        System.out.println("Actual Balance     : " + actualAmountString);
+        System.out.println("========================================");
+
+        // Convert values to BigDecimal
+        BigDecimal oldBalance = new BigDecimal(
+                oldBalanceString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal paymentAmount = new BigDecimal(
+                paymentAmountString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal feeAmount = new BigDecimal(
+                feeAmountString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal actualAmount = new BigDecimal(
+                actualAmountString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal expectedAmount = oldBalance
+                .subtract(paymentAmount)
+                .subtract(feeAmount);
+
+        System.out.println("------------- BigDecimal values -------------");
+        System.out.println("Old Balance        : " + oldBalance);
+        System.out.println("Payment Amount     : " + paymentAmount);
+        System.out.println("Fee Amount         : " + feeAmount);
+        System.out.println("Expected Balance   : " + expectedAmount);
+        System.out.println("Actual Balance     : " + actualAmount);
+        System.out.println("---------------------------------------------");
+
+        assertEquals(0, actualAmount.compareTo(expectedAmount));
+    }
 
 }
+
+
+
+

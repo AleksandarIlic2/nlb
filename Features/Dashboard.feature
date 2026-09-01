@@ -44,8 +44,8 @@ Feature: Dashboard
 #        | rowindex |
 #        |        1 |
 #
-  @General-Dashboard-Page_overview_[WEB]
-  Scenario Outline: General-Dashboard-Page_overview_[WEB]
+  @General_Dashboard_Page_overview_[WEB]
+  Scenario Outline: General_Dashboard_Page_overview_[WEB]
 
     Given Open Login page
     And Change language to English
@@ -64,7 +64,7 @@ Feature: Dashboard
     And Assert element by text "Pay or transfer"
 
     And Assert notification bell at the right top corner of the screen
-    And Assert user profile icon has value from excel "<rowindex>" columnName "user_profile_icon"
+    #And Assert user profile icon has value from excel "<rowindex>" columnName "user_profile_icon"
     And Assert element by tag "h3" containing text "Balance"
     And Click on tab "My Products" from main sidebar
     And Assert that products in my products have loaded

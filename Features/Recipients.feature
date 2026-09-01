@@ -329,16 +329,13 @@ Feature: Recipients
 
     When Click on tab "Recipients" from main sidebar
     And Wait for first recipient
-
-    And Enter text "VKLARAGAN" into input field
+    And Enter text "205" into input field
     And Wait for "1" seconds
     And Wait for first recipient
-    #And Click on element by containing text "205-"
-    And Click on element by containing text "VKLARAGAN"
-    And Wait for element by tag "nlb-payment-item"
+    And Click on first recipient
     And Remember text from element with attribute "class" containing value "subheadline m" and index "2" under key "keyPurpose"
     And Remember text from element with attribute "class" containing value "caption m" and index "2" under key "keyName"
-    And Remember account number in recipients list related to name "Staniša Nikola - VKLARAGAN" under key "keyAccountNumber"
+    And Remember account number of first Recipient in recipient tab under key "keyAccountNumber"
     And Remember amount of first payment in recipient details under key "keyAmountClean"
 
     And Click on element by containing class "tw-justify-center tw-h" with index "1"
@@ -356,8 +353,10 @@ Feature: Recipients
     And Wait for element by contains text "Account number"
     And Assert input field by contains text "Account number" has value under remembered key "keyAccountNumber"
     And Assert input field by contains text "Name" has value under remembered key "keyName"
-    And Remember text from element with attribute "class" containing value "tw-box-border tw-w-full" and index "3" under key "keyStreet"
-    And Remember text from element with attribute "class" containing value "tw-box-border tw-w-full" and index "4" under key "keyCity"
+
+    And Remember attribute "value" from element with attribute "class" containing value "tw-box-border tw-w-full" on index "3" under key "keyStreet"
+    And Remember attribute "value" from element with attribute "class" containing value "tw-box-border tw-w-full" on index "4" under key "keyCity"
+
     And Assert input field by contains text "Payment amount" has value under remembered key "keyAmountClean"
     And Assert input field by text "Purpose" has value under remembered key "keyPurpose"
     And Assert element by contains text "Model"
