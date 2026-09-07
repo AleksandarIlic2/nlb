@@ -114,7 +114,6 @@ Feature: Dashboard
     And Wait for element by contains text "Shortcuts"
     And Assert element by contains text "NLB Funds"
     And Assert element by contains text "Branches and ATMs"
-
     # todo da li dodati proveru da precice vode na odredjene linkove i otvaraju novi tab
 
     Examples:

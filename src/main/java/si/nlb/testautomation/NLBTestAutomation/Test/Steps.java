@@ -2325,6 +2325,7 @@ public class Steps {
         String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountIban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[2]";
         WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
         String stringForCurrentBalance = elementForCurrentBalance.getAttribute("innerText");
+        System.out.println(stringForCurrentBalance);
         DataManager.userObject.put(key, stringForCurrentBalance);
     }
 
@@ -8318,6 +8319,8 @@ public class Steps {
     public void assertProductFromExcelWithNameAndIbanIsDisplayedAsActiveOnDashboard(String rowindex, String columnName1, String columnName2) throws Throwable {
         String accountName = DataManager.getDataFromHashDatamap(rowindex, columnName1);
         String accountIban = DataManager.getDataFromHashDatamap(rowindex, columnName2);
+        System.out.println("Account name "+ accountName);
+        System.out.println("Account number "+ accountIban);
         String xPathForAccountName = "//swiper-slide[contains(@class,'swiper-slide-active')]/nlb-dashboard-product-card//*[contains(text(),'" + accountName + "')]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPathForAccountName);
         assertTrue(element.isDisplayed());
@@ -14410,7 +14413,7 @@ public class Steps {
 
     @And("Assert amount in transaction details has value under key {string} in currency {string}")
     public void assertAmountInTransactionDetailsHasValueUnderKeyInCurrency(String key, String currency) throws Throwable {
-        String xpath = "(//dd[@class='subheadline medium tw-text-gray-100 tw-break-words'])[4]";
+        String xpath = "(//*[text()='Amount']/following-sibling::dd[1])[2]";
         String expectedAmount = DataManager.userObject.get(key).toString();
         //double amountValue = Double.parseDouble(amountFromKey);
         if(!expectedAmount.contains(",")&&!expectedAmount.contains(".")){
@@ -15516,6 +15519,88 @@ public class Steps {
 
         assertEquals(0, actualAmount.compareTo(expectedAmount));
     }
+
+    @And("Remember name from expanded past payment under key {string}")
+    public void rememberNameFromExpandedPastPaymentUnderKey(String key) throws Throwable {
+        String xpath = "//*[@aria-expanded = 'true']/div/div/div[4]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String textToRemember = element.getText().trim();
+        System.out.println("Remembering "+textToRemember+ " || " + " KEY "+ key);
+        DataManager.userObject.put(key, textToRemember);
+    }
+
+    @And("Remember amount from expanded past payment under key {string}")
+    public void rememberAmountFromExpandedPastPaymentUnderKey(String key) throws Throwable {
+        String xpath=  "//*[@aria-expanded = 'true']/div[2]/div/div/nlb-heading-text/div/nlb-amount/div/div[2]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String textToRemember = element.getText().trim();
+        System.out.println("Remembering "+textToRemember+ " || " + " KEY "+ key);
+        DataManager.userObject.put(key, textToRemember);
+    }
+
+    @And("Remember value from label {string} in past or upcoming payment under key {string}")
+    public void rememberValueFromLabelInPastOrUpcomingPaymentUnderKey(String label, String key) throws Throwable {
+        String xpath = "(//*[text()='"+label+"'])[2]/following-sibling::div[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String text = element.getText();
+        System.out.println("TEXT from ui "+text);
+        DataManager.userObject.put(key, text);
+    }
+
+    @And("Remember fee amount from fee label in past or upcoming payment under key {string}")
+    public void rememberFeeAmountFromFeeLabelInPastOrUpocomingPaymentUnderKey(String key) throws Throwable {
+        String xpath = "(//*[text()='Fee'])[2]/following-sibling::div[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String text = element.getText();
+        String amount = text.replaceAll("[^0-9,.-]", "");
+        System.out.println("TEXT from ui "+amount);
+        DataManager.userObject.put(key, amount);
+    }
+
+    @And("Check if cash credit offer appears upon login and if it is dismiss it")
+    public void checkIfCashCreditOfferAppearsUponLoginAndIfItIsDismissIt() throws Throwable {
+        try {
+            String xpath = "//*[contains(text(), 'Close')]";
+            WaitHelpers.waitForSeconds(4);
+            WebElement el = SelectByXpath.CreateElementByXpath(xpath);
+            el.click();
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    @And("Assert payment amount in payment review is from key {string} and currency {string}")
+    public void assertPaymentAmountInPaymentReviewIsFromKeyAndCurrency(String key, String currency) throws Throwable {
+        String xpath = "//*[normalize-space()='Payment amount']/following-sibling::*[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String text = element.getText();
+        String amountFromKey = DataManager.userObject.get(key).toString();
+        String finalAmount = "";
+        if(!amountFromKey.contains(",")){
+            finalAmount = amountFromKey+",00 "+currency;
+        }
+        else if(!amountFromKey.contains(".")&&amountFromKey.contains(",")){
+            finalAmount = amountFromKey+" "+currency;
+        }
+        System.out.println("Amount expected "+ finalAmount);
+        System.out.println("From ui "+ text);
+        Assert.assertEquals(text, finalAmount);
+    }
+
+    @And("Check if urgent checkbox is checked and if set to urgent")
+    public void checkIfUrgentCheckhboxIsCheckedAndIfSetToUrgent() {
+        // uzeto iz stare metode , xpath i 3 reda ispod
+        String xPath = "//label[.//span[normalize-space()='Urgent payment']]//input[@type='checkbox']";
+        WebElement checkbox = driver.findElement(By.xpath(xPath));
+        boolean actualState = checkbox.isSelected();
+        System.out.println("IS CHECKED "+ actualState);
+        if(!actualState){
+            checkbox.click();
+        }
+    }
+
+
 
 }
 

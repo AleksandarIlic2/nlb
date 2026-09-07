@@ -314,7 +314,9 @@ Feature: Credit_Cards
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
-    And Wait for element by text "Pay or transfer"
+    And Check if cash credit offer appears upon login and if it is dismiss it
+    And Wait for element by text "Balance"
+    And Click on tab "My Products" from main sidebar
     And Assert that products in my products have loaded
 
     When Assert element by class "button-bold" and contains text "Edit list"
@@ -322,20 +324,15 @@ Feature: Credit_Cards
     And Wait for element by tag "nlb-product-detail-header"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
 
-    And Assert Transactions tab is selected by default
+    Then Assert Transactions tab is selected by default
     And Wait for first transaction in Product details
     And Click on down arrow on first transaction do display details
     And Assert element by text "Amount" has following sibling "dd" with regex "^\d{1,3}(\.\d{3})*,\d{2}\s*RSD$"
     And Assert element by text "Amount in local currency" has following sibling "dd" with regex "^\d{1,3}(\.\d{3})*,\d{2}\s*RSD$"
-#    And Assert element by text "Settlement date" has following sibling "dd" with text "01.07.2025"
     And Assert element by text "Settlement date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
-#    And Assert element by text "Value date" has following sibling "dd" with text "01.07.2025"
     And Assert element by text "Value date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
-#    And Assert element by text "Authorization date" has following sibling "dd" with text "01.07.2025"
     And Assert element by text "Authorization date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
-#    And Assert element by text "Transaction ID" has following sibling "dd" that contains text "^[A-Za-z0-9]{14}$"
     And Assert element by text "Transaction ID" has following sibling "dd" with regex "^[A-Za-z0-9]{14}$"
-#    And Assert element by tag "span" containing text "Send message"
     And Assert element by tag "div" containing text "Confirmation" is not displayed
 
 #    Then Click on down arrow on first transaction do display details
