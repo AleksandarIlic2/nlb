@@ -94,7 +94,7 @@ Feature: Term_Deposits_Accounts
     And Assert label with text "Deposit amount" has value with text in format "^(?:0|[1-9]\d{0,2}(?:\.\d{3})*),\d{2}\s[A-Z]{3}$"
     And Assert label with text "Interest rate" has value with text in format "^\d+,\d{4}%$"
     And Assert label with text "Accrued interests" has value with text in format "^\d{1,3}(\.\d{3})*,\d{2}\s*[A-Z]{3}$"
-    And Assert label with text "Pay out account" has value with text in format "^90\d{11}$"
+    And Assert label with text "Payout account" has value with text in format "^90\d{11}$"
     
     And Assert element by xPath "(//h3[contains(@class, 'heading-3')])[2]"
 #    And Assert element by text " Document archive "

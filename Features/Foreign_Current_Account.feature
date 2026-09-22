@@ -202,7 +202,8 @@ Feature: Foreign_Current_Account
     And Click on button with tag "i" containing class "icon-calendar-today"
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
-    And Assert three showed months are correctly displayed
+    #And Assert three showed months are correctly displayed
+    And Assert three months are displayed in date picker correctly
     And Click on element by containing text "Cancel"
     And Assert element by contains text "Last 7 days"
     And Assert element by contains text "This month"
@@ -399,7 +400,7 @@ Feature: Foreign_Current_Account
     And Assert element by contains text "Last month"
     #Otvaranje kalendara
     And Click on button with tag "i" containing class "icon-calendar-today"
-    And Assert three showed months are correctly displayed
+    And Assert three months are displayed in date picker correctly
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
 
@@ -693,3 +694,71 @@ Feature: Foreign_Current_Account
     Examples:
       | rowindex |
       |        5 |
+
+
+  @Current_Foreign_Accounts_Statemants_Downloads_[WEB]
+  Scenario Outline: Current_Foreign_Accounts_Statemants_Downloads_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert transactions in my product have loaded
+
+    When Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Assert tabs in Product details are displayed correctly for Current Foreign Accounts
+    And Select "Statements" tab in Products details
+    And Assert "Statements" tab in Products details is selected
+    And Scroll to element by xPath "//a[contains(text(), 'Transactions')]" and scroll 1 more screen
+    And Wait for element by contains text "year"
+    And Assert either element with xPath "//nlb-selected-product-statements//nlb-empty-list//div[text() = 'There are no statements for the selected year.']/preceding-sibling::div/img[@alt='Empty list']" or element with xpath "(//nlb-statement-item)[1]" is displayed
+    And Assert Statements filter label is "Filter by year"
+
+    And Assert Statements filter has current year selected
+    And Assert first statement in Statement list
+    And Click download on first statement in Statement list
+
+    Then Assert document with name starting with "Izvod_" and has file type ".pdf" is downloaded
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+
+  @Current_Foreign_Accounts_Transactions_Details_[WEB]
+  Scenario Outline: Current_Foreign_Accounts_Transactions_Details_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    #And Check if cash credit offer appears upon login and if it is dismiss it
+    And Wait for element by text "Balance"
+    And Click on tab "My Products" from main sidebar
+    And Assert that products in my products have loaded
+
+    When Assert element by class "button-bold" and contains text "Edit list"
+    And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Wait for element by tag "nlb-product-detail-header"
+
+    Then Assert Transactions tab is selected by default
+    And Wait for first transaction in Product details
+    And Click on down arrow on first transaction do display details
+    And Assert element by text "Account number" has following sibling "dd" with regex "^.+$"
+    And Assert element by text "Amount" has following sibling "dd" with regex "^\d{1,3}(\.\d{3})*,\d{2}\s*EUR$"
+    And Assert element by text "Products_Common_TransactionDetails_BookingDate" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert element by text "Value date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert element by text "Transaction ID" has following sibling "dd" with regex "^[A-Za-z0-9]{14}$"
+    And Assert element by tag "div" containing text "Confirmation" is not displayed
+    And Assert element by text "Description"
+
+#    Then Click on down arrow on first transaction do display details
+#    And Assert element by contains text "Value date" is not displayed
+#    And Assert element by class "tw-text-incomingColor" and index "1"
+
+    Examples:
+      | rowindex |
+      |        1 |

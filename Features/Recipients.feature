@@ -329,10 +329,7 @@ Feature: Recipients
 
     When Click on tab "Recipients" from main sidebar
     And Wait for first recipient
-    And Enter text "205" into input field
-    And Wait for "1" seconds
-    And Wait for first recipient
-    And Click on first recipient
+    And Click on element by containing text "205-"
     And Remember text from element with attribute "class" containing value "subheadline m" and index "2" under key "keyPurpose"
     And Remember text from element with attribute "class" containing value "caption m" and index "2" under key "keyName"
     And Remember account number of first Recipient in recipient tab under key "keyAccountNumber"
@@ -362,6 +359,7 @@ Feature: Recipients
     And Assert element by contains text "Model"
     And Assert element by contains text "Reference number"
     And Assert payment date is todays date and in valid date format in Domestic payment
+    And Click on "Urgent" checkbox if it is not checked
 
     And Assert element by contains text "Cancel"
     And Assert element by contains text "Back"
@@ -389,7 +387,6 @@ Feature: Recipients
     And Assert element by contains text "Cancel"
     And Assert element by contains text "Back"
     And Click on button with type "submit"
-    And Try to assert that payment is "Success" and send command to Authorize method
     And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "3.00" and currency "RSD" with message "Success"
 
     And Click on tab "Payments" from main sidebar

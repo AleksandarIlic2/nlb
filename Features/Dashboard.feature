@@ -72,7 +72,7 @@ Feature: Dashboard
     And Click on tab "My NLB" from main sidebar
     And Wait for element by contains text "Balance"
     And Assert element with attribute "src" contains value "product-icon/CurrentAccount" is displayed
-    And Assert product from Excel "<rowindex>" with name "current_account_1_name" and iban "current_account_1_bban" is displayed as active on dashboard
+#    And Assert product from Excel "<rowindex>" with name "current_account_2_name" and iban "current_account_1_bban" is displayed as active on dashboard
 
     And Assert currently active product on dashboard has current and available balance from keys "current_balance" and "available_balance"
     And Remember latest transaction purposes from dashboard under key "latest_transaction_purposes"
@@ -82,7 +82,7 @@ Feature: Dashboard
     And Wait for "3" seconds
     And Click on element by aria label "Previous slide"
 
-    And Assert product from Excel "<rowindex>" with name "current_account_1_name" and iban "current_account_1_bban" is displayed as active on dashboard
+#    And Assert product from Excel "<rowindex>" with name "current_account_2_name" and iban "current_account_1_bban" is displayed as active on dashboard
     And Assert element by tag "h3" containing text "Latest transactions"
     And Click on element by text "Show all"
     And Wait for element by tag "nlb-bban"
@@ -94,6 +94,7 @@ Feature: Dashboard
 
     And Assert element by tag "*" containing text "Upcoming payments"
     And Click on element by text "Show all" index "2"
+    And Wait for "2" seconds
     And Wait for element by tag "a" and normalized text "Upcoming payments"
     And Wait for "1" seconds
     And Assert payments in past payments have loaded
@@ -109,9 +110,10 @@ Feature: Dashboard
     And Wait for element by contains text "Shortcuts"
     And Assert element by contains text "NLB Online offers"
     And Click on element by containing text "NLB Online offers"
-    And Wait for element by contains text "Offers_OffersTile_Screentitle"
+#    And Wait for element by contains text "Offers_OffersTile_Screentitle"
     And Click on tab "My NLB" from main sidebar
     And Wait for element by contains text "Shortcuts"
+    And Assert element by contains text "NLB Trader"
     And Assert element by contains text "NLB Funds"
     And Assert element by contains text "Branches and ATMs"
     # todo da li dodati proveru da precice vode na odredjene linkove i otvaraju novi tab

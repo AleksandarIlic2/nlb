@@ -23,7 +23,7 @@ Feature: Credit_Cards
     And Assert element by contains text "Download transaction list"
 
     Then Click on element by containing text "Details"
-    And Wait for element by contains text "Financial details"
+    And Wait for product details to load
     And Assert element by class "bold heading-3 tw-hidden tw-text-gray-400 xs:tw-block ng-star-inserted" and index "1" has attribute "textContent" with value "Financial details"
     And Assert element by class "bold heading-3 tw-hidden tw-text-gray-400 xs:tw-block ng-star-inserted" and index "2" has attribute "textContent" with value "Account details"
     And Assert element by contains text "Account owner"
@@ -314,15 +314,15 @@ Feature: Credit_Cards
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
-    And Check if cash credit offer appears upon login and if it is dismiss it
+    #And Check if cash credit offer appears upon login and if it is dismiss it
     And Wait for element by text "Balance"
     And Click on tab "My Products" from main sidebar
     And Assert that products in my products have loaded
 
     When Assert element by class "button-bold" and contains text "Edit list"
-    And Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
+    And Click on element by containing text from Excel "<rowindex>" columnName "credit_card_1_number"
     And Wait for element by tag "nlb-product-detail-header"
-    And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_1_name"
 
     Then Assert Transactions tab is selected by default
     And Wait for first transaction in Product details
@@ -421,6 +421,68 @@ Feature: Credit_Cards
     And Enter "5000" to Amount filter "To"
 #    And Assert element by contains text "From amount must be smaller than To amount"
     And Assert element by contains text "ValidationError"
+
+    Examples:
+      | rowindex |
+      |        1 |
+
+
+  @Credit_Cards_Details_Financial_Details_[WEB]
+  Scenario Outline: Credit_Cards_Details_Financial_Details_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert that products in my products have loaded
+
+    When Assert element by class "button-bold" and contains text "Edit list"
+    And Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert element by text from excel "<rowindex>" columnName "credit_card_2_number" is displayed
+    And Assert tabs in Product details are displayed correctly for Credit Cards
+
+    And Assert Transactions tab is selected by default
+    And Click on element by containing text "Details"
+    And Wait for product details to load
+    
+    Then Assert element by contains text "Approved limit"
+    And Assert element by contains text "Daily limit ATM"
+    And Assert element by contains text "Daily limit ATM - Foreign"
+    And Assert element by contains text "Reserved funds in RSD"
+    And Assert element by contains text "Monthly ATM withdrawal limit"
+    And Assert element by contains text "Monthly pay percentage"
+    And Assert element by contains text "Limit expiration"
+    And Assert element by contains text "Settlement day"
+
+    Examples:
+      | rowindex |
+      |        1 |
+
+
+  @Credit_Cards_Transactions_List_[WEB]
+  Scenario Outline: Credit_Cards_Transactions_List_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Assert that products in my products have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
+    And Wait for first transaction in Product details
+    And Scroll to first transaction in Products details
+#    And Assert there are 30 transactions loaded in Products details
+#    And Scroll dynamic page down 1 times
+#    And Assert there are more than 30 transactions loaded in Products details
+    And Assert there are month categories in transactions list in Products details
+    And Assert transaction dates are ordered correctly
+    And Scroll element by contains text "Transactions" up
+    And Assert element by xPath "//h3[contains(@class, 'heading-5')]" is displayed
+#    And Assert element by contains class "heading-5 ng-star-inserted" is displayed
+    And Assert list of elements containing class "category-icon" are displayed
+    And Assert list of elements containing class "medium tw-flex" are displayed
+    And Assert list of elements containing class "caption medium tw-text" are displayed
+    And Assert list of elements containing class "5 tw-flex tw-justify" are displayed
 
     Examples:
       | rowindex |

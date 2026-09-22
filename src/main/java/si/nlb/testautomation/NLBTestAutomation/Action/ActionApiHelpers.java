@@ -718,7 +718,7 @@ public class ActionApiHelpers {
     }
 
     public String returnDateInSerbianFormat(String inputDate) {
-        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd-M-yyyy");
         LocalDate date = LocalDate.parse(inputDate, inputFormatter);
         DateTimeFormatter outputFormatter =
                 DateTimeFormatter.ofPattern("EEEE, d. MMMM yyyy.", Locale.forLanguageTag("sr-Cyrl-RS"));

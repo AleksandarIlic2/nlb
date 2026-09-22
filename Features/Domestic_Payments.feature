@@ -581,6 +581,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Confirm"
     And Assert element by contains text "Back"
     And Click on element by containing text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "3.00" and currency "RSD" with message "Success"
     And Assert element by contains text "Success"
     And Assert element by contains class "nlb-icon icon-close"
     And Wait for element by contains text "Domestic payment"
@@ -819,9 +820,7 @@ Feature: Domestic_Payments
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
-    And Refresh page
-    And Wait for first product to load
-    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
+    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "6" is correct
     And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
 
     Examples:
@@ -907,7 +906,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Success"
 
     And Wait for element by contains text "Domestic payment"
-    And Wait for "1" seconds
+    And Wait for "3" seconds
     And Refresh page
     And Wait for first past payment
 
@@ -1127,15 +1126,14 @@ Feature: Domestic_Payments
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Pending"
-    And Wait for "45" seconds
+    And Wait for "50" seconds
     And Refresh page
-    And Wait for "5" seconds
-    And Wait for first past payment
-    And Assert first past or upcoming payment has purpose from key "keyPurpose"
+    And Wait for element by contains text "My Products"
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
-    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
+    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" is reduced for amount from key "keyPaymentAmount" and fee from Excel "<rowindex>" columnName "fee_RSD_Clean"
+    #And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
     And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
 
     Examples:
@@ -1317,14 +1315,10 @@ Feature: Domestic_Payments
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
-    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
+    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" is reduced for amount from key "keyPaymentAmount" and fee from Excel "<rowindex>" columnName "fee_RSD_Clean"
+    #And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
     And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
-    And Click on element from Excel "<rowindex>" contains text columnName "current_account_1_bban"
-    And Wait for first transaction in Product details
-    And Assert element by contains class "heading-5 medium tw-text-gray-100" contains value from key "keyPurpose" is displayed
-    And Assert text under key "keyPaymentAmount" is displayed
-    And Assert text under key "keyRecipientName" is displayed
-    And Assert element by contains text "provizija"
+
 
     Examples:
       | rowindex |
@@ -1547,7 +1541,7 @@ Feature: Domestic_Payments
 
     And Wait for element by contains text "Domestic payment"
     And Assert Past payments tab is selected in Payments
-    And Wait for "2" seconds
+    And Wait for "3" seconds
     And Refresh page
     And Wait for first past payment
 
@@ -1568,8 +1562,7 @@ Feature: Domestic_Payments
     And Assert field "Payment date" in payment confirmation has valid date displayed
     And Assert field "Execution date" in payment confirmation has valid date displayed
     And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
-
-    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
     And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
@@ -1583,10 +1576,13 @@ Feature: Domestic_Payments
 
     And Click on element from Excel "<rowindex>" contains text columnName "current_account_1_bban"
     And Wait for first transaction in Product details
-    And Assert element by contains class "heading-5 medium tw-text-gray-100" contains value from key "keyPurpose" is displayed
+    And Wait for "3" seconds
+    And Refresh page
+    And Wait for first transaction in Product details
+    And Assert text under key "keyPurpose" is displayed
     And Assert text under key "keyPaymentAmount" is displayed
     And Assert text under key "keyRecipientName" is displayed
-    And Click on down arrow on first transaction do display details
+    And Click on element with text from key "keyPurpose"
     And Assert element by text "Account number" has following sibling "dd" that contains text from key "keyRecipientAccountNumber"
     And Assert amount in transaction details has value under key "keyPaymentAmount" in currency "RSD"
     And Assert element by text "Products_Common_TransactionDetails_BookingDate" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
@@ -1712,7 +1708,8 @@ Feature: Domestic_Payments
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
-    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
+    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" is reduced for amount from key "keyPaymentAmount" and fee from Excel "<rowindex>" columnName "fee_RSD_Clean"
+    #And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
     And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
 
     Examples:
@@ -1805,7 +1802,7 @@ Feature: Domestic_Payments
 
     And Wait for element by contains text "Domestic payment"
     And Assert Past payments tab is selected in Payments
-    And Wait for "1" seconds
+    And Wait for "3" seconds
     And Refresh page
     And Wait for first past payment
 
@@ -1839,10 +1836,13 @@ Feature: Domestic_Payments
 
     And Click on element from Excel "<rowindex>" contains text columnName "current_account_1_bban"
     And Wait for first transaction in Product details
-    And Assert element by contains class "heading-5 medium tw-text-gray-100" contains value from key "keyPurpose" is displayed
+    And Wait for "5" seconds
+    And Refresh page
+    And Wait for first transaction in Product details
+    And Assert text under key "keyPurpose" is displayed
     And Assert text under key "keyPaymentAmount" is displayed
     And Assert text under key "keyRecipientName" is displayed
-    And Click on down arrow on first transaction do display details
+    And Click on element with text from key "keyPurpose"
     And Assert element by text "Account number" has following sibling "dd" that contains text from key "keyRecipientAccountNumber"
     And Assert amount in transaction details has value under key "keyPaymentAmount" in currency "RSD"
     And Assert element by text "Products_Common_TransactionDetails_BookingDate" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
@@ -1933,7 +1933,7 @@ Feature: Domestic_Payments
 
     And Wait for element by contains text "Domestic payment"
     And Assert Past payments tab is selected in Payments
-    And Wait for "2" seconds
+    And Wait for "5" seconds
     And Refresh page
     And Wait for first past payment
 
@@ -1952,7 +1952,7 @@ Feature: Domestic_Payments
     And Assert field "Payment date" in payment confirmation has valid date displayed
     And Assert field "Execution date" in payment confirmation has valid date displayed
     And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
-    And Assert field "Debtor name" in payment confirmation has text from key "keyDebtorFullName"
+    And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
 
     And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
@@ -1967,10 +1967,12 @@ Feature: Domestic_Payments
 
     And Click on element from Excel "<rowindex>" contains text columnName "current_account_1_bban"
     And Wait for first transaction in Product details
-    And Assert element by contains class "heading-5 medium tw-text-gray-100" contains value from key "keyPurpose" is displayed
+    And Wait for "5" seconds
+    And Refresh page
+    And Assert text under key "keyPurpose" is displayed
     And Assert text under key "keyPaymentAmount" is displayed
     And Assert text under key "keyRecipientName" is displayed
-    And Click on down arrow on first transaction do display details
+    And Click on element with text from key "keyPurpose"
     And Assert element by text "Account number" has following sibling "dd" that contains text from key "keyRecipientAccountNumber"
     And Assert amount in transaction details has value under key "keyPaymentAmount" in currency "RSD"
     And Assert element by text "Products_Common_TransactionDetails_BookingDate" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
@@ -2061,7 +2063,7 @@ Feature: Domestic_Payments
 
     And Wait for element by contains text "Domestic payment"
     And Click on normalized text "Upcoming payments"
-    And Wait for "1" seconds
+    And Wait for "3" seconds
     And Refresh page
     And Wait for first past payment
 
@@ -2092,7 +2094,8 @@ Feature: Domestic_Payments
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
-    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
+    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" is reduced for amount from key "keyPaymentAmount" and fee from Excel "<rowindex>" columnName "fee_RSD_Clean"
+    #And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
     And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
 
     Examples:

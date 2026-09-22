@@ -2332,6 +2332,7 @@ public class Steps {
     @And("Remember available balance for account from Excel {string} columnName {string} under key {string}")
     public void rememberAvailalbleBalanceForAccountFromExcelColumnName(String rowindex, String columnName, String key) throws Throwable {
         String stringForAccountIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        System.out.println(stringForAccountIban);
         String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountIban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[1]";
         WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
         String stringForCurrentBalance = elementForCurrentBalance.getAttribute("innerText");
@@ -7931,7 +7932,7 @@ public class Steps {
     public void assertTabsInProductDetailsAreDisplayedCorrectlyForCreditCards() throws Throwable {
         String xPath = "//nlb-tabs//a";
         List<WebElement> tabsElements = SelectByXpath.CreateElementsByXpath(xPath);
-        if(tabsElements.size()!=4)
+        if(tabsElements.size()!=3)
             fail();
         int numOfTabs = tabsElements.size();
         for (int i = 0; i < numOfTabs; i++) {
@@ -7941,8 +7942,6 @@ public class Steps {
                 assertEquals("Statements", tabsElements.get(i).getAttribute("innerText"));
             } else if (i == 2) {
                 assertEquals("Details", tabsElements.get(i).getAttribute("innerText"));
-            }else if (i == 3) {
-                assertEquals("Settings", tabsElements.get(i).getAttribute("innerText"));
             } else {
                 fail("More than 4 tabs are found");
             }
@@ -10923,6 +10922,10 @@ public class Steps {
         return mesec.getDisplayName(TextStyle.FULL, srpski);
     }
 
+    private String getEngleskiNazivMeseca(Month mesec) {
+        return mesec.getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+    }
+
 
     private void waitForElementToBeClickable(String xpath, int timeout) {
         WebDriver driver = Base.driver;
@@ -11155,77 +11158,135 @@ public class Steps {
         Assert.assertTrue(element.isDisplayed());
     }
 
+//    @And("Select date in From label to be {string}")
+//    public void selectDateInFromLabelToBe(String dateString) {
+//        WebDriver driver = Base.driver;
+//
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+//        LocalDate targetDate = LocalDate.parse(dateString, formatter);
+//
+//        String dan = String.valueOf(targetDate.getDayOfMonth());
+////        String mesec = getSrpskiNazivMeseca(targetDate.getMonth());
+//        String mesec = getEngleskiNazivMeseca(targetDate.getMonth());
+//        int godina = targetDate.getYear();
+//        String fullTarget = dan + ". " + mesec + " " + godina;
+//        String dayXPath = "//div[contains(@aria-label, '" + fullTarget + "')]//span";
+//        String prevMonthButtonXPath = "//*[contains(@aria-label, 'Previous month')]";
+//
+//        // Klikćemo nazad po mesecima dok ne nađemo zadati datum
+//        for (int i = 0; i < 24; i++) {
+//            List<WebElement> dates = driver.findElements(By.xpath(dayXPath));
+//
+//            if (!dates.isEmpty()) {
+//                dates.get(0).click();
+//                System.out.println("Kliknut je datum (from): " + fullTarget);
+//                return;
+//            } else {
+//                waitForElementToBeClickable(prevMonthButtonXPath, 1);
+//                driver.findElement(By.xpath(prevMonthButtonXPath)).click();
+//            }
+//        }
+//
+//        throw new RuntimeException("Datum " + fullTarget + " nije pronađen u kalendaru.");
+//    }
+
     @And("Select date in From label to be {string}")
     public void selectDateInFromLabelToBe(String dateString) {
         WebDriver driver = Base.driver;
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate targetDate = LocalDate.parse(dateString, inputFormatter);
+        String ariaLabel = targetDate.format(DateTimeFormatter.ofPattern("d-M-yyyy"));
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate targetDate = LocalDate.parse(dateString, formatter);
-
-        String dan = String.valueOf(targetDate.getDayOfMonth());
-        String mesec = getSrpskiNazivMeseca(targetDate.getMonth());
-        int godina = targetDate.getYear();
-
-        String fullTarget = dan + ". " + mesec + " " + godina;
-
-        String dayXPath = "//div[contains(@aria-label, '" + fullTarget + "')]//span";
+        String dayXPath = "//*[@role='gridcell' and @aria-label='" + ariaLabel + "']";
         String prevMonthButtonXPath = "//*[contains(@aria-label, 'Previous month')]";
 
-        // Klikćemo nazad po mesecima dok ne nađemo zadati datum
         for (int i = 0; i < 24; i++) {
             List<WebElement> dates = driver.findElements(By.xpath(dayXPath));
 
             if (!dates.isEmpty()) {
+                waitForElementToBeClickable(dayXPath, 2);
                 dates.get(0).click();
-                System.out.println("Kliknut je datum (from): " + fullTarget);
-                return;
-            } else {
-                waitForElementToBeClickable(prevMonthButtonXPath, 1);
-                driver.findElement(By.xpath(prevMonthButtonXPath)).click();
-            }
-        }
 
-        throw new RuntimeException("Datum " + fullTarget + " nije pronađen u kalendaru.");
+                System.out.println("Kliknut je datum (from): " + ariaLabel);
+                return;
+            }
+
+            waitForElementToBeClickable(prevMonthButtonXPath, 2);
+            driver.findElement(By.xpath(prevMonthButtonXPath)).click();
+        }
+        throw new RuntimeException("Datum " + ariaLabel + " nije pronađen u kalendaru.");
     }
+
+//    @And("Select date in To label to be {string}")
+//    public void selectDateInToLabelToBe(String dateString) {
+//        WebDriver driver = Base.driver;
+//
+//        // Očekujemo format npr. "10.07.2024"
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+//        LocalDate targetDate = LocalDate.parse(dateString, formatter);
+//
+//        String dan = String.valueOf(targetDate.getDayOfMonth());
+//        String mesec = getSrpskiNazivMeseca(targetDate.getMonth());
+//        int godina = targetDate.getYear();
+//
+//        String fullTarget = dan + ". " + mesec + " " + godina;
+//        // npr. "10. jul 2024"
+//
+//        String dayXPath = "//div[contains(@aria-label, '" + fullTarget + "')]//span";
+//
+//        String calendarButtonXPath = "(//nlb-icon[@role='button'])[2]";
+//        String nextMonthButtonXPath = "//*[contains(@aria-label, 'Next month')]";
+//
+//        waitForElementToBeClickable(calendarButtonXPath, 2);
+//        driver.findElement(By.xpath(calendarButtonXPath)).click();
+//
+//        // Klikćemo napred po mesecima dok ne nađemo zadati datum
+//        for (int i = 0; i < 24; i++) {
+//            List<WebElement> dates = driver.findElements(By.xpath(dayXPath));
+//
+//            if (!dates.isEmpty()) {
+//                dates.get(0).click();
+//                System.out.println("Kliknut je datum (to): " + fullTarget);
+//                return;
+//            } else {
+//                waitForElementToBeClickable(nextMonthButtonXPath, 1);
+//                driver.findElement(By.xpath(nextMonthButtonXPath)).click();
+//            }
+//        }
+//
+//        throw new RuntimeException("Datum " + fullTarget + " nije pronađen u kalendaru.");
+//    }
 
     @And("Select date in To label to be {string}")
     public void selectDateInToLabelToBe(String dateString) {
         WebDriver driver = Base.driver;
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate targetDate = LocalDate.parse(dateString, inputFormatter);
+        String ariaLabel = targetDate.format(DateTimeFormatter.ofPattern("d-M-yyyy"));
 
-        // Očekujemo format npr. "10.07.2024"
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate targetDate = LocalDate.parse(dateString, formatter);
-
-        String dan = String.valueOf(targetDate.getDayOfMonth());
-        String mesec = getSrpskiNazivMeseca(targetDate.getMonth());
-        int godina = targetDate.getYear();
-
-        String fullTarget = dan + ". " + mesec + " " + godina;
-        // npr. "10. jul 2024"
-
-        String dayXPath = "//div[contains(@aria-label, '" + fullTarget + "')]//span";
-
+        String dayXPath = "//*[@role='gridcell' and @aria-label='" + ariaLabel + "']";
         String calendarButtonXPath = "(//nlb-icon[@role='button'])[2]";
         String nextMonthButtonXPath = "//*[contains(@aria-label, 'Next month')]";
 
         waitForElementToBeClickable(calendarButtonXPath, 2);
         driver.findElement(By.xpath(calendarButtonXPath)).click();
 
-        // Klikćemo napred po mesecima dok ne nađemo zadati datum
+        // Klikćemo napred po mesecima dok ne pronađemo datum
         for (int i = 0; i < 24; i++) {
             List<WebElement> dates = driver.findElements(By.xpath(dayXPath));
 
             if (!dates.isEmpty()) {
-                dates.get(0).click();
-                System.out.println("Kliknut je datum (to): " + fullTarget);
-                return;
-            } else {
-                waitForElementToBeClickable(nextMonthButtonXPath, 1);
-                driver.findElement(By.xpath(nextMonthButtonXPath)).click();
-            }
-        }
+                waitForElementToBeClickable(dayXPath, 2);
+                driver.findElement(By.xpath(dayXPath)).click();
 
-        throw new RuntimeException("Datum " + fullTarget + " nije pronađen u kalendaru.");
+                System.out.println("Kliknut je datum (to): " + ariaLabel);
+                return;
+            }
+            waitForElementToBeClickable(nextMonthButtonXPath, 2);
+
+            driver.findElement(By.xpath(nextMonthButtonXPath)).click();
+        }
+        throw new RuntimeException("Datum " + ariaLabel + " nije pronađen u kalendaru.");
     }
 
     @And("Assert transaction dates are between {string} and {string}")
@@ -13916,6 +13977,17 @@ public class Steps {
         assertTrue(element.getText().contains(text));
     }
 
+    @And("Click on {string} checkbox if it is not checked")
+    public void clickOnCheckboxIfItIsNotChecked(String checkboxText) throws Throwable {
+        String xPath = "//*[contains(text(), '" + checkboxText + "')]/ancestor::div/nlb-check-box";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        WebElement checkbox = element.findElement(By.xpath(".//input[@type='checkbox']"));
+
+        if (!checkbox.isSelected()) {
+            element.click();
+        }
+    }
+
 
 
 
@@ -14247,16 +14319,16 @@ public class Steps {
     public void assertTabsInProductDetailsAreDisplayedCorrectlyForCardFromCardsMenu() throws Throwable {
         String xPath = "//nlb-tabs//a";
         List<WebElement> tabsElements = SelectByXpath.CreateElementsByXpath(xPath);
-        if(tabsElements.size()!=4)
+        if(tabsElements.size()!=3)
             fail();
         int numOfTabs = tabsElements.size();
         for (int i = 0; i < numOfTabs; i++) {
             if (i == 0) {
                 assertEquals("Transactions", tabsElements.get(i).getAttribute("innerText"));
             } else if (i == 1) {
-                assertEquals("Setting", tabsElements.get(i).getAttribute("innerText"));
-            } else if (i == 2) {
                 assertEquals("Details", tabsElements.get(i).getAttribute("innerText"));
+            } else if (i == 2) {
+                assertEquals("Card settings", tabsElements.get(i).getAttribute("innerText"));
             } else {
                 fail("More than 3 tabs are found");
             }
@@ -15598,6 +15670,188 @@ public class Steps {
         if(!actualState){
             checkbox.click();
         }
+    }
+
+    @And("Compare if available amount balance from key {string} in my products screen for account from Excel {string} columnName {string} is reduced for amount from key {string} and fee from key {string}")
+    public void compareIfAvailableAmountBalanceFromKeyInMyProductsScreenForAccountFromExcelColumnNameIsReducedForAmountFromKeyAndFeeFromKey(String keyOldBalance, String rowindex, String columnName, String keyPaymentAmount, String keyFee) throws Throwable {
+        String stringForAccountBban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+
+        String xPathForCurrentBalance =
+                "(//nlb-product-card//*[contains(text(),'" + stringForAccountBban +
+                        "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[1]";
+
+        WebElement elementForCurrentBalance =
+                SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
+
+
+        String actualAmountString = elementForCurrentBalance
+                .getAttribute("textContent")
+                .trim();
+
+        String oldBalanceString = DataManager.userObject
+                .get(keyOldBalance)
+                .toString()
+                .trim();
+
+        String paymentAmountString = DataManager.userObject
+                .get(keyPaymentAmount)
+                .toString()
+                .trim();
+
+        String feeAmountString = DataManager.userObject.get(keyFee)
+                .toString()
+                .trim()
+                .replaceAll("\\s+", "")
+                .replaceAll("[^0-9,.-]", "");
+
+
+        System.out.println("========================================");
+        System.out.println("Account BBAN       : " + stringForAccountBban);
+        System.out.println("Old Balance        : " + oldBalanceString);
+        System.out.println("Payment Amount     : " + paymentAmountString);
+        System.out.println("Fee Amount         : " + feeAmountString);
+        System.out.println("Actual Balance     : " + actualAmountString);
+        System.out.println("========================================");
+
+        // Convert values to BigDecimal
+        BigDecimal oldBalance = new BigDecimal(
+                oldBalanceString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal paymentAmount = new BigDecimal(
+                paymentAmountString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal feeAmount = new BigDecimal(
+                feeAmountString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal actualAmount = new BigDecimal(
+                actualAmountString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal expectedAmount = oldBalance
+                .subtract(paymentAmount)
+                .subtract(feeAmount);
+
+        System.out.println("------------- BigDecimal values -------------");
+        System.out.println("Old Balance        : " + oldBalance);
+        System.out.println("Payment Amount     : " + paymentAmount);
+        System.out.println("Fee Amount         : " + feeAmount);
+        System.out.println("Expected Balance   : " + expectedAmount);
+        System.out.println("Actual Balance     : " + actualAmount);
+        System.out.println("---------------------------------------------");
+
+        assertEquals(0, actualAmount.compareTo(expectedAmount));
+    }
+
+    @And("Compare if current amount balance from key {string} in my products screen for account from Excel {string} columnName {string} is reduced for amount from key {string} and fee from key {string}")
+    public void compareIfCurrentAmountBalanceFromKeyInMyProductsScreenForAccountFromExcelColumnNameIsReducedForAmountFromKeyAndFeeFromKey(String keyOldBalance, String rowindex, String columnName, String keyPaymentAmount, String keyFee) throws Throwable {
+        String stringForAccountBban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForCurrentBalance = "(//nlb-product-card//*[contains(text(),'" + stringForAccountBban + "')]//ancestor::nlb-product-card//nlb-heading-text//span[1])[2]";
+        WebElement elementForCurrentBalance = SelectByXpath.CreateElementByXpath(xPathForCurrentBalance);
+
+        String actualAmountString = elementForCurrentBalance
+                .getAttribute("textContent")
+                .trim();
+
+        String oldBalanceString = DataManager.userObject
+                .get(keyOldBalance)
+                .toString()
+                .trim();
+
+        String paymentAmountString = DataManager.userObject
+                .get(keyPaymentAmount)
+                .toString()
+                .trim();
+
+        String feeAmountString = DataManager.userObject.get(keyFee)
+                .toString()
+                .trim()
+                .replaceAll("\\s+", "")
+                .replaceAll("[^0-9,.-]", "");
+
+
+        System.out.println("========================================");
+        System.out.println("Account BBAN       : " + stringForAccountBban);
+        System.out.println("Old Balance        : " + oldBalanceString);
+        System.out.println("Payment Amount     : " + paymentAmountString);
+        System.out.println("Fee Amount         : " + feeAmountString);
+        System.out.println("Actual Balance     : " + actualAmountString);
+        System.out.println("========================================");
+
+        // Convert values to BigDecimal
+        BigDecimal oldBalance = new BigDecimal(
+                oldBalanceString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal paymentAmount = new BigDecimal(
+                paymentAmountString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal feeAmount = new BigDecimal(
+                feeAmountString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal actualAmount = new BigDecimal(
+                actualAmountString.replace(".", "").replace(",", ".")
+        );
+
+        BigDecimal expectedAmount = oldBalance
+                .subtract(paymentAmount)
+                .subtract(feeAmount);
+
+        System.out.println("------------- BigDecimal values -------------");
+        System.out.println("Old Balance        : " + oldBalance);
+        System.out.println("Payment Amount     : " + paymentAmount);
+        System.out.println("Fee Amount         : " + feeAmount);
+        System.out.println("Expected Balance   : " + expectedAmount);
+        System.out.println("Actual Balance     : " + actualAmount);
+        System.out.println("---------------------------------------------");
+
+        assertEquals(0, actualAmount.compareTo(expectedAmount));
+    }
+
+    @And("Check if recipient is set in second account selector and if not enter address and city into input field")
+    public void checkIfRecipientIsSetInSecondAccountSelectorAndIfNotEnterAddressAndCityIntoInputFieldAndRememberUnderKeysAnd() throws Throwable {
+        String xpath = "//*[contains(text(), 'Change recipient')]";
+        String xPath1 = "//label[contains(text(),'Street and street number')]/following-sibling::div/div/div/input";
+        String xPath2 = "//label[contains(text(),'City')]/following-sibling::div/div/div/input";
+        Boolean flag = false;
+        try {
+            WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+            if(element.isDisplayed()){
+                flag = true;
+            }
+        }
+         catch (Throwable e) {
+             System.out.println("Change recipeient button is not present");
+        }
+
+        if(!flag){
+            WebElement element1 = SelectByXpath.CreateElementByXpath(xPath1);
+            WebElement element2 = SelectByXpath.CreateElementByXpath(xPath2);
+            element1.sendKeys("rtytuuiutr");
+            element2.sendKeys("qwewerwer");
+        }
+
+    }
+
+    @And("Assert three months are displayed in date picker correctly")
+    public void assertThreeMonthsAreDisplayedInDatePicker() throws Throwable {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH);
+        YearMonth current = YearMonth.now();
+        String previousMonthText = current.minusMonths(1).format(formatter);
+        String currentMonthText = current.format(formatter);
+        String nextMonthText = current.plusMonths(1).format(formatter);
+        String previousMonthXpath = "//*[contains(text(), '" + previousMonthText + "')]";
+        String currentMonthXpath = "//*[contains(text(), '" + currentMonthText + "')]";
+        String nextMonthXpath = "//*[contains(text(), '" + nextMonthText + "')]";
+        System.out.println(previousMonthXpath);
+        WebElement previousElement = SelectByXpath.CreateElementByXpath(previousMonthXpath);
+        WebElement currentElement = SelectByXpath.CreateElementByXpath(currentMonthXpath);
+        WebElement nextElement = SelectByXpath.CreateElementByXpath(nextMonthXpath);
+        Assert.assertTrue(previousElement.isDisplayed() && currentElement.isDisplayed() && nextElement.isDisplayed());
     }
 
 

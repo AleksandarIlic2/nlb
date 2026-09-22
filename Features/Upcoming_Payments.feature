@@ -6,6 +6,7 @@ Feature: Upcoming_Payments
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by contains text "Balance"
 
     When Click on tab "Payments" from main sidebar
     And Wait for "2" seconds

@@ -144,7 +144,8 @@ Feature: Current_Domestic_Accounts
     And Click on button with tag "i" containing class "icon-calendar-today"
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
-    And Assert three showed months are correctly displayed
+    And Assert three months are displayed in date picker correctly
+    #And Assert three showed months are correctly displayed
     And Click on element by containing text "Cancel"
     And Assert element by contains text "Last 7 days"
     And Assert element by contains text "This month"
@@ -171,7 +172,6 @@ Feature: Current_Domestic_Accounts
     And Wait for "1" seconds
     And Wait for first transaction in Product details
     And Assert transactions dates are from previous month
-    
     And Click on element by containing text "Clear filters"
     And Wait for "1" seconds
     And Wait for first transaction in Product details
@@ -226,25 +226,16 @@ Feature: Current_Domestic_Accounts
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
-#    And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_2_name"
-    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
     And Assert element by contains text "Transactions"
-    #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
-    And Assert element by contains text "Statements"
-    And Assert element by contains text "Details"
-    And Assert element by text " Filters"
-    And Click on element by containing text "Filters"
     And Scroll element by contains text "Details" into view
 
-    #Assertovanje Date Range (labela datuma od-do)
     Then Assert element by xPath "//label[text()='From']/following-sibling::div"
     And Assert element by xPath "//label[text()='To']/following-sibling::div"
-    #Assertovanje Tipa transakcije
     And Assert element by text "All"
     And Assert element by text "Incoming transactions"
     And Assert element by text "Outgoing transactions"
-    #Assertovanje Amount filtera (labela iznosa od-do)
     And Assert element by xPath "//label[text()='From ']/following-sibling::div"
     And Assert element by xPath "//label[text()='To ']/following-sibling::div"
     And Assert element by text " Confirm "
@@ -258,7 +249,8 @@ Feature: Current_Domestic_Accounts
     And Assert there are month categories in transactions list in Products details
     And Assert transaction dates are ordered correctly
     And Scroll element by contains text "Transactions" up
-    And Assert element by xPath "//h3[contains(@class, 'heading-5')]" is displayed
+
+    Then Assert element by xPath "//h3[contains(@class, 'heading-5')]" is displayed
 #    And Assert element by contains class "heading-5 ng-star-inserted" is displayed
     And Assert list of elements containing class "category-icon" are displayed
     And Assert list of elements containing class "medium tw-flex" are displayed
@@ -676,6 +668,7 @@ Feature: Current_Domestic_Accounts
 
     And Assert Statements filter has current year selected
     And Select year "2024" in Statements filter and assert there are 11 options
+    And Wait for element by contains text "Izvod"
     And Remember number of Statemants in Statemants list under key "keyNumberOfStatements"
     And Assert all dates in statements list is for year "2024" and they are sorted properly
     And Assert elements by attribute "class" contains value "subheadline medium" is displayed in amount from key "keyNumberOfStatements"
@@ -684,6 +677,37 @@ Feature: Current_Domestic_Accounts
 
     Then Click download on first statement in Statement list
     And Assert document with name starting with "Izvod_" and has file type ".pdf" is downloaded
+
+    Examples:
+      | rowindex |
+      |        5 |
+
+
+  @Current_Accounts_RSD_Statemants_Downloads_[WEB]
+  Scenario Outline: Current_Accounts_RSD_Statemants_Downloads_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+    And Assert transactions in my product have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert tabs in Product details are displayed correctly for Current Domestic Accounts
+    And Select "Statements" tab in Products details
+    And Assert "Statements" tab in Products details is selected
+    And Scroll to element by xPath "//a[contains(text(), 'Transactions')]" and scroll 1 more screen
+    And Wait for element by contains text "year"
+    And Assert either element with xPath "//nlb-selected-product-statements//nlb-empty-list//div[text() = 'There are no statements for the selected year.']/preceding-sibling::div/img[@alt='Empty list']" or element with xpath "(//nlb-statement-item)[1]" is displayed
+    And Assert Statements filter label is "Filter by year"
+
+    And Assert Statements filter has current year selected
+    And Assert first statement in Statement list
+    And Click download on first statement in Statement list
+
+    Then Assert document with name starting with "Izvod_" and has file type ".pdf" is downloaded
 
     Examples:
       | rowindex |

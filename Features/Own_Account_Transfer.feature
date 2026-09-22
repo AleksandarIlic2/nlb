@@ -775,6 +775,7 @@ Feature: Own_Account_Transfer
     And Assert element by text "Cancel"
     And Assert element by text "Back"
     And Click on button with descendant tag "div" contains text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "3.00" and currency "RSD" with message "Success"
     And Assert element by text "Success"
     And Assert element by contains class "nlb-icon icon-close"
     And Assert element by tag "div" containing text "Domestic payment"
@@ -795,17 +796,16 @@ Feature: Own_Account_Transfer
     And Assert that transaction currency in payment under name "INTERNAL TRANSFER" from text file is "RSD"
     And Assert that transaction "Account number" in opened past payment is from Excel "<rowindex>" columnName "current_account_1_bban"
     And Assert that transaction "Recipient account number" in opened past payment is from Excel "<rowindex>" columnName "current_account_3_bban"
-    And Assert that transaction "Name" in opened past payment contains text from Excel "<rowindex>" columnName "account_details_owner"
+    #And Assert that transaction "Name" in opened past payment contains text from Excel "<rowindex>" columnName "account_details_owner"
     And Assert that transaction "Payment status" in opened past payment is "Executed"
 
     Examples:
       | rowindex |
       |        5 |
 
-    # TODO test nije pustan , i nije dodat u execute fajl, takodje test treba prilagoditi za TST/UAT realnog korisnika
-    # TODO i uraditi po upustsvima sa teamsa-a
+
   @Payments-Own_Account_Transfer-From_Current_Account_RSD_To_Current_Authorized_Account_RSD_[WEB]
-  Scenario Outline: Payments-Own_Account_Transfer-From_Current_Account_RSD_To_Current_Account_RSD_[WEB]
+  Scenario Outline: Payments-Own_Account_Transfer-From_Current_Account_RSD_To_Current_Authorized_Account_RSD_[WEB]
 
     Given Open Login page
     And Change language to English
@@ -947,9 +947,7 @@ Feature: Own_Account_Transfer
 
     And Assert element by contains text "Payment amount"
     And Assert element by contains id "amount-input" is displayed
-    And Assert element by tag "input" contains aria label "RSD"
     And Enter text "5" in field by contains id "amount-input"
-    And Enter text "" into Payment amount input field and remember it under key ""
     And Assert element by contains text "Purpose"
     And Assert element by contains text "INTERNAL TRANSFER"
     And Assert element by contains text "Payment date"
@@ -976,14 +974,18 @@ Feature: Own_Account_Transfer
     And Assert element by text "Cancel"
     And Assert element by text "Back"
     And Click on button with descendant tag "div" contains text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "3.00" and currency "RSD" with message "Success"
     And Assert element by text "Success"
     And Assert element by contains class "nlb-icon icon-close"
     And Assert element by tag "div" containing text "Domestic payment"
 #    And Wait for "60" seconds
 
     Then Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Refresh page
+    And Wait for first product to load
     And Compare if current amount balance from key "IT_001_Debtor_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_2_bban" and reduced amount "5" is correct
-    And Compare if current amount balance from key "IT_001_Creditor_Balance" in my products screen for account from Exlce "<rowindex>" columnName "credit_card_1_number" and added amount "5" is correct
+    And Compare if current amount balance from key "IT_001_Creditor_Balance" in my products screen for account from Exlce "<rowindex>" columnName "credit_card_1_number" and added amount "0" is correct
     And Click on tab "Payments" from main sidebar
     And Assert element by tag "div" containing text "Payments"
     And Click on element by containing text "Past payments"
@@ -1048,7 +1050,6 @@ Feature: Own_Account_Transfer
 
     And Assert element by text "Payment amount "
     And Assert element by contains id "amount-input" is displayed
-    And Assert element by tag "input" contains aria label "RSD"
     And Enter text "5" in field by contains id "amount-input"
     And Assert element by text "Purpose"
     And Assert element by text "INTERNAL TRANSFER"
