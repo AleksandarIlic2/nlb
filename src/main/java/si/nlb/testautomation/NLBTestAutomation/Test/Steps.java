@@ -15854,6 +15854,22 @@ public class Steps {
         Assert.assertTrue(previousElement.isDisplayed() && currentElement.isDisplayed() && nextElement.isDisplayed());
     }
 
+    @And("Assert three months are displayed in date picker")
+    public void assertThreeMonthsAreDisplayedInDatePicker() throws Throwable {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH);
+        YearMonth current = YearMonth.now();
+        String previousMonthText = current.minusMonths(1).format(formatter);
+        String currentMonthText = current.format(formatter);
+        String nextMonthText = current.plusMonths(1).format(formatter);
+        String previousMonthXpath = "//*[text()='" + previousMonthText + "']";
+        String currentMonthXpath = "//*[text()='" + currentMonthText + "']";
+        String nextMonthXpath = "//*[text()='" + nextMonthText + "']";
+        WebElement previousElement = SelectByXpath.CreateElementByXpath(previousMonthXpath);
+        WebElement currentElement = SelectByXpath.CreateElementByXpath(currentMonthXpath);
+        WebElement nextElement = SelectByXpath.CreateElementByXpath(nextMonthXpath);
+        Assert.assertTrue(previousElement.isDisplayed() && currentElement.isDisplayed() && nextElement.isDisplayed());
+    }
+
 
 
 }

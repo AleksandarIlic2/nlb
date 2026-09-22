@@ -448,7 +448,7 @@ Feature: Product_Summary
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
-    And Wait for element by text "Pay or transfer"
+    And Wait for element by text "Balance"
     And Assert that products in my products have loaded
     And Assert element by class "button-bold"
 
@@ -478,14 +478,14 @@ Feature: Product_Summary
     And Assert that products in my products have loaded
     And Assert element by class "button-bold"
 
-    When Scroll to account from excel "<rowindex>" columnName "current_account_1_iban" in my products page
+    When Scroll to account from excel "<rowindex>" columnName "current_account_1_bban" in my products page
     And Assert Current domestic accounts icons is displayed
     And Assert Current domestic accounts product names is displayed
     And Assert Current domestic accounts account numbers is displayed
     And Assert Current domestic accounts available balances is displayed
     And Assert Current domestic accounts current balances is displayed
 
-    Then Click on element from Excel "<rowindex>" contains text columnName "current_account_2_bban"
+    Then Click on element from Excel "<rowindex>" contains text columnName "current_account_1_bban"
     And Wait for first transaction in Product details
     And Assert tabs in Product details are displayed correctly for Current Domestic Accounts
 
