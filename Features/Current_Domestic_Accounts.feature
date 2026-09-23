@@ -688,3 +688,30 @@ Feature: Current_Domestic_Accounts
     Examples:
       | rowindex |
       |        5 |
+
+
+  @Current_Domestic_Accounts_Header_Display_[WEB]
+  Scenario Outline: Current_Domestic_Accounts_Header_Display_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+    And Assert transactions in my product have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert tabs in Product details are displayed correctly for Current Domestic Accounts
+    And Assert available balance and current balance in header
+    And Assert element by contains src "CurrentAccount-Icon" is displayed
+    
+    Then Assert element by contains text "Download transaction list"
+    And Assert element by contains text "Filters"
+    And Assert element by contains text "Search"
+    And Assert tag "input" is displayed
+    And Assert transaction is displayed correctly in Products details
+
+    Examples:
+      | rowindex |
+      |        5 |

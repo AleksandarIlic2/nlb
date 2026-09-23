@@ -6,17 +6,19 @@ Feature: Loan_Account
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+    And Click on tab "My Products" from main sidebar
     And Assert that products in my products have loaded
     And Wait for first product to load
 
-    When Scroll to account from excel "<rowindex>" columnName "loan_account_2_number" in my products page
+    When Scroll to account from excel "<rowindex>" columnName "loan_account_1_number" in my products page
     And Assert that loan accounts are sorted correctly
     And Assert Loan accounts icons is displayed
     And Assert Loan accounts product names is displayed
     And Assert Loan accounts account numbers is displayed
     And Assert Loan accounts current loan balance is displayed
 
-    Then Click on element from Excel "<rowindex>" contains text columnName "loan_account_2_number"
+    Then Click on element from Excel "<rowindex>" contains text columnName "loan_account_1_number"
     And Wait for product details to load
     And Assert Loan labels are displayed in the following order:
       | Financial details   |

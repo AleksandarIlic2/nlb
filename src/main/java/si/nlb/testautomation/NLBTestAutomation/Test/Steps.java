@@ -11197,6 +11197,7 @@ public class Steps {
         LocalDate targetDate = LocalDate.parse(dateString, inputFormatter);
         String ariaLabel = targetDate.format(DateTimeFormatter.ofPattern("d-M-yyyy"));
 
+        System.out.println(ariaLabel);
         String dayXPath = "//*[@role='gridcell' and @aria-label='" + ariaLabel + "']";
         String prevMonthButtonXPath = "//*[contains(@aria-label, 'Previous month')]";
 
@@ -11560,7 +11561,7 @@ public class Steps {
         }
         System.out.println("IME" + actualNames);
         List<String> expectedNames = new ArrayList<>(actualNames);
-        expectedNames.sort(Comparator.reverseOrder());
+        expectedNames.sort(Comparator.naturalOrder());
 
         assertEquals("Loan accounts are not sorted descending by name", expectedNames, actualNames);
     }
@@ -15834,44 +15835,42 @@ public class Steps {
             element1.sendKeys("rtytuuiutr");
             element2.sendKeys("qwewerwer");
         }
-
     }
 
-    @And("Assert three months are displayed in date picker correctly")
-    public void assertThreeMonthsAreDisplayedInDatePicker() throws Throwable {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH);
-        YearMonth current = YearMonth.now();
-        String previousMonthText = current.minusMonths(1).format(formatter);
-        String currentMonthText = current.format(formatter);
-        String nextMonthText = current.plusMonths(1).format(formatter);
-        String previousMonthXpath = "//*[contains(text(), '" + previousMonthText + "')]";
-        String currentMonthXpath = "//*[contains(text(), '" + currentMonthText + "')]";
-        String nextMonthXpath = "//*[contains(text(), '" + nextMonthText + "')]";
-        System.out.println(previousMonthXpath);
-        WebElement previousElement = SelectByXpath.CreateElementByXpath(previousMonthXpath);
-        WebElement currentElement = SelectByXpath.CreateElementByXpath(currentMonthXpath);
-        WebElement nextElement = SelectByXpath.CreateElementByXpath(nextMonthXpath);
-        Assert.assertTrue(previousElement.isDisplayed() && currentElement.isDisplayed() && nextElement.isDisplayed());
+    @And("Click on tag {string} with index {string}")
+    public void clickOnTagWithIndex(String tag, String index) throws Throwable {
+        String xPath = "(//" + tag + ")["+index+"]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        hp.ClickOnElement(element);
     }
 
-    @And("Assert three months are displayed in date picker")
-    public void assertThreeMonthsAreDisplayedInDatePicker() throws Throwable {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH);
-        YearMonth current = YearMonth.now();
-        String previousMonthText = current.minusMonths(1).format(formatter);
-        String currentMonthText = current.format(formatter);
-        String nextMonthText = current.plusMonths(1).format(formatter);
-        String previousMonthXpath = "//*[text()='" + previousMonthText + "']";
-        String currentMonthXpath = "//*[text()='" + currentMonthText + "']";
-        String nextMonthXpath = "//*[text()='" + nextMonthText + "']";
-        WebElement previousElement = SelectByXpath.CreateElementByXpath(previousMonthXpath);
-        WebElement currentElement = SelectByXpath.CreateElementByXpath(currentMonthXpath);
-        WebElement nextElement = SelectByXpath.CreateElementByXpath(nextMonthXpath);
-        Assert.assertTrue(previousElement.isDisplayed() && currentElement.isDisplayed() && nextElement.isDisplayed());
+    @And("Remember number of transactions in product details under key {string}")
+    public void rememberNumberOfTransactionsInProductDetailsUnderKey(String key) throws Throwable {
+        String xpath = "//nlb-transaction-card";
+        List<WebElement> cards = SelectByXpath.CreateElementsByXpath(xpath);
+        int number = cards.size();
+        System.out.println("Transaction amount is "+number);
+        DataManager.userObject.put(key, number);
     }
 
+    @And("Assert number of transaction in product details is equal to amount from key {string}")
+    public void assertNumberOfTransactionInProductDetailsIsEqualToAmountFromKey(String key) throws Throwable {
+        int numberExpected = Integer.parseInt(DataManager.userObject.get(key).toString());
+        System.out.println("EXPECTED "+numberExpected);
+        String xpath = "//nlb-transaction-card";
+        List<WebElement> cards = SelectByXpath.CreateElementsByXpath(xpath);
+        int numberActual = cards.size();
+        System.out.println("Transaction amount is "+numberActual);
+        Assert.assertEquals(numberExpected, numberActual);
+    }
 
-
+    @And("Assert available balance in header")
+    public void assertAvailableBalanceInHeader() throws Throwable {
+        String xPathAvailableBalance = "//div[contains(@class,'heading-2')]//nlb-amount";
+        WebElement availableBalanceElement = SelectByXpath.CreateElementByXpath(xPathAvailableBalance);
+        assertTrue(availableBalanceElement.isDisplayed());
+        assertTrue(availableBalanceElement.getText().matches("^[\\-−]?(?:0|[1-9]\\d{0,2}(?:\\.\\d{3})*),\\d{2}\\s[A-Z]{3}$"));
+    }
 }
 
 

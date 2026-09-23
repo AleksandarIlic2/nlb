@@ -130,20 +130,20 @@ Feature: Credit_Cards
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
-    And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
-    And Assert Credit card BBAN in Product details is from Excel "<rowindex>" columnName "credit_card_2_number"
+    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_1_number"
+    And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_1_name"
+    And Assert Credit card BBAN in Product details is from Excel "<rowindex>" columnName "credit_card_1_number"
     And Click on element by containing text "Filters"
     And Scroll element by contains text "Details" into view
 
     Then Click on button with tag "i" containing class "icon-calendar-today"
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
-
-    And Select date in From label to be "15.04.2026"
+    And Select date in From label to be "15.08.2026"
     And Click on calendar icon with index "2"
-    And Check if date "12.04.2026" is not enabled
-    And Check if date "02.04.2026" is not enabled
+    And Wait for "1" seconds
+    And Check if date "12.08.2026" is not enabled
+    And Check if date "02.08.2026" is not enabled
 
     Examples:
       | rowindex |
@@ -219,7 +219,6 @@ Feature: Credit_Cards
     And Wait for element by tag "nlb-product-detail-header"
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
     And Assert element by text from excel "<rowindex>" columnName "credit_card_2_number" is displayed
-
     And Assert Transactions tab is selected by default
     And Click on element by containing text "Filters"
 
@@ -227,20 +226,19 @@ Feature: Credit_Cards
     And Scroll screen down
     And Select radio button by text "Incoming transactions"
     And Click on element by text " Confirm "
+    And Wait for "1" seconds
     And Wait for first transaction in Product details
     And Assert there are only Incoming transactions in transactions list
-    And Assert there are only "Incoming transactions" transactions in transactions list
     And Assert transaction dates are ordered correctly
 
     And Click on element by containing text "Clear filters"
     And Click on element by containing text "Filters"
-#    And Assert date picker "card"
     And Scroll screen down
     And Select radio button by text "Outgoing transactions"
     And Click on element by containing text "Confirm"
+    And Wait for "1" seconds
     And Wait for first transaction in Product details
     And Assert there are only Outgoing transactions in transactions list
-#    And Assert there are only "outgoing" transactions in transactions list
     And Assert transaction dates are ordered correctly
 
     Examples:
@@ -267,16 +265,17 @@ Feature: Credit_Cards
     And Assert Advanced filters Amount range fields for Domestic accounts are correct displayed
     And Assert All is selected in Transaction type by default
 
-    Then Enter "100" to Amount filter "From"
-    And Enter "800" to Amount filter "To"
-    And Assert Amount filter field "From" has value "100,00"
-    And Assert Amount filter field "To" has value "800,00"
+    Then Enter "4" to Amount filter "From"
+    And Enter "10" to Amount filter "To"
+    And Assert Amount filter field "From" has value "4,00"
+    And Assert Amount filter field "To" has value "10,00"
     And Click on NLB button "Confirm"
     And Wait for first transaction in Product details
-    And Assert transaction amounts after filter are between 100 and 800
+    And Assert transaction amounts after filter are between 4 and 10
     And Click on NLB button "Clear filters"
+    And Wait for "1" seconds
     And Wait for first transaction in Product details
-    And Assert that transaction amounts after filter disabling are not only between 100 and 800
+    And Assert that transaction amounts after filter disabling are not only between 4 and 10
 
     Examples:
       | rowindex |
@@ -299,7 +298,6 @@ Feature: Credit_Cards
 
     Then Enter "1000" to Amount filter "From"
     And Enter "800" to Amount filter "To"
-#    And Assert element by contains text "From amount must be smaller than To amount"
     And Assert element by contains text "ValidationError"
 
     Examples:
@@ -373,14 +371,12 @@ Feature: Credit_Cards
     #panding
     And Click on element by containing text "Pending"
     And Click on NLB button "Confirm"
-#    And Wait for element by text "There are no transactions to be displayed."
-#    And Assert element by text "There are no transactions to be displayed."
-    And Wait for element by contains text "EmptyState"
-    And Assert element by contains text "EmptyState"
+    And Wait for element by contains text "No transactions found"
+    And Assert element by contains text "No transactions found"
 
     #all
-#    And Click on element by text "All" index "2"
-    And Click on element by text "Products_CurrentAccount_ChequeDetails_EditChequeData_Status_All"
+    And Click on tag "nlb-radio-button" with index "4"
+    #And Click on element by text "Products_CurrentAccount_ChequeDetails_EditChequeData_Status_All"
     And Click on NLB button "Confirm"
     And Wait for first transaction in Product details
     And Assert there are both incoming and outgoing transactions
@@ -399,7 +395,6 @@ Feature: Credit_Cards
     And Wait for element by text "Pay or transfer"
     And Assert that products in my products have loaded
 
-    #User is logged into aplication and clicks on the My Products page frome the menu
     When Assert element by class "button-bold" and contains text "Edit list"
     And Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
     And Wait for element by tag "nlb-product-detail-header"
@@ -410,16 +405,15 @@ Feature: Credit_Cards
     And Click on element by containing text "Filters"
 
     And Click on calendar icon with index "1"
-    And Select date in From label to be "15.04.2026"
+    And Select date in From label to be "15.08.2026"
     And Click on calendar icon with index "2"
-    And Check if date "12.04.2026" is not enabled
-    And Check if date "05.04.2026" is not enabled
+    And Check if date "12.08.2026" is not enabled
+    And Check if date "05.08.2026" is not enabled
     And Assert element by aria label "Previous month" is not enabled
     And Click on element by containing text "Cancel"
 
     Then Enter "10000" to Amount filter "From"
     And Enter "5000" to Amount filter "To"
-#    And Assert element by contains text "From amount must be smaller than To amount"
     And Assert element by contains text "ValidationError"
 
     Examples:
@@ -483,6 +477,45 @@ Feature: Credit_Cards
     And Assert list of elements containing class "medium tw-flex" are displayed
     And Assert list of elements containing class "caption medium tw-text" are displayed
     And Assert list of elements containing class "5 tw-flex tw-justify" are displayed
+
+    Examples:
+      | rowindex |
+      |        1 |
+
+
+  @Credit_Cards_Transactions_Search_Option_[WEB]
+  Scenario Outline: Credit_Cards_Transactions_Search_Option_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Assert that products in my products have loaded
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
+    And Wait for first transaction in Product details
+    And Remember number of transactions in product details under key "keyAmountOfTransaction"
+
+    # unos jednog slova
+    And Enter text "Q" into input field
+    And Wait for "1" seconds
+    And Wait for first transaction in Product details
+    And Assert number of transaction in product details is equal to amount from key "keyAmountOfTransaction"
+    And Click on element by containing class "icon-close"
+    And Wait for "1" seconds
+
+    # unos nasumicnog teksta
+    And Enter text "QZQWETYUIXZX" into input field
+    And Wait for "1" seconds
+    And Wait for first transaction in Product details
+    And Wait for element by contains text "No transactions found"
+    And Click on element by containing class "icon-close"
+    And Wait for "1" seconds
+
+     # unos validne vrednost
+    Then Enter text "INTERNAL" into input field
+    And Wait for "1" seconds
+    And Wait for first transaction in Product details
+    And Assert transactions in Product details have Purpose "INTERNAL TRANSFER"
 
     Examples:
       | rowindex |
