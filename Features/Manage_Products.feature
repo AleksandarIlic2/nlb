@@ -220,40 +220,40 @@ Feature: Manage_Products
 
   @Manage_Products-Favorite_account_[WEB]
   Scenario Outline: Manage_Products-Favorite_account_[WEB]
-    #TODO: Podignut BUG za prikazivanje bbanova/ibnaova, sacekati da se resi..
+    
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
-    When Wait for element by text "Pay or transfer"
+    And Wait for element by text "Balance"
 
-
-    #User is logged into aplication and clicks on the My Products page frome the menu
-    When Click on tab "My products" from main sidebar
-    #User is looking at the page
+    When Click on tab "My Products" from main sidebar
     And Wait for element by text "Edit list"
-    Then Assert element by class "button-bold" and contains text "Edit list"
-    #User clicks on button for Edit product view
     And Click on element by text "Edit list"
     And Wait for element by class "icon-eye"
-    #User clicks on option Set favorite account
     And Click on element by text "Set favorite account"
-    And Wait for element by text " Apply "
-    Then Assert element by class "tw-items-center" and contains text "Apply"
-    #User choose account
-    And Click Radio Button with index "favorite_acc" from excel "<rowindex>" column "current_account_3_iban"
-    #User clicks on Apply button
-    And Click on element by text " Apply "
+    And Wait for element by contains text "Apply"
+    And Click Radio Button with index "favorite_acc" from excel "<rowindex>" column "current_account_1_iban"
+    And Click on element by containing text "Apply"
     And Wait for element by text "Success"
-    And Assert element by text "Success"
-    #Assert first element
-    And Assert for first element in product screen
+    And Assert that first product in edit product view list is from Excel "<rowindex>" columnName "current_account_1_iban"
 
-    And Click on tab "My products" from main sidebar
+    And Click on tab "My Products" from main sidebar
     And Assert that products in my products have loaded
-    And Assert that first product shown on my products page is from Excel "<rowindex>" columnName "current_account_3_iban"
+    And Assert that first product shown on my products page is from Excel "<rowindex>" columnName "current_account_1_iban"
 
+    Then Wait for element by text "Edit list"
+    And Click on element by text "Edit list"
+    And Wait for element by class "icon-eye"
+    And Click on element by text "Set favorite account"
+    And Wait for element by contains text "Apply"
+    And Click Radio Button Default
+    And Click on element by containing text "Apply"
+    And Wait for element by text "Success"
+    And Assert that first product in edit product view list is from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Click on tab "My Products" from main sidebar
+    And Assert that products in my products have loaded
+    And Assert that first product shown on my products page is from Excel "<rowindex>" columnName "current_account_1_bban"
 
-    #TO DO - autorizovani account
     Examples:
       | rowindex |
       | 1        |
@@ -262,43 +262,39 @@ Feature: Manage_Products
 
   @Manage_Products-Favorite_account-Removal_of_the_favorite_account_[WEB]
   Scenario Outline: Manage_Products-Favorite_account-Removal_of_the_favorite_account_[WEB]
-     #TODO: Podignut BUG za prikazivanje bbanova/ibnaova, sacekati da se resi..
+
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
-    When Wait for element by text "Pay or transfer"
+    And Wait for element by text "Balance"
 
-
-    #User is logged into aplication and clicks on the My Products page frome the menu
-    When Click on tab "My products" from main sidebar
-    #User is looking at the page
+    When Click on tab "My Products" from main sidebar
     And Wait for element by text "Edit list"
-    Then Assert element by class "button-bold" and contains text "Edit list"
-    #User clicks on button for Edit product view
+    And Assert element by class "button-bold" and contains text "Edit list"
     And Click on element by text "Edit list"
     And Wait for element by class "icon-eye"
-    #User clicks on option Set favorite account
     And Click on element by text "Set favorite account"
-    And Wait for element by text " Apply "
-    Then Assert element by class "tw-items-center" and contains text "Apply"
-    And Click Radio Button with index "favorite_acc" from excel "<rowindex>" column "current_account_2_bban"
-
-    #User clicks on Apply button
-    And Click on element by text " Apply "
+    #PADA #TODO
+    And Click Radio Button with index "favorite_acc" from excel "<rowindex>" column "current_account_1_iban"
+    And Click on element by containing text "Apply"
     And Wait for element by text "Success"
     And Assert element by text "Success"
-    And Click on element by text "Set favorite account"
-    #User choose Default sorting
-    And Click Radio Button Default
-    #User clicks on Apply button
-    And Click on element by text " Apply "
-    And Wait for element by text "Success"
-    And Assert element by text "Success"
-    #Assert first element
-    And Assert for first element in product screen default from excel "<rowindex>" column "default_account_bban"
-    And Click on tab "My products" from main sidebar
+    And Click on tab "My Products" from main sidebar
     And Assert that products in my products have loaded
-    And Assert that first product shown on my products page is from Excel "<rowindex>" columnName "default_account_bban"
+    And Assert that first product shown on my products page is from Excel "<rowindex>" columnName "current_account_1_iban"
+
+    Then Click on element by text "Edit list"
+    And Wait for element by class "icon-eye"
+    And Assert that first product in edit product view list is from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Click on element by text "Set favorite account"
+    And Click Radio Button Default
+    And Click on element by containing text "Apply"
+    And Wait for element by text "Success"
+    And Assert element by text "Success"
+    And Assert for first element in product screen default from excel "<rowindex>" column "current_account_1_bban"
+    And Click on tab "My Products" from main sidebar
+    And Assert that products in my products have loaded
+    And Assert that first product shown on my products page is from Excel "<rowindex>" columnName "current_account_1_bban"
 
     Examples:
       | rowindex |

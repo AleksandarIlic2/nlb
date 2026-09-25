@@ -10412,9 +10412,7 @@ public class Steps {
 
     @Then("Assert xlsx values are correct")
     public void assertXlsxValuesAreCorrect() throws Exception {
-
-        List<Map<String,String>> transactions =
-                (List<Map<String,String>>) DataManager.userObject.get("Transactions");
+        List<Map<String,String>> transactions = (List<Map<String,String>>) DataManager.userObject.get("Transactions");
 
         System.out.println("MAPA:\n");
         for (int i = 0; i < transactions.size(); i++) {
@@ -13464,7 +13462,7 @@ public class Steps {
     public void assertOptionButtonsInPayments() throws Throwable {
         String xPath = "//button/div/following-sibling::div";
         List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
-        assertEquals(5, elements.size());
+        assertEquals(6, elements.size());
 
         for (int i = 0; i < elements.size(); i++) {
             switch (i) {
@@ -13485,6 +13483,9 @@ public class Steps {
                     break;
                 case 4:
                     Assert.assertEquals("Templates", elements.get(i).getText());
+                    break;
+                case 5:
+                    Assert.assertEquals("Prepaid Mobile Top-up", elements.get(i).getText());
                     break;
             }
         }
@@ -13989,7 +13990,14 @@ public class Steps {
         }
     }
 
-
+    @And("Assert that first product in edit product view list is from Excel {string} columnName {string}")
+    public void assertThatFirstProductShownEditProductViewListIsFromExcelColumnName(String rowindex, String columnName) throws Throwable {
+        String stringForAccountIban = DataManager.getDataFromHashDatamap(rowindex, columnName);
+        String xPathForListOfAccountIbans = "(//*[contains(@class,'tw-hidden xs:tw-block subheadline')])[1]";
+        List<WebElement> elementListOfAccountIbans = SelectByXpath.CreateElementsByXpath(xPathForListOfAccountIbans);
+        String stringForActualFirstIban = elementListOfAccountIbans.get(0).getAttribute("innerText");
+        assertEquals(stringForAccountIban, stringForActualFirstIban);
+    }
 
 
     private static class AccountRow {
@@ -15871,6 +15879,59 @@ public class Steps {
         assertTrue(availableBalanceElement.isDisplayed());
         assertTrue(availableBalanceElement.getText().matches("^[\\-−]?(?:0|[1-9]\\d{0,2}(?:\\.\\d{3})*),\\d{2}\\s[A-Z]{3}$"));
     }
+
+    @And("Assert accounts are sorted in account selector dropdown list in past payments")
+    public void assertAccountsAreSortedInAccountSelectorDropdownListInPastPayments() throws Throwable {
+        String xpath = "//img[contains(@src, 'product-icon')]";
+        List<String> expectedOrder = Arrays.asList("CurrentAccount-Icon", "SavingsAccount-Icon");
+        List<WebElement> cards = SelectByXpath.CreateElementsByXpath(xpath);
+        Set<String> cardAttributes = new LinkedHashSet<>();
+
+        for (WebElement element : cards) {
+            String src = element.getAttribute("src");
+            String iconName = src.replaceAll(".*/product-icon/|\\.svg$", "");
+            cardAttributes.add(iconName);
+        }
+        System.out.println("EXPECTED ORDER = " + expectedOrder);
+        System.out.println("SET FROM UI = " + cardAttributes);
+        List<String> finalActualList = new ArrayList<>(cardAttributes);
+        System.out.println("FINAL ACTUAL LIST = " + finalActualList);
+        Assert.assertEquals(expectedOrder, finalActualList);
+    }
+
+    @Then("Remember data for transactions {string}")
+    public void rememberDataTransactions(String type) throws Throwable {
+        List<Map<String, String>> transactions = new ArrayList<>();
+        List<WebElement> cards = driver.findElements(
+                By.xpath("//nlb-transaction-card")
+        );
+        for (WebElement card : cards) {
+            Map<String, String> values = new HashMap<>();
+            String valueDate = card.findElement(By.xpath(
+                    ".//div[contains(@class,'caption') and contains(@class,'tw-text-gray-400')][1]"
+            )).getText().trim();
+            values.put("valueDate", valueDate);
+            String purpose = card.findElement(By.xpath(
+                    ".//h4//nlb-heading-text[contains(@class,'xs')]//div"
+            )).getText().trim();
+            values.put("purpose", purpose);
+            String amount = card.findElement(By.xpath(
+                    ".//nlb-amount//div[not(@class)]"
+            )).getText().trim();
+            System.out.println("Amount u remember: " + amount);
+
+            if (type.toLowerCase().contains("outgoing")) {
+                values.put("type", amount.substring(0, 1));
+            }
+            values.put("amount", amount);
+            transactions.add(values);
+        }
+        for (Map<String, String> t : transactions) {
+            System.out.println("Transaction: " + t);
+        }
+        DataManager.userObject.put("Transactions", transactions);
+    }
+
 }
 
 

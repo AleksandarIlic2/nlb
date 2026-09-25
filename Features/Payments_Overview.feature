@@ -6,7 +6,7 @@ Feature: Payments_Overview
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
-    And Wait for element by text "Pay or transfer"
+    And Wait for element by text "Balance"
 
     When Click on tab "Payments" from main sidebar
     And Wait for element by text "Domestic payment"
@@ -16,7 +16,8 @@ Feature: Payments_Overview
     And Assert Past payments tab is selected in Payments
 
     Then Click on tag "nlb-account-selector"
-    And Assert accounts are sorted by account number priority and currency priority
+    And Wait for "1" seconds
+    And Assert accounts are sorted in account selector dropdown list in past payments
 
     Examples:
       | rowindex |

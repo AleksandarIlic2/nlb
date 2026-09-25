@@ -80,22 +80,23 @@ Feature: Foreign_Current_Account
       |        2 |
 
 
-  @Current_Domestic_Accounts-Transactions-Download_option_[WEB]
-  Scenario Outline: Current_Domestic_Accounts-Transactions-Download_option_[WEB]
+  @Current_Foreign_Accounts-Transactions-Download_option_[WEB]
+  Scenario Outline: Current_Foreign_Accounts-Transactions-Download_option_[WEB]
 
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
-    And Wait for element by text "Pay or transfer"
+    And Wait for element by text "Balance"
+    And Click on tab "My Products" from main sidebar
     And Assert that products in my products have loaded
     And Assert element by class "button-bold"
 
     #User clicks on a current account on the My Products page
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for element by tag "nlb-product-detail-header"
-    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_iban"
+    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
     And Assert order of tabs in tablist "foreign"
-    And Assert element by text " Download transaction list "
+    And Assert element by contains text "Download transaction list"
     And Assert element by contains class "icon-download"
     And Assert element by tag "input" and type "search"
     And Assert element by text "Search "
@@ -104,34 +105,26 @@ Feature: Foreign_Current_Account
     And Assert date picker "domestic"
 
     #filter by amount
-    And Enter "100,00" to Amount filter "From"
-    And Enter "500,00" to Amount filter "To"
+    And Enter "2" to Amount filter "From"
+    And Enter "5" to Amount filter "To"
     And Click on NLB button "Confirm"
     And Wait for first transaction in Product details
-    And Assert transaction amounts after filter are between 100 and 500
+    And Assert transaction amounts after filter are between 2 and 5
 
     #filter by type
     And Select transaction type "Outgoing transactions" in Advanced filters
     And Click on NLB button "Confirm"
+    And Wait for "1" seconds
     And Wait for first transaction in Product details
     And Assert there are only Outgoing transactions in transactions list
 
-    Then Remember transactions "Outgoing transactions"
-      # and clicks on the Download in Excel option
+    Then Remember data for transactions "Outgoing transactions"
     And Click on normalized text "Download transaction list"
-#    And Assert Download transactions options are "EXCEL" and "CSV"
     And Assert Download transactions options are "Products_Common_Transactions_Download_Excel_Action" and "Products_Common_Transactions_Download_CSV_Action"
-#    And Scroll element by contains text "CSV" into bottom view
-    And Scroll element by contains text "Products_Common_Transactions_Download_CSV_Action" into bottom view
-#    And Click on element by containing text "EXCEL"
     And Click on element by containing text "Products_Common_Transactions_Download_Excel_Action"
     And Assert document with name "Transactions.xlsx" is downloaded
     And Assert xlsx values are correct
-       # and clicks on the Download in CSV option
     And Click on normalized text "Download transaction list"
-#    And Assert Download transactions options are "EXCEL" and "CSV"
-    And Assert Download transactions options are "Products_Common_Transactions_Download_Excel_Action" and "Products_Common_Transactions_Download_CSV_Action"
-#    And Click on element by containing text "CSV"
     And Click on element by containing text "Products_Common_Transactions_Download_CSV_Action"
     And Assert document with name "Transactions.csv" is downloaded
     And Assert csv values are correct

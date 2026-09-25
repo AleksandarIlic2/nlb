@@ -6,16 +6,16 @@ Feature: Current_Domestic_Accounts
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
-    And Wait for element by text "Pay or transfer"
+    And Wait for element by text "Balance"
     And Assert that products in my products have loaded
     And Assert element by class "button-bold"
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for element by tag "nlb-product-detail-header"
     And Assert available balance and current balance in header
-    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_bban"
+    And Assert Product IBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_bban"
     And Assert order of tabs in tablist "domestic"
-    And Assert element by text " Download transaction list "
+    And Assert element by contains text "Download transaction list"
     And Assert element by contains class "icon-download"
     And Assert element by tag "input" and type "search"
     And Assert element by text "Search "
@@ -24,11 +24,11 @@ Feature: Current_Domestic_Accounts
     And Assert date picker "domestic"
 
     #filter by amount
-    And Enter "100,00" to Amount filter "From"
-    And Enter "500,00" to Amount filter "To"
+    And Enter "10" to Amount filter "From"
+    And Enter "12" to Amount filter "To"
     And Click on NLB button "Confirm"
     And Wait for first transaction in Product details
-    And Assert transaction amounts after filter are between 100 and 500
+    And Assert transaction amounts after filter are between 10 and 12
 
     #filter by type
     And Select transaction type "Outgoing transactions" in Advanced filters
@@ -37,7 +37,7 @@ Feature: Current_Domestic_Accounts
     And Assert there are only Outgoing transactions in transactions list
 
 #    And Assert there are only "Outgoing transactions" transactions in transactions list
-    Then Remember transactions "Outgoing transactions"
+    Then Remember data for transactions "Outgoing transactions"
       # and clicks on the Download in Excel option
     And Click on normalized text "Download transaction list"
 #    And Assert Download transactions options are "EXCEL" and "CSV"
