@@ -41,24 +41,27 @@ Feature: Credit_Cards
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
-    And Wait for element by text "Pay or transfer"
-    And Assert that products in my products have loaded
+    And Wait for element by text "Balance"
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
 
     When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
+    And Assert Transactions tab is selected by default
     And Assert tabs in Product details are displayed correctly for Credit Cards
+    And Assert element by contains text "Statements"
+    And Assert element by contains text "Details"
     And Assert element by contains src "CreditCard-Icon" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "cardName" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "credit_card_2_number" is displayed
-    And Assert amount and currency are displayed by xPaths "(//div/nlb-amount/div/span)[1]" and "(//div/nlb-amount/div/span)[2]"
+    And Assert amount and currency are displayed correctly in credit card product detail header
 
     Then Click on element by containing text "Details"
-    And Wait for element by xPath "(//*[text() = 'Financial details'])[2]"
+    And Wait for element by contains text "Financial details"
     And Assert element by contains src "CreditCard-Icon" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "credit_card_2_number" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "cardName" is displayed
-    And Assert amount and currency are displayed by xPaths "(//div/nlb-amount/div/span)[1]" and "(//div/nlb-amount/div/span)[2]"
-    And Assert element by xPath "(//*[text() = 'Financial details'])[2]" is displayed
-    And Assert element by xPath "(//*[text() = 'Account details'])[2]" is displayed
+    And Assert amount and currency are displayed correctly in credit card product detail header
+    And Assert element by contains text "Account details"
 
     Examples:
       | rowindex |
@@ -139,11 +142,11 @@ Feature: Credit_Cards
     Then Click on button with tag "i" containing class "icon-calendar-today"
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
-    And Select date in From label to be "15.08.2026"
+    And Select date in From label to be "15.07.2026" in Serbian
     And Click on calendar icon with index "2"
     And Wait for "1" seconds
-    And Check if date "12.08.2026" is not enabled
-    And Check if date "02.08.2026" is not enabled
+    And Check if date "14.07.2026" is not enabled
+    And Check if date "02.07.2026" is not enabled
 
     Examples:
       | rowindex |
@@ -175,7 +178,7 @@ Feature: Credit_Cards
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
-    And Wait for element by text "Pay or transfer"
+    And Wait for element by text "Balance"
     And Assert that products in my products have loaded
 
     When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
@@ -183,19 +186,15 @@ Feature: Credit_Cards
     And Assert Product name in Product details is from Excel "<rowindex>" columnName "credit_card_2_name"
     And Wait for first transaction in Product details
     And Scroll to element by tag "nlb-selected-product-transactions-filters"
-
     And Click on normalized text "Download transaction list"
-#    And Assert Download transactions options are "EXCEL" and "CSV"
+
     And Assert Download transactions options are "Products_Common_Transactions_Download_Excel_Action" and "Products_Common_Transactions_Download_CSV_Action"
     And Scroll element by contains text "Products_Common_Transactions_Download_CSV_Action" into bottom view
-#    And Click on element by containing text "EXCEL"
     And Click on element by containing text "Products_Common_Transactions_Download_Excel_Action"
     And Assert document with name "Transactions.xlsx" is downloaded
 
     Then Click on normalized text "Download transaction list"
-#    And Assert Download transactions options are "EXCEL" and "CSV"
     And Assert Download transactions options are "Products_Common_Transactions_Download_Excel_Action" and "Products_Common_Transactions_Download_CSV_Action"
-#    And Click on element by containing text "CSV"
     And Click on element by containing text "Products_Common_Transactions_Download_CSV_Action"
     And Assert document with name "Transactions.csv" is downloaded
 
@@ -489,7 +488,9 @@ Feature: Credit_Cards
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
-    And Assert that products in my products have loaded
+    And Wait for element by contains text "Balance"
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
 
     When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
     And Wait for first transaction in Product details
@@ -505,8 +506,6 @@ Feature: Credit_Cards
 
     # unos nasumicnog teksta
     And Enter text "QZQWETYUIXZX" into input field
-    And Wait for "1" seconds
-    And Wait for first transaction in Product details
     And Wait for element by contains text "No transactions found"
     And Click on element by containing class "icon-close"
     And Wait for "1" seconds
@@ -517,6 +516,61 @@ Feature: Credit_Cards
     And Wait for first transaction in Product details
     And Assert transactions in Product details have Purpose "INTERNAL TRANSFER"
 
+    Examples:
+      | rowindex |
+      |        1 |
+
+
+  @Credit_Cards_Transactions_Filter_By_Date_Predefined_Date_Range_[WEB]
+  Scenario Outline: Credit_Cards_Transactions_Filter_By_Date_Predefined_Date_Range_[WEB]
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by contains text "Balance"
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+
+    When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
+    And Wait for element by tag "nlb-product-detail-header"
+    And Assert Transactions tab is selected by default
+    And Assert element by contains text "Statements"
+    And Assert element by contains text "Details"
+    And Assert element by contains text "Download transaction list"
+    And Assert element by contains class "icon-download"
+    And Assert element by tag "input" and type "search"
+    And Click on element by containing text "Filters"
+    And Wait for element by contains text "Last 7"
+    And Click on button with tag "i" containing class "icon-calendar-today"
+    And Assert window behind Date filter popup is blurred
+    And Assert Select date title in Date filter
+    And Assert three showed months are correctly displayed
+    And Click on element by containing text "Cancel"
+    And Assert element by contains text "Last 7 days"
+    And Assert element by contains text "This month"
+    And Assert element by contains text "Last month"
+
+    Then Click on element by containing text "Last 7 days"
+    And Assert from to dates are in last 7 days
+    And Click on element by containing text "Confirm"
+    And Wait for "1" seconds
+    And Wait for first transaction in Product details or No transactions found message
+    And Assert transactions dates are from last seven days if exist
+
+    And Click on element by containing text "This month"
+    And Assert date range in Date filter are in "current month"
+    And Click on element by containing text "Confirm"
+    And Wait for "1" seconds
+    And Wait for first transaction in Product details or No transactions found message
+    And Assert transactions dates are from current month if exist
+
+    And Click on element by containing text "Last month"
+    And Assert date range in Date filter are in "previous month"
+    And Click on element by containing text "Confirm"
+    And Wait for "1" seconds
+    And Wait for first transaction in Product details or No transactions found message
+    And Assert transactions dates are from previous month if exist
+    
     Examples:
       | rowindex |
       |        1 |

@@ -14000,6 +14000,8 @@ public class Steps {
     }
 
 
+
+
     private static class AccountRow {
         String accountNumber;
         String currency;
@@ -15931,6 +15933,183 @@ public class Steps {
         }
         DataManager.userObject.put("Transactions", transactions);
     }
+
+    @And("Assert three months are displayed in date picker")
+    public void assertThreeMonthsAreDisplayedInDatePicker() throws Throwable {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH);
+        YearMonth current = YearMonth.now();
+        String previousMonthText = current.minusMonths(1).format(formatter);
+        String currentMonthText = current.format(formatter);
+        String nextMonthText = current.plusMonths(1).format(formatter);
+        String previousMonthXpath = "//*[text()='" + previousMonthText + "']";
+        String currentMonthXpath = "//*[text()='" + currentMonthText + "']";
+        String nextMonthXpath = "//*[text()='" + nextMonthText + "']";
+        WebElement previousElement = SelectByXpath.CreateElementByXpath(previousMonthXpath);
+        WebElement currentElement = SelectByXpath.CreateElementByXpath(currentMonthXpath);
+        WebElement nextElement = SelectByXpath.CreateElementByXpath(nextMonthXpath);
+        Assert.assertTrue(previousElement.isDisplayed() && currentElement.isDisplayed() && nextElement.isDisplayed());
+    }
+
+    @And("Wait for first transaction in Product details or No transactions found message")
+    public void waitForFirstTransactionInProductDetailsOrNoTransactionsFoundMessage() throws Throwable {
+        String xPath = "(//nlb-transaction-card)[1] | //*[contains(text(), 'No transactions found')]";
+        WaitHelpers.WaitForElement(SelectByXpath.CreateByElementByXpath(xPath));
+    }
+
+    @And("Assert transactions dates are from last seven days if exist")
+    public void assertTransactionsDatesAreFromLastSevenDays1() throws Throwable {
+        String noTxXpath = "//*[contains(text(), 'No transactions found')]";
+        if (!SelectByXpath.CreateElementsByXpath(noTxXpath).isEmpty()) {
+            System.out.println("Nema transakcija na ekranu (Prikazano: 'No transactions found'). Test prolazi.");
+            return;
+        }
+        String datesXpath = "//*[contains(@class, 'flex tw-items-center tw-text-gray-400')]";
+        List<String> elementList = SelectByXpath.CreateElementsByXpath(datesXpath)
+                .stream()
+                .map(el -> el.getText().trim().replaceAll("\\.$", ""))
+                .collect(Collectors.toList());
+
+        Assert.assertFalse("Lista transakcija je prazna iako nema poruke 'No transactions found'!", elementList.isEmpty());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        List<String> expectedDates = IntStream.range(0, 7)
+                .mapToObj(i -> LocalDate.now().minusDays(i).format(formatter))
+                .collect(Collectors.toList());
+
+        for (String item : elementList) {
+            Assert.assertTrue("Neočekivan datum transakcije: " + item + ". Očekivani datumi: " + expectedDates,
+                    expectedDates.contains(item));
+        }
+    }
+
+    @And("Assert transactions dates are from current month if exist")
+    public void assertTransactionsDatesAreFromCurrentMonth1() throws Throwable {
+        String noTxXpath = "//*[contains(text(), 'No transactions found')]";
+        if (!SelectByXpath.CreateElementsByXpath(noTxXpath).isEmpty()) {
+            System.out.println("Nema transakcija na ekranu (Prikazano: 'No transactions found'). Test prolazi.");
+            return;
+        }
+        String datesXpath = "//*[contains(@class, 'flex tw-items-center tw-text-gray-400')]";
+        List<String> actualDates = SelectByXpath.CreateElementsByXpath(datesXpath)
+                .stream()
+                .map(el -> el.getText().trim().replaceAll("\\.$", ""))
+                .collect(Collectors.toList());
+
+        Assert.assertFalse("Lista transakcija je prazna iako nema poruke 'No transactions found'!", actualDates.isEmpty());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        YearMonth currentMonth = YearMonth.now();
+
+        for (String actualDate : actualDates) {
+            LocalDate date = LocalDate.parse(actualDate, formatter);
+            Assert.assertEquals("Datum transakcije nije iz tekućeg meseca: " + actualDate,
+                    currentMonth, YearMonth.from(date));
+        }
+    }
+
+    @And("Assert transactions dates are from previous month if exist")
+    public void assertTransactionsDatesAreFromPreviousMonthc() throws Throwable {
+        String noTxXpath = "//*[contains(text(), 'No transactions found')]";
+        if (!SelectByXpath.CreateElementsByXpath(noTxXpath).isEmpty()) {
+            System.out.println("Nema transakcija na ekranu (Prikazano: 'No transactions found'). Test prolazi.");
+            return;
+        }
+        String datesXpath = "//*[contains(@class, 'flex tw-items-center tw-text-gray-400')]";
+        List<String> actualDates = SelectByXpath.CreateElementsByXpath(datesXpath)
+                .stream()
+                .map(el -> el.getText().trim().replaceAll("\\.$", ""))
+                .collect(Collectors.toList());
+
+        Assert.assertFalse("Lista transakcija je prazna iako nema poruke 'No transactions found'!", actualDates.isEmpty());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        YearMonth previousMonth = YearMonth.now().minusMonths(1);
+
+        for (String actualDate : actualDates) {
+            LocalDate date = LocalDate.parse(actualDate, formatter);
+            Assert.assertEquals("Datum transakcije nije iz prethodnog meseca: " + actualDate,
+                    previousMonth, YearMonth.from(date));
+        }
+    }
+
+    @And("Select date in From label to be {string} in Serbian")
+    public void selectDateInFromLabelToBeInSerbian(String dateString) {
+        WebDriver driver = Base.driver;
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate targetDate = LocalDate.parse(dateString, inputFormatter);
+        Locale srCyrlLocale = Locale.forLanguageTag("sr-Cyrl-RS");
+        DateTimeFormatter srFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy.", srCyrlLocale);
+        String ariaLabel = targetDate.format(srFormatter);
+        System.out.println("Ciljani aria-label: " + ariaLabel);
+        String dayXPath = "//*[@role='gridcell' and contains(@aria-label, '" + ariaLabel + "')]";
+        String prevMonthButtonXPath = "//*[contains(@aria-label, 'Previous month')]";
+        for (int i = 0; i < 13; i++) {
+            List<WebElement> dates = driver.findElements(By.xpath(dayXPath));
+            if (!dates.isEmpty()) {
+                waitForElementToBeClickable(dayXPath, 2);
+                dates.get(0).click();
+                System.out.println("Kliknut je datum (from): " + ariaLabel);
+                return;
+            }
+            waitForElementToBeClickable(prevMonthButtonXPath, 2);
+            driver.findElement(By.xpath(prevMonthButtonXPath)).click();
+        }
+        throw new RuntimeException("Datum " + ariaLabel + " nije pronađen u kalendaru.");
+    }
+
+    @And("Assert amount and currency are displayed correctly in credit card product detail header")
+    public void assertAmountAndCurrencyAreDisplayedCorrectlyInCreditCardProductDetailHeader() throws Throwable {
+        String amountXpath = "(//div/nlb-amount/div/span)[1]";
+        String currencyXpath = "(//div/nlb-amount/div/span)[2]";
+        WebElement amountEl = SelectByXpath.CreateElementByXpath(amountXpath);
+        WebElement currencyEl = SelectByXpath.CreateElementByXpath(currencyXpath);
+        String amount = amountEl.getText().trim();
+        String currency = currencyEl.getText().trim();
+
+        Assert.assertTrue( "Amount nije u očekivanom formatu: " + amount , amount.matches("\\d{1,3}(\\.\\d{3})*,\\d{2}"));
+        Assert.assertTrue("Currency nije u očekivanom formatu: " + currency, currency.matches("[A-Z]{3}"));
+    }
+
+    @And("Assert amount and currency are displayed correctly in loan product detail header")
+    public void assertAmountAndCurrencyAreDisplayedCorrectlyInLoanProductDetailHeader() throws Throwable {
+        String amountXpath = "(//div/nlb-amount/div/span)[1]";
+        String currencyXpath = "(//div/nlb-amount/div/span)[2]";
+        WebElement amountEl = SelectByXpath.CreateElementByXpath(amountXpath);
+        WebElement currencyEl = SelectByXpath.CreateElementByXpath(currencyXpath);
+        String amount = amountEl.getText().trim();
+        String currency = currencyEl.getText().trim();
+
+        Assert.assertTrue( "Amount nije u očekivanom formatu: " + amount , amount.matches("\\d{1,3}(\\.\\d{3})*,\\d{2}"));
+        Assert.assertTrue("Currency nije u očekivanom formatu: " + currency, currency.matches("[A-Z]{3}"));
+    }
+
+    @And("Select date to be {string} in future on Serbian")
+    public void selectDateInFromLabelToBeInFutureSrb(String dateString) {
+        WebDriver driver = Base.driver;
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        LocalDate targetDate = LocalDate.parse(dateString, inputFormatter);
+        Locale srSerbian = Locale.forLanguageTag("sr-Cyrl-RS");
+        DateTimeFormatter serbianFormatter = DateTimeFormatter.ofPattern("EEEE, d. MMMM yyyy.", srSerbian);
+        String ariaLabel = targetDate.format(serbianFormatter);
+        System.out.println("Formirani aria-label: " + ariaLabel);
+        String dayXPath = "//*[@aria-label='" + ariaLabel + "']";
+        String nextMonthButtonXPath = "//*[contains(@aria-label, 'Next month')]";
+
+        for (int i = 0; i < 24; i++) {
+            List<WebElement> dates = driver.findElements(By.xpath(dayXPath));
+
+            if (!dates.isEmpty()) {
+                waitForElementToBeClickable(dayXPath, 2);
+                dates.get(0).click();
+                System.out.println("Kliknut je datum (from): " + ariaLabel);
+                return;
+            }
+            waitForElementToBeClickable(nextMonthButtonXPath, 2);
+            driver.findElement(By.xpath(nextMonthButtonXPath)).click();
+        }
+        throw new RuntimeException("Datum " + ariaLabel + " nije pronađen u kalendaru.");
+    }
+
 
 }
 

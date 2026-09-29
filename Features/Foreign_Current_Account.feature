@@ -196,7 +196,7 @@ Feature: Foreign_Current_Account
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
     #And Assert three showed months are correctly displayed
-    And Assert three months are displayed in date picker correctly
+    And Assert three months are displayed in date picker
     And Click on element by containing text "Cancel"
     And Assert element by contains text "Last 7 days"
     And Assert element by contains text "This month"
@@ -315,6 +315,8 @@ Feature: Foreign_Current_Account
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Balance"
+    And Click on tab "My Products" from main sidebar
     And Assert that products in my products have loaded
 
     When Click on element from Excel "<rowindex>" contains text columnName "current_account_1_iban"
