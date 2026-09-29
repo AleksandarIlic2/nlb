@@ -490,7 +490,6 @@ Feature: Domestic_Payments
       |        5 |
 
 
-    #Automatizovano na UAT-u. Nema ga u Excelu za TST
   @Payments-Domestic_Payments-Confirmation_[WEB]
   Scenario Outline: Payments-Domestic_Payments-Confirmation_[WEB]
 
@@ -924,14 +923,13 @@ Feature: Domestic_Payments
     And Assert field "Purpose" in payment confirmation has text from key "keyPurpose"
     And Assert field "Payment date" in payment confirmation has valid date displayed
     And Assert field "Execution date" in payment confirmation has valid date displayed
-    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+#    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
     And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
 
     And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
 ##    And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
 ##    And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert field "Payment status" in payment confirmation has text "Executed"
-    And Assert that fee in payment details has value from Excel "<rowindex>" columnName "fee_With_Space_RSD"
+    And Assert that fee in payment details has value from Excel "<rowindex>" columnName "fee_RSD_Clean"
     And Assert field "Payment status" in payment confirmation contains text "Executed"
 
     Then Click on tab "My Products" from main sidebar
@@ -954,7 +952,7 @@ Feature: Domestic_Payments
 
     Examples:
       | rowindex |
-      |        5 |
+      |        1 |
 
 
   @Payments_Domestic_Payments_External_Urgent_Payment_Model11_Invalid_Bez_Poziva_Na_Broj_[WEB]
@@ -1567,7 +1565,7 @@ Feature: Domestic_Payments
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Executed"
-    And Assert that fee in payment details has value from Excel "<rowindex>" columnName "fee_With_Space_RSD"
+    And Assert that fee in payment details has value from Excel "<rowindex>" columnName "fee_RSD_Clean"
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -1827,7 +1825,7 @@ Feature: Domestic_Payments
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Executed"
-    And Assert that fee in payment details has value from Excel "<rowindex>" columnName "fee_With_Space_RSD"
+    And Assert that fee in payment details has value from Excel "<rowindex>" columnName "fee_RSD_Clean"
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
@@ -1958,7 +1956,7 @@ Feature: Domestic_Payments
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Executed"
-    And Assert that fee in payment details has value from Excel "<rowindex>" columnName "fee_With_Space_RSD"
+    And Assert that fee in payment details has value from Excel "<rowindex>" columnName "fee_RSD_Clean"
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load

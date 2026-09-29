@@ -15440,14 +15440,17 @@ public class Steps {
 
     @And("Assert that fee in payment details has value from Excel {string} columnName {string}")
     public void assertThatFeeInPaymentDetailsHasValueFromExcelColumnName(String rowindex, String columnName) throws Throwable {
-        //String xPath = "(//*[normalize-space(text())='Fee']/following-sibling::div)[1]";
         String xPath = "(//*[text()='Fee'])[2]/following-sibling::div[1]";
         String expectedFee = DataManager.getDataFromHashDatamap(rowindex, columnName).toString();
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
-        String actualText = element.getText();
-        System.out.println("ACTUAL "+ actualText);
-        System.out.println("EXPECTED "+expectedFee);
-        Assert.assertEquals(actualText, expectedFee);
+        String actualFee = element.getText();
+
+        expectedFee = expectedFee.replaceAll("[\\s\\u00A0]+", " ").trim();
+        actualFee = actualFee.replaceAll("[\\s\\u00A0]+", " ").trim();
+
+        System.out.println("ACTUAL: [" + actualFee + "]");
+        System.out.println("EXPECTED: [" + expectedFee + "]");
+        Assert.assertEquals(expectedFee, actualFee);
     }
 
     @And("Compare if available amount balance from key {string} in my products screen for account from Excel {string} columnName {string} is reduced for amount from key {string} and fee from Excel {string} columnName {string}")
