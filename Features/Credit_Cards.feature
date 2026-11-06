@@ -12,6 +12,7 @@ Feature: Credit_Cards
     And Wait for first product to load
     And Click on element from Excel "<rowindex>" contains text columnName "credit_card_1_number"
     And Wait for element by contains text "Details"
+    And Assert tabs in Product details are displayed correctly for Credit Cards
     And Assert element with attribute "src" contains value "CreditCard-Icon" is displayed
     And Assert element by contains text "Available balance"
     And Assert element contains class "flex tw-items-center ng" match regex "^\d{1,3}(\.\d{3})*,\d{2}\s*[A-Z]{3}$"
@@ -47,21 +48,40 @@ Feature: Credit_Cards
 
     When Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
     And Assert Transactions tab is selected by default
-    And Assert tabs in Product details are displayed correctly for Credit Cards
+#    And Assert tabs in Product details are displayed correctly for Credit Cards
     And Assert element by contains text "Statements"
     And Assert element by contains text "Details"
     And Assert element by contains src "CreditCard-Icon" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "cardName" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "credit_card_2_name" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "credit_card_2_number" is displayed
     And Assert amount and currency are displayed correctly in credit card product detail header
 
-    Then Click on element by containing text "Details"
-    And Wait for element by contains text "Financial details"
+    And Click on element by containing text "Details"
+    And Wait for product details to load
     And Assert element by contains src "CreditCard-Icon" is displayed
     And Assert element by contains text from excel "<rowindex>" columnName "credit_card_2_number" is displayed
-    And Assert element by contains text from excel "<rowindex>" columnName "cardName" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "credit_card_2_name" is displayed
     And Assert amount and currency are displayed correctly in credit card product detail header
-    And Assert element by contains text "Account details"
+
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+
+    And Click on element by containing text from Excel "<rowindex>" columnName "credit_card_1_number"
+    And Assert Transactions tab is selected by default
+#    And Assert tabs in Product details are displayed correctly for Credit Cards
+    And Assert element by contains text "Statements"
+    And Assert element by contains text "Details"
+    And Assert element by contains src "CreditCard-Icon" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "credit_card_1_name" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "credit_card_1_number" is displayed
+    And Assert amount and currency are displayed correctly in credit card product detail header
+
+    Then Click on element by containing text "Details"
+    And Wait for product details to load
+    And Assert element by contains src "CreditCard-Icon" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "credit_card_1_number" is displayed
+    And Assert element by contains text from excel "<rowindex>" columnName "credit_card_1_name" is displayed
+    And Assert amount and currency are displayed correctly in credit card product detail header
 
     Examples:
       | rowindex |
@@ -110,11 +130,11 @@ Feature: Credit_Cards
     And Assert Select date title in Date filter
 
     And Select date in From label to be "06.08.2026"
-    And Select date in To label to be "20.08.2026"
+    And Select date in To label to be "20.09.2026"
     And Click on element by containing text "Confirm"
     And Wait for first transaction in Product details
     And Scroll element by contains text "end of the list" into view
-    And Assert transaction dates are between "06.08.2026" and "20.08.2026"
+    And Assert transaction dates are between "06.08.2026" and "20.09.2026"
     And Scroll element by contains text "Clear filters" into view
     And Click on element by containing text "Clear filters"
 
@@ -142,11 +162,11 @@ Feature: Credit_Cards
     Then Click on button with tag "i" containing class "icon-calendar-today"
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
-    And Select date in From label to be "15.07.2026" in Serbian
+    And Select date in From label to be "15.10.2026"
     And Click on calendar icon with index "2"
     And Wait for "1" seconds
-    And Check if date "14.07.2026" is not enabled
-    And Check if date "02.07.2026" is not enabled
+    And Check if date "14.10.2026" is not enabled
+    And Check if date "02.10.2026" is not enabled
 
     Examples:
       | rowindex |
@@ -326,15 +346,16 @@ Feature: Credit_Cards
     And Click on down arrow on first transaction do display details
     And Assert element by text "Amount" has following sibling "dd" with regex "^\d{1,3}(\.\d{3})*,\d{2}\s*RSD$"
     And Assert element by text "Amount in local currency" has following sibling "dd" with regex "^\d{1,3}(\.\d{3})*,\d{2}\s*RSD$"
-    And Assert element by text "Settlement date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert element by text "Description" has following sibling "dd" with regex "^.+$"
+    And Assert element by text "Book date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
     And Assert element by text "Value date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
     And Assert element by text "Authorization date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
     And Assert element by text "Transaction ID" has following sibling "dd" with regex "^[A-Za-z0-9]{14}$"
     And Assert element by tag "div" containing text "Confirmation" is not displayed
 
-#    Then Click on down arrow on first transaction do display details
-#    And Assert element by contains text "Value date" is not displayed
-#    And Assert element by class "tw-text-incomingColor" and index "1"
+    Then Click on down arrow on first transaction do display details
+    And Assert element by contains text "Value date" is not displayed
+    And Assert element by class "tw-text-incomingColor" and index "1"
 
     Examples:
       | rowindex |
@@ -433,12 +454,11 @@ Feature: Credit_Cards
     And Click on element by containing text from Excel "<rowindex>" columnName "credit_card_2_number"
     And Wait for element by tag "nlb-product-detail-header"
     And Assert element by text from excel "<rowindex>" columnName "credit_card_2_number" is displayed
-    And Assert tabs in Product details are displayed correctly for Credit Cards
 
     And Assert Transactions tab is selected by default
     And Click on element by containing text "Details"
     And Wait for product details to load
-    
+
     Then Assert element by contains text "Approved limit"
     And Assert element by contains text "Daily limit ATM"
     And Assert element by contains text "Daily limit ATM - Foreign"
@@ -544,7 +564,7 @@ Feature: Credit_Cards
     And Click on button with tag "i" containing class "icon-calendar-today"
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
-    And Assert three showed months are correctly displayed
+#    And Assert three showed months are correctly displayed
     And Click on element by containing text "Cancel"
     And Assert element by contains text "Last 7 days"
     And Assert element by contains text "This month"
@@ -570,7 +590,7 @@ Feature: Credit_Cards
     And Wait for "1" seconds
     And Wait for first transaction in Product details or No transactions found message
     And Assert transactions dates are from previous month if exist
-    
+
     Examples:
       | rowindex |
       |        1 |

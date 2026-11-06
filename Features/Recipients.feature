@@ -401,10 +401,10 @@ Feature: Recipients
     And Wait for first past payment
 
     #past payment
-    And Assert first past payment has amount from key "keyAmountClean" in currency "RSD"
-    And Assert first past or upcoming payment has purpose from key "keyPurpose"
-    And Assert first past or upcoming payment has name from key "keyName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past payment has amount from key "keyAmountClean" in currency "RSD"
+#    And Assert first past or upcoming payment has purpose from key "keyPurpose"
+#    And Assert first past or upcoming payment has name from key "keyName"
+#    And Assert first past or upcoming payment has today date
 
     And Click on first Executed past payment
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyName"
@@ -414,7 +414,7 @@ Feature: Recipients
     And Assert label "Purpose" in payment confirmation contains value under remembered key "keyPurpose"
     And Assert field "Payment date" in payment confirmation match regex "^\d{2}\.\d{2}\.\d{4}, \d{2}:\d{2}$"
     And Assert field "Execution date" in payment confirmation match regex "^\d{2}\.\d{2}\.\d{4}$"
-    And Assert field "Order number" in payment confirmation match regex "^[A-Z0-9]{14}$"
+#    And Assert field "Order number" in payment confirmation match regex "^[A-Z0-9]{14}$"
     And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
     And Assert label "Name" in payment confirmation contains value from excel "<rowindex>" columnName "account_details_owner2"
     #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"

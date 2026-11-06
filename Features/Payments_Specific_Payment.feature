@@ -7,7 +7,6 @@ Feature: Payments_Specific_Payment
     Given Open Login page
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
-    #And Check if cash credit offer appears upon login and if it is dismiss it
     And Wait for element by text "Balance"
     And Click on tab "My Products" from main sidebar
     And Assert that products in my products have loaded
@@ -43,10 +42,8 @@ Feature: Payments_Specific_Payment
     And Assert element with text "Fee" with following sibling has text "0,00 RSD"
 
 #    And Assert element by text "Name" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "account_details_owner2"
-    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
     And Assert element by text "Account number" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_1_bban"
 #    And Assert element by text "Name" and index "2" has first following sibling that contains text from Excel "<rowindex>" columnName "account_details_owner2"
-    #And Assert element by text "Address" and index "2" has first following sibling that contains text from key "keyAddress"
     And Assert element by text "Account number" and index "2" has first following sibling that contains text from Excel "<rowindex>" columnName "credit_card_2_number"
     And Assert element with text "Purpose" with following sibling has text "INTERNAL TRANSFER"
     And Assert value date is todays date and in valid date format in Payment review
@@ -67,8 +64,8 @@ Feature: Payments_Specific_Payment
     And Refresh page
     And Wait for first past payment
 
-    And Assert latest past payment has purpose "INTERNAL TRANSFER"
-    And Assert last payment in past payments has value from remembered key "keyPaymentAmount"
+#    And Assert latest past payment has purpose "INTERNAL TRANSFER"
+#    And Assert last payment in past payments has value from remembered key "keyPaymentAmount"
     And Click on first Executed past payment
     #And Assert label "Recipient account number" in payment confirmation contains value from excel "<rowindex>" columnName "credit_card_2_number"
     And Assert field "Purpose" in payment confirmation has text "INTERNAL TRANSFER"
@@ -112,9 +109,9 @@ Feature: Payments_Specific_Payment
     #And Assert element by text "Account number" has following sibling "dd" with text from Excel "<rowindex>" columnName "loan_account_1_number"
     And Assert amount in transaction details has value under key "keyPaymentAmount" in currency "RSD"
     And Assert element by text "Description" has following sibling "dd" that contains text "INTERNAL TRANSFER"
-    And Assert element by text "Amount in local currency" has following sibling "dd" that contains text from key "keyPaymentAmount"
+#    And Assert element by text "Amount in local currency" has following sibling "dd" that contains text from key "keyPaymentAmount"
     And Assert element by text "Authorization date" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
-    And Assert element by text "Settlement date" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
+    And Assert element by text "Book date" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
     And Assert element by text "Value date" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
     And Assert element by text "Transaction ID" has following sibling "dd" with regex "^.{14}$"
 

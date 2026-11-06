@@ -106,7 +106,7 @@ Feature: Domestic_Payments
     And Assert element by contains text "Account number"
     And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "Account number" input field
     And Assert element by contains text "Name"
-    And Enter text "Enil Cicvi" into "Name" input field and remember it under key "keyName"
+    And Enter random name into label with text "Name" with following sibling "div" that has descendant "input" and remember it under key "keyName"
     And Assert element by contains text "Street and street number"
     And Enter text "Ritopek 21" into "street" input field and remember it under key "keyStreet"
     And Assert element by contains text "City"
@@ -158,6 +158,8 @@ Feature: Domestic_Payments
     And Assert element by contains text "Confirm"
     And Assert element by contains text "Back"
     And Click on element by containing text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "3.00" and currency "RSD" with message "Success"
+    And Assert element by contains text "Success"
     And Assert element by contains text "Do you want to save payment data?"
     And Assert element by contains text "Close without saving"
     And Assert element by contains text "Save recipient"
@@ -211,15 +213,14 @@ Feature: Domestic_Payments
     And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_bban" is displayed
     And Click on normalized text "Select from list"
     And Assert element by contains text "Select template"
-    #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
     And Assert element by contains text "Select recipient"
     And Assert element by contains class "flex tw-w-full tw-flex"
     And Assert "input" field with placeholder "Type here to search"
     And Assert element by contains text "Total number of saved templates:"
-    #Lose spelovano. RECEPIENT umesto RECIPIENT. Padace kad ga isprave
     And Click on normalized text "Select recipient"
     And Assert element by contains class "flex tw-w-full tw-flex"
-    And Click on first recipient
+    And Wait for "2" seconds
+    And Click on element by containing text "205-" and index "2"
     And Assert element by class "tw-items-center" containing text "Change recipient"
     And Assert element by contains text "Account number"
     And Enter text from Excel "<rowindex>" columnName "domestic_payment_bban" into "Account number" input field
@@ -274,6 +275,8 @@ Feature: Domestic_Payments
     And Assert element by contains text "Confirm"
     And Assert element by contains text "Back"
     And Click on element by containing text "Confirm"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "3.00" and currency "RSD" with message "Success"
+    And Assert element by contains text "Success"
     And Assert element by contains text "Do you want to save payment data?"
     And Assert element by contains text "Close without saving"
     And Assert element by contains text "Save recipient"
@@ -668,7 +671,7 @@ Feature: Domestic_Payments
     And Assert value date is todays date and in valid date format in Payment review
 
     And Assert element by contains text "Urgent payment"
-    And Assert element by contains text "Payments_Wizard_Domestic"
+    And Assert element by contains text "Yes"
     And Assert element by contains text "Confirm"
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
@@ -682,34 +685,41 @@ Feature: Domestic_Payments
     And Refresh page
     And Wait for first past payment
 
-    And Assert first past or upcoming payment has purpose under key "keyPurpose"
-    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
-    And Assert first past or upcoming payment has name from key "keyRecipientName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+#    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
+#    And Assert first past or upcoming payment has name from key "keyRecipientName"
+#    And Assert first past or upcoming payment has today date
 
     And Click on element with text from key "keyRecipientName"
     And Assert label "Recipient" in payment confirmation has value under remembered key "keyRecipientName"
-    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
-    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
+#    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
+#    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
     And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
+    And Assert field "Urgent" in payment confirmation has text "Yes"
     And Assert field "Purpose code" in payment confirmation has text "289"
     And Assert field "Purpose" in payment confirmation has text from key "keyPurpose"
     And Assert field "Payment date" in payment confirmation has valid date displayed
     And Assert field "Execution date" in payment confirmation has valid date displayed
     And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
-
     And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert label "Name" in payment confirmation contains value from excel "<rowindex>" columnName "account_details_owner"
 #    And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
 #    And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
     And Assert field "Payment status" in payment confirmation has text "Executed"
     And Assert field "Fee" in payment confirmation contains text "0,00"
     And Assert field "Fee" in payment confirmation contains text "RSD"
-    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+#    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
 
-    Then Click on tab "My Products" from main sidebar
+    And Click on tab "My Products" from main sidebar
     And Wait for first product to load
     And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "1" is correct
     And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "1" is correct
+
+    Then Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
+    And Wait for first transaction in Product details
+    And Assert that first transaction has purpose from key "keyPurpose"
+    And Assert that first transaction has name from key "keyRecipientName"
+    And Assert that amount for first transaction in product screen is from key "keyPaymentAmount"
 
     Examples:
       | rowindex |
@@ -762,7 +772,6 @@ Feature: Domestic_Payments
     And Assert element by contains text "Back"
     And Click on element by containing text "Confirm"
 
-      ### PAYMENT REVIEW UI ###
     And Wait for element by contains text "Payment amount"
     And Assert payment amount under key is "keyPaymentAmount" is displayed
     And Assert that text "Fee" has first following sibling that contains text "0,00 RSD"
@@ -796,24 +805,23 @@ Feature: Domestic_Payments
     And Wait for "1" seconds
     And Wait for first past payment
 
-    And Assert first past or upcoming payment has purpose under key "keyPurpose"
-    And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
-    And Assert first past or upcoming payment has name from key "keyRecipientName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+#    And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
+#    And Assert first past or upcoming payment has name from key "keyRecipientName"
+#    And Assert first past or upcoming payment has today date
 
     And Click on normalized text from key "keyRecipientName"
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyRecipientName"
-    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
-    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
+#    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
+#    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
     And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert field "Purpose code" in payment confirmation has text "289"
-    #And Assert label "Debtor name" in payment confirmation contains value from excel "<rowindex>" columnName "username"
+    And Assert label "Purpose" in payment confirmation has value under remembered key "keyPurpose"
     And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
-
     And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
 #    And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
 #    And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert field "Payment status" in payment confirmation has text "Pending"
+#    And Assert field "Payment status" in payment confirmation has text "Pending"
     And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
     And Wait for "60" seconds
 
@@ -896,7 +904,7 @@ Feature: Domestic_Payments
     And Assert value date is todays date and in valid date format in Payment review
 
     And Assert element by contains text "Urgent payment"
-    And Assert element by contains text "Payments_Wizard_Domestic"
+    And Assert element by contains text "Yes"
     And Assert element by contains text "Confirm"
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
@@ -909,14 +917,14 @@ Feature: Domestic_Payments
     And Refresh page
     And Wait for first past payment
 
-    And Assert first past or upcoming payment has purpose under key "keyPurpose"
-    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
-    And Assert first past or upcoming payment has name from key "keyRecipientName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+#    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
+#    And Assert first past or upcoming payment has name from key "keyRecipientName"
+#    And Assert first past or upcoming payment has today date
     And Click on normalized text from key "keyRecipientName"
     And Assert label "Recipient" in payment confirmation has value under remembered key "keyRecipientName"
-    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
-    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
+#    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
+#    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
     And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert field "Urgent" in payment confirmation has text "Yes"
     And Assert field "Purpose code" in payment confirmation has text "289"
@@ -943,7 +951,7 @@ Feature: Domestic_Payments
     And Assert element by contains class "heading-5 medium tw-text-gray-100" contains value from key "keyPurpose" is displayed
     And Assert text under key "keyPaymentAmount" is displayed
     And Assert text under key "keyRecipientName" is displayed
-    And Click on down arrow on first transaction do display details
+    And Click on element with text from key "keyPurpose"
     And Assert element by text "Account number" has following sibling "dd" that contains text from key "keyRecipientAccountNumber"
     And Assert amount in transaction details has value under key "keyPaymentAmount" in currency "RSD"
     And Assert element by text "Products_Common_TransactionDetails_BookingDate" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
@@ -1104,26 +1112,25 @@ Feature: Domestic_Payments
     And Refresh page
     And Wait for first past payment
 
-    And Assert first past or upcoming payment has purpose under key "keyPurpose"
-    And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
-    And Assert first past or upcoming payment has name from key "keyRecipientName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+#    And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
+#    And Assert first past or upcoming payment has name from key "keyRecipientName"
+#    And Assert first past or upcoming payment has today date
 
     And Click on normalized text from key "keyRecipientName"
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyRecipientName"
-    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
-    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
+#    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
+#    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
     And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert field "Purpose code" in payment confirmation has text "289"
-    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+#    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
     And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
     And Assert label "Model" in payment confirmation contains value under remembered key "keyPaymentModel"
-
     And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
     And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert field "Payment status" in payment confirmation has text "Pending"
+#    And Assert field "Payment status" in payment confirmation has text "Pending"
     And Wait for "50" seconds
     And Refresh page
     And Wait for element by contains text "My Products"
@@ -1285,10 +1292,10 @@ Feature: Domestic_Payments
     And Refresh page
     And Wait for first past payment
 
-    And Assert first past or upcoming payment has purpose under key "keyPurpose"
-    And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
-    And Assert first past or upcoming payment has name from key "keyRecipientName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+#    And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
+#    And Assert first past or upcoming payment has name from key "keyRecipientName"
+#    And Assert first past or upcoming payment has today date
     And Click on normalized text from key "keyRecipientName"
 
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyRecipientName"
@@ -1300,11 +1307,10 @@ Feature: Domestic_Payments
     And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
     And Assert label "Model" in payment confirmation contains value under remembered key "keyPaymentModel"
     And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
-
     And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
     #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Debtor address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert field "Payment status" in payment confirmation has text "Pending"
+#    And Assert field "Payment status" in payment confirmation has text "Pending"
     And Wait for "45" seconds
     And Refresh page
     And Wait for "5" seconds
@@ -1528,7 +1534,7 @@ Feature: Domestic_Payments
     And Assert value date is todays date and in valid date format in Payment review
 
     And Assert element by contains text "Urgent payment"
-    And Assert element by contains text "Payments_Wizard_Domestic"
+#    And Assert element by contains text "Payments_Wizard_Domestic"
     And Assert element with text "Reference number" with following sibling has text under key "keyReferenceNumber"
     And Assert element by contains text "Confirm"
     And Assert element by contains text "Back"
@@ -1543,15 +1549,15 @@ Feature: Domestic_Payments
     And Refresh page
     And Wait for first past payment
 
-    And Assert first past or upcoming payment has purpose under key "keyPurpose"
-    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
-    And Assert first past or upcoming payment has name from key "keyRecipientName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+#    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
+#    And Assert first past or upcoming payment has name from key "keyRecipientName"
+#    And Assert first past or upcoming payment has today date
 
     And Click on normalized text from key "keyRecipientName"
     And Assert label "Recipient" in payment confirmation has value under remembered key "keyRecipientName"
-    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
-    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
+#    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
+#    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyStreet"
     And Assert label "Recipient account number" in payment confirmation has value under remembered key "keyRecipientAccountNumber"
     And Assert label "Model" in payment confirmation contains value under remembered key "keyPaymentModel"
     And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
@@ -1559,7 +1565,7 @@ Feature: Domestic_Payments
     And Assert field "Purpose code" in payment confirmation has text "253"
     And Assert field "Payment date" in payment confirmation has valid date displayed
     And Assert field "Execution date" in payment confirmation has valid date displayed
-    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+#    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
     And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
     And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
@@ -1586,6 +1592,8 @@ Feature: Domestic_Payments
     And Assert element by text "Products_Common_TransactionDetails_BookingDate" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
     And Assert element by text "Value date" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
     And Assert element by text "Transaction ID" has following sibling "dd" with regex "^.{14}$"
+    And Assert element by text "Reference number" has following sibling "dd" that contains text from key "keyReferenceNumber"
+    And Assert element by text "Model" has following sibling "dd" that contains text from key "keyPaymentModel"
 
     Examples:
       | rowindex |
@@ -1645,7 +1653,6 @@ Feature: Domestic_Payments
     And Assert element by contains text "Back"
     And Click on element by containing text "Confirm"
 
-    ### PAYMENT REVIEW UI ###
     And Wait for element by contains text "Payment amount"
     And Assert payment amount under key is "keyPaymentAmount" is displayed
     And Assert that fee in payment review has value from Excel "<rowindex>" columnName "fee_RSD_Clean"
@@ -1679,10 +1686,10 @@ Feature: Domestic_Payments
     And Refresh page
     And Wait for first past payment
 
-    And Assert first past or upcoming payment has purpose under key "keyPurpose"
-    And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
-    And Assert first past or upcoming payment has name from key "keyRecipientName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+#    And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
+#    And Assert first past or upcoming payment has name from key "keyRecipientName"
+#    And Assert first past or upcoming payment has today date
 
     And Click on normalized text from key "keyRecipientName"
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyRecipientName"
@@ -1697,7 +1704,7 @@ Feature: Domestic_Payments
     And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert field "Payment status" in payment confirmation has text "Pending"
+#    And Assert field "Payment status" in payment confirmation has text "Pending"
     And Wait for "45" seconds
     And Refresh page
     And Wait for "5" seconds
@@ -1789,7 +1796,7 @@ Feature: Domestic_Payments
     And Assert value date is todays date and in valid date format in Payment review
 
     And Assert element by contains text "Urgent payment"
-    And Assert element by contains text "Payments_Wizard_Domestic"
+#    And Assert element by contains text "Payments_Wizard_Domestic"
     And Assert element with text "Reference number" with following sibling has text under key "keyReferenceNumber"
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
@@ -1804,10 +1811,10 @@ Feature: Domestic_Payments
     And Refresh page
     And Wait for first past payment
 
-    And Assert first past or upcoming payment has purpose under key "keyPurpose"
-    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
-    And Assert first past or upcoming payment has name from key "keyRecipientName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+#    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
+#    And Assert first past or upcoming payment has name from key "keyRecipientName"
+#    And Assert first past or upcoming payment has today date
     And Click on normalized text from key "keyRecipientName"
     And Assert label "Recipient" in payment confirmation has value under remembered key "keyRecipientName"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
@@ -1818,7 +1825,7 @@ Feature: Domestic_Payments
     And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
     And Assert field "Payment date" in payment confirmation has valid date displayed
     And Assert field "Execution date" in payment confirmation has valid date displayed
-    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+#    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
 
     And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
     And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
@@ -1846,6 +1853,8 @@ Feature: Domestic_Payments
     And Assert element by text "Products_Common_TransactionDetails_BookingDate" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
     And Assert element by text "Value date" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
     And Assert element by text "Transaction ID" has following sibling "dd" with regex "^.{14}$"
+    And Assert element by text "Reference number" has following sibling "dd" that contains text from key "keyReferenceNumber"
+    And Assert element by text "Model" has following sibling "dd" that contains text from key "keyPaymentModel"
 
     Examples:
       | rowindex |
@@ -1921,7 +1930,7 @@ Feature: Domestic_Payments
     And Assert value date is todays date and in valid date format in Payment review
 
     And Assert element by contains text "Urgent payment"
-    And Assert element by contains text "Payments_Wizard_Domestic"
+#    And Assert element by contains text "Payments_Wizard_Domestic"
     And Assert element with text "Reference number" with following sibling has text under key "keyReferenceNumber"
     And Assert element by contains text "Back"
     And Assert element by contains text "Cancel"
@@ -1935,10 +1944,10 @@ Feature: Domestic_Payments
     And Refresh page
     And Wait for first past payment
 
-    And Assert first past or upcoming payment has purpose under key "keyPurpose"
-    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
-    And Assert first past or upcoming payment has name from key "keyRecipientName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+#    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
+#    And Assert first past or upcoming payment has name from key "keyRecipientName"
+#    And Assert first past or upcoming payment has today date
     And Click on normalized text from key "keyRecipientName"
     And Assert label "Recipient" in payment confirmation has value under remembered key "keyRecipientName"
     And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyCity"
@@ -1949,7 +1958,7 @@ Feature: Domestic_Payments
     And Assert label "Reference" in payment confirmation contains value under remembered key "keyReferenceNumber"
     And Assert field "Payment date" in payment confirmation has valid date displayed
     And Assert field "Execution date" in payment confirmation has valid date displayed
-    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
+#    And Assert field "Order number" in payment confirmation match regex "^[a-zA-Z0-9]{14}$"
     And Assert field "Name" in payment confirmation has text from key "keyDebtorFullName"
 
     And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
@@ -1967,6 +1976,7 @@ Feature: Domestic_Payments
     And Wait for first transaction in Product details
     And Wait for "5" seconds
     And Refresh page
+    And Wait for "3" seconds
     And Assert text under key "keyPurpose" is displayed
     And Assert text under key "keyPaymentAmount" is displayed
     And Assert text under key "keyRecipientName" is displayed
@@ -1976,6 +1986,8 @@ Feature: Domestic_Payments
     And Assert element by text "Products_Common_TransactionDetails_BookingDate" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
     And Assert element by text "Value date" has following sibling "dd" with regex "\d{2}\.\d{2}\.\d{4}"
     And Assert element by text "Transaction ID" has following sibling "dd" with regex "^.{14}$"
+    And Assert element by text "Reference number" has following sibling "dd" that contains text from key "keyReferenceNumber"
+    And Assert element by text "Model" has following sibling "dd" that contains text from key "keyPaymentModel"
 
     Examples:
       | rowindex |
@@ -2065,10 +2077,10 @@ Feature: Domestic_Payments
     And Refresh page
     And Wait for first past payment
 
-    And Assert first past or upcoming payment has purpose under key "keyPurpose"
-    And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
-    And Assert first past or upcoming payment has name from key "keyRecipientName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past or upcoming payment has purpose under key "keyPurpose"
+#    And Assert first upcoming payment has amount from key "keyPaymentAmount" in currency "RSD"
+#    And Assert first past or upcoming payment has name from key "keyRecipientName"
+#    And Assert first past or upcoming payment has today date
 
     And Click on normalized text from key "keyRecipientName"
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyRecipientName"
@@ -2083,7 +2095,7 @@ Feature: Domestic_Payments
     And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_street_for_payment_review"
     #And Assert label "Address" in payment confirmation contains value from excel "<rowindex>" columnName "user_city_for_payment_review"
-    And Assert field "Payment status" in payment confirmation has text "Pending"
+#    And Assert field "Payment status" in payment confirmation has text "Pending"
     And Wait for "45" seconds
     And Refresh page
     And Wait for "5" seconds

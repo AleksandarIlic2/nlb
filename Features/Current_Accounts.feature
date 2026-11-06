@@ -49,7 +49,7 @@ Feature: Current_Accounts
       And Login to the page using user from Excel "<rowindex>" columnName "username"
       And Assert that products in my products have loaded
 
-      When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_bban"
+      When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
       And Click on element by text "Cheques"
       And Scroll element by contains text "end of the list" into view
 #      And Assert all cheques from last year

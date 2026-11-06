@@ -3003,8 +3003,10 @@ public class Steps {
     @And("Click on date {int} days in the future in second payment screen")
     public void clickOnDateDaysInTheFutureInSecondPaymentScreen(int daysInFuture) throws Throwable {
         String dateInFuture = ActionApiHelpers.getTodayDatePlusXDaysInFormat(daysInFuture, "dd.MM.yyyy");
-        String date = hp.returnDateInSerbianFormat(dateInFuture);
-        //String xPath = "//*[@aria-label='"+date+"']";
+        LocalDate targetDate = LocalDate.parse(dateInFuture, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+
+        String date = targetDate.format(DateTimeFormatter.ofPattern("d-M-yyyy"));
+
         String xPath = "//*[@aria-label='" + date + "' and not(contains(@class, 'hidden'))]";
         WebElement element = SelectByXpath.CreateElementByXpath(xPath);
         hp.ClickOnElement(element);
@@ -3488,7 +3490,9 @@ public class Steps {
         String xPathForSLO = "//*[text()='Jezik']";
         WebElement elementForSLO = SelectByXpath.CreateElementByXpath(xPathForSLO);
         hp.ClickOnElement(elementForSLO);
-        String xPathForEnglish = "//*[text()=' English ']";
+//        String xPathForEnglish = "//*[text()=' English ']";
+//        String xPathForEnglish = "//*[text()=' Engleski ']";
+        String xPathForEnglish = "(//*[contains(@class, 'dropdown-select-item')])[1]";
         WebElement elementForEnglish = SelectByXpath.CreateElementByXpath(xPathForEnglish);
         hp.ClickOnElement(elementForEnglish);
         String xPathForOk = "//*[text()='U redu']";
@@ -13999,7 +14003,78 @@ public class Steps {
         assertEquals(stringForAccountIban, stringForActualFirstIban);
     }
 
+    @And("Enter text {string} in Change limit {string} label and remember it under key {string}")
+    public void enterTextInChangeLimitLabelAndRememberItUnderKey(String text, String labelName, String key) throws Throwable {
+        String xPath = "//*[text()='" + labelName + "']/ancestor::nlb-heading-text/following-sibling::nlb-slider/div//nlb-input-amount-currency//input[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        element.click();
+        element.sendKeys(Keys.chord(Keys.CONTROL, "a"));
+        element.sendKeys(text);
+        DataManager.userObject.put(key, text);
+    }
 
+    @And("Remember text from {string} label under key {string}")
+    public void rememberTextFromLabelUnderKey(String labelName, String key) throws Throwable {
+        String xPath = "//*[text()='" + labelName + "']/ancestor::nlb-heading-text/following-sibling::nlb-slider/div//nlb-input-amount-currency//input[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+        DataManager.userObject.put(key, element.getText());
+    }
+
+    @And("Assert list of elements by contains aria label {string} has {int} elements")
+    public void assertListOfElementsByContainsAriaLabelHasElements(String ariaName, int number) throws Throwable {
+        String xPath = "//*[contains(@aria-label, '" + ariaName + "')]";
+        List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
+        assertEquals(elements.size(), number);
+    }
+
+    @And("Assert element with text {string} with following sibling contains text under key {string} in Change limit")
+    public void assertElementWithTextWithFollowingSiblingContainsTextUnderKeyInChangeLimit(String containsText, String key) throws Throwable {
+        String xpath = "//*[normalize-space()='" + containsText + "']/following-sibling::*[1]";
+        String expectedText = DataManager.userObject.get(key).toString();
+        System.out.println(expectedText+ " EXPECTED TEXT");
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actualText = element.getText().replace("\u00A0", "").replace(" ", "").replace(".", "").replace(",", ".").replace("RSD", "").replace("EUR", "");
+        System.out.println(actualText+ " ACTUAL TEXT");
+        Assert.assertTrue(actualText.contains(expectedText));
+    }
+
+    @And("Assert first loan payment has values from key {string}")
+    public void assertFirstLoanPaymentHasValuesFromKey(String key) throws Throwable {
+        String expected = DataManager.userObject.get(key).toString();
+
+        String xPathLoanCurrency = "(//*[contains(@class, 'bold heading-5 tw-hidden')])[1]";
+        String xPathLocalCurrency = "(//*[contains(@class, 'medium tw-text-gray-400')])[1]";
+        WebElement loanCurrencyElement = SelectByXpath.CreateElementByXpath(xPathLoanCurrency);
+        WebElement localCurrencyElement = SelectByXpath.CreateElementByXpath(xPathLocalCurrency);
+
+        assertTrue(loanCurrencyElement.getText().contains(expected));
+        assertTrue(localCurrencyElement.getText().contains(expected));
+    }
+
+    @And("Unhide all products")
+    public void unhideAllProducts() throws Throwable {
+        String xPath = "//*[contains(@class, 'icon-eye-off')]";
+        int guard = 0;
+
+        while (guard++ < 500) {
+            List<WebElement> elements = SelectByXpath.CreateElementsByXpath(xPath);
+            if (elements.isEmpty()) {
+                return;
+            }
+            elements.get(0).click();
+            Thread.sleep(500);
+        }
+
+        Assert.fail("Ne uspevam da otkrijem sve proizvode");
+    }
+
+    @And("Assert that first transaction in product details has purpose {string}")
+    public void assertThatFirstTransactionInProductDetailsHasPurpose(String text) throws Throwable {
+        String xpath = "(//*[@class='heading-5 medium tw-text-gray-100'])[1]";
+        WebElement element = SelectByXpath.CreateElementByXpath(xpath);
+        String actual = element.getText().trim();
+        Assert.assertTrue(actual.contains(text));
+    }
 
 
     private static class AccountRow {
@@ -14065,15 +14140,16 @@ public class Steps {
     @And("Check if date {string} is not enabled")
     public void checkIfDateIsNotEnabled(String date) throws Throwable {
         LocalDate d = LocalDate.parse(date, DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-        String fullDate = d.getDayOfMonth() + ". " + getSrpskiNazivMeseca(d.getMonth()) + " " + d.getYear();
+        String ariaDate = d.format(DateTimeFormatter.ofPattern("d-M-yyyy"));
 
-        WebElement el = SelectByXpath.CreateElementByXpath("//div[contains(@aria-label, '" + fullDate + "')]");
+        String xPath = "//div[@role='gridcell' and @aria-label='" + ariaDate + "']";
+        WebElement el = SelectByXpath.CreateElementByXpath(xPath);
 
-        Assert.assertTrue(
-                el.getAttribute("class").toLowerCase().contains("disabled")
-                        || "true".equalsIgnoreCase(el.getAttribute("aria-disabled"))
-                        || !el.isEnabled()
-        );
+        String className = el.getAttribute("class");
+        String ariaDisabled = el.getAttribute("aria-disabled");
+        boolean isDisabled = (className != null && className.toLowerCase().contains("disabled")) || "true".equalsIgnoreCase(ariaDisabled);
+
+        Assert.assertTrue("Datum " + ariaDate + " nije označen kao onemogućen.", isDisabled);
     }
 
     @And("Assert element by aria label {string} is not enabled")
@@ -14971,7 +15047,8 @@ public class Steps {
     public void clickFromFromKey(String key) throws Throwable {
         String keyText = DataManager.userObject.get(key).toString();
         System.out.println(" NAME FOR CLICK "+ keyText);
-        String xpath = "//*[normalize-space(text())='"+keyText+"']";
+//        String xpath = "//*[normalize-space(text())='"+keyText+"']";
+        String xpath = "//*[normalize-space(text())='" + keyText + "' and not(contains(@class, 'hidden'))]";
         WaitHelpers.waitForElement(By.xpath(xpath),5);
         WebElement element = SelectByXpath.CreateElementByXpath(xpath);
         element.click();
@@ -15004,12 +15081,12 @@ public class Steps {
 
     @And("Assert element with text {string} with following sibling contains text under key {string}")
     public void assertElementContainsTextWithFollowingSiblingHasTextUnderKey(String contains, String key) throws Throwable {
-        String xpath = "//*[normalize-space()='"+contains+"']/following-sibling::*[1]";
+        String xpath = "//*[normalize-space()='" + contains + "']/following-sibling::*[1]";
         String expectedText = DataManager.userObject.get(key).toString();
-        System.out.println(expectedText+ " EXPECTED TEXT");
+        System.out.println(expectedText + " EXPECTED TEXT");
         WebElement element = SelectByXpath.CreateElementByXpath(xpath);
         String actualText = element.getText();
-        System.out.println(actualText+ " ACTUAL TEXT");
+        System.out.println(actualText + " ACTUAL TEXT");
         Assert.assertTrue(actualText.contains(expectedText));
     }
 
@@ -16113,7 +16190,35 @@ public class Steps {
         throw new RuntimeException("Datum " + ariaLabel + " nije pronađen u kalendaru.");
     }
 
+    @And("Check if date {int} days in the past is not enabled")
+    public void checkIfDateDaysInThePastIsNotEnabled(int daysInPast) throws Throwable {
+        String dateInPast =
+                ActionApiHelpers.getTodayDatePlusXDaysInFormat(-daysInPast, "dd.MM.yyyy");
 
+        LocalDate targetDate = LocalDate.parse(
+                dateInPast,
+                DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        );
+
+        String date = targetDate.format(DateTimeFormatter.ofPattern("d-M-yyyy"));
+
+        String xPath = "//*[@aria-label='" + date
+                + "' and not(contains(@class, 'hidden'))]";
+
+        WebElement element = SelectByXpath.CreateElementByXpath(xPath);
+
+        String className = element.getAttribute("class");
+        String ariaDisabled = element.getAttribute("aria-disabled");
+
+        boolean isDisabled =
+                (className != null && className.toLowerCase().contains("disabled"))
+                        || "true".equalsIgnoreCase(ariaDisabled);
+
+        Assert.assertTrue(
+                "Datum " + date + " dana u prošlosti nije označen kao onemogućen.",
+                isDisabled
+        );
+    }
 }
 
 

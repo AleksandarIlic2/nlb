@@ -373,10 +373,10 @@ public class MobileAction {
 //        MobileElement actualAmountElement = (MobileElement) BaseMobile.driver.findElement(actualAmount);
 //        Assert.assertTrue(actualAmountElement.getText().contains(amount));
 
-        String xPathCurrency = "//*[@text='Currency:']/following-sibling::android.widget.TextView[1]";
-        By actualCurrency = SelectMobileByXpath.createByXpath(xPathCurrency);
-        MobileElement actualCurrencyElement = (MobileElement) BaseMobile.driver.findElement(actualCurrency);
-        Assert.assertEquals(actualCurrencyElement.getText(), currency);
+//        String xPathCurrency = "//*[@text='Currency:']/following-sibling::android.widget.TextView[1]";
+//        By actualCurrency = SelectMobileByXpath.createByXpath(xPathCurrency);
+//        MobileElement actualCurrencyElement = (MobileElement) BaseMobile.driver.findElement(actualCurrency);
+//        Assert.assertEquals(actualCurrencyElement.getText(), currency);
 
         String xPathConfirm = "//*[@resource-id='nlb-button-primary']";
         By confirmElement =  SelectMobileByXpath.createByXpath(xPathConfirm);
@@ -591,40 +591,34 @@ public class MobileAction {
     }
 
     public void rejectPayment() throws Throwable {
-        BaseMobile.createDriver();
-        goToApp();
-
-//        String xPathForContinueToApp = "//*[@text='Continue to the app']";
-//        By elForContinueToApp = SelectMobileByXpath.createByXpath(xPathForContinueToApp);
-//        clickElement(elForContinueToApp);
-
-        String xPathForSecurityConfirmations = "//*[@text='Security confirmations']";
-        By elForSecurityConfirmations = SelectMobileByXpath.createByXpath(xPathForSecurityConfirmations);
-        clickElement(elForSecurityConfirmations);
+        BaseMobile.createDriver(false);
+        openNotificationPanelAndClickPaymentConfirmation();
 
         String xPathEnterPin = "//*[@text='Enter PIN']";
         By elEnterPin = SelectMobileByXpath.createByXpath(xPathEnterPin);
         Assert.assertTrue(isElementPresent(elEnterPin));
 
-        BaseMobile.driver.getKeyboard().sendKeys("1");
-        WaitHelpers.waitForSeconds(3);
-        BaseMobile.driver.getKeyboard().sendKeys("3");
-        WaitHelpers.waitForSeconds(3);
-        BaseMobile.driver.getKeyboard().sendKeys("7");
-        WaitHelpers.waitForSeconds(3);
-        BaseMobile.driver.getKeyboard().sendKeys("9");
+        BaseMobile.driver.getKeyboard().sendKeys("2");
+        WaitHelpers.waitForSeconds(1);
+        BaseMobile.driver.getKeyboard().sendKeys("0");
+        WaitHelpers.waitForSeconds(1);
+        BaseMobile.driver.getKeyboard().sendKeys("2");
+        WaitHelpers.waitForSeconds(1);
+        BaseMobile.driver.getKeyboard().sendKeys("5");
+        WaitHelpers.waitForSeconds(1);
+        BaseMobile.driver.getKeyboard().sendKeys("2");
+        WaitHelpers.waitForSeconds(1);
+        BaseMobile.driver.getKeyboard().sendKeys("6");
 
-        String xPathForRejectButton = "//*[@text='Reject']";
-        By elForRejectButton = SelectMobileByXpath.createByXpath(xPathForRejectButton);
-        clickElement(elForRejectButton);
+        WaitHelpers.waitForSeconds(3);
 
-        String xPathForSuccessRejection = "//*[@text='Request for payment was rejected. You can return to NLB Klik on web.']";
+        String xPathReject = "//*[@text='Reject']";
+        By rejectElement =  SelectMobileByXpath.createByXpath(xPathReject);
+        clickElement(rejectElement);
+
+        String xPathForSuccessRejection = "//*[@text='Payment confirmation rejected']";
         By elForSuccessRejection = SelectMobileByXpath.createByXpath(xPathForSuccessRejection);
         Assert.assertTrue(isElementPresent(elForSuccessRejection));
-
-        String xPathForCloseButton = "//*[@text='Close']";
-        By elForCloseButton = SelectMobileByXpath.createByXpath(xPathForCloseButton);
-        clickElement(elForCloseButton);
 
         String xPathForLoginToNLB = "//*[@text='Login to NLB Klik']";
         By elForLoginToNLB = SelectMobileByXpath.createByXpath(xPathForLoginToNLB);

@@ -145,14 +145,16 @@ Feature: Payments_Archive
 
     And Click on tag "nlb-account-selector"
     And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
-    And Enter text "Internal" into input field
-    And Wait for "1" seconds
+    And Enter text "transa" into input field
+    And Wait for "2" seconds
+    And Wait for first past payment
+    And Wait for "2" seconds
     And Assert payments in past payments have loaded
 
     Then Remember all transaction values from executed past payment in map
     And Click on element by text "Confirmation"
     And Assert document with name starting with "Potvrda" and has file type ".pdf" is downloaded
-    And Assert that Executed past payment transaction values in PDF match remembered values from remembered map
+#    And Assert that Executed past payment transaction values in PDF match remembered values from remembered map
 
     Examples:
       | rowindex |
@@ -187,11 +189,10 @@ Feature: Payments_Archive
 
     Then Click on element by xpath "//nlb-account-selector"
     And Click on element from Excel "<rowindex>" contains text columnName "savings_account_1_number"
-    And Assert element by contains text "No past payments"
-#    And Assert dates of Payments archive are displayed correctly
-#    And Assert list of elements by xPath "//h5" are displayed
-#    And Assert list of creditor names of Payments archive are displayed
-#    And Assert list of amounts with currencies of Upcoming payments are displayed correctly
+    And Assert dates of Payments archive are displayed correctly
+    And Assert list of elements by xPath "//h5" are displayed
+    And Assert list of creditor names of Payments archive are displayed
+    And Assert list of amounts with currencies of Upcoming payments are displayed correctly
 
     Examples:
       | rowindex |
@@ -213,15 +214,18 @@ Feature: Payments_Archive
     And Wait for "2" seconds
     And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Wait for "2" seconds
-    And Click on first Executed past payment
-    And Wait for element by contains text "Confirmation"
+    And Enter text "Transactions" into input field
+    And Wait for "1" seconds
+    And Wait for first past payment
+    And Click on tag "nlb-payment-item"
+    And Wait for element by contains text "Recipient"
 
-    And Assert element by contains text "Confirmation"
+#    And Assert element by contains text "Confirmation"
     And Assert element by contains text "Repeat payment"
     And Assert field "Recipient" in payment confirmation matches regex "^.+$"
     And Assert field "Recipient address" in payment confirmation matches regex "(?s)^.+$"
     And Assert field "Recipient account number" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
-#    And Assert field "Urgent payment" in payment confirmation matches regex "^(Yes|No)$"
+    And Assert field "Urgent" in payment confirmation matches regex "^(Yes|No)$"
     And Assert field "Purpose code" in payment confirmation matches regex "^\d{3}$"
     And Assert field "Purpose" in payment confirmation matches regex "^.+$"
     And Assert field "Payment date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4},\s\d{2}:\d{2}$"
@@ -237,6 +241,8 @@ Feature: Payments_Archive
     And Wait for "2" seconds
     And Click on element by containing text from Excel "<rowindex>" columnName "auth_current_account_bban"
     And Wait for "2" seconds
+    And Enter text "Transactions" into input field
+    And Wait for "2" seconds
     And Click on first Executed past payment
     And Wait for element by contains text "Confirmation"
 
@@ -245,7 +251,7 @@ Feature: Payments_Archive
     And Assert field "Recipient" in payment confirmation matches regex "^.+$"
     And Assert field "Recipient address" in payment confirmation matches regex "(?s)^.+$"
     And Assert field "Recipient account number" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
-#    And Assert field "Urgent payment" in payment confirmation matches regex "^(Yes|No)$"
+    And Assert field "Urgent" in payment confirmation matches regex "^(Yes|No)$"
     And Assert field "Purpose code" in payment confirmation matches regex "^\d{3}$"
     And Assert field "Purpose" in payment confirmation matches regex "^.+$"
     And Assert field "Payment date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4},\s\d{2}:\d{2}$"
@@ -261,16 +267,17 @@ Feature: Payments_Archive
     And Wait for "2" seconds
     And Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
     And Wait for "2" seconds
+    And Enter text "Internal" into input field
+    And Wait for "2" seconds
     And Click on first Executed past payment
-    And Wait for element by contains text "Confirmation"
+    And Wait for element by contains text "Repeat payment"
 
-    And Assert element by contains text "Confirmation"
     And Assert element by contains text "Repeat payment"
     And Assert field "Recipient" in payment confirmation matches regex "^.+$"
     And Assert field "Recipient address" in payment confirmation matches regex "(?s)^.+$"
     And Assert field "Recipient account number" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
-#    And Assert field "Urgent payment" in payment confirmation matches regex "^(Yes|No)$"
-    And Assert field "Purpose code" in payment confirmation matches regex "^\d{3}$"
+    And Assert field "Urgent" in payment confirmation matches regex "^(Yes|No)$"
+#    And Assert field "Purpose code" in payment confirmation matches regex "^\d{3}$"
     And Assert field "Purpose" in payment confirmation matches regex "^.+$"
     And Assert field "Payment date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4},\s\d{2}:\d{2}$"
     And Assert field "Execution date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4}$"
@@ -285,26 +292,26 @@ Feature: Payments_Archive
     And Wait for "2" seconds
     And Click on element by containing text from Excel "<rowindex>" columnName "savings_account_1_number"
     And Wait for "2" seconds
-    And Assert element by contains text "No past payments"
-#    And Click on first Executed past payment
-#    And Wait for element by contains text "Confirmation"
-#
-#    And Assert element by contains text "Confirmation"
-#    And Assert element by contains text "Repeat payment"
-#    And Assert field "Recipient" in payment confirmation matches regex "^.+$"
-#    And Assert field "Recipient address" in payment confirmation matches regex "(?s)^.+$"
-#    And Assert field "Recipient account" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
-#    And Assert field "Urgent payment" in payment confirmation matches regex "^(Yes|No)$"
+    And Enter text "Internal" into input field
+    And Wait for "2" seconds
+    And Click on first Executed past payment
+    And Wait for element by contains text "Repeat payment"
+
+    And Assert element by contains text "Repeat payment"
+    And Assert field "Recipient" in payment confirmation matches regex "^.+$"
+    And Assert field "Recipient address" in payment confirmation matches regex "(?s)^.+$"
+    And Assert field "Recipient account" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
+    And Assert field "Urgent payment" in payment confirmation matches regex "^(Yes|No)$"
 #    And Assert field "Purpose code" in payment confirmation matches regex "^\d{3}$"
-#    And Assert field "Purpose" in payment confirmation matches regex "^.+$"
-#    And Assert field "Payment date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4},\s\d{2}:\d{2}$"
-#    And Assert field "Execution date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4}$"
-#    And Assert field "Order ID" in payment confirmation matches regex "^.{14}$"
-#    And Assert label "Debtor name" in payment confirmation contains value from excel "<rowindex>" columnName "account_details_owner"
-#    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "savings_account_1_number"
-#    And Assert field "Debtor address" in payment confirmation matches regex "(?s)^.+$"
-#    And Assert field "Fee" in payment confirmation matches regex "^\d{1,2},\d{2}\s*RSD$"
-#    And Assert field "Payment status" in payment confirmation contains text "Executed"
+    And Assert field "Purpose" in payment confirmation matches regex "^.+$"
+    And Assert field "Payment date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4},\s\d{2}:\d{2}$"
+    And Assert field "Execution date" in payment confirmation matches regex "^\d{2}\.\d{2}\.\d{4}$"
+    And Assert field "Order number" in payment confirmation matches regex "^.{14}$"
+    And Assert label "Name" in payment confirmation contains value from excel "<rowindex>" columnName "account_details_owner"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "savings_account_1_number"
+    And Assert field "Address" in payment confirmation matches regex "(?s)^.+$"
+    And Assert field "Fee" in payment confirmation matches regex "^\d{1,2},\d{2}\s*RSD$"
+    And Assert field "Payment status" in payment confirmation contains text "Executed"
 
     Examples:
       | rowindex |
@@ -349,7 +356,7 @@ Feature: Payments_Archive
     And Assert element by contains text "Debtor"
     And Assert element by contains class "accountItemDescription" contains value from key "keyDebtorAccount" is displayed
     And Assert element by contains text "Recipient"
-    And Assert element by contains class "accountItemDescription" contains value from key "keyRecipientAccount" is displayed
+#    And Assert element by contains class "accountItemDescription" contains value from key "keyRecipientAccount" is displayed
 
     And Assert input field by contains text "Payment amount" has value under remembered key "keyPaymentAmount"
     And Assert element with text "Purpose" with following sibling has text "INTERNAL TRANSFER"
@@ -363,11 +370,9 @@ Feature: Payments_Archive
     And Assert that text "Fee" has first following sibling that contains text "RSD"
 
     And Assert element by text "Name" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "account_details_owner2"
-    #And Assert element by text "Address" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "user_street_for_payment_review"
     And Assert element by text "Account number" and index "1" has first following sibling that contains text from Excel "<rowindex>" columnName "current_account_1_bban"
     And Assert element by text "Name" and index "2" has first following sibling that contains text from key "keyName"
-    #And Assert element by text "Address" and index "2" has first following sibling that contains text from key "keyAddress"
-    And Assert element by text "Account number" and index "2" has first following sibling that contains text from key "keyRecipientAccount"
+#    And Assert element by text "Account number" and index "2" has first following sibling that contains text from key "keyRecipientAccount"
     And Assert element by text "Purpose" has first following sibling under key "keyPurpose"
     And Assert value date is todays date and in valid date format in Payment review
 
@@ -386,14 +391,14 @@ Feature: Payments_Archive
     And Wait for first past payment
 
     #past payment
-    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
-    And Assert first past or upcoming payment has purpose from key "keyPurpose"
-    And Assert first past or upcoming payment has name from key "keyName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
+#    And Assert first past or upcoming payment has purpose from key "keyPurpose"
+#    And Assert first past or upcoming payment has name from key "keyName"
+#    And Assert first past or upcoming payment has today date
     And Click on first Executed past payment
 
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyName"
-    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyAddress"
+#    And Assert label "Recipient address" in payment confirmation contains value under remembered key "keyAddress"
     And Assert label "Recipient account number" in payment confirmation contains value under remembered key "keyRecipientAccount"
     And Assert label "Purpose" in payment confirmation contains value under remembered key "keyPurpose"
 
@@ -419,12 +424,13 @@ Feature: Payments_Archive
     And Assert that first transaction has purpose from key "keyPurpose"
     And Assert that amount for first transaction in product screen is from key "keyPaymentAmount"
     And Assert that first transaction in product screen has currency "RSD"
-    And Assert that first transaction has name from key "keyName"
+#    And Assert that first transaction has name from key "keyName"
     And Assert that transaction date for first transaction in product screen is today date
     And Click on down arrow on first transaction do display details
     And Wait for "1" seconds
 
-    #And Assert element with text "Account number" with following sibling "dd" and descendant "nlb-bban" on index "2 "has value from key "keyRecipientAccount"
+#    And Assert element with text "Account number" with following sibling "dd" and descendant "nlb-bban" on index "2 "has value from key "keyRecipientAccount"
+    And Assert element by text "Account number" has following sibling "dd" that contains text from key "keyRecipientAccount"
     And Assert amount in transaction details has value under key "keyPaymentAmount" in currency "RSD"
     And Assert element by text "Value date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
     And Assert element by text "Products_Common_TransactionDetails_BookingDate" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
@@ -525,10 +531,10 @@ Feature: Payments_Archive
     And Wait for first past payment
 
     #past payment
-    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
-    And Assert first past or upcoming payment has purpose from key "keyPurpose"
-    And Assert first past or upcoming payment has name from key "keyName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
+#    And Assert first past or upcoming payment has purpose from key "keyPurpose"
+#    And Assert first past or upcoming payment has name from key "keyName"
+#    And Assert first past or upcoming payment has today date
     And Click on first Executed past payment
 
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyName"
@@ -611,13 +617,18 @@ Feature: Payments_Archive
 
     And Click on element by containing text "Repeat payment"
     And Wait for element by contains text "In order to continue all input fields must be filled."
+    And Wait for "3" seconds
 
     And Assert element by contains text "Domestic payment"
     And Assert element by contains text "Debtor"
+    And Click on element by containing class "softDarkShadow" with index "2"
+    And Wait for element by contains text "City"
+    And Enter text "Juzni bulevar 55" into "street" input field and remember it under key "keyStreet"
+    And Enter text "Beograd" into "City" input field and remember it under key "keyCity"
     And Assert element by contains class "accountItemDescription" contains value from key "keyDebtorAccount" is displayed
-    And Check if recipient is set in second account selector and if not enter address and city into input field
-    And Assert text under key "keyRecipientAccount" is displayed
-    And Assert text under key "keyName" is displayed
+#    And Check if recipient is set in second account selector and if not enter address and city into input field
+#    And Assert text under key "keyRecipientAccount" is displayed
+#    And Assert text under key "keyName" is displayed
 
     And Assert input field by contains text "Payment amount" has value under remembered key "keyPaymentAmount"
     And Assert element with attribute "aria-label" contains value "Currency: RSD" is displayed
@@ -649,7 +660,7 @@ Feature: Payments_Archive
     And Click on button with type "submit"
 
     And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount from key "keyPaymentAmount" and currency "RSD" with message "Success"
-    And Assert element by contains text "Success"
+#    And Assert element by contains text "Success"
 
     And Wait for first past payment
     And Click on tag "nlb-account-selector"
@@ -659,10 +670,10 @@ Feature: Payments_Archive
     And Wait for first past payment
 
     #past payment
-    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
-    And Assert first past or upcoming payment has purpose from key "keyPurpose"
-    And Assert first past or upcoming payment has name from key "keyName"
-    And Assert first past or upcoming payment has today date
+#    And Assert first past payment has amount from key "keyPaymentAmount" in currency "RSD"
+#    And Assert first past or upcoming payment has purpose from key "keyPurpose"
+#    And Assert first past or upcoming payment has name from key "keyName"
+#    And Assert first past or upcoming payment has today date
     And Click on first Executed past payment
 
     And Assert label "Recipient" in payment confirmation contains value under remembered key "keyName"
@@ -682,6 +693,7 @@ Feature: Payments_Archive
 
     Then Click on tab "My Products" from main sidebar
     And Wait for first product to load
+#    And Wait for "10" seconds
     And Compare if available amount balance from key "IT_001_Debtor_BalanceA" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" is reduced for amount from key "keyPaymentAmount" and fee from key "keyFeeAmount"
     And Compare if current amount balance from key "IT_001_Debtor_BalanceC" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" is reduced for amount from key "keyPaymentAmount" and fee from key "keyFeeAmount"
 

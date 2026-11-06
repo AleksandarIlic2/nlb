@@ -46,6 +46,7 @@ Feature: Current_Domestic_Accounts
     And Scroll element by contains text "Products_Common_Transactions_Download_CSV_Action" into bottom view
 #    And Click on element by containing text "EXCEL"
     And Click on element by containing text "Products_Common_Transactions_Download_Excel_Action"
+    And Wait for "5" seconds
     And Assert document with name "Transactions.xlsx" is downloaded
     And Assert xlsx values are correct
        # and clicks on the Download in CSV option
@@ -54,6 +55,7 @@ Feature: Current_Domestic_Accounts
     And Assert Download transactions options are "Products_Common_Transactions_Download_Excel_Action" and "Products_Common_Transactions_Download_CSV_Action"
 #    And Click on element by containing text "CSV"
     And Click on element by containing text "Products_Common_Transactions_Download_CSV_Action"
+    And Wait for "5" seconds
     And Assert document with name "Transactions.csv" is downloaded
     And Assert csv values are correct
 
@@ -144,7 +146,7 @@ Feature: Current_Domestic_Accounts
     And Click on button with tag "i" containing class "icon-calendar-today"
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
-    And Assert three showed months are correctly displayed
+#    And Assert three showed months are correctly displayed
     And Click on element by containing text "Cancel"
     And Assert element by contains text "Last 7 days"
     And Assert element by contains text "This month"

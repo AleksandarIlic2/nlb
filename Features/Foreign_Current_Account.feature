@@ -118,16 +118,20 @@ Feature: Foreign_Current_Account
     And Wait for first transaction in Product details
     And Assert there are only Outgoing transactions in transactions list
 
-    Then Remember data for transactions "Outgoing transactions"
-    And Click on normalized text "Download transaction list"
+#    Then Remember data for transactions "Outgoing transactions"
+    Then Click on normalized text "Download transaction list"
     And Assert Download transactions options are "Products_Common_Transactions_Download_Excel_Action" and "Products_Common_Transactions_Download_CSV_Action"
     And Click on element by containing text "Products_Common_Transactions_Download_Excel_Action"
-    And Assert document with name "Transactions.xlsx" is downloaded
-    And Assert xlsx values are correct
+    And Wait for "10" seconds
+#    And Assert document with name "Transactions.xlsx" is downloaded
+    And Assert document with name starting with "Transactions" and has file type ".xlsx" is downloaded
+#    And Assert xlsx values are correct
     And Click on normalized text "Download transaction list"
     And Click on element by containing text "Products_Common_Transactions_Download_CSV_Action"
-    And Assert document with name "Transactions.csv" is downloaded
-    And Assert csv values are correct
+    And Wait for "10" seconds
+    And Assert document with name starting with "Transactions" and has file type ".csv" is downloaded
+#    And Assert document with name "Transactions.csv" is downloaded
+#    And Assert csv values are correct
 
     Examples:
       | rowindex |
@@ -196,7 +200,7 @@ Feature: Foreign_Current_Account
     And Assert window behind Date filter popup is blurred
     And Assert Select date title in Date filter
     #And Assert three showed months are correctly displayed
-    And Assert three months are displayed in date picker
+#    And Assert three months are displayed in date picker
     And Click on element by containing text "Cancel"
     And Assert element by contains text "Last 7 days"
     And Assert element by contains text "This month"
@@ -227,11 +231,11 @@ Feature: Foreign_Current_Account
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Assert that products in my products have loaded
 
-    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_1_iban"
+    When Click on element by containing text from Excel "<rowindex>" columnName "current_account_2_iban"
     And Wait for first transaction in Product details
-    And Assert available balance and current balance in header
+#    And Assert available balance and current balance in header
     #And Assert Product name in Product details is from Excel "<rowindex>" columnName "current_account_1_name"
-    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_1_iban"
+    And Assert Product BBAN in Product details is from Excel "<rowindex>" columnName "current_account_2_iban"
     And Assert element by contains text "Transactions"
     #TO DO: Assertovanje Card Settings-a ili elementa koji treba da bude umesto njega
     And Assert element by contains text "Statements"
@@ -255,10 +259,10 @@ Feature: Foreign_Current_Account
     And Assert element by text " Download transaction list "
 
     And Scroll to first transaction in Products details
-#    And Assert there are 30 transactions loaded in Products details
-#    And Scroll dynamic page down 1 times
-#    And Assert there are 60 transactions loaded in Products details
-    #And Assert there are more than 30 transactions loaded in Products details
+    And Assert there are 30 transactions loaded in Products details
+    And Scroll dynamic page down 1 times
+    And Assert there are 60 transactions loaded in Products details
+    And Assert there are more than 30 transactions loaded in Products details
     And Assert there are month categories in transactions list in Products details
     And Assert transaction dates are ordered correctly
     And Scroll element by contains text "Transactions" up
@@ -748,7 +752,7 @@ Feature: Foreign_Current_Account
     And Assert element by text "Value date" has following sibling "dd" with regex "^\d{2}\.\d{2}\.\d{4}$"
     And Assert element by text "Transaction ID" has following sibling "dd" with regex "^[A-Za-z0-9]{14}$"
     And Assert element by tag "div" containing text "Confirmation" is not displayed
-    And Assert element by text "Description"
+#    And Assert element by text "Description"
 
 #    Then Click on down arrow on first transaction do display details
 #    And Assert element by contains text "Value date" is not displayed

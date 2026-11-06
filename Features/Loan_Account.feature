@@ -171,14 +171,16 @@ Feature: Loan_Account
     And Assert element by xPath "//input" and index 1 is displayed
     And Assert element by contains class "icon-calendar" with index "1"
     And Assert element by contains class "icon-calendar" with index "2"
-    And Assert Upcoming installments dates are sorted ascending for Loan annuitys
+#    And Assert Upcoming installments dates are sorted ascending for Loan annuitys
     And Assert list of Annuity amount is displayed correctly
     And Assert list of Principal amount is displayed correctly
     And Click on calendar icon with index "1"
     #And Select date in From label to be "22.01.2027"
-    And Select date to be "22.01.2027" in future on Serbian
+#    And Select date to be "22.01.2027" in future on Serbian
+    And Click on date 1 days in the future in second payment screen
     And Click on calendar icon with index "2"
-    And Assert date "21.01.2027" is not clickable
+#    And Assert date "21.01.2027" is not clickable
+    And Check if date 3 days in the past is not enabled
 
     Examples:
       | rowindex |

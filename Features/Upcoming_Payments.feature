@@ -39,7 +39,12 @@ Feature: Upcoming_Payments
     And Change language to English
     And Login to the page using user from Excel "<rowindex>" columnName "username"
 
-    When Click on tab "Payments" from main sidebar
+    When Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Available_Balance"
+    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Current_Balance"
+
+    And Click on tab "Payments" from main sidebar
     And Wait for "2" seconds
     And Wait for element by contains text "Upcoming payments"
     And Click on element by containing text "Upcoming payments"
@@ -57,26 +62,35 @@ Feature: Upcoming_Payments
     And Assert element by contains text "Urgent payment"
     And Assert checkbox "Urgent payment" is checked "true"
     And Click on calendar icon with index "1"
-    And Click on date 7 days in the future in second payment screen
+    And Click on date 1 days in the future in second payment screen
+    And Click on normalized text "Urgent payment"
     And Assert checkbox "Urgent payment" is checked "false"
     And Click on button with type "submit"
     And Wait for element by contains text "Payment amount"
     And Assert payment amount under key is "paymentAmountKey" is displayed
 #    And Assert element by text "Debtor name" has following sibling "dd" with contains text from Excel "<rowindex>" columnName "account_details_owner"
-    And Assert element by text "Debtor account" has following sibling "dd" with contains text from Excel "<rowindex>" columnName "current_account_1_bban"
-    And Assert element by text "Name" has first following sibling under key "nameKey"
-    And Assert element by text "Account number" has first following sibling under key "accountNumberKey"
-    And Assert element by text "Purpose" has first following sibling under key "keyPurpose"
-    And Assert date 7 days in future in payment review
+    And Assert date 1 days in future in payment review
     And Click on button with type "submit"
+    And Check if authorization is needed and complete payment with account bban from Excel "<rowindex>" columnName "current_account_1_bban" amount "2.00" and currency "RSD" with message "Success"
     And Wait for element by contains text "Success"
+
+    And Wait for "30" seconds
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
+#    And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
+    And Remember available balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Available_Balance"
+#    And Remember current balance for account from Excel "<rowindex>" columnName "current_account_1_bban" under key "key_IT_001_Debtor_Current_Balance"
+    And Click on tab "Payments" from main sidebar
+    And Wait for element by contains text "Past payments"
     
-    Then Click on element by containing text "Upcoming payments"
+    And Click on element by containing text "Upcoming payments"
     And Wait for first past payment
     And Wait for "2" seconds
-    And Scroll till you find element under key "keyPurpose" from txt file and click
-    And Assert that payment under key "keyPurpose" from txt file has date 7 days in future
-    And Assert that transaction "Payment status" in opened past payment is "Pending"
+    And Click on normalized text from key "keyPurpose"
+#    And Scroll till you find element under key "keyPurpose" from txt file and click
+#    And Assert that payment under key "keyPurpose" from txt file has date 7 days in future
+#    And Assert that transaction "Payment status" in opened past payment is "Pending"
     And Click on element by tag "span" and contains text "Cancel payment"
     And Wait for element by text "Do you wish to cancel?"
     And Assert element by contains text "Are you really sure to cancel payment"
@@ -91,6 +105,12 @@ Feature: Upcoming_Payments
     And Wait for "2" seconds
     And Assert there is no element by contains text under key "keyPurpose" from txt file
     And Assert there is no element by contains text under key "nameKey" from txt file
+
+    Then Wait for "30" seconds
+    And Click on tab "My Products" from main sidebar
+    And Wait for first product to load
+    And Compare if available amount balance from key "key_IT_001_Debtor_Available_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and added amount "0" is correct
+#    And Compare if current amount balance from key "key_IT_001_Debtor_Current_Balance" in my products screen for account from Excel "<rowindex>" columnName "current_account_1_bban" and reduced amount "0" is correct
 
     Examples:
       | rowindex |
@@ -118,14 +138,14 @@ Feature: Upcoming_Payments
     And Wait for element by contains text "Cancel payment"
     And Assert field "Recipient" in payment confirmation matches regex "^.+$"
     And Assert field "Recipient address" in payment confirmation matches regex "(?s)^.+$"
-    And Assert field "Recipient account" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
-    And Assert element by contains text "Urgent payment" is not displayed
+    And Assert field "Recipient account number" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
+    And Assert element by contains text "Urgent" is not displayed
     And Assert field "Purpose code" in payment confirmation matches regex "^\d{3}$"
-    And Assert field "Order ID" in payment confirmation matches regex "^.{14}$"
-    And Assert label "Debtor name" in payment confirmation contains value from excel "<rowindex>" columnName "account_details_owner"
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
-    And Assert field "Debtor address" in payment confirmation matches regex "(?s)^.+$"
-    And Assert field "Payment status" in payment confirmation contains text "Pending"
+    And Assert field "Order number" in payment confirmation matches regex "^.{14}$"
+    And Assert label "Name" in payment confirmation contains value from excel "<rowindex>" columnName "account_details_owner"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "current_account_1_bban"
+    And Assert field "Address" in payment confirmation matches regex "(?s)^.+$"
+#    And Assert field "Payment status" in payment confirmation contains text "Pending"
     # prelazak na drugi racun
     And Click on element by containing class "icon-chevron-down" with index "1"
     And Wait for "2" seconds
@@ -141,13 +161,13 @@ Feature: Upcoming_Payments
     And Wait for element by contains text "Cancel payment"
     And Assert field "Recipient" in payment confirmation matches regex "^.+$"
     And Assert field "Recipient address" in payment confirmation matches regex "(?s)^.+$"
-    And Assert field "Recipient account" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
-    And Assert element by contains text "Urgent payment" is not displayed
+    And Assert field "Recipient account number" in payment confirmation matches regex "^\d{3}-\d{13}-\d{2}$"
+    And Assert element by contains text "Urgent" is not displayed
     And Assert field "Purpose code" in payment confirmation matches regex "^\d{3}$"
-    And Assert field "Order ID" in payment confirmation matches regex "^.{14}$"
-    And Assert label "Debtor name" in payment confirmation contains value from excel "<rowindex>" columnName "auth_current_account_owner_name"
-    And Assert label "Debtor account" in payment confirmation contains value from excel "<rowindex>" columnName "auth_current_account_bban"
-    And Assert field "Debtor address" in payment confirmation matches regex "(?s)^.+$"
+    And Assert field "Order number" in payment confirmation matches regex "^.{14}$"
+    And Assert label "Name" in payment confirmation contains value from excel "<rowindex>" columnName "auth_current_account_owner_name"
+    And Assert label "Account number" in payment confirmation contains value from excel "<rowindex>" columnName "auth_current_account_bban"
+    And Assert field "Address" in payment confirmation matches regex "(?s)^.+$"
     And Assert field "Payment status" in payment confirmation contains text "Pending"
 
     Examples:

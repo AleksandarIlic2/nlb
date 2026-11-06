@@ -8,21 +8,21 @@ Feature: Manage_Products
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Wait for element by text "Pay or transfer"
 
-    When Click on tab "My products" from main sidebar
+    When Click on tab "My Products" from main sidebar
     And Wait for element by text "Edit list"
     And Assert element by class "button-bold" containing text "Edit list"
     And Click on element by text "Edit list"
     And Wait for element by class "icon-eye"
 
     Then Hide product with iban from excel "<rowindex>" columnName "current_account_1_iban"
-    And Click on tab "My products" from main sidebar
+    And Click on tab "My Products" from main sidebar
     And Wait for element by text "Edit list"
     And Assert that products in my products have loaded
     And Assert element from excel "<rowindex>" columnName "current_account_1_iban" is not displayed
     And Click on element by text "Edit list"
     And Wait for element by class "icon-eye"
     And Unhide product with iban from excel "<rowindex>" columnName "current_account_1_iban"
-    And Click on tab "My products" from main sidebar
+    And Click on tab "My Products" from main sidebar
     And Wait for element by text "Edit list"
     And Assert that products in my products have loaded
     And Scroll to account from excel "<rowindex>" columnName "current_account_1_iban" in my products page
@@ -40,7 +40,7 @@ Feature: Manage_Products
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Wait for element by text "Pay or transfer"
 
-    When Click on tab "My products" from main sidebar
+    When Click on tab "My Products" from main sidebar
     And Wait for element by text "Edit list"
     And Assert element by class "button-bold" containing text "Edit list"
     And Click on element by text "Edit list"
@@ -80,7 +80,7 @@ Feature: Manage_Products
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Wait for element by text "Pay or transfer"
 
-    When Click on tab "My products" from main sidebar
+    When Click on tab "My Products" from main sidebar
     And Wait for element by text "Edit list"
     And Assert element by class "button-bold" containing text "Edit list"
     And Click on element by text "Edit list"
@@ -118,7 +118,7 @@ Feature: Manage_Products
     And Login to the page using user from Excel "<rowindex>" columnName "username"
     And Wait for element by text "Pay or transfer"
 
-    When Click on tab "My products" from main sidebar
+    When Click on tab "My Products" from main sidebar
     And Wait for element by text "Edit list"
     And Assert element by class "button-bold" containing text "Edit list"
     And Click on element by text "Edit list"
@@ -176,9 +176,9 @@ Feature: Manage_Products
 
     #PROMENA IMENA KARTICA
     And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" into "First credit card"
-    And Wait for "7" seconds
+    And Wait for "10" seconds
     And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" into "Second credit card"
-    And Wait for "7" seconds
+    And Wait for "10" seconds
 
     #PROMENA IMENA STEDNJE
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" into "First savings account"
@@ -206,9 +206,9 @@ Feature: Manage_Products
     And Change name of product from excel "<rowindex>" columnName "current_account_2_bban" to previous one
     And Change name of product from excel "<rowindex>" columnName "current_account_1_iban" to previous one
     And Change name of product from excel "<rowindex>" columnName "credit_card_1_number" to previous one
-    And Wait for "7" seconds
+    And Wait for "10" seconds
     And Change name of product from excel "<rowindex>" columnName "credit_card_2_number" to previous one
-    And Wait for "7" seconds
+    And Wait for "10" seconds
     And Change name of product from excel "<rowindex>" columnName "savings_account_1_number" to previous one
     And Change name of product from excel "<rowindex>" columnName "savings_account_2_number" to previous one
     And Change name of product from excel "<rowindex>" columnName "term_deposits_1_account_number" to previous one
@@ -299,3 +299,92 @@ Feature: Manage_Products
     Examples:
       | rowindex |
       | 1        |
+
+
+  @Manage_Products_Hide/Show_account_on_Product_List_[WEB]-Current_Accounts
+  Scenario Outline: Manage_Products_Hide/Show_account_on_Product_List_[WEB]-Current_Accounts
+
+    Given Open Login page
+    And Change language to English
+    And Login to the page using user from Excel "<rowindex>" columnName "username"
+    And Wait for element by text "Pay or transfer"
+
+    When Click on tab "My Products" from main sidebar
+    And Wait for element by text "Edit list"
+    And Assert element by class "button-bold" containing text "Edit list"
+    And Click on element by text "Edit list"
+    And Wait for element by class "icon-eye"
+    And Unhide all products
+
+    And Hide product with iban from excel "<rowindex>" columnName "current_account_3_bban"
+    And Wait for "2" seconds
+    And Hide product with iban from excel "<rowindex>" columnName "current_account_3_iban"
+    And Wait for "2" seconds
+    And Hide product with iban from excel "<rowindex>" columnName "auth_current_account_bban2"
+    And Wait for "2" seconds
+    And Click on tab "My Products" from main sidebar
+    And Wait for element by text "Edit list"
+    And Wait for first product to load
+    And Assert element from excel "<rowindex>" columnName "current_account_3_bban" is not displayed
+    And Assert element from excel "<rowindex>" columnName "current_account_3_iban" is not displayed
+    And Assert element from excel "<rowindex>" columnName "auth_current_account_bban2" is not displayed
+
+    And Click on tab "Payments" from main sidebar
+    And Wait for element by text "Past payments"
+    And Click on normalized text "Domestic payment"
+    And Wait for element by contains text "Select from list"
+    And Click on tag "nlb-account-selector"
+    And Wait for "2" seconds
+    And Assert element from excel "<rowindex>" columnName "current_account_3_bban" is not displayed
+    And Assert element from excel "<rowindex>" columnName "current_account_3_iban" is not displayed
+    And Assert element from excel "<rowindex>" columnName "auth_current_account_bban2" is not displayed
+    And Click on tab "Payments" from main sidebar
+    And Wait for element by text "Past payments"
+
+    And Click on normalized text "Internal transfer"
+    And Wait for element by contains text "Debtor"
+    And Click on tag "nlb-account-selector" with index "1"
+    And Wait for "2" seconds
+    And Assert element from excel "<rowindex>" columnName "current_account_3_bban" is not displayed
+    And Assert element from excel "<rowindex>" columnName "current_account_3_iban" is not displayed
+    And Assert element from excel "<rowindex>" columnName "auth_current_account_bban2" is not displayed
+    And Click on tab "Payments" from main sidebar
+    And Wait for element by text "Past payments"
+
+    And Click on normalized text "Past payments"
+    And Wait for first past payment
+    And Wait for "2" seconds
+    And Click on tag "nlb-account-selector"
+    And Wait for "2" seconds
+    And Assert element from excel "<rowindex>" columnName "current_account_3_bban" is not displayed
+    And Assert element from excel "<rowindex>" columnName "current_account_3_iban" is not displayed
+    And Assert element from excel "<rowindex>" columnName "auth_current_account_bban2" is not displayed
+
+    And Click on normalized text "Upcoming payments"
+    And Wait for first past payment
+    And Wait for "2" seconds
+    And Click on tag "nlb-account-selector"
+    And Wait for "2" seconds
+    And Assert element from excel "<rowindex>" columnName "current_account_3_bban" is not displayed
+    And Assert element from excel "<rowindex>" columnName "current_account_3_iban" is not displayed
+    And Assert element from excel "<rowindex>" columnName "auth_current_account_bban2" is not displayed
+
+    And Click on tab "My Products" from main sidebar
+    And Wait for element by text "Edit list"
+    And Assert element by class "button-bold" containing text "Edit list"
+    And Click on element by text "Edit list"
+    And Wait for element by class "icon-eye"
+
+    Then Unhide all products
+    And Click on tab "My Products" from main sidebar
+    And Wait for element by text "Edit list"
+    And Scroll to account from excel "<rowindex>" columnName "current_account_1_iban" in my products page
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_1_iban" is displayed
+    And Scroll to account from excel "<rowindex>" columnName "current_account_3_iban" in my products page
+    And Assert element by contains text from excel "<rowindex>" columnName "current_account_3_iban" is displayed
+    And Scroll to account from excel "<rowindex>" columnName "auth_current_account_bban2" in my products page
+    And Assert element by contains text from excel "<rowindex>" columnName "auth_current_account_bban2" is displayed
+
+    Examples:
+      | rowindex |
+      |        1 |
